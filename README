@@ -164,14 +164,14 @@ Gl: Common data types and functions.
    glIsEnabled
 
 GlArray: Array functions
-   glEdgeFlagPointer   
-   glTexCoordPointer
-   glIndexPointer
-   glNormalPointer
-   glVertexPointer
-   glEnableClientState
-   glDisableClientState
-   glArrayElement
+   glEdgeFlagPointer    -> edge_flag
+   glTexCoordPointer    -> tex_coord
+   glIndexPointer       -> index
+   glNormalPointer      -> normal
+   glVertexPointer      -> vertex
+   glEnableClientState  -> enable
+   glDisableClientState -> disable
+   glArrayElement       -> element
    glDrawArrays
    glDrawElements
 
@@ -345,4 +345,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.30 2003-10-01 08:20:26 garrigue Exp $
+$Id: README,v 1.31 2003-10-01 09:34:15 garrigue Exp $
