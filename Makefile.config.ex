@@ -11,10 +11,14 @@ BINDIR = /usr/local/bin
 
 # Where to find X headers
 XINCLUDES = -I/usr/X11R6/include
+# X libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
+#XLIBS = -L/usr/X11R6/lib -lXext -lXmu -lX11
 
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
 TKINCLUDES = -I/usr/local/include
+# Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
+#TKLIBS = -L/usr/local/lib -ltk83 -ltcl83
 
 # Where to find OpenGL/Mesa headers and libraries
 GLINCLUDES =
@@ -49,7 +53,7 @@ COPTS = -c -O
 INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
 
 # Libraries to link with:
-LIBS = $(GLLIBS)
+LIBS = $(TKLIBS) $(GLLIBS) $(XLIBS)
 
 # Leave this empty
 LIBDIRS =

@@ -11,7 +11,6 @@ OPTLINK=$(CAMLOPT)
 include Makefile.config
 
 OCAMLINC=-I $(LABLTKDIR)
-OTHERLIBS=$(LIBS)
 
 # Files
 LIBOBJS =	raw.cmo \
@@ -43,8 +42,8 @@ TOGLOBJS =	ml_togl.o	$(TOGLDIR)/togl.o
 	./var2def < $< > $@
 
 .cmx.opt: lablgl.cmxa liblablgl.a
-	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa labltk.cmxa lablgl.cmxa $< \
-		 -ccopt -L. -cclib "$(OTHERLIBS)"
+	$(OPTLINK) -o $@ $(OCAMLINC) -ccopt -L. \
+	    unix.cmxa labltk.cmxa lablgl.cmxa togl.cmxa $<
 
 all: 	var2def	var2switch lablgltop lablgl
 
@@ -57,13 +56,13 @@ var2switch: var2switch.ml
 	$(LINKER) -pp camlp4o var2switch.ml -o $@
 
 lablgl.cma: $(LIBOBJS) $(COBJS) Makefile.config
-	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(OTHERLIBS) $(XLIBS)
+	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(GLLIBS) $(XLIBS)
 
 lablgl.cmxa: lablgl.cma $(OPTOBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(OPTOBJS)
 
 togl.cma: togl.cmo $(TOGLOBJS) Makefile.config
-	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(OTHERLIBS) $(TKLIBS) $(XLIBS)
+	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 
 togl.cmxa: togl.cma togl.cmx Makefile.config
 	$(LIBRARIAN) -o togl togl.cmx
