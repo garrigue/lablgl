@@ -1,5 +1,18 @@
 (* ==== types ==== *)
 
+let glut_rgb = 0
+let glut_rgba = glut_rgb
+let glut_index = 1
+let glut_single = 0
+let glut_double = 2
+let glut_accum = 4
+let glut_alpha = 8
+let glut_depth = 16
+let glut_stencil = 32
+let glut_multisample = 128
+let glut_stereo = 256
+let glut_luminance = 512
+
 type glut_button_t =
     GLUT_LEFT_BUTTON
   | GLUT_MIDDLE_BUTTON
@@ -264,6 +277,8 @@ let glutInitDisplayMode
   is_displayModeInit := true;
   _glutInitDisplayMode double_buffer index accum alpha depth stencil
     multisample stereo luminance
+
+external glutInitDisplayMode2 : int -> unit = "ml_glutInitDisplayMode"
 
 external _glutInitWindowSize : int -> int -> unit = "ml_glutInitWindowSize"
 
