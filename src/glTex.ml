@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.2 1999-11-15 09:55:10 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.3 1999-12-07 15:02:00 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -36,7 +36,7 @@ external image1d :
     proxy:bool -> level:int -> internal:int ->
     width:int -> border:bool -> format:#format -> #kind Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
-let image1d ?:proxy{=false} ?:level{=0} ?internal:i ?:border{=false} img =
+let image1d ?:proxy[=false] ?:level[=0] ?internal:i ?:border[=false] img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   if width img mod 2 <> 0 then raise (GLerror "Gl.image1d : bad width");
   if height img < 1 then raise (GLerror "Gl.image1d : bad height");
@@ -46,7 +46,7 @@ external image2d :
     proxy:bool -> level:int -> internal:int -> width:int ->
     height:int -> border:bool -> format:#format -> #kind Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
-let image2d ?:proxy{=false} ?:level{=0} ?internal:i ?:border{=false} img =
+let image2d ?:proxy[=false] ?:level[=0] ?internal:i ?:border[=false] img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   if width img mod 2 <> 0 then raise (GLerror "Gl.image2d : bad width");
   if height img mod 2 <> 0 then raise (GLerror "Gl.image2d : bad height");

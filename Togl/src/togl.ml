@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.14 1999-11-23 17:18:17 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.15 1999-12-07 15:02:01 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -180,7 +180,7 @@ let reshape_func w :cb =
   callback_func reshape_table w :cb
 let overlay_display_func = callback_func overlay_table
 
-let dump_to_eps_file :filename ?:rgba{=false} ?:render togl =
+let dump_to_eps_file :filename ?:rgba[=false] ?:render togl =
   let render =
     match render with Some f -> f
     | None ->

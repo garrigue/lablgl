@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.9 1999-11-23 17:18:17 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.10 1999-12-07 15:02:02 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -31,7 +31,7 @@ let gear :inner :outer :width :teeth :tooth_depth =
 
   GlDraw.normal z:1.0 ();
 
-  let vertex :r :z ?:s{=0} i =
+  let vertex :r :z ?:s[=0] i =
     let angle = float i *. ta +. float s *. da in
     GlDraw.vertex x:(r *. cos angle) y:(r *. sin angle) :z ()
   in
@@ -118,7 +118,7 @@ let gear :inner :outer :width :teeth :tooth_depth =
   done;
   GlDraw.ends ()
 
-class view :gear1 :gear2 :gear3 ?:limit{=0} togl = object (self)
+class view :gear1 :gear2 :gear3 ?:limit[=0] togl = object (self)
   val mutable view_rotx = 0.0
   val mutable view_roty = 0.0
   val mutable view_rotz = 0.0
