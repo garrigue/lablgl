@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.26 2003-10-30 08:53:55 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.27 2004-07-13 07:55:18 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -17,19 +17,9 @@
 #include "gl_tags.h"
 #include "glu_tags.h"
 #include "ml_gl.h"
+#include "ml_glu.h"
 
-#if !defined(GLU_VERSION_1_2) && !defined(GLU_TESS_WINDING_RULE)
-#define GLU_TESS_WINDING_RULE
-#define GLU_TESS_WINDING_ODD
-#define GLU_TESS_WINDING_NONZERO
-#define GLU_TESS_WINDING_POSITIVE
-#define GLU_TESS_WINDING_NEGATIVE
-#define GLU_TESS_WINDING_ABS_GEQ_TWO
-#define GLU_TESS_BOUNDARY_ONLY
-#define GLU_TESS_TOLERANCE
-#endif
-
-static GLenum GLUenum_val(value tag)
+GLenum GLUenum_val(value tag)
 {
     switch(tag)
     {
@@ -51,7 +41,6 @@ static value Val_addr (void *addr)
 
 #define Nurb_val(struc) ((GLUnurbsObj *) Field(struc,1))
 #define Quad_val(struc) ((GLUquadricObj *) Field(struc,1))
-#define Tess_val(struc) ((GLUtriangulatorObj *) Field(struc,1))
 
 #define Store_addr(struc, addr) Field(struc,1) = (value) addr
 
@@ -62,12 +51,10 @@ static void ml_##cname (value struc) \
 
 ML_final (gluDeleteNurbsRenderer)
 ML_final (gluDeleteQuadric)
-ML_final (gluDeleteTess)
 
 /* Called from ML */
 
 ML_1 (gluBeginCurve, Nurb_val)
-ML_1 (gluBeginPolygon, Tess_val)
 ML_1 (gluBeginSurface, Nurb_val)
 ML_1 (gluBeginTrim, Nurb_val)
 
@@ -103,7 +90,6 @@ ML_bc6 (ml_gluCylinder)
 ML_5 (gluDisk, Quad_val, Double_val, Double_val, Int_val, Int_val)
 
 ML_1 (gluEndCurve, Nurb_val)
-ML_1 (gluEndPolygon, Tess_val)
 ML_1 (gluEndSurface, Nurb_val)
 ML_1 (gluEndTrim, Nurb_val)
 
@@ -127,15 +113,6 @@ CAMLprim value ml_gluNewQuadric (void)
     Store_addr(struc, gluNewQuadric());
     return struc;
 }
-
-CAMLprim value ml_gluNewTess (void)
-{
-    value struc = alloc_final (2, ml_gluDeleteTess, 1, 32);
-    Store_addr(struc, gluNewTess());
-    return struc;
-}
-
-ML_2 (gluNextContour, Tess_val, GLUenum_val)
 
 #define Fsize_raw(raw) (Int_val(Size_raw(raw))/sizeof(GLfloat))
 
@@ -300,42 +277,6 @@ ML_7 (gluScaleImage, GLenum_val, Int_val, Int_val,
       Split(arg7,Type_raw,Void_raw))
 ML_bc7 (ml_gluScaleImage)
 ML_4 (gluSphere, Quad_val, Double_val, Int_val, Int_val)
-
-#define Opt_val(opt) (opt == Val_int(0) ? NULL : (void *) Field(opt,0)) 
-
-#ifdef GLU_VERSION_1_2
-ML_1 (gluTessBeginContour, Tess_val)
-ML_1 (gluTessEndContour, Tess_val)
-ML_2 (gluTessBeginPolygon, Tess_val, Int_val)
-ML_1 (gluTessEndPolygon, Tess_val)
-ML_4 (gluTessNormal, Tess_val, Double_val, Double_val, Double_val)
-
-CAMLprim value ml_gluTessProperty (value tess, value prop)
-{
-    GLenum which = GLUenum_val (Field(prop,0));
-    GLdouble data;
-
-    switch (which) {
-    case GLU_TESS_WINDING_RULE: data = GLUenum_val (Field(prop,1)); break;
-    case GLU_TESS_BOUNDARY_ONLY: data = Int_val (Field(prop,1)); break;
-    case GLU_TESS_TOLERANCE: data = Double_val (Field(prop,1)); break;
-    }
-    gluTessProperty (Tess_val(tess), which, data);
-    return Val_unit;
-}
-#else
-#define ML_fail(cname) \
-CAMLprim value ml_##cname (value any) \
-{ ml_raise_gl ("Function not available"); }
-ML_fail (gluTessBeginContour)
-ML_fail (gluTessEndContour)
-ML_fail (gluTessBeginPolygon)
-ML_fail (gluTessEndPolygon)
-ML_fail (gluTessNormal)
-ML_fail (gluTessProperty)
-#endif
-
-ML_3 (gluTessVertex, Tess_val, Double_raw, Int_val)
 
 CAMLprim value ml_gluUnProject (value win)
 {

@@ -19,7 +19,8 @@ LIBOBJS =	raw.cmo \
 		glArray.cmo
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
-COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO)
+COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \
+		ml_glutess$(XO)
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 
 all:	var2def$(XE) var2switch$(XE) lablgl.cma
@@ -81,6 +82,6 @@ depend:
 
 #dependencies
 ml_gl$(XO): ml_gl.h gl_tags.h gl_tags.c ml_raw.h
-ml_glu$(XO) : ml_gl.h glu_tags.h glu_tags.c
+ml_glu$(XO) ml_glutess$(XO) : ml_gl.h ml_glu.h glu_tags.h glu_tags.c
 ml_raw$(XO): raw_tags.h ml_raw.h
 include .depend
