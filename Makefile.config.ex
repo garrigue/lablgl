@@ -6,24 +6,24 @@
 
 ##### Adjust these always
 
-# Where to put the lablgl, lablgllink and lablglopt scripts
+# Where to put the lablgl script
 BINDIR = /usr/local/bin
 
 # Where to find X headers
-XINCLUDES=-I/usr/X11R6/include
+XINCLUDES = -I/usr/X11R6/include
 
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
-TKINCLUDES=-I/usr/local/include
+TKINCLUDES = -I/usr/local/include
 
 # Where to find OpenGL/Mesa headers and libraries
-GLINCLUDES=
-GLLIBS=-lGL -lGLU
+GLINCLUDES =
+GLLIBS = -lGL -lGLU
 # The following libraries may be required (try to add them one at a time)
-# GLLIBS=-lGL -lGLU -lXmu -lXext -lpthread
+# GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
 
 # How to index a library
-RANLIB= ranlib
+RANLIB = ranlib
 #RANLIB = :
 
 ##### Adjust these if non standard
@@ -51,7 +51,7 @@ COPTS = -c -O
 # Where to find tcl.h, tk.h, OpenGL/Mesa headers, etc:
 INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
 
-# Libraries to link with (-ldl for Linux only?):
+# Libraries to link with:
 LIBS = $(GLLIBS)
 
 # Leave this empty
