@@ -61,7 +61,7 @@ lablgltop$(XE): ../../src/lablgl.cma togl.cma
 	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
-lablgl$(XB): lablgl.in $(CONFIG)
+lablgl: lablgl.in $(CONFIG)
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
 	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
 	    < lablgl.in > $@
