@@ -1,4 +1,4 @@
-/* $Id: ml_glutess.c,v 1.2 2004-07-13 09:44:03 garrigue Exp $ */
+/* $Id: ml_glutess.c,v 1.3 2004-07-13 13:26:21 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
 #include <stdio.h>
@@ -25,7 +25,7 @@
 #ifndef GLU_VERSION_1_2
 #define ML_fail(cname) \
 CAMLprim value ml_##cname (value any) \
-{ ml_raise_gl ("Function not available"); }
+{ ml_raise_gl ("Function not available: "##cname); }
 ML_fail (gluTesselate)
 ML_fail (gluTesselateAndReturn)
 
@@ -122,7 +122,8 @@ static void CALLBACK beginCallback(GLenum type)
   case GL_TRIANGLE_FAN   : kind = 1; break;
   case GL_TRIANGLE_STRIP : kind = 2; break;
   default:
-    fprintf(stderr, "Unknown primitive format %d in tesselation.\n", type);
+       fprintf(stderr, "Unknown primitive format %d in tesselation.\n",
+	       (int)type);
     abort();
   }
   push_list();
@@ -197,11 +198,11 @@ CAMLprim value ml_gluTesselateAndReturn(value winding, value tolerance,
   prim = &res;
 
   iniTesselator(winding, Val_unit, tolerance);
-  gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr)beginCallback);
-  gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr)vertexCallback);
-  gluTessCallback(tobj, GLU_TESS_END, (_GLUfuncptr)endCallback);
-  gluTessCallback(tobj, GLU_TESS_ERROR, (_GLUfuncptr)errorCallback);
-  gluTessCallback(tobj, GLU_TESS_COMBINE, (_GLUfuncptr)combineCallback);
+  gluTessCallback(tobj, GLU_TESS_BEGIN, (GLvoid(*)())beginCallback);
+  gluTessCallback(tobj, GLU_TESS_VERTEX, (GLvoid(*)())vertexCallback);
+  gluTessCallback(tobj, GLU_TESS_END, (GLvoid(*)())endCallback);
+  gluTessCallback(tobj, GLU_TESS_ERROR, (GLvoid(*)())errorCallback);
+  gluTessCallback(tobj, GLU_TESS_COMBINE, (GLvoid(*)())combineCallback);
 
   runTesselator(contours);
 
@@ -213,11 +214,11 @@ CAMLprim value ml_gluTesselate (value winding, value by_only,
 {
   iniTesselator(winding, by_only, tolerance);
 
-  gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr)glBegin);
-  gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr)glVertex3dv);
-  gluTessCallback(tobj, GLU_TESS_END, (_GLUfuncptr)glEnd);
-  gluTessCallback(tobj, GLU_TESS_ERROR, (_GLUfuncptr)errorCallback);
-  gluTessCallback(tobj, GLU_TESS_COMBINE, (_GLUfuncptr)combineCallback);
+  gluTessCallback(tobj, GLU_TESS_BEGIN, (GLvoid(*)())glBegin);
+  gluTessCallback(tobj, GLU_TESS_VERTEX, (GLvoid(*)())glVertex3dv);
+  gluTessCallback(tobj, GLU_TESS_END, (GLvoid(*)())glEnd);
+  gluTessCallback(tobj, GLU_TESS_ERROR, (GLvoid(*)())errorCallback);
+  gluTessCallback(tobj, GLU_TESS_COMBINE, (GLvoid(*)())combineCallback);
 
   runTesselator(contours);
 
