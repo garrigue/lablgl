@@ -1,4 +1,4 @@
-(* $Id: glList.ml,v 1.3 2000-04-03 02:57:41 garrigue Exp $ *)
+(* $Id: glList.ml,v 1.4 2000-04-12 07:40:24 garrigue Exp $ *)
 
 type t = int
 type base = int
@@ -14,15 +14,15 @@ external call_lists : [ `byte of string | `int of int array] -> unit
     = "ml_glCallLists"
 external list_base : base -> unit = "ml_glListBase"
 
-let nth base :pos = base + pos
+let nth base ~pos = base + pos
 
 let create mode =
-  let l = gen_lists len:1 in begins l :mode; l
+  let l = gen_lists ~len:1 in begins l ~mode; l
 
 let delete l =
-  delete_lists l len:1
+  delete_lists l ~len:1
 
-let call_lists ?:base lists =
+let call_lists ?base lists =
   begin match base with None -> ()
   | Some base -> list_base base
   end;

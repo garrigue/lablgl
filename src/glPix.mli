@@ -1,4 +1,4 @@
-(* $Id: glPix.mli,v 1.4 2000-04-03 02:57:42 garrigue Exp $ *)
+(* $Id: glPix.mli,v 1.5 2000-04-12 07:40:25 garrigue Exp $ *)
 
 (* An abstract type for pixmaps *)
 
@@ -25,7 +25,7 @@ val read :
   y:int ->
   width:int ->
   height:int ->
-  format:(#Gl.format as 'a) -> type:(#Gl.kind as 'b) -> ('a, 'b) t
+  format:(#Gl.format as 'a) -> kind:(#Gl.kind as 'b) -> ('a, 'b) t
 
 type bitmap = ([`color_index], [`bitmap]) t
 val bitmap :
@@ -77,4 +77,4 @@ val raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
 
 val copy :
   x:int ->
-  y:int -> width:int -> height:int -> type:[`color|`depth|`stencil] -> unit
+  y:int -> width:int -> height:int -> buffer:[`color|`depth|`stencil] -> unit

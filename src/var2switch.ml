@@ -1,4 +1,4 @@
-(* $Id: var2switch.ml,v 1.3 1998-01-29 11:46:19 garrigue Exp $ *)
+(* $Id: var2switch.ml,v 1.4 2000-04-12 07:40:28 garrigue Exp $ *)
 
 (* Build a switch statement translating variants to C tags *)
 
@@ -8,8 +8,8 @@ let lexer = make_lexer ["->"; "$$"]
 
 let main () =
   let table = ref false and prefix = ref "" and tag_number = ref 0 in
-  Arg.parse keywords:["-table", Arg.Set table, " Produce table output"]
-    others:(fun s -> prefix := s) errmsg:"";
+  Arg.parse ~keywords:["-table", Arg.Set table, " Produce table output"]
+    ~others:(fun s -> prefix := s) ~errmsg:"";
   let s = lexer (Stream.of_channel stdin) in
   try while true do match s with parser
       [< ' Ident tag >] ->

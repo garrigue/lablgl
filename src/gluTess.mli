@@ -1,4 +1,4 @@
-(* $Id: gluTess.mli,v 1.4 2000-04-03 02:57:43 garrigue Exp $ *)
+(* $Id: gluTess.mli,v 1.5 2000-04-12 07:40:26 garrigue Exp $ *)
 
 type t
 
@@ -9,7 +9,7 @@ val ends : t -> unit
 
 val vertex : t -> ?data:'a -> [`double] Raw.t -> unit
 
-val next_contour : t -> type:[`ccw|`cw|`exterior|`interior|`unknown] -> unit
+val next_contour : t -> kind:[`ccw|`cw|`exterior|`interior|`unknown] -> unit
 
 (* The following functions are only available in GLU version 1.2 *)
 

@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.19 2000-04-03 02:57:43 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.20 2000-04-12 07:40:27 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -13,30 +13,30 @@ let id x = x
 
 let togl_options_optionals f =
   fun
-      ?:accum
-      ?:accumalphasize
-      ?:accumbluesize
-      ?:accumgreensize
-      ?:accumredsize
-      ?:alpha
-      ?:alphasize
-      ?:auxbuffers
-      ?:bluesize
-      ?:depth
-      ?:depthsize
-      ?:double
-      ?:greensize
-      ?:height
-      (* ?:ident *)
-      ?:overlay
-      ?:privatecmap
-      ?:redsize
-      ?:rgba
-      ?:stencil
-      ?:stencilsize
-      ?:stereo
-      (* ?:time *)
-      ?:width
+      ?accum
+      ?accumalphasize
+      ?accumbluesize
+      ?accumgreensize
+      ?accumredsize
+      ?alpha
+      ?alphasize
+      ?auxbuffers
+      ?bluesize
+      ?depth
+      ?depthsize
+      ?double
+      ?greensize
+      ?height
+      (* ?ident *)
+      ?overlay
+      ?privatecmap
+      ?redsize
+      ?rgba
+      ?stencil
+      ?stencilsize
+      ?stereo
+      (* ?time *)
+      ?width
     ->
       f (may accum "-accum" cbool
 	 @ may accumalphasize "-accumalphasize" cint
@@ -169,18 +169,18 @@ let callback_table =
     null_func|]
 let _ = Callback.register "togl_callbacks" callback_table
 
-let callback_func table (w : widget) :cb =
+let callback_func table (w : widget) ~cb =
   let key = Widget.name w in
   (try Hashtbl.remove table key with Not_found -> ());
-  Hashtbl.add :key data:cb table
+  Hashtbl.add ~key ~data:cb table
 
 let display_func = callback_func display_table
-let reshape_func w :cb =
+let reshape_func w ~cb =
   make_current w; cb ();
-  callback_func reshape_table w :cb
+  callback_func reshape_table w ~cb
 let overlay_display_func = callback_func overlay_table
 
-let dump_to_eps_file :filename ?(:rgba=false) ?:render togl =
+let dump_to_eps_file ~filename ?(rgba=false) ?render togl =
   let render =
     match render with Some f -> f
     | None ->
@@ -191,13 +191,13 @@ let dump_to_eps_file :filename ?(:rgba=false) ?:render togl =
   callback_table.(render_id) <- (fun _ -> render());
   _dump_to_eps_file togl filename rgba
 
-let dump_to_eps_file :filename ?:rgba ?:render =
-  wrap (dump_to_eps_file :filename ?:rgba ?:render)
+let dump_to_eps_file ~filename ?rgba ?render =
+  wrap (dump_to_eps_file ~filename ?rgba ?render)
 
-let rec timer_func :ms :cb =
-  ignore (Timer.add :ms callback:(fun () -> cb (); timer_func :ms :cb))
+let rec timer_func ~ms ~cb =
+  ignore (Timer.add ~ms ~callback:(fun () -> cb (); timer_func ~ms ~cb))
 
-let configure ?:height ?:width w =
+let configure ?height ?width w =
   let options = may height "-height" cint @ may width "-width" cint in
   tkEval [|TkToken (Widget.name w); TkTokenList options|]
 
@@ -238,19 +238,19 @@ let init_togl () =
   _destroy_func ();
   ready := true
 
-let create ?:name =
+let create ?name =
   togl_options_optionals
     (fun options parent ->
       if not !ready then init_togl ();
       let w : widget =
-	Widget.new_atom "togl" :parent ?:name in
+	Widget.new_atom "togl" ~parent ?name in
       let togl = ref None in
       callback_table.(create_id) <-
-	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);
+	 (fun t -> togl := Some t; Hashtbl.add togl_table ~key:w ~data:t);
       callback_table.(destroy_id) <-
         (fun t ->
 	  begin try Hashtbl.remove togl_table w with Not_found -> () end;
-	  List.iter [display_table; reshape_table; overlay_table] f:
+	  List.iter [display_table; reshape_table; overlay_table] ~f:
 	    begin fun tbl ->
 	      try Hashtbl.remove tbl (Widget.name w) with Not_found -> ()
 	    end);

@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.ml,v 1.3 2000-04-03 02:57:42 garrigue Exp $ *)
+(* $Id: gluNurbs.ml,v 1.4 2000-04-12 07:40:26 garrigue Exp $ *)
 
 open Gl
 
@@ -21,15 +21,15 @@ external create : unit -> t = "ml_gluNewNurbsRenderer"
 
 external curve :
     t -> knots:[`float] Raw.t -> control:[`float] Raw.t ->
-    order:int -> type:#GlMap.target -> unit
+    order:int -> kind:#GlMap.target -> unit
     = "ml_gluNurbsCurve"
-let curve nurb :knots :control :order type:t =
+let curve nurb ~knots ~control ~order ~kind:t =
   let arity = target_size t in
   if (Array.length knots - order) * arity <> Array.length control
   then invalid_arg "GluNurb.curve";
-  let knots = Raw.of_float_array kind:`float knots
-  and control = Raw.of_float_array kind:`float control in
-  curve nurb :knots :control :order type:t
+  let knots = Raw.of_float_array ~kind:`float knots
+  and control = Raw.of_float_array ~kind:`float control in
+  curve nurb ~knots ~control ~order ~kind:t
 
 type property = [
     `sampling_method of [`path_length|`parametric_error|`domain_distance]
@@ -49,29 +49,29 @@ external surface :
     tstride:int -> control:[`float] Raw.t ->
     sorder:int -> torder:int -> target:#target -> unit
     = "ml_gluNurbsSurface_bc" "ml_gluNurbsSurface"
-let surface t :sknots :tknots :control :sorder :torder :target =
+let surface t ~sknots ~tknots ~control ~sorder ~torder ~target =
   let cl = Array.length control in
   if cl = 0 then invalid_arg "GluNurb.curve";
   let tstride = Array.length control.(0) in
   let sl = Array.length sknots and tl = Array.length tknots in
   if tl <> cl + torder or (sl - sorder) * target_size target <> tstride
   then invalid_arg "GluNurb.curve";
-  let sknots = Raw.of_float_array kind:`float sknots in
-  let tknots = Raw.of_float_array kind:`float tknots in
-  let co = Raw.create `float len:(cl * tstride) in
+  let sknots = Raw.of_float_array ~kind:`float sknots in
+  let tknots = Raw.of_float_array ~kind:`float tknots in
+  let co = Raw.create `float ~len:(cl * tstride) in
   for i = 0 to cl - 1 do
     if Array.length control.(i) <> tstride then invalid_arg "GluNurb.curve";
-    Raw.sets_float co pos:(i*tstride) control.(i)
+    Raw.sets_float co ~pos:(i*tstride) control.(i)
   done;
-  surface t :sknots :tknots :tstride control:co
-    :sorder :torder :target
+  surface t ~sknots ~tknots ~tstride ~control:co
+    ~sorder ~torder ~target
 
 external pwl_curve :
-    t -> count:int -> [`float] Raw.t -> type:[`trim_2|`trim_3] -> unit
+    t -> count:int -> [`float] Raw.t -> kind:[`trim_2|`trim_3] -> unit
     = "ml_gluPwlCurve"
-let pwl_curve nurb type:t data =
+let pwl_curve nurb ~kind:t data =
   let len = Array.length data 
-  and raw = Raw.of_float_array kind:`float data
+  and raw = Raw.of_float_array ~kind:`float data
   and stride = match t with `trim_2 -> 2 | `trim_3 -> 3 in
   if len mod stride <> 0 then invalid_arg "GluNurb.pwl_curve";
-  pwl_curve nurb count:(len/stride) raw type:t
+  pwl_curve nurb ~count:(len/stride) raw ~kind:t

@@ -1,4 +1,4 @@
-(* $Id: raw.ml,v 1.6 1999-11-15 09:55:11 garrigue Exp $ *)
+(* $Id: raw.ml,v 1.7 2000-04-12 07:40:27 garrigue Exp $ *)
 
 type addr
 type kind =
@@ -13,13 +13,13 @@ type 'a t =
 let kind raw = raw.kind
 let byte_size raw = raw.size
 let static raw = raw.static
-let cast raw to:kind =
+let cast raw ~kind =
   { kind = kind; size = raw.size; base = raw.base;
     offset = raw.offset; static = raw.static }
 
 external sizeof : #kind -> int = "ml_raw_sizeof"
 let length raw = raw.size / sizeof raw.kind
-let sub raw :pos :len =
+let sub raw ~pos ~len =
   let size = sizeof raw.kind in
   if pos < 0 or (pos+len) * size > raw.size then invalid_arg "Raw.sub";
   { raw with offset = raw.offset + pos * size; size = len * size }
@@ -57,25 +57,25 @@ external create_static : (#kind as 'a) -> len:int -> 'a t
     = "ml_raw_alloc_static"
 external free_static : 'a t -> unit = "ml_raw_free_static"
 
-let of_array arr :kind =
-  let raw = create kind len:(Array.length arr) in
-  sets raw pos:0 arr;
+let of_array arr ~kind =
+  let raw = create kind ~len:(Array.length arr) in
+  sets raw ~pos:0 arr;
   raw
-let of_float_array arr :kind =
-  let raw = create kind len:(Array.length arr) in
-  sets_float raw pos:0 arr;
+let of_float_array arr ~kind =
+  let raw = create kind ~len:(Array.length arr) in
+  sets_float raw ~pos:0 arr;
   raw
-let of_string s :kind =
-  let raw = create kind len:(String.length s) in
-  sets_string raw pos:0 s;
+let of_string s ~kind =
+  let raw = create kind ~len:(String.length s) in
+  sets_string raw ~pos:0 s;
   raw
-let of_matrix mat :kind =
+let of_matrix mat ~kind =
   let h = Array.length mat in
   if h = 0 then invalid_arg "Raw.of_matrix";
   let w = Array.length mat.(0) in
-  let raw = create kind len:(h*w) in
+  let raw = create kind ~len:(h*w) in
   for i = 0 to h - 1 do
     if Array.length mat.(i) <> w then invalid_arg "Raw.of_matrix";
-    sets_float raw pos:(i*w) mat.(i)
+    sets_float raw ~pos:(i*w) mat.(i)
   done;
   raw

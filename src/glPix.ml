@@ -1,16 +1,16 @@
-(* $Id: glPix.ml,v 1.5 2000-04-03 02:57:42 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.6 2000-04-12 07:40:25 garrigue Exp $ *)
 
 open Gl
 
 type ('a,'b) t = { format: 'a ; width: int ; height:int ; raw: 'b Raw.t }
 
-let create (k : #Gl.kind) :format :width :height =
+let create (k : #Gl.kind) ~format ~width ~height =
   let size = format_size format * width * height in
   let len = match k with `bitmap -> (size-1)/8+1 | _ -> size in
-  let raw = Raw.create k len:(width * height * format_size format) in
+  let raw = Raw.create k ~len:(width * height * format_size format) in
   { format = format; width = width; height = height; raw = raw }
   
-let of_raw raw :format :width :height =
+let of_raw raw ~format ~width ~height =
   let size = format_size format * width * height
   and len = Raw.length raw in
   let len = match Raw.kind raw with `bitmap -> len * 8 | _ -> len in
@@ -29,7 +29,7 @@ let raw_pos img =
   in
   let stride = format_size img.format in
   let line = stride * width in
-  fun :x :y -> x * stride + y * line
+  fun ~x ~y -> x * stride + y * line
 
 external bitmap :
     width:int -> height:int -> orig:point2 -> move:point2 ->
@@ -37,18 +37,18 @@ external bitmap :
     = "ml_glBitmap"
 type bitmap = ([`color_index], [`bitmap]) t
 let bitmap (img : bitmap) =
-  bitmap width:img.width height:img.height img.raw
+  bitmap ~width:img.width ~height:img.height img.raw
 
 external copy :
     x:int -> y:int -> width:int -> height:int ->
-    type:[`color|`depth|`stencil] -> unit
+    buffer:[`color|`depth|`stencil] -> unit
     = "ml_glCopyPixels"
 
 external draw :
     width:int -> height:int -> format:#format -> #Gl.kind Raw.t -> unit
     = "ml_glDrawPixels"
 let draw img =
-  draw img.raw width:img.width height:img.height format:img.format
+  draw img.raw ~width:img.width ~height:img.height ~format:img.format
 
 type map =
     [`i_to_i|`i_to_r|`i_to_g|`i_to_b|`i_to_a
@@ -100,7 +100,7 @@ external read :
     x:int -> y:int -> width:int -> height:int ->
     format:#format -> #Gl.kind Raw.t -> unit
     = "ml_glReadPixels_bc" "ml_glReadPixels"
-let read :x :y :width :height :format type:t =
-  let raw = Raw.create t len:(width * height * format_size format) in
-  read :x :y :width :height :format raw;
+let read ~x ~y ~width ~height ~format ~kind =
+  let raw = Raw.create kind ~len:(width * height * format_size format) in
+  read ~x ~y ~width ~height ~format raw;
   { raw = raw; width = width; height = height; format = format }

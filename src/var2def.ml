@@ -1,4 +1,4 @@
-(* $Id: var2def.ml,v 1.6 2000-03-29 22:48:10 garrigue Exp $ *)
+(* $Id: var2def.ml,v 1.7 2000-04-12 07:40:27 garrigue Exp $ *)
 
 (* Compile a list of variant tags into CPP defines *) 
 
@@ -29,9 +29,9 @@ let main () =
 	let hash = hash_variant tag in
 	begin try
 	  failwith
-	    (String.concat sep:" "
-	       ["Doublon tag:";tag;"and";Hashtbl.find tags hash])
-	with Not_found -> Hashtbl.add key:hash data:tag tags
+	    (String.concat ~sep:" "
+	       ["Doublon ~tag:";tag;"and";Hashtbl.find tags hash])
+	with Not_found -> Hashtbl.add ~key:hash ~data:tag tags
 	end;
 	print_int hash;
 	print_string ")\n"

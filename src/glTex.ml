@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.5 2000-04-03 02:57:42 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.6 2000-04-12 07:40:25 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -9,7 +9,7 @@ external coord3 : float -> float -> float -> unit = "ml_glTexCoord3d"
 external coord4 : float -> float -> float -> float -> unit
     = "ml_glTexCoord4d"
 let default x = function Some x -> x | None -> x
-let coord :s ?:t ?:r ?:q () =
+let coord ~s ?t ?r ?q () =
   match q with
     Some q -> coord4 s (default 0.0 t) (default 0.0 r) q
   | None -> match r with
@@ -36,22 +36,22 @@ external image1d :
     proxy:bool -> level:int -> internal:int ->
     width:int -> border:bool -> format:#format -> #kind Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
-let image1d ?(:proxy=false) ?(:level=0) ?internal:i ?(:border=false) img =
+let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   if width img mod 2 <> 0 then raise (GLerror "Gl.image1d : bad width");
   if height img < 1 then raise (GLerror "Gl.image1d : bad height");
-  image1d :proxy :level :internal width:(width img) :border
-    format:(format img) (to_raw img)
+  image1d ~proxy ~level ~internal ~width:(width img) ~border
+    ~format:(format img) (to_raw img)
 external image2d :
     proxy:bool -> level:int -> internal:int -> width:int ->
     height:int -> border:bool -> format:#format -> #kind Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
-let image2d ?(:proxy=false) ?(:level=0) ?internal:i ?(:border=false) img =
+let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   if width img mod 2 <> 0 then raise (GLerror "Gl.image2d : bad width");
   if height img mod 2 <> 0 then raise (GLerror "Gl.image2d : bad height");
-  image2d :proxy :level :internal :border
-    width:(width img) height:(height img) format:(format img) (to_raw img)
+  image2d ~proxy ~level ~internal ~border
+    ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)
 type filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest
     |`nearest_mipmap_linear|`linear_mipmap_linear]

@@ -1,15 +1,15 @@
-(* $Id: glMap.ml,v 1.2 1999-11-15 09:55:07 garrigue Exp $ *)
+(* $Id: glMap.ml,v 1.3 2000-04-12 07:40:24 garrigue Exp $ *)
 
 external eval_coord1 : float -> unit = "ml_glEvalCoord1d"
 external eval_coord2 : float -> float -> unit = "ml_glEvalCoord1d"
 external eval_mesh1 : mode:[`point|`line] -> int -> int -> unit
     = "ml_glEvalMesh1"
-let eval_mesh1 :mode range:(u1,u2) = eval_mesh1 :mode u1 u2
+let eval_mesh1 ~mode ~range:(u1,u2) = eval_mesh1 ~mode u1 u2
 external eval_mesh2 :
     mode:[`point|`line|`fill] -> int -> int -> int -> int -> unit
     = "ml_glEvalMesh2"
-let eval_mesh2 :mode range:(u1,u2) range:(v1,v2) =
-  eval_mesh2 :mode u1 u2 v1 v2
+let eval_mesh2 ~mode ~range1:(u1,u2) ~range2:(v1,v2) =
+  eval_mesh2 ~mode u1 u2 v1 v2
 external eval_point1 : int -> unit = "ml_glEvalPoint1"
 external eval_point2 : int -> int -> unit = "ml_glEvalPoint2"
 
@@ -33,5 +33,6 @@ external map2 :
 external grid1 : n:int -> range:(float * float) -> unit
     = "ml_glMapGrid1d"
 external grid2 :
-    n:int -> range:(float * float) -> n:int -> range:(float * float) -> unit
+    n1:int -> range1:(float * float) ->
+    n2:int -> range2:(float * float) -> unit
     = "ml_glMapGrid2d"

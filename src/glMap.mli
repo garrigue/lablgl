@@ -1,4 +1,4 @@
-(* $Id: glMap.mli,v 1.2 1999-11-15 09:55:07 garrigue Exp $ *)
+(* $Id: glMap.mli,v 1.3 2000-04-12 07:40:24 garrigue Exp $ *)
 
 type target =
   [ `vertex_3
@@ -28,12 +28,12 @@ val eval_coord2 : float -> float -> unit
 
 val grid1 : n:int -> range:float * float -> unit
 val grid2 :
-  n:int -> range:float * float -> n:int -> range:float * float -> unit
+  n1:int -> range1:float * float -> n2:int -> range2:float * float -> unit
     (* Define 1- and 2-dimensional meshes to the maps *)
 
 val eval_mesh1 : mode:[`line|`point] -> range:(int * int) -> unit
 val eval_mesh2 :
-  mode:[`fill|`line|`point] -> range:(int * int) -> range:(int * int) -> unit
+  mode:[`fill|`line|`point] -> range1:(int * int) -> range2:(int * int) -> unit
 val eval_point1 : int -> unit
 val eval_point2 : int -> int -> unit
     (* Evaluate meshes at given coordinates *)

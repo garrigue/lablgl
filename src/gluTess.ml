@@ -1,4 +1,4 @@
-(* $Id: gluTess.ml,v 1.4 2000-04-03 02:57:43 garrigue Exp $ *)
+(* $Id: gluTess.ml,v 1.5 2000-04-12 07:40:26 garrigue Exp $ *)
 
 type t
 
@@ -8,7 +8,7 @@ external ends : t -> unit = "ml_gluEndPolygon"
 external create : unit -> t = "ml_gluNewTess"
 
 external next_contour :
-    t -> type:[`exterior|`interior|`unknown|`ccw|`cw] -> unit
+    t -> kind:[`exterior|`interior|`unknown|`ccw|`cw] -> unit
     = "ml_gluNextContour"
 
 external begin_contour : t -> unit = "ml_gluTessBeginContour"

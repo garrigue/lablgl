@@ -1,4 +1,4 @@
-(* $Id: glMisc.ml,v 1.2 1999-11-15 09:55:09 garrigue Exp $ *)
+(* $Id: glMisc.ml,v 1.3 2000-04-12 07:40:24 garrigue Exp $ *)
 
 external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
@@ -6,9 +6,9 @@ external get_string : [`vendor|`renderer|`version|`extensions] -> string
 type equation = float * float * float * float
 external clip_plane : plane:int -> equation -> unit
     = "ml_glClipPlane"
-let clip_plane :plane equation =
+let clip_plane ~plane equation =
   if plane < 0 or plane > 5 then invalid_arg "Gl.clip_plane";
-  clip_plane :plane equation
+  clip_plane ~plane equation
 
 type hint_target =
     [`fog|`line_smooth|`perspective_correction|`point_smooth|`polygon_smooth]

@@ -1,4 +1,4 @@
-(* $Id: raw.mli,v 1.5 1999-11-15 09:55:11 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.6 2000-04-12 07:40:27 garrigue Exp $ *)
 
 (* This module provides a direct way to access C arrays of basic types.
    This is particularly useful when one wants to avoid costly
@@ -33,7 +33,7 @@ val byte_size : 'a t -> int
        where t and len are the parameters to create *)
 val static : 'a t -> bool
     (* Wether this array was statically allocated or not *)
-val cast : 'a t -> to:'b -> 'b t
+val cast : 'a t -> kind:(#kind as 'b) -> 'b t
     (* Change the type of a raw array *)
 
 external sizeof : #kind -> int = "ml_raw_sizeof"

@@ -1,12 +1,12 @@
-(* $Id: glDraw.ml,v 1.4 1999-12-08 08:24:28 garrigue Exp $ *)
+(* $Id: glDraw.ml,v 1.5 2000-04-12 07:40:23 garrigue Exp $ *)
 
 open Gl
 
 external color :
     red:float -> green:float -> blue:float -> alpha:float -> unit
     = "ml_glColor4d"
-let color ?(:alpha=1.) (red, green, blue : rgb) =
-  color :red :green :blue :alpha
+let color ?(alpha=1.) (red, green, blue : rgb) =
+  color ~red ~green ~blue ~alpha
 
 external index : float -> unit = "ml_glIndexd"
 
@@ -17,8 +17,8 @@ external front_face : [`cw|`ccw] -> unit = "ml_glFrontFace"
 external line_width : float -> unit = "ml_glLineWidth"
 external line_stipple : factor:int -> pattern:short -> unit
     = "ml_glLineStipple"
-let line_stipple ?(:factor=1) pattern =
-  line_stipple :factor :pattern
+let line_stipple ?(factor=1) pattern =
+  line_stipple ~factor ~pattern
 external point_size : float -> unit = "ml_glPointSize"
 
 external polygon_mode : face:face -> [`point|`line|`fill] -> unit
@@ -39,16 +39,16 @@ external ends : unit -> unit = "ml_glEnd"
 
 external normal : x:float -> y:float -> z:float -> unit
     = "ml_glNormal3d"
-let normal ?(:x=0.) ?(:y=0.) ?(:z=0.) () = normal :x :y :z
-and normal3 (x,y,z) = normal :x :y :z
+let normal ?(x=0.) ?(y=0.) ?(z=0.) () = normal ~x ~y ~z
+and normal3 (x,y,z) = normal ~x ~y ~z
 
 external rect : point2 -> point2 -> unit = "ml_glRectd"
 
 external vertex : x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
     = "ml_glVertex"
-let vertex2 (x,y : point2) = vertex :x :y ()
-and vertex3 (x,y,z : point3) = vertex :x :y :z ()
-and vertex4 (x,y,z,w : point4) = vertex :x :y :z :w ()
+let vertex2 (x,y : point2) = vertex ~x ~y ()
+and vertex3 (x,y,z : point3) = vertex ~x ~y ~z ()
+and vertex4 (x,y,z,w : point4) = vertex ~x ~y ~z ~w ()
 
 external viewport : x:int -> y:int -> w:int -> h:int -> unit
     = "ml_glViewport"
