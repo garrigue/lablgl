@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.34 2003-03-15 08:33:36 erickt Exp $ */
+/* $Id: ml_gl.c,v 1.35 2003-03-15 20:34:30 erickt Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -16,7 +16,7 @@
 #include "ml_gl.h"
 
 #if !defined(GL_VERSION_1_4)
-#define GL_GENERATE_MIPMAP
+#define GL_GENERATE_MIPMAP 0x8191
 #endif
 
 /* #include <stdio.h> */
@@ -268,8 +268,8 @@ CAMLprim value ml_glLightModel (value param)  /* ML */
 	glLightModeli (GL_LIGHT_MODEL_TWO_SIDE,
 		       Int_val(Field(param,1)));
 	break;
-#ifdef GL_VERSION_1_2
     case MLTAG_color_control:
+#ifdef GL_VERSION_1_2
 	switch (Field(param,1))
         {
           case MLTAG_separate_specular_color:
@@ -281,13 +281,10 @@ CAMLprim value ml_glLightModel (value param)  /* ML */
 		               GL_SINGLE_COLOR);
                 break;
         }
-	break;
 #else
-#define ML_fail(cname) \
-CAMLprim value ml_##cname (value any) \
-{ ml_raise_gl ("Function not available"); }
-ML_fail
+        ml_raise_gl ("Parameter: GL_LIGHT_MODEL_COLOR_CONTROL not available");
 #endif
+	break;
     }
     return Val_unit;
 }
@@ -593,10 +590,13 @@ CAMLprim value ml_glTexParameter (value target, value param)
     case GL_TEXTURE_PRIORITY:
 	glTexParameterf (targ, pname, Float_val(params));
 	break;
-#ifdef GL_VERSION_1_4
     case GL_GENERATE_MIPMAP:
-        glTexParameteri (targ, pname, Bool_val(params));
+#ifdef GL_VERSION_1_4
+        glTexParameteri (targ, pname, Int_val(params));
+#else
+        ml_raise_gl ("Parameter: GL_GENERATE_MIPMAP not available"); 
 #endif
+        break;
     default:
 	glTexParameteri (targ, pname, GLenum_val(params));
 	break;
