@@ -22,17 +22,27 @@
 #include <caml/memory.h>
 //#include <caml/fail.h>
 #include <caml/callback.h>
+#include <caml/signals.h>
 
 #include "ml_gl.h"
 
 #define VoidPtr_val(x) ((void*) Int_val(x))
+
+/* ML_0(glutMainLoop) */
+CAMLprim value ml_glutMainLoop (value unit) \
+{ 
+  enter_blocking_section ();
+  glutMainLoop (); 
+  leave_blocking_section ();
+  return Val_unit; 
+}
+
 
 ML_0(glutSwapBuffers) /* makes a function called ml_glutSwapBuffers() */
 ML_0(glutPostRedisplay)
 ML_2(glutInitWindowSize, Int_val, Int_val)
 ML_2(glutInitWindowPosition, Int_val, Int_val)
 ML_1_(glutCreateWindow, String_val, Val_int)
-ML_0(glutMainLoop)
 ML_5_(glutCreateSubWindow, Int_val, Int_val, Int_val, Int_val, Int_val, Val_int)
 ML_1(glutDestroyWindow, Int_val)
 ML_0_(glutGetWindow, Val_int) /* return win id */
@@ -198,18 +208,18 @@ static char* cbname(const char glutname[])
 /* TODO: make these easier to read.  gcc was complaining about backslashes,
    for reasons that aren't clear to me. */
 
-#define CB_0(glut_func) static void glut_func ## _cb() { callback(*caml_named_value(cbname(#glut_func)), Val_unit); } CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; }
+#define CB_0(glut_func) static void glut_func##_cb() {leave_blocking_section (); callback(*caml_named_value(cbname(#glut_func)), Val_unit); enter_blocking_section ();} CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; }
 
-#define CB_1(glut_func, type1, conv1) static void glut_func##_cb( type1 arg1 ) { callback(*caml_named_value(cbname(#glut_func)), conv1(arg1)); } CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; }
+#define CB_1(glut_func, type1, conv1) static void glut_func##_cb( type1 arg1 ) {leave_blocking_section (); callback(*caml_named_value(cbname(#glut_func)), conv1(arg1)); enter_blocking_section (); enter_blocking_section ();} CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; }
 
-#define CB_2(glut_func, type1, conv1,  type2, conv2) static void glut_func##_cb( type1 arg1, type2 arg2 ) { callback2(*caml_named_value(cbname(#glut_func)), conv1(arg1), conv2(arg2)); } CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; }
+#define CB_2(glut_func, type1, conv1,  type2, conv2) static void glut_func##_cb( type1 arg1, type2 arg2 ) {leave_blocking_section (); callback2(*caml_named_value(cbname(#glut_func)), conv1(arg1), conv2(arg2)); enter_blocking_section ();} CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; }
 
-#define CB_3(glut_func, type1, conv1,  type2, conv2,  type3, conv3) static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3 ) { callback3(*caml_named_value(cbname(#glut_func)), conv1(arg1), conv2(arg2), conv3(arg3)); } CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; } 
+#define CB_3(glut_func, type1, conv1,  type2, conv2,  type3, conv3) static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3 ) {leave_blocking_section (); callback3(*caml_named_value(cbname(#glut_func)), conv1(arg1), conv2(arg2), conv3(arg3)); enter_blocking_section ();} CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; } 
 
-#define CB_4(glut_func, type1, conv1, type2, conv2, type3, conv3, type4, conv4) static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3, type4 arg4 ) { value args[4]; args[0] = conv1(arg1); args[1] = conv2(arg2); args[2] = conv3(arg3); args[3] = conv4(arg4); callbackN (*caml_named_value(cbname(#glut_func)), 4, args); } CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; } 
+#define CB_4(glut_func, type1, conv1, type2, conv2, type3, conv3, type4, conv4) static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3, type4 arg4 ) { value args[4]; args[0] = conv1(arg1); args[1] = conv2(arg2); args[2] = conv3(arg3); args[3] = conv4(arg4); leave_blocking_section (); callbackN (*caml_named_value(cbname(#glut_func)), 4, args); enter_blocking_section ();} CAMLprim value ml_##glut_func(value unit) { glut_func( & glut_func##_cb ); return Val_unit; } 
 
 /* callbacks whose hooking functions have return values */
-#define CB_1_(glut_func, type1, conv1, conv) static void glut_func##_cb( type1 arg1 ) { callback(*caml_named_value("ocaml_"#glut_func), conv1(arg1)); } CAMLprim value ml_##glut_func(value unit) { return conv(glut_func( & glut_func##_cb )); }
+#define CB_1_(glut_func, type1, conv1, conv) static void glut_func##_cb( type1 arg1 ) {leave_blocking_section (); callback(*caml_named_value("ocaml_"#glut_func), conv1(arg1)); enter_blocking_section ();} CAMLprim value ml_##glut_func(value unit) { return conv(glut_func( & glut_func##_cb )); }
 
 
 
@@ -221,7 +231,9 @@ static void glutDisplayFunc_cb(void)
     char * name;
     name = (char*) cbname("glutDisplayFunc");
     //printf("glutDisplayFunc: name = %s\n", name); fflush(stdout);
+    leave_blocking_section ();
     callback(*caml_named_value(name), Val_unit);
+    enter_blocking_section ();
     //printf("glutDisplayFunc done\n", name); fflush(stdout);
 }
 CAMLprim value ml_glutDisplayFunc(value unit)
@@ -236,7 +248,9 @@ CB_1(glutVisibilityFunc, int, Val_int)
 #else
 static void glutVisibilityFunc_cb(int state)
 {
+    leave_blocking_section ();
     callback(*caml_named_value(cbname("glutVisibilityFunc")), Val_int(state));
+    enter_blocking_section ();
 }
 CAMLprim value ml_glutVisibilityFunc(value unit)
 {
@@ -250,7 +264,9 @@ CAMLprim value ml_glutVisibilityFunc(value unit)
 static void glutCreateMenu_cb( int menu_id ) 
 { 
   // ocaml_glutCreateMenu really means "menu callback on the ocaml side"
+  leave_blocking_section ();
   callback(*caml_named_value("ocaml_glutCreateMenu"), Val_int(menu_id)); 
+  enter_blocking_section ();
 } 
 CAMLprim value ml_glutCreateMenu(value unit) 
 { 
@@ -287,7 +303,9 @@ CB_0(glutIdleFunc)
 #else
 static void glutIdleFunc_cb(void)
 {
-    callback (*caml_named_value("ocaml_glutIdleFunc"), Val_unit);
+  leave_blocking_section ();
+  callback (*caml_named_value("ocaml_glutIdleFunc"), Val_unit);
+  enter_blocking_section ();
 }
 CAMLprim value ml_glutIdleFunc( value unit )
 {
@@ -298,7 +316,10 @@ CAMLprim value ml_glutIdleFunc( value unit )
 
 static void glutTimerFunc_cb(int value)
 {
-    callback (*caml_named_value("ocaml_glutTimerFunc"), Val_int(value) );
+  leave_blocking_section ();
+  callback (*caml_named_value("ocaml_glutTimerFunc"), Val_int(value) );
+  enter_blocking_section ();
+
 }
 CAMLprim value ml_glutTimerFunc( value millis_val, value val_val ) // set Timer callback
 {
@@ -392,7 +413,10 @@ static void joystick_cb(unsigned int buttonMask, int x, int y, int z)
   args[1] = Val_int(x);
   args[2] = Val_int(y);
   args[3] = Val_int(z);
+  leave_blocking_section ();
   callbackN (*caml_named_value(cbname("glutJoystickFunc")), 4, args); 
+  enter_blocking_section ();
+
 }
 CAMLprim value ml_glutJoystickFunc(value pollInterval) 
 { 
