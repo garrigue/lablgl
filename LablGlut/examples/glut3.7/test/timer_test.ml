@@ -26,15 +26,21 @@ let display () =
   Gl.flush();
   ;;
 
-let rec timer ~value = 
-  printf "timer called\n" ; print_newline();
-  Glut.timerFunc 500  timer  0 ;
+let rec timer1 ~value = 
+  printf "timer %d called\n" value ; print_newline();
+  Glut.timerFunc 500  timer1 value ;
+  ;;
+
+let rec timer2 ~value = 
+  printf "timer %d called\n" value ; print_newline();
+  Glut.timerFunc 1000  timer2 value ;
   ;;
 
 let num_times = ref 0;;
 
 let keyboard ~key ~x ~y = 
-  if (!num_times = 0) then Glut.timerFunc 500 timer 0 ;
+  if (!num_times = 0) then Glut.timerFunc 500 timer1 1 ;
+  if (!num_times = 0) then Glut.timerFunc 1000 timer2  2 ;
   incr num_times;
   if !num_times = 5 then exit 0;
   printf "key is %d\n"  key ; print_newline();
@@ -44,10 +50,12 @@ let keyboard ~key ~x ~y =
 
 let main () = 
   printf "\n== timer test ==\n\n";
-  printf "Please hold down the spacebar.\n" ;
+  printf "Please the spacebar.\n" ;
   printf "The correct behavior (assuming the system does autorepeat)\n" ;
-  printf "is interleaved \"key is 32\" and \"timer called\" messages.\n"  ;
-  printf "If you don't see \"timer called\" messages  that's a problem.\n" ;
+  printf "is \"key is 32\" and then \"timer X called\" messages\n"  ;
+  printf "with X = 1 or 2 and about two 1 for one 2.\n"  ;
+  printf "If you don't see \"timer X called\" messages  that's a problem.\n\n" ;
+  printf "Press \"Esc\" to quit\n"  ;
   print_newline();
   ignore(Glut.init Sys.argv);
   ignore(Glut.createWindow("timer test"));
