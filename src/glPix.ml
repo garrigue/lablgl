@@ -1,4 +1,4 @@
-(* $Id: glPix.ml,v 1.1 1998-01-29 11:45:59 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.2 1998-04-06 12:09:58 garrigue Exp $ *)
 
 open Gl
 
@@ -28,7 +28,7 @@ let raw_pos img =
     | _ -> img.width
   in
   let stride = format_size img.format in
-  let line = stride * img.width in
+  let line = stride * width in
   fun :x :y -> x * stride + y * line
 
 external bitmap :
