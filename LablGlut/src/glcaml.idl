@@ -275,23 +275,23 @@ void glShadeModel( unsigned int mode );
 void glLightf( unsigned int light, unsigned int pname, float param );
 void glLighti( unsigned int light, unsigned int pname, int param );
 void glLightfv( unsigned int light, unsigned int pname, [in, size_is(nparams)]
-    float *params, int nparams ) 
+    float params[], int nparams ) 
     quote(call, "glLightfv(light,pname,params);");
 void glLightiv( unsigned int light, unsigned int pname, [in,size_is(dummy)]
-    int *params, int dummy) 
+    int params[], int dummy) 
     quote(call, "glLightiv(light,pname,params);");
 void glGetLightfv( unsigned int light, unsigned int pname, [in,size_is(dummy)]
-    float *params, int dummy ) 
+    float params[], int dummy ) 
     quote(call, "glLightfv(light,pname,params);");
 void glGetLightiv( unsigned int light, unsigned int pname, [in,size_is(dummy)]
-    int *params, int dummy) 
+    int params[], int dummy) 
     quote(call, "glLightiv(light,pname,params);");
 void glLightModelf( unsigned int pname, float param );
 void glLightModeli( unsigned int pname, int param );
-void glLightModelfv( unsigned int pname, [in,size_is(dummy)] float *params,
+void glLightModelfv( unsigned int pname, [in,size_is(dummy)] float params[],
     int dummy) 
     quote(call, "glLightModelfv(pname,params);");
-void glLightModeliv( unsigned int pname, [in,size_is(dummy)] int *params, int
+void glLightModeliv( unsigned int pname, [in,size_is(dummy)] int params[], int
     dummy)
     quote(call, "glLightModeliv(pname,params);");
 void glMaterialf( unsigned int face, unsigned int pname, float param );
@@ -353,8 +353,8 @@ void glTexImage2D( unsigned int target, int level, int internalFormat, int
     [in,bigarray] void *pixels);
 void glGetTexImage( unsigned int target, int level, unsigned int format, unsigned int type, 
     [in,bigarray] void *pixels );
-void glGenTextures( int n, [out,size_is(n)] unsigned int *textures);
-void glDeleteTextures( int n, [in,size_is(n)] unsigned int *textures);
+void glGenTextures( int n, [out,size_is(n)] unsigned int textures[]);
+void glDeleteTextures( int n, [in,size_is(n)] unsigned int textures[]);
 void glBindTexture( unsigned int target, unsigned int texture );
 void glPrioritizeTextures( int n, [in,size_is(n)] unsigned int textures[],
     [in,size_is(n)] float priorities[] );
@@ -371,15 +371,19 @@ void glCopyTexImage1D( unsigned int target, int level, unsigned int internalform
 void glCopyTexImage2D( unsigned int target, int level, unsigned int internalformat, int x, int y, int width, int height, int border );
 void glCopyTexSubImage1D( unsigned int target, int level, int xoffset, int x, int y, int width );
 void glCopyTexSubImage2D( unsigned int target, int level, int xoffset, int yoffset, int x, int y, int width, int height );
-void glMap1d( unsigned int target, double u1, double u2, int stride, int order, [in] double *points );
-void glMap1f( unsigned int target, float u1, float u2, int stride, int order, [in] float *points );
+void glMap1d( unsigned int target, double u1, double u2, int stride, int
+order, [in] double points[] );
+void glMap1f( unsigned int target, float u1, float u2, int stride, int order,
+[in] float points[] );
 void glMap2d( unsigned int target, double u1, double u2, int ustride, int
-    uorder, double v1, double v2, int vstride, int vorder, [in] double *points );
+    uorder, double v1, double v2, int vstride, int vorder, [in] double
+    points[] );
 void glMap2f( unsigned int target, float u1, float u2, int ustride, 
-    int uorder, float v1, float v2, int vstride, int vorder, [in] float *points );
-void glGetMapdv( unsigned int target, unsigned int query, [in] double *v );
-void glGetMapfv( unsigned int target, unsigned int query, [in] float *v );
-void glGetMapiv( unsigned int target, unsigned int query, [in] int *v );
+    int uorder, float v1, float v2, int vstride, int vorder, [in] float
+    points[] );
+void glGetMapdv( unsigned int target, unsigned int query, [in] double v[] );
+void glGetMapfv( unsigned int target, unsigned int query, [in] float v[] );
+void glGetMapiv( unsigned int target, unsigned int query, [in] int v[] );
 void glEvalCoord1d( double u );
 void glEvalCoord1f( float u );
 void glEvalCoord1dv( [in] double u[1] );
@@ -398,13 +402,14 @@ void glEvalMesh1( unsigned int mode, int i1, int i2 );
 void glEvalMesh2( unsigned int mode, int i1, int i2, int j1, int j2 );
 void glFogf( unsigned int pname, float param );
 void glFogi( unsigned int pname, int param );
-void glFogfv( unsigned int pname, [in,size_is(nparams)] float *params, int nparams )
+void glFogfv( unsigned int pname, [in,size_is(nparams)] float params[], int nparams )
     quote(call, "glFogfv(pname, params);");
-void glFogiv( unsigned int pname, [in,size_is(nparams)] int *params, int nparams )
+void glFogiv( unsigned int pname, [in,size_is(nparams)] int params[], int nparams )
     quote(call, "glFogiv(pname, params);");
-void glFeedbackBuffer( int size, unsigned int type, [out,bigarray,size_is(size)] float *buffer );
+void glFeedbackBuffer( int size, unsigned int type,
+[out,bigarray,size_is(size)] float buffer[] );
 void glPassThrough( float token );
-void glSelectBuffer( int size, [bigarray,size_is(size)] unsigned int *buffer );
+void glSelectBuffer( int size, [bigarray,size_is(size)] unsigned int buffer[] );
 void glInitNames( void );
 void glLoadName( unsigned int name );
 void glPushName( unsigned int name );
