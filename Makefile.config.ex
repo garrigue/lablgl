@@ -25,7 +25,6 @@ GLINCLUDES =
 GLLIBS = -lGL -lGLU
 # The following libraries may be required (try to add them one at a time)
 #GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
-# For windows
 
 # How to index a library after installing (required on MacOSX)
 RANLIB = :
@@ -43,24 +42,16 @@ RANLIB = :
 ##### Adjust these if non standard
 
 # The Objective Caml library directory
-LIBDIR = `ocamlc -where`
+#LIBDIR = `ocamlc -where`
+
+# Where to put dlls (if dynamic loading available)
+#DLLDIR = `ocamlc -where`/stublibs
 
 # Where to put LablGL (standard)
-INSTALLDIR = $(LIBDIR)/lablGL
+#INSTALLDIR = $(LIBDIR)/lablGL
 
 # Where is Togl (default)
-TOGLDIR = Togl
+#TOGLDIR = Togl
 
 # C Compiler options
-COPTS = -c -O
-
-###### No need to change these
-
-# Where to find tcl.h, tk.h, OpenGL/Mesa headers, etc:
-INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
-
-# Libraries to link with:
-LIBS = $(TKLIBS) $(GLLIBS) $(XLIBS)
-
-# Leave this empty
-LIBDIRS =
+#COPTS = -c -O

@@ -7,6 +7,12 @@ LIBRARIAN=ocamlmklib
 OPTLIB=$(CAMLOPT) -a
 LINKER=$(CAMLC)
 OPTLINK=$(CAMLOPT)
+# Default settings
+LIBDIR = `$(CAMLC) -where`
+DLLDIR = $(LIBDIR)/stublibs
+INSTALLDIR = $(LIBDIR)/lablGL
+TOGLDIR = Togl
+COPTS = -c -O
 # Default toolchain (unix)
 TOOLCHAIN = unix
 XA = .a
@@ -18,6 +24,12 @@ MKLIB=lib /nologo /debugtype:CV /out:
 MKDLL=link /nologo /dll `ocamlc -where`/ocamlrun.lib /implib:tmp.lib /out:
 
 include Makefile.config
+
+# Composite options
+INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
+LIBS = $(TKLIBS) $(GLLIBS) $(XLIBS)
+LIBDIRS =
+
 
 OCAMLINC=-I +labltk
 
@@ -144,8 +156,6 @@ install:
 
 real-install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	if test `grep -s -c '^$(INSTALLDIR)$$' $(LIBDIR)/ld.conf || :` = 0; \
-	then echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
 	cp liblablgl$(XA) lablgl.cma libtogl$(XA) togl.cma $(INSTALLDIR)
@@ -156,7 +166,7 @@ real-install:
 	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
 
 installdll:
-	cp dlllablgl$(XS) dlltogl$(XS) $(INSTALLDIR)
+	cp dlllablgl$(XS) dlltogl$(XS) $(DLLDIR)
 
 installopt:
 	cp lablgl.cmxa lablgl$(XA) togl.cmxa togl$(XA) \
