@@ -10,7 +10,7 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
   * Objective Label 1.07, pl1 (patch included) or more
   * LablTk 1.06 or more (requires Tcl/Tk)
-  * OpenGL version 1.1 or 1.2
+  * OpenGL version 1.0 or 1.1
   * Togl-1.4 or more
 
   Objective Label and LablTk can be obtained from

@@ -9,10 +9,8 @@ OPTLINK=olablopt
 include Makefile.config
 
 # Files
-MLOBJS =	raw.cmo 	gl.cmo		glu.cmo		glm.cmo \
-		togl.cmo
-OPTOBJS =	raw.cmx 	gl.cmx		glu.cmx		glm.cmx \
-		togl.cmx
+MLOBJS =	raw.cmo 	gl.cmo		glu.cmo		togl.cmo
+OPTOBJS =	raw.cmx 	gl.cmx		glu.cmx		togl.cmx
 #gltk.cmo	aux.cmo
 COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 		$(TOGLDIR)/togl.o

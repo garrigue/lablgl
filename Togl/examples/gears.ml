@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.3 1998-01-28 01:44:11 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.4 1998-01-28 06:30:22 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -203,7 +203,8 @@ let init () =
 
   (* make the gears *)
   let make_gear :inner :outer :width :teeth :color =
-    let list = Glm.new_list `compile in
+    let list = Gl.gen_lists 1 in
+    Gl.new_list list mode:`compile;
     Gl.material face:`front (`ambient_and_diffuse color);
     gear :inner :outer :width :teeth tooth_depth:0.7;
     Gl.end_list ();
