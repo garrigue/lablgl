@@ -1,5 +1,5 @@
 s/gl_enum/unsigned int/g
-s/gl_boolean/unsigned char/g
+s/gl_boolean/boolean/g
 s/gl_bitfield/unsigned int/g
 s/gl_byte/signed char/g
 s/gl_short/short	/g

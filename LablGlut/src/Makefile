@@ -17,12 +17,11 @@ IDLFLAGS=-no-include -prepro "cpp -traditional-cpp"
 all: debug-code-library native-code-library top
 BIN_DIR=/usr/local/bin
 SOURCES=\
-    ba_utils.ml \
-    glcaml.idl\
-    glucaml.idl\
-    glutcaml.mli glutcaml.ml\
-    wrap_glut.c\
-    lablglut.ml
+    bA.ml \
+    gL.idl\
+    gLU.idl\
+    gLUT.mli gLUT.ml\
+    wrap_glut.c
 LIBS=bigarray
 LIBDIRS=$(OCAML)
 CLIBS=camlidl glut GLU GL
