@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.8 1998-01-26 00:54:29 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.9 1998-01-26 06:22:03 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -247,10 +247,10 @@ let create :parent ?:name =
       callback_table.(create_id) <-
 	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);
       callback_table.(destroy_id) <-
-        (fun t ->
+        (fun _ ->
 	  List.iter [display_table; reshape_table; overlay_table] fun:
 	    begin fun tbl ->
-	      try Hashtbl.remove tbl key:(_ident t) with Not_found -> ()
+	      try Hashtbl.remove tbl key:(Widget.name w) with Not_found -> ()
 	    end);
       tkEval [|TkToken "togl"; TkToken (Widget.name w);
 	       TkToken "-ident"; TkToken (Widget.name w);

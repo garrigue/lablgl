@@ -57,7 +57,7 @@ lablgl.cmxa: $(OPTOBJS)
 
 liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
-	$(RANLIB) liblablgl.a
+#	$(RANLIB) liblablgl.a
 
 lablgl: lablgl.cma liblablgl.a
 	olablmktop $(INCLUDES) -custom -o lablgl \
