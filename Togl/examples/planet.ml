@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.8 1998-09-01 09:28:51 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.9 1999-11-15 14:32:19 garrigue Exp $ *)
 
 class planet togl = object (self)
   val togl = togl
@@ -29,19 +29,19 @@ class planet togl = object (self)
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlMat.push();
-    GlMat.rotate angle:eye x:1.;
+    GlMat.rotate eye x:1.;
 (*	draw sun	*)
     GlLight.material face:`front (`specular (1.0,1.0,0.0,1.0));
     GlLight.material face:`front (`shininess 5.0);
-    GluQuadric.sphere radius:1.0 slices:32 stacks:32;
+    GluQuadric.sphere radius:1.0 slices:32 stacks:32 ();
 (*	draw smaller planet	*)
-    GlMat.rotate angle:year y:1.0;
-    GlMat.translate x:3.0;
-    GlMat.rotate angle:day y:1.0;
+    GlMat.rotate year y:1.0;
+    GlMat.translate () x:3.0;
+    GlMat.rotate day y:1.0;
     GlDraw.color (0.0, 1.0, 1.0);
     GlDraw.shade_model `flat;
     GlLight.material face:`front(`shininess 128.0);
-    GluQuadric.sphere radius:0.2 slices:10 stacks:10;
+    GluQuadric.sphere radius:0.2 slices:10 stacks:10 ();
     GlDraw.shade_model `smooth;
     GlMat.pop ();
     Gl.flush ();
@@ -71,7 +71,7 @@ let my_reshape togl =
   GluMat.perspective fovy:60.0 aspect:(float w /. float h) z:(1.0,20.0);
   GlMat.mode `modelview;
   GlMat.load_identity();
-  GlMat.translate z:(-5.0)
+  GlMat.translate () z:(-5.0)
 
 (*  Main Loop
  *  Open window with initial window size, title bar, 
@@ -83,7 +83,7 @@ let main () =
   let top = openTk () in
   let togl =
     Togl.create parent:top width:700 height:500 double:true rgba:true
-      depth:true in
+      depth:true () in
   Wm.title_set top title:"Planet";
 
   myinit ();
@@ -91,7 +91,7 @@ let main () =
   let planet = new planet togl in
   let scale =
     Scale.create parent:top from:(-45.) to:45. orient:`Vertical
-      command:(planet#eye) showvalue:false highlightbackground:`Black in
+      command:(planet#eye) showvalue:false highlightbackground:`Black () in
   bind togl events:[[],`Enter] action:(`Set([],fun _ -> Focus.set togl));
   bind scale events:[[],`Enter] action:(`Set([],fun _ -> Focus.set scale));
   bind togl events:[[],`KeyPress]
@@ -101,7 +101,7 @@ let main () =
       |	"Right" -> planet#year_add
       |	"Up" -> planet#day_add
       |	"Down" -> planet#day_subtract
-      |	"Escape" -> destroy top
+      |	"Escape" -> destroy top; exit 0
       |	_ -> ()
       end;
       planet#display));

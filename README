@@ -1,20 +1,20 @@
 
-		LablGL 0.92: Installation and Use instructions
+		LablGL 0.93: Installation and Use instructions
 
 1. Description
 
-  LablGL is an OpenGL interface for Objective Label. Since it includes
+  LablGL is an OpenGL interface for Objective Caml. Since it includes
 support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Label 2.02 or more
-  * LablTk 2.02 or more (included in Objective Label, requires Tcl/Tk)
+  * Objective Caml 3.00 or more
+  * LablTk 3.00 or more (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
-  Objective Label and LablTk can be obtained from
+  Objective Caml and LablTk can be obtained from
+	http://caml.inria.fr/
 	http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/
-	http://pauillac.inria.fr/olabl/			(mirror)
 
   OpenGL (with hardware support) is already on your machine on SGI and
 most DEC Alpha systems. It may also be the case with Solaris machines,
@@ -22,12 +22,12 @@ and if you do not have it you may obtain it from Sun.
   If you are not lucky enough to have OpenGL support, you can still
 use Mesa, an openGL-compatible freeware, which works on almost
 everything.
-	http://www.ssec.wisc.edu/~brianp/Mesa.html
+	http://www.mesa3d.org/
 
   LablGl also uses the Togl widget, but the code is already included
 in this distribution (version 1.5). You may obtain more information
 about Togl at:
-	http://www.ssec.wisc.edu/~brianp/Togl.html
+	http://www.mesa3d.org/brianp/Togl.html
 
 3. Installation
 
@@ -47,10 +47,10 @@ about Togl at:
   Installing LablGL makes two commands available:
 
   * lablgl
-    This is a toplevel, like olabl, including LablTk, Unix and LablGL.
+    This is a toplevel, like ocaml, including LablTk, Unix and LablGL.
     You may use it either as a toplevel, or directly to run scripts.
     To run an example, type:
-        % lablgl example.ml
+        % lablgl -modern example.ml
     where example.ml is one of: (by order of complexity)
  	simple.ml
 	scene.ml
@@ -63,8 +63,8 @@ about Togl at:
 	tennis.ml
 
   * lablglopt
-    This script calls olablopt, like labltkopt, linking LablTk and
-    LablGL. Use it as a replacement of olablopt for your LablGL
+    This script calls ocamlopt, like labltkopt, linking LablTk and
+    LablGL. Use it as a replacement of ocamlopt for your LablGL
     programs.
 	% lablglopt example.ml -o example
 
@@ -279,3 +279,5 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (1.2)
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
+
+$Id: README,v 1.7 1999-11-15 14:32:08 garrigue Exp $

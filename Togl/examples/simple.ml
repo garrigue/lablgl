@@ -1,4 +1,4 @@
-(* $Id: simple.ml,v 1.5 1998-01-29 11:46:26 garrigue Exp $ *)
+(* $Id: simple.ml,v 1.6 1999-11-15 14:32:19 garrigue Exp $ *)
 
 open Tk
 
@@ -8,9 +8,9 @@ let main () =
   Aux.init_window title:"LablGL"; *)
   let top = openTk () in
   let togl =
-    Togl.create parent:top width:500 height:500 rgba:true depth:true in
-  Wm.title_set top title:"LablGL";
-  pack [togl] fill:`Both;
+    Togl.create parent:top width:500 height:500 rgba:true depth:true () in
+  Wm.title_set title:"LablGL" top;
+  pack fill:`Both [togl];
   Togl.display_func togl cb:
     begin fun () ->
       GlClear.color (0.0, 0.0, 0.0);
@@ -20,14 +20,14 @@ let main () =
       GlMat.load_identity ();
       GlMat.ortho x:(-1.0,1.0) y:(-1.0,1.0) z:(-1.0,1.0);
       GlDraw.begins `polygon;
-      GlDraw.vertex x:(-0.5) y:(-0.5);
-      GlDraw.vertex x:(-0.5) y:(0.5);
-      GlDraw.vertex x:(0.5) y:(0.5);
-      GlDraw.vertex x:(0.5) y:(-0.5);
+      GlDraw.vertex x:(-0.5) y:(-0.5) ();
+      GlDraw.vertex x:(-0.5) y:(0.5) ();
+      GlDraw.vertex x:(0.5) y:(0.5) ();
+      GlDraw.vertex x:(0.5) y:(-0.5) ();
       GlDraw.ends ();
       Gl.flush ()
     end;
-  Timer.add ms:10000 callback:(fun () -> destroy top);
+  ignore (Timer.add ms:10000 callback:(fun () -> destroy top));
   mainLoop ()
 
 let _ = main ()

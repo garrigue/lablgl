@@ -10,8 +10,8 @@
 # Where to put the lablgl and lablglopt scripts
 BINDIR = /usr/local/bin
 
-# The Objective Label library directory (obtain it by olablc -v)
-LIBDIR = /usr/local/lib/olabl
+# The Objective Label library directory (obtain it by ocamlc -v)
+LIBDIR = /usr/local/lib/ocaml
 
 # Where to find Tcl/Tk headers and libraries
 TKINCLUDES=-I/usr/local/include

@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.6 1998-09-01 09:28:49 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.7 1999-11-15 14:32:18 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -29,54 +29,54 @@ let gear :inner :outer :width :teeth :tooth_depth =
 
   GlDraw.shade_model `flat;
 
-  GlDraw.normal z:1.0;
+  GlDraw.normal z:1.0 ();
 
-  let vertex :i :r :z ?:s [< 0 >] =
+  let vertex :r :z ?:s{=0} i =
     let angle = float i *. ta +. float s *. da in
-    GlDraw.vertex x:(r *. cos angle) y:(r *. sin angle) :z
+    GlDraw.vertex x:(r *. cos angle) y:(r *. sin angle) :z ()
   in
 
   (* draw front face *)
   let z = width *. 0.5 in
   GlDraw.begins `quad_strip;
   for i=0 to teeth do
-    vertex :i r:r0 :z;
-    vertex :i r:r1 :z;
-    vertex :i r:r0 :z;
-    vertex :i r:r1 :z s:3;
+    vertex i r:r0 :z;
+    vertex i r:r1 :z;
+    vertex i r:r0 :z;
+    vertex i r:r1 :z s:3;
   done;
   GlDraw.ends ();
   
   (* draw front sides of teeth *)
   GlDraw.begins `quads;
   for i=0 to teeth - 1 do
-    vertex :i r:r1 :z;
-    vertex :i r:r2 s:1 :z;
-    vertex :i r:r2 s:2 :z;
-    vertex :i r:r1 s:3 :z;
+    vertex i r:r1 :z;
+    vertex i r:r2 s:1 :z;
+    vertex i r:r2 s:2 :z;
+    vertex i r:r1 s:3 :z;
   done;
   GlDraw.ends ();
 
-  GlDraw.normal z:(-1.0);
+  GlDraw.normal z:(-1.0) ();
 
   (* draw back face *)
   let z = -. width *. 0.5 in
   GlDraw.begins `quad_strip;
   for i=0 to teeth do
-    vertex :i r:r1 :z;
-    vertex :i r:r0 :z;
-    vertex :i r:r1 s:3 :z;
-    vertex :i r:r0 :z;
+    vertex i r:r1 :z;
+    vertex i r:r0 :z;
+    vertex i r:r1 s:3 :z;
+    vertex i r:r0 :z;
   done;
   GlDraw.ends ();
 
   (* draw back sides of teeth *)
   GlDraw.begins `quads;
   for i=0 to teeth - 1 do
-    vertex :i r:r1 s:3 :z;
-    vertex :i r:r2 s:2 :z;
-    vertex :i r:r2 s:1 :z;
-    vertex :i r:r1 :z;
+    vertex i r:r1 s:3 :z;
+    vertex i r:r2 s:2 :z;
+    vertex i r:r2 s:1 :z;
+    vertex i r:r1 :z;
   done;
   GlDraw.ends ();
 
@@ -85,25 +85,25 @@ let gear :inner :outer :width :teeth :tooth_depth =
   GlDraw.begins `quad_strip;
   for i=0 to teeth - 1 do
     let angle = float i *. ta in
-    vertex :i r:r1 :z;
-    vertex :i r:r1 z:z';
+    vertex i r:r1 :z;
+    vertex i r:r1 z:z';
     let u = r2 *. cos(angle+.da) -. r1 *. cos(angle)
     and v = r2 *. sin(angle+.da) -. r1 *. sin(angle) in
-    GlDraw.normal x:v y:(-.u);
-    vertex :i r:r2 s:1 :z;
-    vertex :i r:r2 s:1 z:z';
-    GlDraw.normal x:(cos angle) y:(sin angle);
-    vertex :i r:r2 s:2 :z;
-    vertex :i r:r2 s:2 z:z';
+    GlDraw.normal x:v y:(-.u) ();
+    vertex i r:r2 s:1 :z;
+    vertex i r:r2 s:1 z:z';
+    GlDraw.normal x:(cos angle) y:(sin angle) ();
+    vertex i r:r2 s:2 :z;
+    vertex i r:r2 s:2 z:z';
     let u = r1 *. cos(angle +. 3. *. da) -. r2 *. cos(angle +. 2. *. da)
     and v = r1 *. sin(angle +. 3. *. da) -. r2 *. sin(angle +. 2. *. da) in
-    GlDraw.normal x:v y:(-.u);
-    vertex :i r:r1 s:3 :z;
-    vertex :i r:r1 s:3 z:z';
-    GlDraw.normal x:(cos angle) y:(sin angle);
+    GlDraw.normal x:v y:(-.u) ();
+    vertex i r:r1 s:3 :z;
+    vertex i r:r1 s:3 z:z';
+    GlDraw.normal x:(cos angle) y:(sin angle) ();
   done;
-  vertex i:0 r:r1 :z;
-  vertex i:0 r:r1 z:z';
+  vertex 0 r:r1 :z;
+  vertex 0 r:r1 z:z';
   GlDraw.ends ();
 
   GlDraw.shade_model `smooth;
@@ -112,13 +112,13 @@ let gear :inner :outer :width :teeth :tooth_depth =
   GlDraw.begins `quad_strip;
   for i=0 to teeth do
     let angle = float i *. ta in
-    GlDraw.normal x:(-. cos angle) y:(-. sin angle);
-    vertex :i r:r0 z:z';
-    vertex :i r:r0 :z;
+    GlDraw.normal x:(-. cos angle) y:(-. sin angle) ();
+    vertex i r:r0 z:z';
+    vertex i r:r0 :z;
   done;
   GlDraw.ends ()
 
-class view :togl :gear1 :gear2 :gear3 ?:limit [< 0 >] = object (self)
+class view :gear1 :gear2 :gear3 ?:limit{=0} togl = object (self)
   val mutable view_rotx = 0.0
   val mutable view_roty = 0.0
   val mutable view_rotz = 0.0
@@ -132,27 +132,27 @@ class view :togl :gear1 :gear2 :gear3 ?:limit [< 0 >] = object (self)
     GlClear.clear [`color;`depth];
 
     GlMat.push ();
-    GlMat.rotate angle:view_rotx x:1.0;
-    GlMat.rotate angle:view_roty y:1.0;
-    GlMat.rotate angle:view_rotz z:1.0;
+    GlMat.rotate view_rotx x:1.0;
+    GlMat.rotate view_roty y:1.0;
+    GlMat.rotate view_rotz z:1.0;
 
     GlMat.push ();
-    GlMat.translate x:(-3.0) y:(-2.0);
-    GlMat.rotate :angle z:1.0;
+    GlMat.translate x:(-3.0) y:(-2.0) ();
+    GlMat.rotate angle z:1.0;
     (* gear inner:1.0 outer:4.0 width:1.0 teeth:20 tooth_depth:0.7; *)
     GlList.call gear1;
     GlMat.pop ();
 
     GlMat.push ();
-    GlMat.translate x:3.1 y:(-2.0);
-    GlMat.rotate angle:(-2.0 *. angle -. 9.0) z:1.0;
+    GlMat.translate x:3.1 y:(-2.0) ();
+    GlMat.rotate (-2.0 *. angle -. 9.0) z:1.0;
     (* gear inner:0.5 outer:2.0 width:2.0 teeth:10 tooth_depth:0.7; *)
     GlList.call gear2;
     GlMat.pop ();
 
     GlMat.push ();
-    GlMat.translate x:(-3.1) y:4.2;
-    GlMat.rotate angle:(-2.0 *. angle -. 25.0) z:1.0;
+    GlMat.translate x:(-3.1) y:4.2 ();
+    GlMat.rotate (-2.0 *. angle -. 25.0) z:1.0;
     (* gear inner:1.3 outer:2.0 width:0.5 teeth:10 tooth_depth:0.7; *)
     GlList.call gear3;
     GlMat.pop ();
@@ -182,7 +182,7 @@ class view :togl :gear1 :gear2 :gear3 ?:limit [< 0 >] = object (self)
 
     GlMat.mode `modelview;
     GlMat.load_identity();
-    GlMat.translate z:(-40.0);
+    GlMat.translate z:(-40.0) ();
     GlClear.clear[`color;`depth]
 end
 
@@ -214,22 +214,22 @@ open Tk
 
 let main () =
   let top = openTk () in
-  let f = Frame.create parent:top in
+  let f = Frame.create parent:top () in
   let v = Textvariable.create () in
-  let my_scale =
-    Scale.create from:0. to:180. showvalue:false
+  let my_scale :parent =
+    Scale.create :parent from:0. to:180. showvalue:false
       highlightbackground:`Black in
   let togl =
     Togl.create parent:f width:300 height:300
-      rgba:true depth:true double:true
-  and sh = my_scale parent:f orient:`Horizontal
-  and sv = my_scale parent:top orient:`Vertical
+      rgba:true depth:true double:true ()
+  and sh = my_scale parent:f orient:`Horizontal ()
+  and sv = my_scale parent:top orient:`Vertical ()
   in
   
   Wm.title_set top title:"Gears";
 
   let gear1, gear2, gear3 = init() in
-  let view = new view :togl :gear1 :gear2 :gear3 in
+  let view = new view togl :gear1 :gear2 :gear3 in
   Scale.configure sv command:(view#rotx);
   Scale.configure sh command:(view#roty);
   Scale.set sh to:20.; Scale.set sv to:40.;

@@ -1,4 +1,4 @@
-(* $Id: glPix.ml,v 1.3 1999-11-15 09:55:09 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.4 1999-11-15 14:32:11 garrigue Exp $ *)
 
 open Gl
 
@@ -92,7 +92,8 @@ external transfer : transfer_param -> unit = "ml_glPixelTransfer"
 
 external zoom : x:float -> y:float -> unit = "ml_glPixelZoom"
 
-external raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit
+external raster_pos :
+    x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
     = "ml_glRasterPos"
 
 external read :

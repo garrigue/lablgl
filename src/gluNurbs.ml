@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.ml,v 1.1 1998-01-29 11:46:09 garrigue Exp $ *)
+(* $Id: gluNurbs.ml,v 1.2 1999-11-15 14:32:13 garrigue Exp $ *)
 
 open Gl
 
@@ -13,14 +13,14 @@ external end_surface : t -> unit = "ml_gluEndSurface"
 external end_trim : t -> unit = "ml_gluEndTrim"
 
 external load_sampling_matrices :
-    t -> model:[float] Raw.t ->
-    persp:[float] Raw.t -> view:[int] Raw.t -> unit
+    t -> model:[`float] Raw.t ->
+    persp:[`float] Raw.t -> view:[`int] Raw.t -> unit
     = "ml_gluLoadSamplingMatrices"
 
 external create : unit -> t = "ml_gluNewNurbsRenderer"
 
 external curve :
-    t -> knots:[float] Raw.t -> control:[float] Raw.t ->
+    t -> knots:[`float] Raw.t -> control:[`float] Raw.t ->
     order:int -> type:#GlMap.target -> unit
     = "ml_gluNurbsCurve"
 let curve nurb :knots :control :order type:t =
@@ -32,21 +32,21 @@ let curve nurb :knots :control :order type:t =
   curve nurb :knots :control :order type:t
 
 type property = [
-      sampling_method ([path_length parametric_error domain_distance])
-      sampling_tolerance (int)
-      parametric_tolerance (float)
-      u_step (int)
-      v_step (int)
-      display_mode ([fill polygon patch])
-      culling (bool)
-      auto_load_matrix (bool)
-  ]
+    `sampling_method [`path_length|`parametric_error|`domain_distance]
+  | `sampling_tolerance int
+  | `parametric_tolerance float
+  | `u_step int
+  | `v_step int
+  | `display_mode [`fill|`polygon|`patch]
+  | `culling bool
+  | `auto_load_matrix bool
+]
 external property : t -> property -> unit
     = "ml_gluNurbsProperty"
 
 external surface :
-    t -> sknots:[float] Raw.t -> tknots:[float] Raw.t ->
-    tstride:int -> control:[float] Raw.t ->
+    t -> sknots:[`float] Raw.t -> tknots:[`float] Raw.t ->
+    tstride:int -> control:[`float] Raw.t ->
     sorder:int -> torder:int -> target:#target -> unit
     = "ml_gluNurbsSurface_bc" "ml_gluNurbsSurface"
 let surface t :sknots :tknots :control :sorder :torder :target =
@@ -67,7 +67,7 @@ let surface t :sknots :tknots :control :sorder :torder :target =
     :sorder :torder :target
 
 external pwl_curve :
-    t -> count:int -> [float] Raw.t -> type:[trim_2 trim_3] -> unit
+    t -> count:int -> [`float] Raw.t -> type:[`trim_2|`trim_3] -> unit
     = "ml_gluPwlCurve"
 let pwl_curve nurb type:t data =
   let len = Array.length data 

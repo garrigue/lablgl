@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.8 1998-12-13 23:58:48 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.9 1999-11-15 14:32:20 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -110,8 +110,8 @@ class ball () = object (self)
     Gl.disable `blend;
     GlDraw.color (1.0, 1.0, 0.0);
     GlMat.push ();
-    GlMat.translate :x :y :z;
-    GluQuadric.sphere radius:0.01 slices:8 stacks:8;
+    GlMat.translate :x :y :z ();
+    GluQuadric.sphere radius:0.01 slices:8 stacks:8 ();
     GlMat.pop () 
 
   method drawtexture =
@@ -125,9 +125,9 @@ class ball () = object (self)
       	`wrap_t `repeat;
       	`mag_filter `nearest;
       	`min_filter `nearest ];
-    GlMat.translate :x :y :z;
+    GlMat.translate :x :y :z ();
     GluQuadric.texture q true;
-    GluQuadric.sphere radius:0.01 slices:16 stacks:8 quad:q;
+    GluQuadric.sphere radius:0.01 slices:16 stacks:8 quad:q ();
     Gl.disable `texture_2d;
     GlMat.pop ()
 
@@ -136,8 +136,8 @@ class ball () = object (self)
     Gl.disable `blend;
     GlDraw.color (0.0, 0.0, 0.0);
     GlMat.push ();
-    GlMat.translate :x :y z:0.0;
-    GluQuadric.disk inner:0.0 outer:0.01 slices:8 loops:8;
+    GlMat.translate :x :y ();
+    GluQuadric.disk inner:0.0 outer:0.01 slices:8 loops:8 ();
     GlMat.pop ()
 
   method draw_target =
@@ -205,12 +205,12 @@ class poll = object
     Gl.disable `blend;
     GlDraw.color (0.0, 0.0, 0.0);
     GlMat.push ();
-    GlMat.translate x:0.0 y:y z:0.0;
-    GluQuadric.cylinder  slices:8 stacks:8 height:0.12 top:r base:r;
+    GlMat.translate :y ();
+    GluQuadric.cylinder  slices:8 stacks:8 height:0.12 top:r base:r ();
     GlMat.pop ();
     GlMat.push ();
-    GlMat.translate x:0.0 y:(-. y) z:0.0;
-    GluQuadric.cylinder  slices:8 stacks:8 height:0.12 top:r base:r;
+    GlMat.translate y:(-. y) ();
+    GluQuadric.cylinder  slices:8 stacks:8 height:0.12 top:r base:r ();
     GlMat.pop ()
 end
 
@@ -295,7 +295,7 @@ class net :togl = object
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlDraw.begins `quad_strip;
-    List.iter fun:(fun (y,z) -> GlDraw.vertex x:0.0 :y :z)
+    List.iter fun:(fun (y,z) -> GlDraw.vertex x:0. :y :z ())
       [ cw +. 0.05, 0.11;
 	cw +. 0.05, 0.115;
 	0.0, 0.085;
@@ -322,7 +322,7 @@ class view3d :togl :ball :player :viewtype = object
       begin
 	GlMat.mode `projection;
 	GlMat.load_identity ();
-	GlMat.rotate angle:90.0 z:1.0; 
+	GlMat.rotate 90.0 z:1.0; 
 	GlMat.ortho x:(-1.2,1.2) y:(-1.2,1.2) z:(0.0,2.0); 
 	GlMat.mode `modelview;
 	GlMat.load_identity ();
@@ -390,7 +390,7 @@ class view2d :togl :ball :player = object
 
     GlMat.mode `projection;
     GlMat.load_identity ();
-    GlMat.rotate angle:90.0 z:1.0; 
+    GlMat.rotate 90.0 z:1.0; 
     GlMat.ortho x:(-1.5,1.5) y:(-1.5,1.5) z:(0.0,2.0); 
     GlMat.mode `modelview;
     GlMat.load_identity ();
@@ -419,32 +419,35 @@ let main () =
   let top = openTk () in
   Wm.title_set top title:"Tennis Court";
 
-  let f0 = Frame.create parent:top in
+  let f0 = Frame.create parent:top () in
   let court3d =
     Togl.create parent:f0 width:600 height:600
-      rgba:true double:true depth:true
-  and f1 = Frame.create parent:f0 in
+      rgba:true double:true depth:true ()
+  and f1 = Frame.create parent:f0 () in
   let court2d =
     Togl.create parent:f1 width:200 height:200
-      rgba:true double:true depth:true
+      rgba:true double:true depth:true ()
   and sx =
     Scale.create parent:f1 label:"Velocity"
-      from:0. to:200. orient:`Horizontal
+      from:0. to:200. orient:`Horizontal ()
   and sz =
     Scale.create parent:f1 label:"Direction"
-      from: (-. 90.) to:90. orient:`Horizontal
+      from: (-. 90.) to:90. orient:`Horizontal ()
   and sht =
     Scale.create parent:f1 label:"Height"
-      from: 0. to:100. orient:`Horizontal
+      from: 0. to:100. orient:`Horizontal ()
   and start =
-    Button.create parent:f1 text:"Start"
+    Button.create parent:f1 text:"Start" ()
   in
   let viewseltv = Textvariable.create () in
     Textvariable.set viewseltv to: "Top View";
-    let viewself = Frame.create parent: f1 in
-    let viewsel = List.map fun:(fun t ->
-      Radiobutton.create parent: viewself text: t value: t variable: viewseltv)
-        ["Top View"; "Center"; "Ball"] in
+    let viewself = Frame.create parent: f1 () in
+    let viewsel = List.map ["Top View"; "Center"; "Ball"] fun:
+	begin fun t ->
+	  Radiobutton.create parent: viewself text: t value: t
+	    variable: viewseltv ()
+	end
+    in
     pack viewsel;
   let viewtype = fun () -> Textvariable.get viewseltv in
 

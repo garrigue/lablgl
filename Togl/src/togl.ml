@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.11 1998-01-29 11:46:17 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.12 1999-11-15 14:32:15 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -84,15 +84,15 @@ external _height : t -> int = "ml_Togl_Height"
 external _width : t -> int = "ml_Togl_Width"
 
 type font = [
-      fixed_8x13
-      fixed_9x15
-      times_10
-      times_24
-      helvetica_10
-      helvetica_12
-      helvetica_18
-      Xfont(string)
-  ]
+    `fixed_8x13
+  | `fixed_9x15
+  | `times_10
+  | `times_24
+  | `helvetica_10
+  | `helvetica_12
+  | `helvetica_18
+  | `Xfont string
+]
 
 external _load_bitmap_font : t -> font:font -> GlList.base
     = "ml_Togl_LoadBitmapFont"
@@ -114,7 +114,7 @@ external _dump_to_eps_file : t -> string -> bool -> unit
 type w
 type widget = w Widget.widget
 
-let togl_table = Hashtbl.create size:7
+let togl_table = Hashtbl.create 7
 
 let wrap f (w : widget) =
   let togl =
@@ -136,18 +136,18 @@ let exists_overlay = wrap _exists_overlay
 let get_overlay_transparent_value = wrap _get_overlay_transparent_value
 
 let make_current togl =
-    tkEval [|TkToken (Widget.name togl); TkToken "makecurrent"|]; ()
+  ignore (tkEval [|TkToken (Widget.name togl); TkToken "makecurrent"|])
 
 let null_func _ = ()
-let display_table = Hashtbl.create size:7
-and reshape_table = Hashtbl.create size:7
-and overlay_table = Hashtbl.create size:7
+let display_table = Hashtbl.create 7
+and reshape_table = Hashtbl.create 7
+and overlay_table = Hashtbl.create 7
 
 let cb_of_togl table togl =
   try 
     let key = _ident togl in
     let cb = Hashtbl.find :key table in
-    tkEval [|TkToken key; TkToken "makecurrent"|];
+    ignore (tkEval [|TkToken key; TkToken "makecurrent"|]);
     cb ()
   with Not_found -> ()
 
@@ -180,7 +180,7 @@ let reshape_func w :cb =
   callback_func reshape_table w :cb
 let overlay_display_func = callback_func overlay_table
 
-let dump_to_eps_file togl :filename ?:rgba [< false >] ?:render =
+let dump_to_eps_file :filename ?:rgba{=false} ?:render togl =
   let render =
     match render with Some f -> f
     | None ->
@@ -191,13 +191,14 @@ let dump_to_eps_file togl :filename ?:rgba [< false >] ?:render =
   callback_table.(render_id) <- (fun _ -> render());
   _dump_to_eps_file togl filename rgba
 
-let dump_to_eps_file = wrap ?dump_to_eps_file
+let dump_to_eps_file :filename ?:rgba ?:render =
+  wrap (dump_to_eps_file :filename ?:rgba ?:render)
 
 let rec timer_func :ms :cb =
   Timer.add :ms callback:(fun () -> cb (); timer_func :ms :cb);
   ()
 
-let configure w ?:height ?:width =
+let configure ?:height ?:width w =
   let options = may height "-height" cint @ may width "-width" cint in
   tkEval [|TkToken (Widget.name w); TkTokenList options|]
 
@@ -240,10 +241,10 @@ let init_togl () =
 
 let create :parent ?:name =
   togl_options_optionals
-    ?(fun options ->
+    (fun options () ->
       if not !ready then init_togl ();
       let w : widget =
-	Widget.new_atom class:"togl" :parent ?:name in
+	Widget.new_atom "togl" :parent ?:name in
       let togl = ref None in
       callback_table.(create_id) <-
 	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);

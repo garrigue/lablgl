@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.mli,v 1.1 1998-01-29 11:46:10 garrigue Exp $ *)
+(* $Id: gluNurbs.mli,v 1.2 1999-11-15 14:32:13 garrigue Exp $ *)
 
 type t
 
@@ -13,13 +13,14 @@ val end_surface : t -> unit
 val end_trim : t -> unit
 
 val load_sampling_matrices :
-  t -> model:[float] Raw.t -> persp:[float] Raw.t -> view:[int] Raw.t -> unit
+  t ->
+  model:[`float] Raw.t -> persp:[`float] Raw.t -> view:[`int] Raw.t -> unit
 
 val curve :
   t -> knots:float array ->
   control:float array -> order:int -> type:#GlMap.target -> unit
 
-val pwl_curve : t -> type:[trim_2 trim_3] -> float array -> unit
+val pwl_curve : t -> type:[`trim_2|`trim_3] -> float array -> unit
 
 val surface :
   t ->
@@ -28,9 +29,14 @@ val surface :
   control:float array array ->
   sorder:int -> torder:int -> target:#Gl.target -> unit
 
-type property =
-  [auto_load_matrix(bool) culling(bool) display_mode([fill patch polygon])
-   parametric_tolerance(float)
-   sampling_method([domain_distance parametric_error path_length])
-   sampling_tolerance(int) u_step(int) v_step(int)]
+type property = [
+    `sampling_method [`path_length|`parametric_error|`domain_distance]
+  | `sampling_tolerance int
+  | `parametric_tolerance float
+  | `u_step int
+  | `v_step int
+  | `display_mode [`fill|`polygon|`patch]
+  | `culling bool
+  | `auto_load_matrix bool
+]
 val property : t -> property -> unit

@@ -1,11 +1,11 @@
-(* $Id: checker.ml,v 1.3 1998-01-29 11:46:21 garrigue Exp $ *)
+(* $Id: checker.ml,v 1.4 1999-11-15 14:32:17 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
 
 let make_image () =
   let image =
-    GlPix.create `ubyte width:image_width height:image_height format:`rgb in
+    GlPix.create `ubyte format:`rgb width:image_width height:image_height in
   for i = 0 to image_width - 1 do
     for j = 0 to image_height - 1 do
       Raw.sets (GlPix.to_raw image) pos:(3*(i*image_height+j))
@@ -56,18 +56,18 @@ let reshape togl =
   GluMat.perspective fovy:60.0 aspect:(1.0 *. float w /. float h) z:(1.0,30.0);
   GlMat.mode `modelview;
   GlMat.load_identity ();
-  GlMat.translate z:(-3.6)
+  GlMat.translate z:(-3.6) ()
 
 open Tk
 
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top width:500 height:500 rgba:true depth:true in
+    Togl.create parent:top width:500 height:500 rgba:true depth:true () in
   myinit ();
   Togl.display_func togl cb:display;
   Togl.reshape_func togl cb:(fun () -> reshape togl);
-  pack [togl] expand:true fill:`Both;
+  pack expand:true fill:`Both [togl];
   mainLoop ()
 
 let _ = main ()

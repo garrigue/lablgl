@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.5 1998-01-29 11:46:28 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.6 1999-11-15 14:32:20 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -71,7 +71,7 @@ let my_reshape togl =
     GlMat.ortho x:(-4.0 /. r, 4.0 /. r) y:(-4.0, 4.0) z:(-4.0, 4.0);
   GlMat.mode `modelview;
   GlMat.load_identity ();
-  GlMat.rotate angle:(85.0) x:1.0 y:1.0 z:1.0
+  GlMat.rotate 85. x:1. y:1. z:1.
 
 open Tk
 
@@ -79,20 +79,20 @@ let main () =
   let top = openTk () in
   let togl =
     Togl.create parent:top rgba:true depth:true
-      width:300 height:300 double:true
+      width:300 height:300 double:true ()
   in
   Wm.title_set top title:"Texture Surf";
   myinit ();
   Togl.reshape_func togl cb:(fun () -> my_reshape togl);
   Togl.display_func togl cb:(fun () -> display togl);
-  Focus.set togl;
-  bind togl events:[[],`KeyPress]
+  bind top events:[[],`KeyPress]
     action:(`Set([`KeySymString], fun ev ->
       match ev.ev_KeySymString with
-	"Up" -> GlMat.rotate angle:(-5.) z:1.0; display togl
-      |	"Down" -> GlMat.rotate angle:(5.) z:1.0; display togl
-      |	"Left" -> GlMat.rotate angle:(5.) x:1.0; display togl
-      |	"Right" -> GlMat.rotate angle:(-5.) x:1.0; display togl
+	"Up" -> GlMat.rotate (-5.) z:1.0; display togl
+      |	"Down" -> GlMat.rotate (5.) z:1.0; display togl
+      |	"Left" -> GlMat.rotate (5.) x:1.0; display togl
+      |	"Right" -> GlMat.rotate (-5.) x:1.0; display togl
+      |	"Escape" -> destroy top; exit 0
       |	_ -> ()));
   pack [togl] expand:true fill:`Both;
   mainLoop ()

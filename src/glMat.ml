@@ -1,4 +1,4 @@
-(* $Id: glMat.ml,v 1.2 1999-11-15 09:55:08 garrigue Exp $ *)
+(* $Id: glMat.ml,v 1.3 1999-11-15 14:32:10 garrigue Exp $ *)
 
 type t = [`double] Raw.t
 
@@ -28,13 +28,16 @@ external push : unit -> unit = "ml_glPushMatrix"
 
 external rotate : angle:float -> x:float -> y:float -> z:float -> unit
     = "ml_glRotated"
-let rotate :angle (x,y,z) = rotate :angle :x :y :z
+let rotate3 normal:(x,y,z) angle = rotate :angle :x :y :z
+let rotate ?:x{=0.} ?:y{=0.} ?:z{=0.} angle = rotate :angle :x :y :z
 
 external scale : x:float -> y:float -> z:float -> unit = "ml_glScaled"
-let scale (x,y,z) = scale :x :y :z
+let scale3 (x,y,z) = scale :x :y :z
+let scale ?:x{=0.} ?:y{=0.} ?:z{=0.} () = scale :x :y :z
 
 external translate : x:float -> y:float -> z:float -> unit = "ml_glTranslated"
-let translate (x,y,z) = translate :x :y :z
+let translate3 (x,y,z) = translate :x :y :z
+let translate ?:x{=0.} ?:y{=0.} ?:z{=0.} () = translate :x :y :z
 
 let of_raw mat =
   if Raw.length mat <> 16 then invalid_arg "GlMatrix.of_array";

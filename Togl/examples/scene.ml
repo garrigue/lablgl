@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.5 1998-01-29 11:46:25 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.6 1999-11-15 14:32:19 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -26,13 +26,13 @@ let solid_torus :inner :outer =
   let vertex :i :j =
     let angle1 = slice_angle *. float i
     and angle2 = face_angle *. float j in
-    GlDraw.normal x:(cos angle1 *. cos angle2)
-      y:(-. sin angle1 *. cos angle2)
-      z:(sin angle2);
-    GlDraw.vertex
-      x:((outer +. inner *. cos angle2) *. cos angle1)
-      y:(-. (outer +. inner *. cos angle2) *. sin angle1)
-      z:(inner *. sin angle2)
+    GlDraw.normal3 (cos angle1 *. cos angle2,
+		    -. sin angle1 *. cos angle2,
+		    sin angle2);
+    GlDraw.vertex3
+      ((outer +. inner *. cos angle2) *. cos angle1,
+       -. (outer +. inner *. cos angle2) *. sin angle1,
+       inner *. sin angle2)
   in
   GlDraw.begins `quads;
   for i = 0 to slices - 1 do
@@ -46,31 +46,31 @@ let solid_torus :inner :outer =
   GlDraw.ends ()
 
 let solid_cone :radius :height =
-  GluQuadric.cylinder base:radius top:0. :height slices:15 stacks:10
+  GluQuadric.cylinder base:radius top:0. :height slices:15 stacks:10 ()
 
 let solid_sphere :radius =
-  GluQuadric.sphere :radius slices:32 stacks:32
+  GluQuadric.sphere :radius slices:32 stacks:32 ()
 
 let display () =
   GlClear.clear [`color; `depth];
 
   GlMat.push ();
-  GlMat.rotate angle:20.0 x:1.0;
+  GlMat.rotate 20.0 x:1.0;
 
   GlMat.push ();
-  GlMat.translate x:(-0.75) y:0.5; 
-  GlMat.rotate angle:90.0 x:1.0;
+  GlMat.translate x:(-0.75) y:0.5 ();
+  GlMat.rotate 90.0 x:1.0;
   solid_torus inner:0.275 outer:0.85;
   GlMat.pop ();
 
   GlMat.push ();
-  GlMat.translate x:(-0.75) y:(-0.5); 
-  GlMat.rotate angle:270.0 x:1.0;
+  GlMat.translate x:(-0.75) y:(-0.5) (); 
+  GlMat.rotate 270.0 x:1.0;
   solid_cone radius:1.0 height:2.0;
   GlMat.pop ();
 
   GlMat.push ();
-  GlMat.translate x:0.75 z:(-1.0); 
+  GlMat.translate x:0.75 z:(-1.0) (); 
   solid_sphere radius:1.0;
   GlMat.pop ();
 
@@ -99,7 +99,7 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top rgba:true depth:true width:500 height:500 in
+    Togl.create parent:top rgba:true depth:true width:500 height:500 () in
   Wm.title_set top title:"Scene";
   myinit ();
   Togl.reshape_func togl

@@ -1,4 +1,4 @@
-(* $Id: glPix.mli,v 1.2 1999-11-15 09:55:10 garrigue Exp $ *)
+(* $Id: glPix.mli,v 1.3 1999-11-15 14:32:12 garrigue Exp $ *)
 
 (* An abstract type for pixmaps *)
 
@@ -73,7 +73,7 @@ type transfer_param = [
 val transfer : transfer_param -> unit
 
 val zoom : x:float -> y:float -> unit
-val raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit
+val raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
 
 val copy :
   x:int ->
