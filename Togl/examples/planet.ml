@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.6 1998-01-29 11:46:25 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.7 1998-01-30 10:18:50 garrigue Exp $ *)
 
 class planet togl as self =
   val togl = togl
@@ -42,7 +42,7 @@ class planet togl as self =
     GlDraw.shade_model `flat;
     GlLight.material face:`front(`shininess 128.0);
     GluQuadric.sphere radius:0.2 slices:10 stacks:10;
-    GlLight.shade_model `smooth;
+    GlDraw.shade_model `smooth;
     GlMat.pop ();
     Gl.flush ();
     Togl.swap_buffers togl

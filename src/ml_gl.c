@@ -1,5 +1,6 @@
-/* $Id: ml_gl.c,v 1.21 1998-01-29 11:46:16 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.22 1998-01-30 10:18:46 garrigue Exp $ */
 
+#include <strings.h>
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
@@ -33,7 +34,6 @@ static struct record input_table[] = {
 static struct record *tag_table = NULL;
 
 #define TABLE_SIZE (TAG_NUMBER*2+1)
-#include <strings.h>
 
 value ml_gl_make_table (value unit)
 {

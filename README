@@ -73,13 +73,13 @@ everything.
 5. Writing programs
 
   All of the GL and GLU libraries are available. Read a good book
-  about how using these. Translating from GL to LablGL is rather
-  straitforward: a function named glReadPixels will be renamed to
-  Gl.read_pixels (no capitals). When arguments are labelled, the name
-  is taken from the man page or the C prototype.
-
-  (*) For naming reasons, glBegin had to be changed to Gl.begin_block
-      and glEnd to Gl.end_block.
+  about how to use these. Translating from OpenGL to LablGL is rather
+  straitforward: there is a LablGL function for each OpenGL one.  For
+  ease of retrieving, bot GL and GLU are cut in smaller modules of
+  related functions.  See in appendix A which modules your function is
+  in. By default it has the same name, gl or glu omited, and capitals
+  replaced by underscores.  When arguments are labelled, the name is
+  taken from the man page or the C prototype.
 
   OpenGL makes heavy using of enumerations, with names staring with
   GL_ or GLU_ . Since their meaning is often overloaded, they are all
@@ -94,3 +94,183 @@ everything.
 6. Comments and bug reports
 
    mailto:garrigue@kurims.kyoto-u.ac.jp
+
+A. Modules
+
+   There are 11 modules for GL and 5 modules for GLU.
+   Modules marked with (*) contain LablGL specific functions.
+
+Gl: Common data types and functions.
+   glFlush
+   glFinish
+   glEnable
+   glDisable
+   glIsEnabled
+
+GlClear: Clearing functions.
+   glClear
+   glClearAccum		-> accum
+   glClearColor		-> color
+   glClearDepth		-> depth
+   glClearIndex		-> index
+   glClearStencil	-> stencil
+
+GlDraw: Drawing functions.
+   glBegin		-> begins
+   glColor
+   glCullFace
+   glEdgeFlag
+   glEnd		-> ends
+   glFrontFace
+   glIndex
+   glLineStipple
+   glLineWidth
+   glNormal
+   glPointSize
+   glPolygonMode
+   glPolygonStipple
+   glRect
+   glShadeModel
+   glVertex
+   glViewport
+
+GlFunc: Filtering functions.
+   glAccum
+   glAlphaFunc
+   glBlendFunc
+   glColorMask
+   glDepthFunc
+   glDepthMask
+   glDrawBuffer
+   glIndexMask
+   glLogicOp   
+   glReadBuffer   
+   glStencilFunc
+   glStencilMask
+   glStencilOp
+
+GlLight: Lighting functions.
+   glColorMaterial
+   glFog
+   glLight
+   glLightModel
+   glMaterial
+
+GlList: Call list functions. (*)
+   glCallList		-> call
+   glCallLists
+   glDeleteLists
+   glEndList		-> ends
+   glGenLists
+   glIsList
+   glNewList		-> begins
+
+GlMap: Map and meshes functions.
+   glEvalCoord1
+   glEvalCoord2
+   glEvalMesh1
+   glEvalMesh2
+   glEvalPoint1
+   glEvalPoint2
+   glMap1
+   glMap2
+   glMapGrid1		-> grid1
+   glMapGrid2		-> grid2
+
+GlMat: Matrix functions. (*)
+   glFrustum
+   glLoadIdentity
+   glLoadMatrix		-> load
+   glMatrixMode		-> mode
+   glMultMatrix		-> mult
+   glOrtho
+   glPopMatrix		-> pop
+   glPushMatrix		-> push
+   glRotate
+   glScale
+   glTranslate
+
+GlMisc: Miscellanous functions.
+   glClipPlane
+   glGetString
+   glHint
+   glInitNames
+   glLoadName
+   glPassThrough
+   glPopAttrib
+   glPopName
+   glPushAttrib
+   glPushName
+   glRenderMode
+   glSelectBuffer
+
+GlPix: Rasterized pixel functions. (*)
+   glBitmap
+   glCopyPixels		-> copy
+   glDrawPixels		-> draw
+   glPixelMap		-> map
+   glPixelStore		-> store
+   glPixelTransfer	-> transfer
+   glPixelZoom		-> zoom
+   glRasterPos
+   glReadPixels		-> read
+
+GlTex: Texturing functions.
+   glTexCoord		-> coord
+   glTexEnv		-> env
+   glTexGen		-> gen
+   glTexImage1D		-> image1d
+   glTexImage2D		-> image2d
+   glTexParameter	-> parameter
+
+GluMat: GLU matrix functions.
+   gluLookAt
+   gluOrtho2D
+   gluPerspective
+   gluPickMatrix
+   gluProject
+   gluUnProject
+
+GluMisc: GLU miscellanous functions.
+   gluBuild1DMipmaps
+   gluBuild2DMipmaps
+   gluGetString
+   gluScaleImage
+
+GluNurbs: Nurbs functions.
+   gluBeginCurve
+   gluBeginSurface
+   gluBeginTrim
+   gluEndCurve
+   gluEndSurface
+   gluEndTrim
+   gluLoadSamplingMatrices
+   gluNewNurbsRenderer	-> create
+   gluNurbsCurve	-> curve
+   gluNurbsProperty	-> property
+   gluNurbsPwlCurve	-> pwl_curve
+   gluNurbsSurface	-> surface
+
+GluQuadric: Quadric functions.
+   gluCylinder
+   gluDisk
+   gluNewQuadric	-> create
+   gluPartialDisk
+   gluQuadricDrawStyle	-> draw_style
+   gluQuadricNormals	-> normals
+   gluQuadricOrientation -> orientation
+   gluQuadricTexture	-> texture
+   gluSphere
+
+GluTess: Tessalating functions.
+   gluBeginPolygon	-> begins
+   gluEndPolygon	-> ends
+   gluNewTess		-> create
+   gluTessBeginContour	-> begin_contour (1.2)
+   gluTessBeginPolygon	-> begin_polygon (1.2)
+   gluTessEndContour	-> end_contour	 (1.2)
+   gluTessEndPolygon	-> end_polygon	 (1.2)
+   gluTessNormal	-> normal	 (1.2)
+   gluTessProperty	-> property	 (1.2)
+   gluTessVertex	-> vertex
+   (1.2) only available with GLU 1.2

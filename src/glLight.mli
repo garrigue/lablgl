@@ -1,4 +1,4 @@
-(* $Id: glLight.mli,v 1.1 1998-01-29 11:45:49 garrigue Exp $ *)
+(* $Id: glLight.mli,v 1.2 1998-01-30 10:18:44 garrigue Exp $ *)
 
 open Gl
 
@@ -18,10 +18,7 @@ type light_param =
    spot_exponent(float)]
 val light : num:int -> light_param -> unit
 
-type model_param =
-  [ambient(rgba) local_viewer(float) two_side(bool)]
-val model : model_param -> unit
-    (* glLightModel *)
+val light_model : [ambient(rgba) local_viewer(float) two_side(bool)] -> unit
 
 type material_param =
   [ambient(rgba) ambient_and_diffuse(rgba)

@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.5 1998-01-29 11:46:24 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.6 1998-01-30 10:18:48 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -578,8 +578,8 @@ let main () =
     [`ambient ambient; `diffuse diffuse; `position position0];
   List.iter fun:(GlLight.light num:1)
     [`ambient ambient; `diffuse diffuse; `position position1];
-  GlLight.model (`ambient lmodel_ambient);
-  GlLight.model (`two_side lmodel_twoside);
+  GlLight.light_model (`ambient lmodel_ambient);
+  GlLight.light_model (`two_side lmodel_twoside);
   List.iter fun:Gl.enable
     [`lighting;`light0;`light1;`depth_test;`normalize];
 

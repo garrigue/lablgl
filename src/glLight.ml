@@ -1,4 +1,4 @@
-(* $Id: glLight.ml,v 1.1 1998-01-29 11:45:48 garrigue Exp $ *)
+(* $Id: glLight.ml,v 1.2 1998-01-30 10:18:43 garrigue Exp $ *)
 
 open Gl
 
@@ -30,9 +30,9 @@ type light_param = [
   ] 
 external light : num:int -> light_param -> unit
     = "ml_glLight"
-type model_param =
+type light_model_param =
     [ ambient(rgba) local_viewer(float) two_side(bool) ]
-external model : model_param -> unit = "ml_glLightModel"
+external light_model : light_model_param -> unit = "ml_glLightModel"
 
 type material_param = [
       ambient (rgba)

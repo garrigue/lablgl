@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.4 1998-01-23 13:30:22 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.5 1998-01-30 10:18:47 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -374,8 +374,8 @@ value ml_raw_alloc (value kind, value len)  /* ML */
     int size = raw_sizeof(kind) * Int_val(len);
 
     Begin_roots2 (raw,data);
-    data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
     raw = alloc_shr (4,0);
+    data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
     initialize(&Kind_raw(raw),kind);
     initialize(&Size_raw(raw),Val_int(size));
     initialize(&Addr_raw(raw),data);

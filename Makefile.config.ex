@@ -20,3 +20,4 @@ TKLIBS=-ccopt -L$(LABLTKDIR) -cclib -llabltk41 \
 	-ccopt -L/usr/local/lib -cclib -ltk8.0 -cclib -ltcl8.0
 XLIBS= -ccopt "-L/usr/X11R6/lib" -cclib -lX11 -cclib -lXext -cclib -lXmu
 RANLIB= ranlib
+#RANLIB= ar rs
