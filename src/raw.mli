@@ -1,10 +1,10 @@
-(* $Id: raw.mli,v 1.7 2000-09-07 02:27:48 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.8 2000-10-05 08:24:33 garrigue Exp $ *)
 
 (* This module provides a direct way to access C arrays of basic types.
    This is particularly useful when one wants to avoid costly
    conversions between ML and C representations. *)
 
-type 'a t as 'a
+type (+'a) t
 
 type kind =
     [`bitmap|`byte|`double|`float|`int|`long|`short

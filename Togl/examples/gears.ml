@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.14 2000-04-16 12:35:33 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.15 2000-10-05 08:24:33 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -216,9 +216,9 @@ let main () =
   let top = openTk () in
   let f = Frame.create top in
   let v = Textvariable.create () in
-  let my_scale ?name =
-    Scale.create ?name ~min:0. ~max:180. ~showvalue:false
-      ~highlightbackground:`Black in
+  let my_scale =
+    Scale.create ~min:0. ~max:180. ~showvalue:false ~highlightbackground:`Black
+  in
   let togl =
     Togl.create f ~width:300 ~height:300
       ~rgba:true ~depth:true ~double:true
