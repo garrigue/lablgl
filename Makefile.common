@@ -52,7 +52,7 @@ include $(CONFIG)
 	$(COMPILER) -ccopt "$(COPTS) $(INCLUDES)" $<
 
 .c.d.obj:
-	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(INCLUDES)" $<
+	$(COMPILER) -verbose -ccopt "/MD -DCAML_DLL /Fo$@ $(INCLUDES)" $<
 
 .c.d.o:
 	$(COMPILER) -verbose -ccopt "-DCAML_DLL -o$@ $(INCLUDES)" $<

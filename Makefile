@@ -11,7 +11,7 @@ all: lib togl glut
 opt: libopt toglopt glutopt
 
 lib:
-	cd src && $(MAKE) all
+	cd src && $(MAKE) all LIBDIR="`ocamlc -where`"
 
 libopt:
 	cd src && $(MAKE) opt

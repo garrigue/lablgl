@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.20 2002-07-12 15:48:06 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.21 2003-10-03 04:27:19 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -57,6 +57,9 @@ CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
          conv6(arg6), conv7(arg7), conv8(arg8)); \
   return Val_unit; }
 
+#define ML_0_(cname, conv) \
+CAMLprim value ml_##cname (value unit) \
+{ return conv (cname ()); }
 #define ML_1_(cname, conv1, conv) \
 CAMLprim value ml_##cname (value arg1) \
 { return conv (cname (conv1(arg1))); }

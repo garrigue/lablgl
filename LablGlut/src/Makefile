@@ -3,7 +3,7 @@ TOPDIR = ../..
 include $(TOPDIR)/Makefile.common
 
 # Composite options
-INCLUDES = $(GLINCLUDES) $(XINCLUDES)
+INCLUDES = $(GLINCLUDES) $(XINCLUDES) -I$(SRCDIR)
 LIBS = $(GLUTLIBS) $(GLLIBS) $(XLIBS)
 LIBDIRS =
 
@@ -64,7 +64,6 @@ real-install:
 	cd "$(INSTALLDIR)" && $(RANLIB) liblablglut$(XA)
 	@if test -f dlllablglut$(XS); then $(MAKE) installdll; fi
 	@if test -f lablglut.cmxa; then $(MAKE) installopt; fi
-
 
 installdll:
 	cp dlllablglut$(XS) "$(DLLDIR)"
