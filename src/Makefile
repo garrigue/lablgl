@@ -1,12 +1,15 @@
 # OLabl commands
 COMPILER=olablc -c
-OPTCOMP=olablopt -inline 5 -c
+OPTCOMP=olablopt -c
 LIBRARIAN=olablc -a
 OPTLIB=olablopt -a
 LINKER=olablc
 OPTLINK=olablopt
 
 include Makefile.config
+
+OLABLINC=-I $(LABLTKDIR)
+OTHERLIBS=-L$(LABLTKDIR) -llabltk41 $(LIBS)
 
 # Files
 MLOBJS =	raw.cmo 	togl.cmo \
@@ -22,24 +25,23 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt
 
 .ml.cmo:
-	$(COMPILER) $(INCLUDES) $<
+	$(COMPILER) $(OLABLINC) $<
 
 .ml.cmx:
-	$(OPTCOMP) $(INCLUDES) $<
+	$(OPTCOMP) $(OLABLINC) $<
 
 .mli.cmi:
-	$(COMPILER) $(INCLUDES) $<
+	$(COMPILER) $(OLABLINC) $<
 
 .c.o:
-	$(COMPILER) -ccopt -g $(CINCLUDES) $<
+	$(COMPILER) -ccopt "-I$(TOGLDIR) $(INCLUDES)" $<
 
 .var.h:
 	var2def < $< > $@
 
 .cmx.opt: lablgl.cmxa liblablgl.a
-	$(OPTLINK) -o $@ $(INCLUDES) unix.cmxa tk41.cmxa lablgl.cmxa $< \
-		-ccopt -L. -cclib -llablgl -cclib -lunix \
-		$(GLLIBS) $(XLIBS) $(TKLIBS)
+	$(OPTLINK) -o $@ $(OLABLINC) unix.cmxa tk41.cmxa lablgl.cmxa $< \
+		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
 
 all: 	var2def	var2switch lablgltop lablgl lablgllink
 
@@ -61,11 +63,13 @@ liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
 	$(RANLIB) liblablgl.a
 
+$(TOGLDIR)/togl.o:
+	cd $(TOGLDIR) && $(MAKE) togl.o
+
 lablgltop: lablgl.cma liblablgl.a
-	olablmktop $(INCLUDES) -custom -o lablgltop \
-		unix.cma tk41.cma lablgl.cma -ccopt -L. \
-		-cclib -llablgl -cclib -lunix \
-		$(GLLIBS) $(XLIBS) $(TKLIBS)
+	olablmktop $(OLABLINC) -custom -o lablgltop \
+		unix.cma tk41.cma lablgl.cma \
+		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
@@ -74,16 +78,16 @@ lablgl: lablgl.in Makefile.config
 	chmod 755 $@
 
 lablgllink: lablgllink.in Makefile.config
-	sed -e 's|@INCLUDES@|$(INCLUDES)|g'	\
+	sed -e 's|@INCLUDES@|$(OLABLINC)|g'	\
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-	    -e 's|@OTHERLIBS@|$(GLLIBS) $(XLIBS) $(TKLIBS)|g' \
+	    -e 's|@OTHERLIBS@|$(OTHERLIBS)|g' \
 	    < lablgllink.in > $@
 	chmod 755 $@
 
 lablglopt: lablglopt.in Makefile.config
-	sed -e 's|@INCLUDES@|$(INCLUDES)|g'	\
+	sed -e 's|@INCLUDES@|$(OLABLINC)|g'	\
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-	    -e 's|@OTHERLIBS@|$(GLLIBS) $(XLIBS) $(TKLIBS)|g' \
+	    -e 's|@OTHERLIBS@|$(OTHERLIBS)|g' \
 	    < lablglopt.in > $@
 	chmod 755 $@
 

@@ -1,5 +1,5 @@
 
-		LablGL: Installation and Use instructions
+		LablGL 0.9: Installation and Use instructions
 
 1. Description
 
@@ -8,10 +8,9 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Label 1.07, pl1 (patch included) or more
-  * LablTk 1.06 or more (requires Tcl/Tk)
+  * Objective Label 2.00 or more
+  * LablTk 2.00 or more (included in Objective Label, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
-  * Togl-1.4 or more
 
   Objective Label and LablTk can be obtained from
 	http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/
@@ -25,22 +24,22 @@ use Mesa, an openGL-compatible freeware, which works on almost
 everything.
 	http://www.ssec.wisc.edu/~brianp/Mesa.html
 
-  Togl is made by the author of Mesa, and you may find it at:
+  LablGl also uses the Togl widget, but the code is already included
+in this distribution (version 1.4). You may obtain more information
+about Togl at:
 	http://www.ssec.wisc.edu/~brianp/Togl.html
 
 3. Installation
 
-  a) Unpack and compile Togl somewhere
+  a) Edit Makefile.config
 
-  b) Come back to this directory, and edit Makefile.config
-
-  c) Build LablGL
+  b) Build LablGL
 	% make
 
-  d) For the native code version (you need the native code version of LablTk),
+  c) For the native code version (you need the native code version of LablTk),
 	% make opt
 
-  e) Install LablGL
+  d) Install LablGL
 	% make install
 
 4. Use
@@ -52,14 +51,16 @@ everything.
     You may use it either as a toplevel, or directly to run scripts.
     To run an example, type:
         % lablgl example.ml
-    where example.ml is one of:
+    where example.ml is one of: (by order of complexity)
  	simple.ml
 	scene.ml
 	checker.ml	
 	double.ml
 	planet.ml
-	gears.ml
 	texturesurf.ml
+	gears.ml
+	morph3d.ml
+	tennis.ml
 
   * lablglopt
     This script calls olablopt, like labltkopt, linking LablTk and
@@ -94,6 +95,10 @@ everything.
 6. Comments and bug reports
 
    mailto:garrigue@kurims.kyoto-u.ac.jp
+
+   This library has been tested on a number of programs, but this is
+   far from testing all of OpenGL functionality. There are bugs, but
+   at least we didn't find any in our examples.
 
 A. Modules
 

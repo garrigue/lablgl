@@ -1,5 +1,5 @@
 #!/bin/sh
 
-exec olablopt @INCLUDES@ -I @INSTALLDIR@ tk41.cmxa lablgl.cmxa $* \
-	-ccopt -L@INSTALLDIR@ -cclib -llablgl \
-	@OTHERLIBS@
+exec olablopt @INCLUDES@ -I @INSTALLDIR@ \
+	tk41.cmxa lablgl.cmxa $* -cclib "-L@INSTALLDIR@ -llablgl" \
+	-cclib "@OTHERLIBS@"
