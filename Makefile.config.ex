@@ -9,28 +9,27 @@
 # Where to put the lablgl, lablgllink and lablglopt scripts
 BINDIR = /usr/local/bin
 
-# Where to find X headers
-XINCLUDES=-I/usr/X11R6/include
+# The Objective Label library directory (obtain it by ocamlc -v)
+LIBDIR = /usr/local/lib/ocaml
 
 # Where to find Tcl/Tk headers
-# This must the same version as for LablTk
 TKINCLUDES=-I/usr/local/include
 
 # Where to find OpenGL/Mesa headers and libraries
 GLINCLUDES=
-GLLIBS=-lGL -lGLU -Xmu
+GLLIBS=-lGL -lGLU
+
+# Where to find X headers and libraries
+XINCLUDES=-I/usr/X11R6/include
+XLIBS=-L/usr/X11R6/lib -lX11 -lXext -lXmu
 
 # How to index a library
 RANLIB= ranlib
-#RANLIB = :
 
 ##### Adjust these if non standard
 
 # Where is LablTk (standard)
-LABLTKDIR = +labltk
-
-# The Objective Caml library directory
-LIBDIR = `ocamlc -where`
+LABLTKDIR = $(LIBDIR)/labltk
 
 # Where to put LablGL (standard)
 INSTALLDIR = $(LIBDIR)/lablGL
@@ -38,7 +37,7 @@ INSTALLDIR = $(LIBDIR)/lablGL
 # Where is Togl (default)
 TOGLDIR = Togl
 
-# The C compiler (Togl only)
+# The C compiler
 CC = cc
 
 # Compiler options:
@@ -50,7 +49,7 @@ COPTS = -c -O
 INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
 
 # Libraries to link with (-ldl for Linux only?):
-LIBS = $(GLLIBS)
+LIBS = $(GLLIBS) $(XLIBS)
 
 # Leave this empty
 LIBDIRS =

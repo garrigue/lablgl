@@ -1,21 +1,7 @@
-LablGL 0.95:
-------------
-
-* corrected variant matching for Objective Caml 3.01
-
-* add variance annotations
-
-* some bug fixes
-
-LablGL 0.94:
-------------
-
-* corrected syntax for Objective Caml 3.00
-
 LablGL 0.93:
 ------------
 
-* use Objective Caml 2.99 instead of Objective Label.
+* use Objective Caml 3 instead of Objective Label.
 
 * a few functions changed, to comply with the new semantics
   for optional arguments.
