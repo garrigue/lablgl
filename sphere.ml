@@ -1,4 +1,4 @@
-(* $Id: sphere.ml,v 1.3 1998-01-09 13:12:37 garrigue Exp $ *)
+(* $Id: sphere.ml,v 1.4 1998-01-12 05:20:04 garrigue Exp $ *)
 
 let display () =
   Gl.clear_color red:0.0 green:0.0 blue:0.0;
@@ -20,7 +20,7 @@ let my_reshape :w :h =
   Gl.matrix_mode `modelview
 
 let main () =
-  Aux.init_display_mode color:`rgb number:`single;
+  Aux.init_display_mode [`rgb;`single];
   Aux.init_position x:0 y:0 w:400 h:400;
   Aux.init_window title:"Sphere";
   my_init ();

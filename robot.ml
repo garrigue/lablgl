@@ -1,4 +1,4 @@
-(* $Id: robot.ml,v 1.2 1998-01-09 13:12:35 garrigue Exp $ *)
+(* $Id: robot.ml,v 1.3 1998-01-12 05:20:04 garrigue Exp $ *)
 
 class robot () =
   val mutable shoulder = 0
@@ -56,7 +56,7 @@ let main () =
   myinit ();
 
   let robot = new robot () in
-  Tk.key_down_func
+  Gltk.key_down_func
     (fun :key :mode ->
       match key with
 	`left ->  robot#shoulder_subtract

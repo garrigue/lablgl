@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.1 1998-01-12 02:44:57 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.2 1998-01-12 05:20:01 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -160,26 +160,26 @@ class view :gear1 :gear2 :gear3 ?:limit as self =
 
     Gl.pop_matrix ();
 
-    Tk.swap_buffers ();
+    Gltk.swap_buffers ();
 
     count <- count + 1;
-   if count =limit then Tk.quit()
+   if count =limit then Gltk.quit()
 
   method idle () =
     angle <- angle +. 2.0;
     self#draw
 
-  method key :key mode:(_ : Tk.key_mode list) =
+  method key :key mode:(_ : Gltk.key_mode list) =
     (* change view angle, exit upon ESC *)
-    match (key : Tk.key_desc) with
+    match (key : Gltk.key_desc) with
       `up -> view_rotx <- view_rotx +. 5.0
     | `down -> view_rotx <- view_rotx -. 5.0
     | `left -> view_roty <- view_roty +. 5.0
     | `right -> view_roty <- view_roty -. 5.0
     | `char 'z' -> view_rotz <- view_rotz -. 5.0
     | `char 'Z' -> view_rotz <- view_rotz +. 5.0
-    | `escape | `char 'q' -> Tk.quit ()
-    | _ -> Tk.no_changes ()
+    | `escape | `char 'q' -> Gltk.quit ()
+    | _ -> Gltk.no_changes ()
 end
 
 (* new window size or exposure *)
@@ -224,18 +224,18 @@ let init () =
   (gear1, gear2, gear3)
 
 let main () =
-  Tk.init_position x:0 y:0 w:300 h:300;
-  Tk.init_display_mode [`rgb;`depth;`double;`direct];
+  Gltk.init_position x:0 y:0 w:300 h:300;
+  Gltk.init_display_mode [`rgb;`depth;`double;`direct];
 
-  Tk.init_window title:"Gears";
+  Gltk.init_window title:"Gears";
 
   let gear1, gear2, gear3 = init() in
   let view = new view :gear1 :gear2 :gear3 in
-  Tk.expose_func reshape;
-  Tk.reshape_func reshape;
-  Tk.key_down_func (view#key);
-  Tk.idle_func (view#idle);
-  Tk.display_func (fun () -> view#draw);
-  Tk.exec ()
+  Gltk.expose_func reshape;
+  Gltk.reshape_func reshape;
+  Gltk.key_down_func (view#key);
+  Gltk.idle_func (view#idle);
+  Gltk.display_func (fun () -> view#draw);
+  Gltk.exec ()
 
 let _ = main ()

@@ -1,7 +1,7 @@
-/* $Id: ml_aux.c,v 1.5 1998-01-09 13:12:32 garrigue Exp $ */
+/* $Id: ml_aux.c,v 1.6 1998-01-12 05:20:02 garrigue Exp $ */
 
 #include <GL/gl.h>
-#include "aux.h"
+#include "glaux.h"
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include "ml_gl.h"

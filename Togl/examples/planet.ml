@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.3 1998-01-12 02:45:01 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.4 1998-01-12 05:20:03 garrigue Exp $ *)
 
 class planet () as self =
   val mutable year = 0
@@ -36,7 +36,7 @@ class planet () as self =
     Gl.shade_model `smooth;
     Gl.pop_matrix();
     Gl.flush();
-    Tk.swap_buffers ()
+    Gltk.swap_buffers ()
 end
 
 let myinit () =
@@ -82,15 +82,15 @@ let main () =
   myinit ();
 
   let planet = new planet () in
-  Tk.key_down_func
+  Gltk.key_down_func
     (fun :key :mode ->
       match key with
 	`left ->  planet#year_subtract
       |	`right -> planet#year_add
       |	`up -> planet#day_add
       |	`down -> planet#day_subtract
-      |	_ -> ());
-(*  Tk.idle_func (fun () -> planet#tick; planet#display()); *)
+      |	_ -> Gltk.no_changes ());
+(*  Gltk.idle_func (fun () -> planet#tick; planet#display()); *)
   Aux.reshape_func my_reshape;
   Aux.main_loop display:(planet#display)
 

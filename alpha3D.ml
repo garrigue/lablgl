@@ -1,4 +1,4 @@
-(* $Id: alpha3D.ml,v 1.2 1998-01-12 02:44:56 garrigue Exp $ *)
+(* $Id: alpha3D.ml,v 1.3 1998-01-12 05:20:00 garrigue Exp $ *)
 
 let myinit () =
   let mat_ambient = 0.0, 0.0, 0.0, 0.15
@@ -61,10 +61,8 @@ let main () =
   Aux.init_position x:0 y:0 w:500 h:500;
   Aux.init_window title:"Alpha3D";
   let view = new view () in
-  Tk.mouse_down_func
-    begin fun :x :y buttons ->
-      if List.mem `left in:buttons then view#toggle_eye
-    end;
+  Aux.mouse_func button:`left mode:`down
+    fun:(fun :x :y -> view#toggle_eye);
   myinit ();
   Aux.reshape_func my_reshape;
   Aux.main_loop display:(view#display)

@@ -4,11 +4,12 @@ COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
 CINCLUDES=-ccopt "-I/usr/local/include"
-GLLIBS=	-ccopt "-L/usr/local/lib" -cclib -lMesaaux -cclib -lMesatk \
-	-cclib -lMesaGL -cclib -lMesaGLU
+#GLLIBS=	-ccopt "-L/usr/local/lib" -cclib -lMesaaux -cclib -lMesatk \
+#	-cclib -lMesaGL -cclib -lMesaGLU
+GLLIBS=-ccopt -L. -cclib -lglaux -cclib -lGL -cclib -lGLU
 XLIBS= -ccopt "-L/usr/X11R6/lib" -cclib -lX11 -cclib -lXext
 
-MLOBJS =	gl.cmo		tk.cmo		aux.cmo		glm.cmo
+MLOBJS =	gl.cmo		gltk.cmo	aux.cmo		glm.cmo
 COBJS =		ml_gl.o		ml_tk.o		ml_aux.o
 
 # Default rules
@@ -58,4 +59,4 @@ ml_gl.o: ml_gl.h gl_tags.h gl_tags.c
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
 glm.cmo: gl.cmi
-aux.cmo: tk.cmi
+aux.cmo: gltk.cmi

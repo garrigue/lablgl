@@ -1,8 +1,8 @@
-/* $Id: ml_tk.c,v 1.3 1998-01-12 02:45:01 garrigue Exp $ */
+/* $Id: ml_tk.c,v 1.4 1998-01-12 05:20:03 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
-#include "tk.h"
+#include "gltk.h"
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
