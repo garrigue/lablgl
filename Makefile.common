@@ -33,6 +33,8 @@ XS = .so
 MKLIB=lib /nologo /debugtype:CV /out:
 MKDLL=link /nologo /dll "$(LIBDIR)/ocamlrun.lib" /out:
 
+include $(CONFIG)
+
 # Default rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE) .d.obj
 

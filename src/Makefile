@@ -1,7 +1,6 @@
 # Include shared parts
 TOPDIR = ..
 include ../Makefile.common
-include $(CONFIG)
 
 # Composite options
 INCLUDES = $(GLINCLUDES) $(XINCLUDES)

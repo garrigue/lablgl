@@ -34,8 +34,6 @@ gluTess.cmo: raw.cmi gluTess.cmi
 gluTess.cmx: raw.cmx gluTess.cmi 
 raw.cmo: raw.cmi 
 raw.cmx: raw.cmi 
-togl.cmo: glList.cmi togl.cmi 
-togl.cmx: glList.cmx togl.cmi 
 glArray.cmi: glDraw.cmi raw.cmi 
 glClear.cmi: gl.cmi 
 glDraw.cmi: gl.cmi glPix.cmi 
@@ -50,4 +48,3 @@ gluMat.cmi: gl.cmi
 gluMisc.cmi: gl.cmi glPix.cmi glTex.cmi 
 gluNurbs.cmi: gl.cmi glMap.cmi raw.cmi 
 gluTess.cmi: gl.cmi raw.cmi 
-togl.cmi: glList.cmi 
