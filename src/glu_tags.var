@@ -1,5 +1,18 @@
-(* $Id: glu_tags.var,v 1.1 1998-01-13 11:07:13 garrigue Exp $: tags for GLU library *)
+(* $Id: glu_tags.var,v 1.2 1998-01-22 10:32:54 garrigue Exp $: tags for GLU library *)
 
+(* gluNextContour *)
+exterior interior unknown ccw cw
+
+(* gluNurbsProperty *)
+sampling_method path_length parametric_error domain_distance
+sampling_tolerance
+parametric_tolerance
+u_step v_step
+display_mode fill
+culling auto_load_matrix
 polygon -> GLU_OUTLINE_POLYGON
 patch -> GLU_OUTLINE_PATCH
 
+$$
+(* gluNurbsCurve *)
+trim_2 trim_3

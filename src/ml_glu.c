@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.5 1998-01-21 23:25:20 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.6 1998-01-22 10:32:55 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -160,6 +160,104 @@ value ml_gluNewTess (void)
     Final_fun(struc) = ml_gluDeleteTess;
     Tess_val(struc) = gluNewTess();
     return struc;
+}
+
+value ml_gluNextContour (value tess, value type)
+{
+    gluNextContour (Tess_val(tess), GLUenum_val(type));
+    return Val_unit;
+}
+
+#define Fsize_raw(raw) (Int_val(Size_raw(raw))/sizeof(GLfloat))
+
+value ml_gluNurbsCurve (value nurb, value knots, value control,
+			value order, value type)
+{
+    GLenum targ;
+    int ustride;
+
+    switch (type) {
+    case MLTAG_vertex_3:
+	targ = GL_MAP1_VERTEX_3; ustride = 3; break;
+    case MLTAG_vertex_4:
+	targ = GL_MAP1_VERTEX_4; ustride = 4; break;
+    case MLTAG_index:
+	targ = GL_MAP1_INDEX; ustride = 1; break;
+    case MLTAG_color_4:
+	targ = GL_MAP1_COLOR_4; ustride = 4; break;
+    case MLTAG_normal:
+	targ = GL_MAP1_NORMAL; ustride = 3; break;
+    case MLTAG_texture_coord_1:
+	targ = GL_MAP1_TEXTURE_COORD_1; ustride = 1; break;
+    case MLTAG_texture_coord_2:
+	targ = GL_MAP1_TEXTURE_COORD_2; ustride = 2; break;
+    case MLTAG_texture_coord_3:
+	targ = GL_MAP1_TEXTURE_COORD_3; ustride = 3; break;
+    case MLTAG_texture_coord_4:
+	targ = GL_MAP1_TEXTURE_COORD_4; ustride = 4; break;
+    case MLTAG_trim_2:
+	targ = GLU_MAP1_TRIM_2; ustride = 2; break;
+    case MLTAG_trim_3:
+	targ = GLU_MAP1_TRIM_3; ustride = 3; break;
+    }
+    gluNurbsCurve (Nurb_val(nurb), Fsize_raw(knots), Float_raw(knots),
+		   ustride, Float_raw(control), Int_val(order), targ);
+    return Val_unit;
+}
+
+value ml_gluNurbsProperty (value nurb, value prop)
+{
+    GLfloat val;
+    GLenum property = GLUenum_val (Field(prop,0));
+
+    switch (property) {
+    case GLU_SAMPLING_METHOD:
+    case GLU_DISPLAY_MODE:
+	val = GLUenum_val (Field(prop,1));
+	break;
+    case GLU_PARAMETRIC_TOLERANCE:
+	val = Float_val (Field(prop,1));
+	break;
+    default:
+	val = Int_val (Field(prop,1));
+	break;
+    }
+    gluNurbsProperty (Nurb_val(nurb), property, val);
+    return Val_unit;
+}
+
+value ml_gluNurbsSurface (value param)
+{
+    GLenum type;
+    GLint sStride;
+
+    switch (Field(param,7)) {
+    case MLTAG_vertex_3:
+	type = GL_MAP2_VERTEX_3; sStride = 3; break;
+    case MLTAG_vertex_4:
+	type = GL_MAP2_VERTEX_4; sStride = 4; break;
+    case MLTAG_index:
+	type = GL_MAP2_INDEX; sStride = 1; break;
+    case MLTAG_color_4:
+	type = GL_MAP2_COLOR_4; sStride = 4; break;
+    case MLTAG_normal:
+	type = GL_MAP2_NORMAL; sStride = 3; break;
+    case MLTAG_texture_coord_1:
+	type = GL_MAP2_TEXTURE_COORD_1; sStride = 1; break;
+    case MLTAG_texture_coord_2:
+	type = GL_MAP2_TEXTURE_COORD_2; sStride = 2; break;
+    case MLTAG_texture_coord_3:
+	type = GL_MAP2_TEXTURE_COORD_3; sStride = 3; break;
+    case MLTAG_texture_coord_4:
+	type = GL_MAP2_TEXTURE_COORD_4; sStride = 4; break;
+    }
+    gluNurbsSurface (Nurb_val(Field(param,0)), Fsize_raw(Field(param,1)),
+		     Float_raw(Field(param,1)), Fsize_raw(Field(param,2)),
+		     Float_raw(Field(param,2)), sStride,
+		     Int_val(Field(param,3)), Float_raw(Field(param,4)),
+		     Int_val(Field(param,5)), Int_val(Field(param,6)),
+		     type);
+    return Val_unit;
 }
 
 ML_double4(gluOrtho2D)
