@@ -61,7 +61,7 @@ lablgl.cma: $(LIBOBJS) Makefile.config
 		-cclib "-llablgl $(OTHERLIBS)"
 
 lablgl.cmxa: $(OPTOBJS) Makefile.config
-	$(OPTLIB) -custom -o lablgl.cmxa $(OPTOBJS) \
+	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS) \
 		-cclib "-llablgl $(OTHERLIBS)"
 
 liblablgl.a: $(COBJS)
