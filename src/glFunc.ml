@@ -1,4 +1,4 @@
-(* $Id: glFunc.ml,v 1.4 1999-12-07 15:02:00 garrigue Exp $ *)
+(* $Id: glFunc.ml,v 1.5 1999-12-08 08:24:28 garrigue Exp $ *)
 
 open Gl
 
@@ -31,7 +31,7 @@ external blend_func : src:sfactor -> dst:dfactor -> unit = "ml_glBlendFunc"
 
 external color_mask : bool -> bool -> bool -> bool -> unit
     = "ml_glColorMask"
-let color_mask ?:red[=false] ?:green[=false] ?:blue[=false] ?:alpha[=false] ()=
+let color_mask ?(:red=false) ?(:green=false) ?(:blue=false) ?(:alpha=false) ()=
   color_mask red green blue alpha
 
 external depth_func : cmp_func -> unit = "ml_glDepthFunc"
@@ -62,5 +62,5 @@ type stencil_op = [`keep|`zero|`replace|`incr|`decr|`invert]
 external stencil_op :
     fail:stencil_op -> zfail:stencil_op -> zpass:stencil_op -> unit
     = "ml_glStencilOp"
-let stencil_op ?:fail[=`keep] ?:zfail[=`keep] ?:zpass[=`keep] () =
+let stencil_op ?(:fail=`keep) ?(:zfail=`keep) ?(:zpass=`keep) () =
   stencil_op :fail :zfail :zpass

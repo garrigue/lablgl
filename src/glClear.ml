@@ -1,10 +1,10 @@
-(* $Id: glClear.ml,v 1.3 1999-12-07 15:01:59 garrigue Exp $ *)
+(* $Id: glClear.ml,v 1.4 1999-12-08 08:24:27 garrigue Exp $ *)
 
 open Gl
 
 external accum : float -> float -> float -> float -> unit
     = "ml_glClearAccum"
-let accum ?:alpha[=1.] (r,g,b : rgb) =
+let accum ?(:alpha=1.) (r,g,b : rgb) =
   accum r g b alpha
 
 type buffer = [`color|`depth|`accum|`stencil]
@@ -13,7 +13,7 @@ external clear : buffer list -> unit = "ml_glClear"
 external color :
     red:float -> green:float -> blue:float -> alpha:float -> unit
     = "ml_glClearColor"
-let color ?:alpha[=1.] (red, green, blue : rgb) =
+let color ?(:alpha=1.) (red, green, blue : rgb) =
   color :red :green :blue :alpha
 external depth : clampf -> unit = "ml_glClearDepth"
 external index : float -> unit = "ml_glClearIndex"
