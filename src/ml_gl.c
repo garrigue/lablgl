@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.37 2003-04-22 03:24:02 erickt Exp $ */
+/* $Id: ml_gl.c,v 1.38 2003-04-24 16:42:59 erickt Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -263,7 +263,7 @@ CAMLprim value ml_glLightModel (value param)  /* ML */
 	break;
     case MLTAG_local_viewer:
 	glLightModelf (GL_LIGHT_MODEL_LOCAL_VIEWER,
-		       Float_val(Field(param,1)));
+		       Int_val(Field(param,1)));
 	break;
     case MLTAG_two_side:
 	glLightModeli (GL_LIGHT_MODEL_TWO_SIDE,
