@@ -2,5 +2,6 @@ var2def
 var2switch
 *_tags.h
 *_tags.c
+*.opt
 lablgl
 Makefile.config
