@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.44 2004-11-02 07:03:34 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.45 2005-01-25 02:38:19 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -202,7 +202,7 @@ CAMLprim value ml_glFog (value param) /* ML */
 	glFogf(GL_FOG_INDEX, Float_val(Field(param,1)));
 	break;
     case MLTAG_color:
-	for (i = 0; i < 4; i++) params[i] = Field(Field(param,1),i);
+      for (i = 0; i < 4; i++) params[i] = Float_val(Field(Field(param,1),i));
 	glFogfv(GL_FOG_COLOR, params);
 	break;
     }
