@@ -1,7 +1,17 @@
+LablGL 0.95:
+------------
+
+* for Objective Caml 3.01
+
+LablGL 0.94:
+------------
+
+* for Objective Caml 3.00
+
 LablGL 0.93:
 ------------
 
-* use Objective Caml 3 instead of Objective Label.
+* use Objective Caml 2.99 instead of Objective Label.
 
 * a few functions changed, to comply with the new semantics
   for optional arguments.

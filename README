@@ -1,5 +1,5 @@
 
-		LablGL 0.94: Installation and Use instructions
+		LablGL 0.95: Installation and Use instructions
 
 1. Description
 
@@ -8,7 +8,7 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Caml 3.00
+  * Objective Caml 3.01
   * LablTk (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
@@ -273,4 +273,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.10 2000-12-20 03:02:12 garrigue Exp $
+$Id: README,v 1.11 2001-03-09 13:47:21 garrigue Exp $

@@ -77,22 +77,8 @@ lablgltop: lablgl.cma togl.cmo liblablgl.a
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
-	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g'	\
+	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
 	    < lablgl.in > $@
-	chmod 755 $@
-
-lablgllink: lablgllink.in Makefile.config
-	sed -e 's|@INCLUDES@|$(OCAMLINC)|g'	\
-	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-	    -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
-	    < lablgllink.in > $@
-	chmod 755 $@
-
-lablglopt: lablglopt.in Makefile.config
-	sed -e 's|@INCLUDES@|$(OCAMLINC)|g'	\
-	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-	    -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
-	    < lablglopt.in > $@
 	chmod 755 $@
 
 gl_tags.c: gl_tags.var
@@ -108,13 +94,16 @@ glu_tags.c: glu_tags.var
 	./var2switch GLU_ < glu_tags.var > $@
 
 install:
+	@$(MAKE) real-install LIBDIR=$(LIBDIR)
+
+real-install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
 	cp liblablgl.a lablgl.cma togl.cmo $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
-	if test -f lablgl.cmxa; then $(MAKE) installopt; fi
+	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
 
 installopt:
 	cp lablgl.cmxa lablgl.a $(MLOBJS:.cmo=.cmx) togl.o $(INSTALLDIR)
