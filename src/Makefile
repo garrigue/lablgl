@@ -41,7 +41,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 		-ccopt -L. -cclib -llablgl -cclib -lunix \
 		$(GLLIBS) $(XLIBS) $(TKLIBS)
 
-all: 	var2def	var2switch lablgl
+all: 	var2def	var2switch lablgltop lablgl
 
 opt:	var2def var2switch lablgl.cmxa
 
@@ -61,11 +61,15 @@ liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
 #	$(RANLIB) liblablgl.a
 
-lablgl: lablgl.cma liblablgl.a
-	olablmktop $(INCLUDES) -custom -o lablgl \
+lablgltop: lablgl.cma liblablgl.a
+	olablmktop $(INCLUDES) -custom -o lablgltop \
 		unix.cma tk41.cma lablgl.cma -ccopt -L. \
 		-cclib -llablgl -cclib -lunix \
 		$(GLLIBS) $(XLIBS) $(TKLIBS)
+
+lablgl: lablgl.in Makefile.config
+	sed -e "s|LABLTKDIR|$(LABLTKDIR)|" -e "s|INSTALLDIR|$(INSTALLDIR)|" \
+		< lablgl.in > $@
 
 gl_tags.c: gl_tags.var
 	./var2switch GL_ < gl_tags.var > $@
@@ -84,7 +88,7 @@ install:
 	cp raw.cmi gl.cmi glu.cmi togl.cmi $(INSTALLDIR)
 	cp raw.mli gl.mli togl.mli $(INSTALLDIR)
 	cp lablgl.cma liblablgl.a $(INSTALLDIR)
-	cp lablgl $(INSTALLDIR)
+	cp lablgltop $(INSTALLDIR)
 	if test -f lablgl.cmxa; then : ; \
 		cp lablgl.cmxa lablgl.cma $(INSTALLDIR); fi
 

@@ -3,5 +3,6 @@ var2switch
 *_tags.h
 *_tags.c
 *.opt
+lablgltop
 lablgl
 Makefile.config
