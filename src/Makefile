@@ -1,10 +1,12 @@
 # Ocaml commands
-COMPILER=ocamlc -c -modern
-OPTCOMP=ocamlopt -c -modern
-LIBRARIAN=ocamlc -a
-OPTLIB=ocamlopt -a
-LINKER=ocamlc
-OPTLINK=ocamlopt
+CAMLC=ocamlc
+CAMLOPT=ocamlopt
+COMPILER=$(CAMLC) -c -labels
+OPTCOMP=$(CAMLOPT) -c -labels
+LIBRARIAN=$(CAMLC) -a
+OPTLIB=$(CAMLOPT) -a
+LINKER=$(CAMLC)
+OPTLINK=$(CAMLOPT)
 
 include Makefile.config
 
@@ -42,7 +44,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 
 .cmx.opt: lablgl.cmxa liblablgl.a
 	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa tk41.cmxa lablgl.cmxa $< \
-		 -cclib -L. -cclib -L$(LABLTKDIR) -cclib "$(OTHERLIBS)"
+		 -ccopt -L. -ccopt -L$(LABLTKDIR) -cclib "$(OTHERLIBS)"
 
 all: 	var2def	var2switch lablgltop lablgl lablgllink
 
@@ -72,7 +74,7 @@ $(TOGLDIR)/togl.o:
 lablgltop: lablgl.cma togl.cmo liblablgl.a
 	ocamlmktop $(OCAMLINC) -o lablgltop \
 		unix.cma tk41.cma lablgl.cma togl.cmo \
-		-cclib -L. -cclib -L$(LABLTKDIR)
+		-ccopt -L. -ccopt -L$(LABLTKDIR)
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\

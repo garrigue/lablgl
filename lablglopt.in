@@ -1,5 +1,5 @@
 #!/bin/sh
 
 exec ocamlopt @INCLUDES@ -I @INSTALLDIR@ \
-	tk41.cmxa lablgl.cmxa $* \
-        -cclib "-L@INSTALLDIR@" -cclib "-L@LABLTKDIR@"
+	tk41.cmxa lablgl.cmxa "$@" \
+        -ccopt "-L@INSTALLDIR@" -ccopt "-L@LABLTKDIR@"
