@@ -2,6 +2,7 @@
 #TOPDIR = ../..
 #include $(TOPDIR)/Makefile.common
 
+all: byte-code-library native-code-library top
 RESULT=lablglut
 CAMLIDL=../camlidl/compiler/camlidl
 IDLFLAGS=-no-include -prepro "cpp -traditional-cpp"
@@ -24,10 +25,16 @@ LIBS=bigarray
 LIBDIRS=$(OCAML)
 CLIBS=camlidl glut GLU GL
 
+include OCamlMakefile
+
 glcaml.idl: gl_constants.idl
 
 gl_constants.idl: ./config.sh
 	./config.sh
+
+install: dcl ncl
+	install -d $(OCAML)/lablglut
+	install *.{mli,cmi} *.cma *.a *.so $(OCAML)/lablglut
 
 #ifeq ($(TOOLCHAIN), msvc)
 #liblablglut$(XA): $(COBJS)
@@ -90,5 +97,4 @@ gl_constants.idl: ./config.sh
 #	cp lablglut.cmxa lablglut$(XA) $(LIBOBJS:.cmo=.cmx) "$(INSTALLDIR)"
 #	cd "$(INSTALLDIR)" && $(RANLIB) lablglut$(XA)
 
-include OCamlMakefile
 
