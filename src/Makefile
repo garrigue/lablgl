@@ -1,23 +1,31 @@
 # OLabl commands
 COMPILER=olablc -c
+OPTCOMP=olablopt -inline 5 -c
 LIBRARIAN=olablc -a
+OPTLIB=olablopt -a
 LINKER=olablc
+OPTLINK=olablopt
 
 include Makefile.config
 
 # Files
 MLOBJS =	raw.cmo 	gl.cmo		glu.cmo		glm.cmo \
 		togl.cmo
+OPTOBJS =	raw.cmx 	gl.cmx		glu.cmx		glm.cmx \
+		togl.cmx
 #gltk.cmo	aux.cmo
-COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	togl.o \
-		ml_raw.o
+COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
+		$(TOGL)
 #ml_tk.o	ml_aux.o
 # Default rules
 
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt
 
 .ml.cmo:
 	$(COMPILER) $(INCLUDES) $<
+
+.ml.cmx:
+	$(OPTCOMP) $(INCLUDES) $<
 
 .mli.cmi:
 	$(COMPILER) $(INCLUDES) $<
@@ -27,6 +35,11 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	togl.o \
 
 .var.h:
 	var2def < $< > $@
+
+.cmx.opt: lablgl.cmxa liblablgl.a
+	$(OPTLINK) -o $@ $(INCLUDES) unix.cmxa tk41.cmxa lablgl.cmxa $< \
+		-ccopt -L. -cclib -llablgl -cclib -lunix \
+		$(GLLIBS) $(XLIBS) $(TKLIBS)
 
 all: 	var2def	var2switch lablgl
 
@@ -39,17 +52,18 @@ var2switch: var2switch.cmo
 lablgl.cma: $(MLOBJS)
 	$(LIBRARIAN) -o lablgl.cma $(MLOBJS)
 
+lablgl.cmxa: $(OPTOBJS)
+	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS)
+
 liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
-#	$(RANLIB) liblablgl.a
+	$(RANLIB) liblablgl.a
 
 lablgl: lablgl.cma liblablgl.a
 	olablmktop $(INCLUDES) -custom -o lablgl \
 		unix.cma tk41.cma lablgl.cma -ccopt -L. \
 		-cclib -llablgl -cclib -lunix \
 		$(GLLIBS) $(XLIBS) $(TKLIBS)
-
-labltogl: 
 
 gl_tags.c: gl_tags.var
 	./var2switch GL_ < gl_tags.var > $@
@@ -72,11 +86,11 @@ ml_aux.o: ml_gl.h
 ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
 ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
 ml_raw.o: raw_tags.h ml_raw.h
-raw.cmo: raw.cmi
+raw.cmo raw.cmx: raw.cmi
 gl.cmi: raw.cmi
-gl.cmo: gl.cmi
-glu.cmo: gl.cmi raw.cmi
-glm.cmo: gl.cmi
+gl.cmo gl.cmx: gl.cmi
+glu.cmo glu.cmx: gl.cmi raw.cmi
+glm.cmo glm.cmx: gl.cmi
 aux.cmo: gltk.cmi
 togl.cmi: gl.cmi
-togl.cmo: togl.cmi
+togl.cmo togl.cmx: togl.cmi
