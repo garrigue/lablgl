@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.42 2003-10-29 09:27:07 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.43 2004-04-16 11:07:22 raffalli Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -525,8 +525,14 @@ CAMLprim value ml_glReadBuffer (value buffer)
     return Val_unit;
 }
 
-ML_6 (glReadPixels, Int_val, Int_val, Int_val, Int_val, GLenum_val,
-      Type_void_raw)
+CAMLprim value ml_glReadPixels(value x, value y, value w, value h, value format , value raw)  /* ML */
+{
+  glPixelStorei(GL_PACK_SWAP_BYTES, 0);
+  glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  glReadPixels(Int_val(x),Int_val(y),Int_val(w),Int_val(h),GLenum_val(format),
+	       Type_void_raw(raw));
+}
+
 ML_bc6 (ml_glReadPixels)
 ML_2 (glRectd, Pair(arg1,Double_val,Double_val),
       Pair(arg2,Double_val,Double_val))
