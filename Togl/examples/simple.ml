@@ -1,4 +1,4 @@
-(* $Id: simple.ml,v 1.9 2000-04-16 12:35:34 garrigue Exp $ *)
+(* $Id: simple.ml,v 1.10 2002-04-27 02:35:45 garrigue Exp $ *)
 
 open Tk
 
@@ -8,7 +8,8 @@ let main () =
   Aux.init_window ~title:"LablGL"; *)
   let top = openTk () in
   let togl =
-    Togl.create ~width:500 ~height:500 ~rgba:true ~depth:true top in
+    Togl.create top ~width:500 ~height:500 ~rgba:true ~depth:true ~double:true
+  in
   Wm.title_set top "LablGL";
   pack ~fill:`Both [togl];
   Togl.display_func togl ~cb:
@@ -25,7 +26,8 @@ let main () =
       GlDraw.vertex ~x:(0.5) ~y:(0.5) ();
       GlDraw.vertex ~x:(0.5) ~y:(-0.5) ();
       GlDraw.ends ();
-      Gl.flush ()
+      Gl.flush ();
+      Togl.swap_buffers togl
     end;
   ignore (Timer.add ~ms:10000 ~callback:(fun () -> destroy top));
   mainLoop ()

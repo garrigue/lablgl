@@ -26,9 +26,9 @@ GLLIBS = -lGL -lGLU
 # The following libraries may be required (try to add them one at a time)
 # GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
 
-# How to index a library
-RANLIB = ranlib
-#RANLIB = :
+# How to index a library after installing (required on MacOSX)
+RANLIB = :
+#RANLIB = ranlib
 
 ##### Adjust these if non standard
 

@@ -41,7 +41,7 @@ TOGLOBJS =	ml_togl.o	$(TOGLDIR)/togl.o
 .var.h:
 	./var2def < $< > $@
 
-.cmx.opt: lablgl.cmxa liblablgl.a
+.cmx.opt: lablgl.cmxa
 	$(OPTLINK) -o $@ $(OCAMLINC) -ccopt -L. \
 	    unix.cmxa labltk.cmxa lablgl.cmxa togl.cmxa $<
 
@@ -55,23 +55,19 @@ var2def: var2def.ml
 var2switch: var2switch.ml
 	$(LINKER) -pp camlp4o var2switch.ml -o $@
 
-lablgl.cma: $(LIBOBJS) $(COBJS) Makefile.config
-	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(GLLIBS) $(XLIBS)
-
-lablgl.cmxa: lablgl.cma $(OPTOBJS) Makefile.config
+liblablgl.a: $(COBJS) Makefile.config
+	$(LIBRARIAN) -o lablgl $(COBJS) $(GLLIBS) $(XLIBS)
+lablgl.cma: liblablgl.a $(LIBOBJS) Makefile.config
+	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(GLLIBS) $(XLIBS)
+lablgl.cmxa: liblablgl.a $(OPTOBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(OPTOBJS) $(GLLIBS) $(XLIBS)
-	$(RANLIB) lablgl.a
 
-togl.cma: togl.cmo $(TOGLOBJS) Makefile.config
-	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
-
-togl.cmxa: togl.cma togl.cmx Makefile.config
+libtogl.a: $(TOGLOBJS) Makefile.config
+	$(LIBRARIAN) -o togl $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
+togl.cma: libtogl.a togl.cmo Makefile.config
+	$(LIBRARIAN) -o togl togl.cmo $(GLLIBS) $(TKLIBS) $(XLIBS)
+togl.cmxa: libtogl.a togl.cmx Makefile.config
 	$(LIBRARIAN) -o togl togl.cmx $(GLLIBS) $(TKLIBS) $(XLIBS)
-	$(RANLIB) togl.a
-
-#liblablgl.a: $(COBJS)
-#	ar rc liblablgl.a $(COBJS)
-#	$(RANLIB) liblablgl.a
 
 $(TOGLDIR)/togl.o:
 	cd $(TOGLDIR) && $(MAKE) togl.o CC="$(CAMLC)" CFLAGS='-c -ccopt "$(COPTS) $(INCLUDES) $(TK_FLAGS)"'
@@ -108,6 +104,7 @@ real-install:
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
 	cp liblablgl.a lablgl.cma libtogl.a togl.cma $(INSTALLDIR)
+	cd $(INSTALLDIR) && $(RANLIB) liblablgl.a libtogl.a
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
 	@if test -f dlllablgl.so; then $(MAKE) installdll; fi
@@ -117,7 +114,9 @@ installdll:
 	cp dlllablgl.so dlltogl.so $(INSTALLDIR)
 
 installopt:
-	cp lablgl.cmxa lablgl.a togl.cmxa togl.a $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
+	cp lablgl.cmxa lablgl.a togl.cmxa togl.a \
+	   $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
+	cd $(INSTALLDIR) && $(RANLIB) lablgl.a togl.a
 
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
