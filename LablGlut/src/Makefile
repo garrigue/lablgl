@@ -15,6 +15,7 @@ IDLFLAGS=-no-include -prepro "cpp -traditional-cpp"
 #OCAMLINC=
 
 all: debug-code-library native-code-library top
+BIN_DIR=/usr/local/bin
 SOURCES=\
     glcaml.idl\
     glucaml.idl\
@@ -35,6 +36,7 @@ gl_constants.idl: ./config.sh
 install: dcl ncl
 	install -d $(OCAML)/lablglut
 	install *.{mli,cmi} *.cma *.a *.so $(OCAML)/lablglut
+	install lablglut{,.top} $(BIN_DIR)
 
 #ifeq ($(TOOLCHAIN), msvc)
 #liblablglut$(XA): $(COBJS)
