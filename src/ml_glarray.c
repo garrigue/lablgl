@@ -31,7 +31,7 @@ int ml_glSizeOfValue(value v) {
 
 CAMLprim value ml_glEdgeFlagPointer(value raw)
 {
-  glEdgeFlagPointer(0, Addr_raw(raw));
+  glEdgeFlagPointer(0, (GLboolean*)Addr_raw(raw));
   return Val_unit;
 }
 

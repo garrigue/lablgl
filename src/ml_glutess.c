@@ -1,4 +1,4 @@
-/* $Id: ml_glutess.c,v 1.3 2004-07-13 13:26:21 garrigue Exp $ */
+/* $Id: ml_glutess.c,v 1.4 2004-07-13 13:56:16 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
 #include <stdio.h>
@@ -165,8 +165,8 @@ static void runTesselator(value contours)
 
   gluTessBeginPolygon(tobj, NULL);
   while (contours != Val_int(0)) {
-    gluTessBeginContour(tobj);
     value contour=Field(contours, 0);
+    gluTessBeginContour(tobj);
     while (contour != Val_int(0)) {
       value v=Field(contour, 0);
       GLdouble *r =

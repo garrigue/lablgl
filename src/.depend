@@ -30,8 +30,8 @@ gluNurbs.cmo: gl.cmi glMap.cmi raw.cmi gluNurbs.cmi
 gluNurbs.cmx: gl.cmx glMap.cmx raw.cmx gluNurbs.cmi 
 gluQuadric.cmo: gluQuadric.cmi 
 gluQuadric.cmx: gluQuadric.cmi 
-gluTess.cmo: raw.cmi gluTess.cmi 
-gluTess.cmx: raw.cmx gluTess.cmi 
+gluTess.cmo: gluTess.cmi 
+gluTess.cmx: gluTess.cmi 
 raw.cmo: raw.cmi 
 raw.cmx: raw.cmi 
 glArray.cmi: glDraw.cmi raw.cmi 
@@ -47,4 +47,3 @@ glTex.cmi: gl.cmi glPix.cmi
 gluMat.cmi: gl.cmi 
 gluMisc.cmi: gl.cmi glPix.cmi glTex.cmi 
 gluNurbs.cmi: gl.cmi glMap.cmi raw.cmi 
-gluTess.cmi: gl.cmi raw.cmi 
