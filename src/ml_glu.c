@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.27 2004-07-13 07:55:18 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.28 2004-11-02 07:03:34 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -95,7 +95,7 @@ ML_1 (gluEndTrim, Nurb_val)
 
 ML_1_ (gluGetString, GLUenum_val, copy_string_check)
 
-ML_4 (gluLoadSamplingMatrices, Nurb_val, Float_raw, Float_raw, Int_raw)
+ML_4 (gluLoadSamplingMatrices, Nurb_val, Float_raw, Float_raw, (GLint*)Int_raw)
 ML_3 (gluLookAt, Triple(arg1,Double_val,Double_val,Double_val),
       Triple(arg2,Double_val,Double_val,Double_val),
       Triple(arg3,Double_val,Double_val,Double_val))
@@ -119,8 +119,8 @@ CAMLprim value ml_gluNewQuadric (void)
 CAMLprim value ml_gluNurbsCurve (value nurb, value knots, value control,
 			value order, value type)
 {
-    GLenum targ;
-    int ustride;
+    GLenum targ = 0U;
+    int ustride = 0;
 
     switch (type) {
     case MLTAG_vertex_3:
@@ -176,8 +176,8 @@ CAMLprim value ml_gluNurbsSurface (value nurb, value sKnots, value tKnots,
                                    value tStride, value control, value sOrder,
                                    value tOrder, value tag)
 {
-    GLenum type;
-    GLint sStride;
+    GLenum type = 0U;
+    GLint sStride = 0;
 
     switch (tag) {
     case MLTAG_vertex_3:
@@ -253,8 +253,8 @@ CAMLprim value ml_gluProject (value object)
 
 CAMLprim value ml_gluPwlCurve (value nurbs, value count, value data, value tag)
 {
-    GLenum type;
-    GLint stride;
+    GLenum type = 0U;
+    GLint stride = 0;
 
     switch (tag) {
     case MLTAG_trim_2:

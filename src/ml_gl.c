@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.43 2004-04-16 11:07:22 raffalli Exp $ */
+/* $Id: ml_gl.c,v 1.44 2004-11-02 07:03:34 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -220,7 +220,7 @@ ML_2 (glGetDoublev, GLenum_val, Double_raw)
 	
 CAMLprim value ml_glHint (value target, value hint)
 {
-    GLenum targ;
+    GLenum targ = 0U;
 
     switch (target) {
     case MLTAG_fog:	targ = GL_FOG_HINT; break;
@@ -324,8 +324,8 @@ ML_1 (glLogicOp, GLenum_val)
 
 CAMLprim value ml_glMap1d (value target, value *u, value order, value raw)
 {
-    int ustride, i;
-    GLenum targ;
+    int ustride = 0;
+    GLenum targ = 0U;
 
     switch (target) {
     case MLTAG_vertex_3:
@@ -355,8 +355,8 @@ CAMLprim value ml_glMap1d (value target, value *u, value order, value raw)
 CAMLprim value ml_glMap2d (value target, value u, value uorder,
                            value v, value vorder, value raw)
 {
-    int ustride;
-    GLenum targ;
+    int ustride = 0;
+    GLenum targ = 0U;
 
     switch (target) {
     case MLTAG_vertex_3:
@@ -531,6 +531,7 @@ CAMLprim value ml_glReadPixels(value x, value y, value w, value h, value format 
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
   glReadPixels(Int_val(x),Int_val(y),Int_val(w),Int_val(h),GLenum_val(format),
 	       Type_void_raw(raw));
+  return Val_unit;
 }
 
 ML_bc6 (ml_glReadPixels)

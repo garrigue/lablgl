@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.13 2003-10-03 22:52:19 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.14 2004-11-02 07:03:34 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -35,8 +35,8 @@ int TOGLenum_val(value tag)
 CAMLprim value ml_Togl_Init (value unit)  /* ML */
 {
     value *interp = caml_named_value("cltclinterp");
-    Tcl_Interp *cltclinterp = (Tcl_Interp*)
-      (interp ? Nativeint_val(Field(*interp,0)) : NULL);
+    Tcl_Interp *cltclinterp =
+      (interp ? (Tcl_Interp *) Nativeint_val(Field(*interp,0)) : NULL);
     if (cltclinterp == NULL || Togl_Init(cltclinterp) == TCL_ERROR)
       raise_with_string(*caml_named_value("tkerror"), "Togl_Init failed");
     return Val_unit;
@@ -101,7 +101,7 @@ ML_1_ (Togl_Height, Addr_val, Val_int)
 
 CAMLprim value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 {
-    char *fontname;
+    char *fontname = NULL;
 
     if (Is_block(font)) fontname = String_val (Field(font,0));
     else switch (font) {

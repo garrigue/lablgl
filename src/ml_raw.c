@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.12 2002-07-12 15:48:06 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.13 2004-11-02 07:03:34 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/misc.h>
@@ -170,7 +170,6 @@ CAMLprim value ml_raw_write_string (value raw, value pos, value data)  /* ML */
 {
     int s = Int_val(pos);
     int l = string_length(data);
-    value ret;
 
     if (s<0 || s+l > Int_val(Size_raw(raw)))
 	invalid_argument("Raw.write_string");

@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.9 2003-10-03 13:41:22 garrigue Exp $ */
+/* $Id: togl.c,v 1.10 2004-11-02 07:03:34 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -10,7 +10,10 @@
 
 /*
  * $Log: togl.c,v $
- * Revision 1.9  2003-10-03 13:41:22  garrigue
+ * Revision 1.10  2004-11-02 07:03:34  garrigue
+ * avoid warnings
+ *
+ * Revision 1.9  2003/10/03 13:41:22  garrigue
  * compile with mingw
  *
  * Revision 1.8  2003/01/09 08:25:14  garrigue
@@ -272,7 +275,7 @@ struct Togl
  * Prototypes for functions local to this file
  */
 static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
-                    int argc, char **argv);
+                    int argc, const char *argv[]);
 static void Togl_EventProc(ClientData clientData, XEvent *eventPtr);
 static int Togl_MakeWindowExist(struct Togl *togl);
 #ifdef MESA_COLOR_HACK
@@ -365,7 +368,7 @@ static Tk_ConfigSpec configSpecs[] = {
 
 #ifndef NO_TK_CURSOR
     { TK_CONFIG_ACTIVE_CURSOR, "-cursor", "cursor", "Cursor",
-     "", Tk_Offset(struct Togl, Cursor), TK_CONFIG_NULL_OK },
+     "", Tk_Offset(struct Togl, Cursor), TK_CONFIG_NULL_OK, NULL },
 #endif
 
     {TK_CONFIG_INT, "-time", "time", "Time",
@@ -922,7 +925,7 @@ static void RenderOverlay( ClientData clientData )
  * options like RGBA - ColorIndex ; Z-buffer and so on
  */
 int Togl_Configure(Tcl_Interp *interp, struct Togl *togl,
-                   int argc, char *argv[], int flags)
+                   int argc, const char **argv, int flags)
 {
    int oldRgbaFlag    = togl->RgbaFlag;
    int oldRgbaRed     = togl->RgbaRed;
@@ -985,7 +988,7 @@ int Togl_Configure(Tcl_Interp *interp, struct Togl *togl,
 
 
 int Togl_Widget(ClientData clientData, Tcl_Interp *interp,
-	       int argc, char *argv[])
+	       int argc, const char *argv[])
 {
    struct Togl *togl = (struct Togl *)clientData;
    int result = TCL_OK;
@@ -1079,10 +1082,10 @@ int Togl_Widget(ClientData clientData, Tcl_Interp *interp,
  *     * Configures this Togl for the given arguments
  */
 static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
-                    int argc, char **argv)
+                    int argc, const char *argv[])
 {
-   char *name;
-   Tk_Window main = (Tk_Window)clientData;
+   const char *name;
+   Tk_Window main_win = (Tk_Window)clientData;
    Tk_Window tkwin;
    struct Togl *togl;
 
@@ -1092,7 +1095,7 @@ static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
 
    /* Create the window. */
    name = argv[1];
-   tkwin = Tk_CreateWindowFromPath(interp, main, name, (char *) NULL);
+   tkwin = Tk_CreateWindowFromPath(interp, main_win, name, (char *) NULL);
    if (tkwin == NULL) {
       return TCL_ERROR;
    }
@@ -2884,35 +2887,18 @@ static int generateEPS(const char *filename, int inColor,
    pos = 0;
    curpix = ( unsigned char *)pixels;
    for ( i = 0; i < width * height * components; ) {
+      int mask;
       bitpixel = 0;
       if ( inColor) {
-         double pix = 0.0;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x80;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x40;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x20;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x10;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x08;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x04;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x02;
-         pix = 0.30 * ( double)curpix[ i++] + 0.59 * ( double)curpix[ i++] + 0.11 * ( double)curpix[ i++];
-         if ( pix > 127.0) bitpixel |= 0x01;
+	 for (mask = 0x80; mask > 0; mask >>= 1) {
+	    double x = curpix[i++], y = curpix[i++], z = curpix[i++];
+	    double pix = 0.30 * x + 0.59 * y + 0.11 * z;
+	    if ( pix > 127.0) bitpixel |= mask;
+	 }
       }
       else {
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x80;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x40;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x20;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x10;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x08;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x04;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x02;
-         if ( curpix[ i++] > 0x7f) bitpixel |= 0x01;
+	 for (mask = 0x80; mask > 0; mask >>= 1)
+	    if (curpix[i++] > 0x7f) bitpixel |= mask;
       }
       fprintf(fp, "%02hx", bitpixel);
       if (++pos >= 40) {

@@ -1,4 +1,4 @@
-/* $Id: togl.h,v 1.3 1998-12-11 08:44:06 garrigue Exp $ */
+/* $Id: togl.h,v 1.4 2004-11-02 07:03:34 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -10,7 +10,10 @@
 
 /*
  * $Log: togl.h,v $
- * Revision 1.3  1998-12-11 08:44:06  garrigue
+ * Revision 1.4  2004-11-02 07:03:34  garrigue
+ * avoid warnings
+ *
+ * Revision 1.3  1998/12/11 08:44:06  garrigue
  * Togl 1.5
  *
  * Revision 1.17  1997/11/15 04:14:37  brianp
@@ -136,7 +139,7 @@ struct Togl;
 
 
 typedef void (Togl_Callback) (struct Togl *togl);
-typedef int  (Togl_CmdProc) (struct Togl *togl, int argc, char *argv[]);
+typedef int  (Togl_CmdProc) (struct Togl *togl, int argc, const char *argv[]);
 
 
 
@@ -179,7 +182,7 @@ extern void Togl_SetDestroyFunc( struct Togl *togl, Togl_Callback *proc );
  */
 
 extern int Togl_Configure( Tcl_Interp *interp, struct Togl *togl, 
-                           int argc, char *argv[], int flags );
+                           int argc, const char **argv, int flags );
 
 extern void Togl_MakeCurrent( const struct Togl *togl );
 
