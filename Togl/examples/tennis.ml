@@ -1,15 +1,15 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.13 2000-04-03 02:57:46 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.14 2000-04-12 09:49:07 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
 
 let make_image () =
   let image =
-    GlPix.create `ubyte width:image_width height:image_height format:`rgba in
+    GlPix.create `ubyte ~width:image_width ~height:image_height ~format:`rgba in
   for i = 0 to image_width - 1 do
     for j = 0 to image_height - 1 do
-      Raw.sets (GlPix.to_raw image) pos:(4*(i*image_height+j))
+      Raw.sets (GlPix.to_raw image) ~pos:(4*(i*image_height+j))
         (if (((i land 6 ) = 6) or ((j land 6) = 6)) 
          then [|0;0;0;255|]
          else [|255;255;255;0|])
@@ -39,10 +39,10 @@ let make_image2 () =
     on_line (x,y) in
 	
   let image =
-    GlPix.create `ubyte width:image_width height:image_height format:`rgb in
+    GlPix.create `ubyte ~width:image_width ~height:image_height ~format:`rgb in
   for i = 0 to image_width - 1 do
     for j = 0 to image_height - 1 do
-      Raw.sets (GlPix.to_raw image) pos:(3*(i*image_height+j))
+      Raw.sets (GlPix.to_raw image) ~pos:(3*(i*image_height+j))
         (if on_white (j,i)
          then [|255;255;255|]
          else [|255;255;0|])
@@ -62,13 +62,13 @@ let lw = 0.015
 let wlw = 0.02
 
 let square (x1, y1) (x2, y2) =
-  List.iter f:GlDraw.vertex2
+  List.iter ~f:GlDraw.vertex2
     [ x1, y1;
       x2, y1;
       x2, y2;
       x1, y2 ]
 
-let collide :pos :vel :plane :func =
+let collide ~pos ~vel ~plane ~func =
   let between (a,b,x) = 
     let (a,b) = if a > b then (b,a) else (a,b) in
     (x > a) && (x < b) in
@@ -110,8 +110,8 @@ class ball () = object (self)
     Gl.disable `blend;
     GlDraw.color (1.0, 1.0, 0.0);
     GlMat.push ();
-    GlMat.translate :x :y :z ();
-    GluQuadric.sphere radius:0.01 slices:8 stacks:8 ();
+    GlMat.translate ~x ~y ~z ();
+    GluQuadric.sphere ~radius:0.01 ~slices:8 ~stacks:8 ();
     GlMat.pop () 
 
   method drawtexture =
@@ -120,14 +120,14 @@ class ball () = object (self)
     GlMat.push ();
     Gl.enable `texture_2d;
     GlTex.image2d image;
-    List.iter f:(GlTex.parameter target:`texture_2d)
+    List.iter ~f:(GlTex.parameter ~target:`texture_2d)
       [ `wrap_s `repeat;
       	`wrap_t `repeat;
       	`mag_filter `nearest;
       	`min_filter `nearest ];
-    GlMat.translate :x :y :z ();
+    GlMat.translate ~x ~y ~z ();
     GluQuadric.texture q true;
-    GluQuadric.sphere radius:0.01 slices:16 stacks:8 quad:q ();
+    GluQuadric.sphere ~radius:0.01 ~slices:16 ~stacks:8 ~quad:q ();
     Gl.disable `texture_2d;
     GlMat.pop ()
 
@@ -136,8 +136,8 @@ class ball () = object (self)
     Gl.disable `blend;
     GlDraw.color (0.0, 0.0, 0.0);
     GlMat.push ();
-    GlMat.translate :x :y ();
-    GluQuadric.disk inner:0.0 outer:0.01 slices:8 loops:8 ();
+    GlMat.translate ~x ~y ();
+    GluQuadric.disk ~inner:0.0 ~outer:0.01 ~slices:8 ~loops:8 ();
     GlMat.pop ()
 
   method draw_target =
@@ -150,11 +150,11 @@ class ball () = object (self)
 
   method do_tick delta =
     if moving then 
-      let (x',y',z') = collide pos:(x,y,z) vel:(-. vel_x *. delta,
+      let (x',y',z') = collide ~pos:(x,y,z) ~vel:(-. vel_x *. delta,
 						vel_y *. delta,
 						vel_z *. delta) 
-	  plane:((0.0, -. cw, 0.0), (0.0, cw, 0.1))
-	  func:(function () -> 
+	  ~plane:((0.0, -. cw, 0.0), (0.0, cw, 0.1))
+	  ~func:(function () -> 
 	    begin 
 	      vel_x <- 0.0; 
 	      vel_y <- 0.0; 
@@ -205,17 +205,17 @@ class poll = object
     Gl.disable `blend;
     GlDraw.color (0.0, 0.0, 0.0);
     GlMat.push ();
-    GlMat.translate :y ();
-    GluQuadric.cylinder  slices:8 stacks:8 height:0.12 top:r base:r ();
+    GlMat.translate ~y ();
+    GluQuadric.cylinder  ~slices:8 ~stacks:8 ~height:0.12 ~top:r ~base:r ();
     GlMat.pop ();
     GlMat.push ();
-    GlMat.translate y:(-. y) ();
-    GluQuadric.cylinder  slices:8 stacks:8 height:0.12 top:r base:r ();
+    GlMat.translate ~y:(-. y) ();
+    GluQuadric.cylinder  ~slices:8 ~stacks:8 ~height:0.12 ~top:r ~base:r ();
     GlMat.pop ()
 end
 
 
-class court :togl = object
+class court ~togl = object
   val court = 
     Togl.make_current togl;
     let court = GlList.create `compile in
@@ -255,7 +255,7 @@ class player = object
   method position = (x,y)
 end
 
-class net :togl = object
+class net ~togl = object
   val texture = 
     Togl.make_current togl;
     make_image () 
@@ -269,12 +269,12 @@ class net :togl = object
 
   method draw =
     Gl.enable `blend;
-    GlFunc.blend_func src:`src_alpha dst:`one_minus_src_alpha;
-    GlDraw.color (0.0, 0.0, 0.0) alpha:1.0; 
+    GlFunc.blend_func ~src:`src_alpha ~dst:`one_minus_src_alpha;
+    GlDraw.color (0.0, 0.0, 0.0) ~alpha:1.0; 
     GlTex.env (`mode `replace);
     Gl.enable `texture_2d;
     GlTex.image2d texture;
-    List.iter f:(GlTex.parameter target:`texture_2d)
+    List.iter ~f:(GlTex.parameter ~target:`texture_2d)
       [ `wrap_s `repeat;
       	`wrap_t `repeat;
       	`mag_filter `nearest;
@@ -295,7 +295,7 @@ class net :togl = object
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlDraw.begins `quad_strip;
-    List.iter f:(fun (y,z) -> GlDraw.vertex x:0. :y :z ())
+    List.iter ~f:(fun (y,z) -> GlDraw.vertex ~x:0. ~y ~z ())
       [ cw +. 0.05, 0.11;
 	cw +. 0.05, 0.115;
 	0.0, 0.085;
@@ -306,11 +306,11 @@ class net :togl = object
 end
 
 
-class view3d :togl :ball :player :viewtype = object
+class view3d ~togl ~ball ~player ~viewtype = object
   val ball : ball = ball
   val player : player = player
-  val court =  new court :togl
-  val net = new net :togl
+  val court =  new court ~togl
+  val net = new net ~togl
   val poll = new poll
 
   method draw =
@@ -322,25 +322,25 @@ class view3d :togl :ball :player :viewtype = object
       begin
 	GlMat.mode `projection;
 	GlMat.load_identity ();
-	GlMat.rotate angle:90.0 z:1.0 ();
-	GlMat.ortho x:(-1.2,1.2) y:(-1.2,1.2) z:(0.0,2.0); 
+	GlMat.rotate ~angle:90.0 ~z:1.0 ();
+	GlMat.ortho ~x:(-1.2,1.2) ~y:(-1.2,1.2) ~z:(0.0,2.0); 
 	GlMat.mode `modelview;
 	GlMat.load_identity ();
 	GluMat.look_at
-	  eye:(0.0, 0.0, 2.0) center:(0.0, 0.0, 0.0) up:(0.0, 1.0, 0.0)
+	  ~eye:(0.0, 0.0, 2.0) ~center:(0.0, 0.0, 0.0) ~up:(0.0, 1.0, 0.0)
       end
     else
       begin
 	GlMat.mode `projection;
 	GlMat.load_identity ();
-	GluMat.perspective fovy:40.0 aspect:1.0 z:(0.1,4.0);
+	GluMat.perspective ~fovy:40.0 ~aspect:1.0 ~z:(0.1,4.0);
 	GlMat.mode `modelview;
 	if viewtype () = "Center" then
 	  begin
 	    GlMat.load_identity ();
 	    let (x,y) = player#position in
 	    GluMat.look_at
-	      eye:(x, y, 0.2) center:(0.0, 0.0, 0.09) up:(-. x, -. y, 0.0)
+	      ~eye:(x, y, 0.2) ~center:(0.0, 0.0, 0.09) ~up:(-. x, -. y, 0.0)
 	  end
 	else
 	  begin
@@ -348,7 +348,7 @@ class view3d :togl :ball :player :viewtype = object
 	    let (x,y) = player#position in
 	    let (x',y') = ball#get_position in
 	    GluMat.look_at
-	      eye:(x, y, 0.2) center:(x', y', 0.09) up:(x' -. x, y' -. y, 0.0)
+	      ~eye:(x, y, 0.2) ~center:(x', y', 0.09) ~up:(x' -. x, y' -. y, 0.0)
 	  end;
       end;
 
@@ -379,10 +379,10 @@ class view3d :togl :ball :player :viewtype = object
     Gl.flush ()
 end
 
-class view2d :togl :ball :player = object
+class view2d ~togl ~ball ~player = object
   val ball : ball = ball
   val player : player = player
-  val court = new court togl:togl
+  val court = new court ~togl:togl
 
   method draw =
     Togl.make_current togl;
@@ -390,13 +390,13 @@ class view2d :togl :ball :player = object
 
     GlMat.mode `projection;
     GlMat.load_identity ();
-    GlMat.rotate angle:90.0 z:1.0 ();
-    GlMat.ortho x:(-1.5,1.5) y:(-1.5,1.5) z:(0.0,2.0); 
+    GlMat.rotate ~angle:90.0 ~z:1.0 ();
+    GlMat.ortho ~x:(-1.5,1.5) ~y:(-1.5,1.5) ~z:(0.0,2.0); 
     GlMat.mode `modelview;
     GlMat.load_identity ();
     let (x,y) = player#position in
     GluMat.look_at
-      eye:(0.0, 0.0, 2.0) center:(0.0, 0.0, 0.0) up:(0.0, 1.0, 0.0);
+      ~eye:(0.0, 0.0, 2.0) ~center:(0.0, 0.0, 0.0) ~up:(0.0, 1.0, 0.0);
     court#draw;
     ball#draw;
     
@@ -417,35 +417,35 @@ open Tk
 
 let main () =
   let top = openTk () in
-  Wm.title_set top title:"Tennis Court";
+  Wm.title_set top ~title:"Tennis Court";
 
   let f0 = Frame.create top in
   let court3d =
-    Togl.create f0 width:600 height:600
-      rgba:true double:true depth:true
+    Togl.create f0 ~width:600 ~height:600
+      ~rgba:true ~double:true ~depth:true
   and f1 = Frame.create f0 in
   let court2d =
-    Togl.create f1 width:200 height:200
-      rgba:true double:true depth:true
+    Togl.create f1 ~width:200 ~height:200
+      ~rgba:true ~double:true ~depth:true
   and sx =
-    Scale.create f1 label:"Velocity"
-      from:0. to:200. orient:`Horizontal
+    Scale.create f1 ~label:"Velocity"
+      ~min:0. ~max:200. ~orient:`Horizontal
   and sz =
-    Scale.create f1 label:"Direction"
-      from: (-. 90.) to:90. orient:`Horizontal
+    Scale.create f1 ~label:"Direction"
+      ~min: (-. 90.) ~max:90. ~orient:`Horizontal
   and sht =
-    Scale.create f1 label:"Height"
-      from: 0. to:100. orient:`Horizontal
+    Scale.create f1 ~label:"Height"
+      ~min: 0. ~max:100. ~orient:`Horizontal
   and start =
-    Button.create f1 text:"Start"
+    Button.create f1 ~text:"Start"
   in
   let viewseltv = Textvariable.create () in
     Textvariable.set viewseltv "Top View";
     let viewself = Frame.create  f1 in
-    let viewsel = List.map ["Top View"; "Center"; "Ball"] f:
+    let viewsel = List.map ["Top View"; "Center"; "Ball"] ~f:
 	begin fun t ->
-	  Radiobutton.create viewself text: t value: t
-	    variable: viewseltv
+	  Radiobutton.create viewself ~text: t ~value: t
+	    ~variable: viewseltv
 	end
     in
     pack viewsel;
@@ -453,21 +453,21 @@ let main () =
 
   let ball = new ball () in
   let player = new player in
-  let view3d = new view3d togl:court3d :viewtype :ball :player
-  and view2d = new view2d togl:court2d :ball :player
+  let view3d = new view3d ~togl:court3d ~viewtype ~ball ~player
+  and view2d = new view2d ~togl:court2d ~ball ~player
   in
-  Scale.configure sx command:(ball#set_vel);
-  Scale.configure sz command:(ball#set_velz);
-  Button.configure start command:
+  Scale.configure sx ~command:(ball#set_vel);
+  Scale.configure sz ~command:(ball#set_velz);
+  Button.configure start ~command:
     begin fun () ->
-      Button.configure start text:(if ball#switch then "Stop" else "Start")
+      Button.configure start ~text:(if ball#switch then "Stop" else "Start")
     end;
-  Togl.timer_func ms:20
-    cb:(fun () -> if ball#do_tick 0.02 then (view3d#draw; view2d#draw));
-  Togl.display_func court3d cb:(fun () -> view3d#draw);
-  Togl.display_func court2d cb:(fun () -> view2d#draw);
-  bind court3d events:[`Modified([`Button1],`Motion)] fields:[`MouseX;`MouseY]
-    action:(fun ev ->
+  Togl.timer_func ~ms:20
+    ~cb:(fun () -> if ball#do_tick 0.02 then (view3d#draw; view2d#draw));
+  Togl.display_func court3d ~cb:(fun () -> view3d#draw);
+  Togl.display_func court2d ~cb:(fun () -> view2d#draw);
+  bind court3d ~events:[`Modified([`Button1],`Motion)] ~fields:[`MouseX;`MouseY]
+    ~action:(fun ev ->
           let width = Togl.width court3d
           and height =Togl.height court3d in 
 	  let y = -. (float ev.ev_MouseX /. float width) +. 0.5
@@ -475,8 +475,8 @@ let main () =
 	  player#move x y;
 	  view2d#draw;
 	  view3d#draw);
-  bind court2d events:[`Modified([`Button1],`Motion)] fields:[`MouseX;`MouseY]
-    action:(fun ev ->
+  bind court2d ~events:[`Modified([`Button1],`Motion)] ~fields:[`MouseX;`MouseY]
+    ~action:(fun ev ->
           let width = Togl.width court2d
           and height =Togl.height court2d in 
 	  let y = (float ev.ev_MouseX /. float width ) -. 0.5
@@ -486,8 +486,8 @@ let main () =
 	  ball#set_position x y;
 	  view2d#draw;
 	  view3d#draw);
-  bind court2d events:[`Modified([`Button2],`Motion)] fields:[`MouseX;`MouseY]
-    action:(fun ev ->
+  bind court2d ~events:[`Modified([`Button2],`Motion)] ~fields:[`MouseX;`MouseY]
+    ~action:(fun ev ->
           let width = Togl.width court2d
           and height =Togl.height court2d in 
 	  let y = (float ev.ev_MouseX /. float width ) -. 0.5
@@ -506,10 +506,10 @@ let main () =
       view3d#draw
     end in
   viewselfn ();
-  Scale.configure sht command:(fun z -> ball#set_z z; view3d#draw);
+  Scale.configure sht ~command:(fun z -> ball#set_z z; view3d#draw);
   pack [coe court2d; coe sx; coe sz; coe sht;coe start; coe viewself];
-  pack [coe court3d; coe f1] side:`Left;
-  pack [f0] expand:true fill:`Both;
+  pack [coe court3d; coe f1] ~side:`Left;
+  pack [f0] ~expand:true ~fill:`Both;
   mainLoop ()
 
 let _ = main ()

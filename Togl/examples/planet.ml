@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.13 2000-04-03 02:57:45 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.14 2000-04-12 09:49:07 garrigue Exp $ *)
 
 class planet togl = object (self)
   val togl = togl
@@ -29,19 +29,19 @@ class planet togl = object (self)
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlMat.push();
-    GlMat.rotate angle:eye x:1. ();
+    GlMat.rotate ~angle:eye ~x:1. ();
 (*	draw sun	*)
-    GlLight.material face:`front (`specular (1.0,1.0,0.0,1.0));
-    GlLight.material face:`front (`shininess 5.0);
-    GluQuadric.sphere radius:1.0 slices:32 stacks:32 ();
+    GlLight.material ~face:`front (`specular (1.0,1.0,0.0,1.0));
+    GlLight.material ~face:`front (`shininess 5.0);
+    GluQuadric.sphere ~radius:1.0 ~slices:32 ~stacks:32 ();
 (*	draw smaller planet	*)
-    GlMat.rotate angle:year y:1.0 ();
-    GlMat.translate () x:3.0;
-    GlMat.rotate angle:day y:1.0 ();
+    GlMat.rotate ~angle:year ~y:1.0 ();
+    GlMat.translate () ~x:3.0;
+    GlMat.rotate ~angle:day ~y:1.0 ();
     GlDraw.color (0.0, 1.0, 1.0);
     GlDraw.shade_model `flat;
-    GlLight.material face:`front(`shininess 128.0);
-    GluQuadric.sphere radius:0.2 slices:10 stacks:10 ();
+    GlLight.material ~face:`front(`shininess 128.0);
+    GluQuadric.sphere ~radius:0.2 ~slices:10 ~stacks:10 ();
     GlDraw.shade_model `smooth;
     GlMat.pop ();
     Gl.flush ();
@@ -55,23 +55,23 @@ let myinit () =
   (*  light_position is NOT default value	*)
   and light_position = 1.0, 1.0, 1.0, 0.0
   in
-  List.iter f:(GlLight.light num:0)
+  List.iter ~f:(GlLight.light ~num:0)
     [ `ambient light_ambient; `diffuse light_diffuse;
       `specular light_specular; `position light_position ];
   GlFunc.depth_func `less;
-  List.iter f:Gl.enable [`lighting; `light0; `depth_test];
+  List.iter ~f:Gl.enable [`lighting; `light0; `depth_test];
   GlDraw.shade_model `smooth
 
 
 let my_reshape togl =
   let w = Togl.width togl and h = Togl.height togl in
-  GlDraw.viewport x:0 y:0 :w :h;
+  GlDraw.viewport ~x:0 ~y:0 ~w ~h;
   GlMat.mode `projection;
   GlMat.load_identity();
-  GluMat.perspective fovy:60.0 aspect:(float w /. float h) z:(1.0,20.0);
+  GluMat.perspective ~fovy:60.0 ~aspect:(float w /. float h) ~z:(1.0,20.0);
   GlMat.mode `modelview;
   GlMat.load_identity();
-  GlMat.translate () z:(-5.0)
+  GlMat.translate () ~z:(-5.0)
 
 (*  Main Loop
  *  Open window with initial window size, title bar, 
@@ -82,20 +82,20 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create top width:700 height:500 double:true rgba:true
-      depth:true in
-  Wm.title_set top title:"Planet";
+    Togl.create top ~width:700 ~height:500 ~double:true ~rgba:true
+      ~depth:true in
+  Wm.title_set top ~title:"Planet";
 
   myinit ();
 
   let planet = new planet togl in
   let scale =
-    Scale.create top from:(-45.) to:45. orient:`Vertical
-      command:(planet#eye) showvalue:false highlightbackground:`Black in
-  bind togl events:[`Enter] action:(fun _ -> Focus.set togl);
-  bind scale events:[`Enter] action:(fun _ -> Focus.set scale);
-  bind togl events:[`KeyPress] fields:[`KeySymString]
-    action:(fun ev ->
+    Scale.create top ~min:(-45.) ~max:45. ~orient:`Vertical
+      ~command:(planet#eye) ~showvalue:false ~highlightbackground:`Black in
+  bind togl ~events:[`Enter] ~action:(fun _ -> Focus.set togl);
+  bind scale ~events:[`Enter] ~action:(fun _ -> Focus.set scale);
+  bind togl ~events:[`KeyPress] ~fields:[`KeySymString]
+    ~action:(fun ev ->
       begin match ev.ev_KeySymString with
 	"Left" ->  planet#year_subtract
       |	"Right" -> planet#year_add
@@ -105,13 +105,13 @@ let main () =
       |	_ -> ()
       end;
       planet#display);
-  Togl.timer_func ms:20
-    cb:(fun () -> planet#tick (Unix.gettimeofday()); planet#display);
-  Togl.display_func togl cb:(fun () -> planet#display);
-  Togl.reshape_func togl cb:(fun () -> my_reshape togl);
+  Togl.timer_func ~ms:20
+    ~cb:(fun () -> planet#tick (Unix.gettimeofday()); planet#display);
+  Togl.display_func togl ~cb:(fun () -> planet#display);
+  Togl.reshape_func togl ~cb:(fun () -> my_reshape togl);
   my_reshape togl;
-  pack [togl] side:`Left expand:true fill:`Both;
-  pack [scale] side:`Right fill:`Y;
+  pack [togl] ~side:`Left ~expand:true ~fill:`Both;
+  pack [scale] ~side:`Right ~fill:`Y;
   Focus.set togl;
   mainLoop ()
 
