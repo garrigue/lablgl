@@ -496,7 +496,7 @@ and print_expression (exp : expression) (lvl : int) =
 		| CONSTANT cst ->
 				(match cst with
 					CONST_INT i -> print i
-					| CONST_FLOAT r -> print r
+					| CONST_FLOAT r -> print (string_of_float (float_of_string r))
 					| CONST_CHAR c -> print ("'" ^ (escape_string c) ^ "'")
 					| CONST_STRING s -> print ("\"" ^ (escape_string s) ^ "\"")
 					| CONST_COMPOUND exps ->
@@ -949,7 +949,10 @@ let process filename =
         | Frontc.PARSING_OK defs ->
                 output_string !out ("\n(* Translated by " ^ version ^ " *)\n");
                 output_string !out "
-open Lablglut
+open GL
+open GLU
+open GLUT
+open BA
 open Printf
 open Bigarray
                         ";
