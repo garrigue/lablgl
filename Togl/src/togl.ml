@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.6 1998-01-21 09:12:40 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.7 1998-01-23 14:12:30 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -194,7 +194,7 @@ let dump_to_eps_file togl :filename ?:rgba [< false >] ?:render =
 let dump_to_eps_file = wrap ?dump_to_eps_file
 
 let rec timer_func :ms :cb =
-  Timer.add :ms callback:(fun () -> timer_func :ms :cb; cb ());
+  Timer.add :ms callback:(fun () -> cb (); timer_func :ms :cb);
   ()
 
 let configure w ?:height ?:width =
