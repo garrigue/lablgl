@@ -18,7 +18,7 @@ TKINCLUDES=-I/usr/local/include
 
 # Where to find OpenGL/Mesa headers and libraries
 GLINCLUDES=
-GLLIBS=-lGL -lGLU -Xmu
+GLLIBS=-lGL -lGLU
 
 # How to index a library
 RANLIB= ranlib
