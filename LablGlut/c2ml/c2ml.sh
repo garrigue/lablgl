@@ -11,7 +11,7 @@ c2ml $tmpc | \
     grep -v 'type GL.*$' | \
     grep -v 'type .*_GLUfuncptr.*$' | \
     perl -pe 's/glutInit\s*\(.*\)\s*;.*$/glutInit2();/' | \
-    perl -pe 's#let main argc argv\s*=$#let main () =#' | \
+    perl -pe 's#let main argc argv\s*=#let main () =#' | \
     perl -pe 's#(\s*)glutCreateWindow\s*\(\s*argv.\(0\)\s*\)\s*;#\1glutCreateWindow2(Sys.argv.(0));#' | \
     uniq \
     >> $bname.ml
