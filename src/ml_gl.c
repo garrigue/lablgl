@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.6 1998-01-08 09:19:14 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.7 1998-01-09 13:44:03 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -246,3 +246,33 @@ ML_GLenum(glDepthFunc)
 ML_bool(glDepthMask)
 
 ML_GLenum2(glBlendFunc)
+
+value ml_glFog (value param) /* ML */
+{
+    float params[4];
+    int i;
+
+    switch (Field(param,0))
+    {
+    case MLTAG_mode:
+	glFogi(GL_FOG_MODE, GLenum_val(Field(param,1)));
+	break;
+    case MLTAG_density:
+	glFogf(GL_FOG_DENSITY, Float_val(Field(param,1)));
+	break;
+    case MLTAG_start:
+	glFogf(GL_FOG_START, Float_val(Field(param,1)));
+	break;
+    case MLTAG_End:
+	glFogf(GL_FOG_END, Float_val(Field(param,1)));
+	break;
+    case MLTAG_index:
+	glFogf(GL_FOG_INDEX, Float_val(Field(param,1)));
+	break;
+    case MLTAG_color:
+	for (i = 0; i < 4; i++) params[i] = Field(Field(param,1),i);
+	glFogfv(GL_FOG_COLOR, params);
+	break;
+    }
+    return Val_unit;
+}

@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.6 1998-01-09 09:11:38 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.7 1998-01-09 13:44:02 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -321,3 +321,14 @@ type dfactor = [
       
 external blend_func : src:sfactor -> dst:dfactor -> unit
     = "ml_glBlendFunc"
+
+type fog_param = [
+      mode ([linear exp exp2])
+      density (float)
+      start (float)
+      End (float)
+      index (float)
+      color (float * float * float * float)
+  ]
+
+external fog : fog_param -> unit = "ml_glFog"

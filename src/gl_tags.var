@@ -145,8 +145,18 @@ one_minus_constant_alpha_ext
 src_color
 one_minus_src_color
 
+(* glFog *)
+linear
+exp
+exp2
+
 $$
 (* glLightModel *)
 (* ambient *)
 local_viewer
 two_side
+mode
+density
+start
+index
+End
