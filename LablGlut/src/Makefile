@@ -93,10 +93,9 @@ lablgluttop$(XE): lablglut.cma
 	ocamlmktop $(CUSTOMTOP) -I . -I ../.. $(OCAMLINC) -o $@ \
 	  lablglut.cma ../../lablgl.cma
 
-install libinstall:
-	@$(MAKE) real-$@ LIBDIR="$(LIBDIR)"
+install libinstall: real-install installtop
 
-real-install:
+real-install: 
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
 	cp $(LIBOBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
@@ -117,6 +116,10 @@ installopt:
 	cp lablglut.cmxa lablglut$(XA) \
 	   $(MLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) lablglut$(XA) 
+
+installtop:
+	cp lablgluttop "$(INSTALLDIR)" 
+	cp ../toplevel_lablglut/lablglut "$(BINDIR)"
 
 clean:
 	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \

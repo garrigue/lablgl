@@ -97,6 +97,11 @@ makefile. Also, uncomment the necessary lines in the Makefile.config file.
    Note that some XFree86 do not seem to support single buffer
    rendering. The first 3 examples will not work in that case.
 
+  * Similarely, there is a lablglut toplevel. 
+	For instance, move to the folder LablGlut/examples/lablGL and type
+
+	% lablglut gears.ml
+
   * compiling and linking
     You need to include labltk.cma, lablgl.cma and togl.cma in your link:
         ocamlc -I +labltk -I +lablGL \
@@ -313,4 +318,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.26 2003-09-25 13:54:01 raffalli Exp $
+$Id: README,v 1.27 2003-09-26 08:24:48 raffalli Exp $
