@@ -1,35 +1,36 @@
-#       LablGL and Togl configuration file
+#	LablGL and Togl configuration file
 #
 # Please have a look at the config/Makefile in the Objective Caml distribution,
 # or at the labltklink script to get the information needed here
 #
 
-# Makefile.config that has been tested under MAC OSX with AQUA (not X11)
-# tcl/tk is not supported (use make allglut optglut libinstall)
-
 ##### Adjust these always
+
+# Uncomment if you have the fast ".opt" compilers
+#CAMLC = ocamlc.opt
+#CAMLOPT = ocamlopt.opt
 
 # Where to put the lablgl script
 BINDIR = /usr/local/bin
 
 # Where to find X headers
-XINCLUDES =
+XINCLUDES = -I/usr/X11R6/include
 # X libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-XLIBS =
+XLIBS = -L/usr/X11R6/lib -lXext -lXmu -lX11
 
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
-TKINCLUDES =
+TKINCLUDES = -I/opt/local/include
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-TKLIBS =
+#TKLIBS = -L/usr/local/lib -ltk83 -ltcl83
 
 # Where to find OpenGL/Mesa headers and libraries
-GLINCLUDES = -I/System/Library/Frameworks/OpenGL.framework/Headers -I/System/Library/Frameworks/GLUT.framework/Headers
-GLLIBS = -lobjc -framework openGL
-GLUTLIBS = -framework GLUT
+GLINCLUDES = -I/usr/X11R6/include/GL
+GLLIBS = -lGL -lGLU
 # The following libraries may be required (try to add them one at a time)
+#GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
 
-# How to index a library after installing (required on MacOSX)
+# How to index a library after installing (ranlib required on MacOSX)
 RANLIB = ranlib
 
 ##### Adjust these if non standard
