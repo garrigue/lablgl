@@ -1,6 +1,3 @@
-$Id: README,v 1.2 2000-04-26 02:11:38 garrigue Exp $
+$Id: README,v 1.3 2003-09-26 08:25:27 garrigue Exp $
 
 Here are a few examples for LablGL.
-
-Most only compile with the -labels option,
-but checker.ml, double.ml and simple.ml also work in default mode.
