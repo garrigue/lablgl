@@ -117,7 +117,7 @@ install:
 	if test -f lablgl.cmxa; then $(MAKE) installopt; fi
 
 installopt:
-	cp lablgl.cmxa lablgl.a togl.cmx togl.o $(INSTALLDIR)
+	cp lablgl.cmxa lablgl.a $(MLOBJS:.cmo=.cmx) togl.o $(INSTALLDIR)
 
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
