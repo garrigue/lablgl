@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.6 2000-04-12 07:40:25 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.7 2001-10-01 02:59:13 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -34,7 +34,7 @@ type format =
     |`luminance|`luminance_alpha]
 external image1d :
     proxy:bool -> level:int -> internal:int ->
-    width:int -> border:bool -> format:#format -> #kind Raw.t -> unit
+    width:int -> border:bool -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
 let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
@@ -44,7 +44,7 @@ let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
     ~format:(format img) (to_raw img)
 external image2d :
     proxy:bool -> level:int -> internal:int -> width:int ->
-    height:int -> border:bool -> format:#format -> #kind Raw.t -> unit
+    height:int -> border:bool -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
 let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in

@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.26 2000-07-03 04:51:46 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.27 2001-10-01 02:59:12 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -34,12 +34,11 @@ let format_size (#format as f) =
 type target =
   [`color_4|`index|`normal|`texture_coord_1|`texture_coord_2|`texture_coord_3
   |`texture_coord_4|`trim_2|`trim_3|`vertex_3|`vertex_4]
-let target_size (target : #target) =
-    match target with
-      `index|`normal|`texture_coord_1 -> 1
-    | `texture_coord_2|`trim_2 -> 2
-    | `vertex_3|`texture_coord_3|`trim_3 -> 3
-    | `vertex_4|`color_4|`texture_coord_4 -> 4
+let target_size = function
+    `index|`normal|`texture_coord_1 -> 1
+  | `texture_coord_2|`trim_2 -> 2
+  | `vertex_3|`texture_coord_3|`trim_3 -> 3
+  | `vertex_4|`color_4|`texture_coord_4 -> 4
 
 type cmp_func =
   [`always|`equal|`gequal|`greater|`lequal|`less|`never|`notequal]

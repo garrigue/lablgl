@@ -1,21 +1,21 @@
-(* $Id: glPix.mli,v 1.7 2000-10-05 08:24:33 garrigue Exp $ *)
+(* $Id: glPix.mli,v 1.8 2001-10-01 02:59:13 garrigue Exp $ *)
 
 (* An abstract type for pixmaps *)
 
 type (+'a,+'b) t
 
 val create :
-  (#Gl.kind as 'a) ->
-  format:(#Gl.format as 'b) -> width:int -> height:int -> ('b, 'a) t
+  ([< Gl.kind] as 'a) ->
+  format:([< Gl.format] as 'b) -> width:int -> height:int -> ('b, 'a) t
 
 val of_raw :
-  (#Gl.kind as 'a) Raw.t ->
-  format:(#Gl.format as 'b) -> width:int -> height:int -> ('b, 'a) t
+  ([< Gl.kind] as 'a) Raw.t ->
+  format:([< Gl.format] as 'b) -> width:int -> height:int -> ('b, 'a) t
 val to_raw : ('a, 'b) t -> 'b Raw.t
 val format : ('a, 'b) t -> 'a
 val width : ('a, 'b) t -> int
 val height : ('a, 'b) t -> int
-val raw_pos : (#Gl.format, #Gl.kind) t -> x:int -> y:int -> int
+val raw_pos : ([< Gl.format], [< Gl.kind]) t -> x:int -> y:int -> int
     (* [raw_pos image :x :y] partially evaluates on [image] *)
 
 (* openGL functions *)
@@ -25,13 +25,13 @@ val read :
   y:int ->
   width:int ->
   height:int ->
-  format:(#Gl.format as 'a) -> kind:(#Gl.kind as 'b) -> ('a, 'b) t
+  format:([< Gl.format] as 'a) -> kind:([< Gl.kind] as 'b) -> ('a, 'b) t
 
 type bitmap = ([`color_index], [`bitmap]) t
 val bitmap :
   bitmap -> orig:Gl.point2 -> move:Gl.point2 -> unit
 
-val draw : (#Gl.format, #Gl.kind) t -> unit
+val draw : ([< Gl.format], [< Gl.kind]) t -> unit
 
 type map =
   [`a_to_a|`b_to_b|`g_to_g|`i_to_a|`i_to_b

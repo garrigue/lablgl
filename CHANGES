@@ -1,7 +1,7 @@
 LablGL 0.96:
 ------------
 
-* adapt to new label mode
+* adapt to new label mode / new variant syntax
 
 * split library into lablgl.cma and togl.cma to support ocaml dynamic
   linking

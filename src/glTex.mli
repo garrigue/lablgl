@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.3 2000-04-03 02:57:42 garrigue Exp $ *)
+(* $Id: glTex.mli,v 1.4 2001-10-01 02:59:13 garrigue Exp $ *)
 
 open Gl
 
@@ -23,10 +23,10 @@ type format =
     |`luminance|`luminance_alpha]
 val image1d :
   ?proxy:bool -> ?level:int -> ?internal:int -> ?border:bool ->
-  (#format, #kind) GlPix.t -> unit
+  ([< format], [< kind]) GlPix.t -> unit
 val image2d :
   ?proxy:bool -> ?level:int -> ?internal:int -> ?border:bool ->
-  (#format, #kind) GlPix.t -> unit
+  ([< format], [< kind]) GlPix.t -> unit
 
 type filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest

@@ -1,11 +1,11 @@
-(* $Id: gluMisc.ml,v 1.4 2000-06-06 02:15:35 garrigue Exp $ *)
+(* $Id: gluMisc.ml,v 1.5 2001-10-01 02:59:13 garrigue Exp $ *)
 
 open Gl
 open GlPix
 
 external build_1d_mipmaps :
     internal:int ->
-    width:int -> format:#GlTex.format -> #kind Raw.t -> unit
+    width:int -> format:[< GlTex.format] -> [< kind] Raw.t -> unit
     = "ml_gluBuild1DMipmaps"
 let build_1d_mipmaps ?internal:i img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
@@ -16,7 +16,7 @@ let build_1d_mipmaps ?internal:i img =
 
 external build_2d_mipmaps :
     internal:int -> width:int ->
-    height:int -> format:#GlTex.format -> #kind Raw.t -> unit
+    height:int -> format:[< GlTex.format] -> [< kind] Raw.t -> unit
     = "ml_gluBuild1DMipmaps"
 let build_2d_mipmaps ?internal:i img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
@@ -26,9 +26,9 @@ let build_2d_mipmaps ?internal:i img =
 external get_string : [`version|`extensions] -> string = "ml_gluGetString"
 
 external scale_image :
-    format:#Gl.format ->
-    w:int -> h:int -> data:#kind Raw.t ->
-    w:int -> h:int -> data:#kind Raw.t -> unit
+    format:[< Gl.format] ->
+    w:int -> h:int -> data:[< kind] Raw.t ->
+    w:int -> h:int -> data:[< kind] Raw.t -> unit
     = "ml_gluScaleImage_bc" "ml_gluScaleImage"
 let scale_image ~width ~height img =
   let k = Raw.kind (to_raw img) and format = format img in

@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.18 2000-06-12 07:27:29 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.19 2001-10-01 02:59:13 garrigue Exp $ *)
 
 (* Exceptions *)
 
@@ -22,12 +22,12 @@ type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance
   |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
-val format_size : #format -> int
+val format_size : [< format] -> int
 
 type target =
   [`color_4|`index|`normal|`texture_coord_1|`texture_coord_2|`texture_coord_3
   |`texture_coord_4|`trim_2|`trim_3|`vertex_3|`vertex_4]
-val target_size : #target -> int
+val target_size : [< target] -> int
 
 type cmp_func =
   [`always|`equal|`gequal|`greater|`lequal|`less|`never|`notequal]

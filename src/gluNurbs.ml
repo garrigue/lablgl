@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.ml,v 1.5 2001-06-22 04:51:18 garrigue Exp $ *)
+(* $Id: gluNurbs.ml,v 1.6 2001-10-01 02:59:13 garrigue Exp $ *)
 
 open Gl
 
@@ -21,7 +21,7 @@ external create : unit -> t = "ml_gluNewNurbsRenderer"
 
 external curve :
     t -> knots:[`float] Raw.t -> control:[`float] Raw.t ->
-    order:int -> kind:#GlMap.target -> unit
+    order:int -> kind:[< GlMap.target] -> unit
     = "ml_gluNurbsCurve"
 let curve nurb ~knots ~control ~order ~kind:t =
   let arity = target_size t in
@@ -47,7 +47,7 @@ external property : t -> property -> unit
 external surface :
     t -> sknots:[`float] Raw.t -> tknots:[`float] Raw.t ->
     tstride:int -> control:[`float] Raw.t ->
-    sorder:int -> torder:int -> target:#target -> unit
+    sorder:int -> torder:int -> target:[< target] -> unit
     = "ml_gluNurbsSurface_bc" "ml_gluNurbsSurface"
 let surface t ~sknots ~tknots ~control ~sorder ~torder ~target =
   let cl = Array.length control in

@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.mli,v 1.4 2000-04-12 07:40:26 garrigue Exp $ *)
+(* $Id: gluNurbs.mli,v 1.5 2001-10-01 02:59:13 garrigue Exp $ *)
 
 type t
 
@@ -18,7 +18,7 @@ val load_sampling_matrices :
 
 val curve :
   t -> knots:float array ->
-  control:float array -> order:int -> kind:#GlMap.target -> unit
+  control:float array -> order:int -> kind:[< GlMap.target] -> unit
 
 val pwl_curve : t -> kind:[`trim_2|`trim_3] -> float array -> unit
 
@@ -27,7 +27,7 @@ val surface :
   sknots:float array ->
   tknots:float array ->
   control:float array array ->
-  sorder:int -> torder:int -> target:#Gl.target -> unit
+  sorder:int -> torder:int -> target:[< Gl.target] -> unit
 
 type property = [
     `sampling_method of [`path_length|`parametric_error|`domain_distance]

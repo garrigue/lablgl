@@ -1,4 +1,4 @@
-(* $Id: glPix.ml,v 1.7 2000-06-12 07:27:29 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.8 2001-10-01 02:59:13 garrigue Exp $ *)
 
 open Gl
 
@@ -46,7 +46,7 @@ external copy :
     = "ml_glCopyPixels"
 
 external draw :
-    width:int -> height:int -> format:#format -> #Gl.kind Raw.t -> unit
+    width:int -> height:int -> format:[< format] -> [< Gl.kind] Raw.t -> unit
     = "ml_glDrawPixels"
 let draw img =
   draw img.raw ~width:img.width ~height:img.height ~format:img.format
@@ -99,7 +99,7 @@ external raster_pos :
 
 external read :
     x:int -> y:int -> width:int -> height:int ->
-    format:#format -> #Gl.kind Raw.t -> unit
+    format:[< format] -> [< Gl.kind] Raw.t -> unit
     = "ml_glReadPixels_bc" "ml_glReadPixels"
 let read ~x ~y ~width ~height ~format ~kind =
   let raw = Raw.create kind ~len:(width * height * format_size format) in
