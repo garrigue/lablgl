@@ -1,4 +1,4 @@
-(* $Id: glu_tags.var,v 1.3 1998-01-23 13:30:19 garrigue Exp $: tags for GLU library *)
+(* $Id: glu_tags.var,v 1.4 1998-01-23 13:45:50 garrigue Exp $: tags for GLU library *)
 
 (* gluNextContour *)
 exterior interior unknown ccw cw
@@ -19,6 +19,16 @@ line silhouette point
 none flat smooth
 (* gluQuadricOrientation *)
 inside outside
+
+(* gluTessProperty *)
+winding_rule -> GLU_TESS_WINDING_RULE
+odd -> GLU_TESS_WINDING_ODD
+nonzero -> GLU_TESS_WINDING_NONZERO
+positive -> GLU_TESS_WINDING_POSITIVE
+negative -> GLU_TESS_WINDING_NEGATIVE
+abs_geq_two -> GLU_TESS_WINDING_ABS_GEQ_TWO
+boundary_only -> GLU_TESS_BOUNDARY_ONLY
+tolerance -> GLU_TESS_TOLERANCE
 
 $$
 (* gluNurbsCurve *)
