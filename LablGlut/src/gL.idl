@@ -2,7 +2,7 @@
    Derived from gl.h, changes copyright (c) 2003 Issac Trotts. */
 
 /* 
- * Original legal info:
+ * From the original header file:
  * Mesa 3-D graphics library
  * Version:  3.4
  *
@@ -334,16 +334,22 @@ void glTexParameterfv( unsigned int target, unsigned int pname, [in] float param
 void glTexParameteriv( unsigned int target, unsigned int pname, [in] int params[] );
 void glGetTexParameterfv( unsigned int target, unsigned int pname, float params[]);
 void glGetTexParameteriv( unsigned int target, unsigned int pname, int params[] );
-void glGetTexLevelParameterfv( unsigned int target, int level, unsigned int pname, float params[] );
-void glGetTexLevelParameteriv( unsigned int target, int level, unsigned int pname, int params[] );
+void glGetTexLevelParameterfv( unsigned int target, int level, 
+    unsigned int pname, [in,out,bigarray] float params[] );
+void glGetTexLevelParameteriv( unsigned int target, int level, 
+    unsigned int pname, [in,out,*int32,bigarray] int params[] );
 void glTexImage1D( unsigned int target, int level, int internalFormat, int
-    width, int border, unsigned int format, unsigned int type, [in,bigarray] void *pixels );
+    width, int border, unsigned int format, unsigned int type, [in,bigarray]
+    void *pixels );
 void glTexImage2D( unsigned int target, int level, int internalFormat, int
     width, int height, int border, unsigned int format, unsigned int type, 
     [in,bigarray] void *pixels);
 void glGetTexImage( unsigned int target, int level, unsigned int format, unsigned int type, 
     [in,bigarray] void *pixels );
-void glGenTextures( int n, [out,size_is(n)] unsigned int textures[]);
+void glGenTextures( int n, [in,out,length_is(n),*int32,bigarray] unsigned int textures[]);
+int glGenTexture() 
+    quote(call,
+        "{ GLuint my_uint; glGenTextures(1,&my_uint); _res=(int) my_uint; }");
 void glDeleteTextures( int n, [in,size_is(n)] unsigned int textures[]);
 void glBindTexture( unsigned int target, unsigned int texture );
 void glPrioritizeTextures( int n, [in,size_is(n)] unsigned int textures[],
@@ -366,10 +372,10 @@ order, [in] double points[] );
 void glMap1f( unsigned int target, float u1, float u2, int stride, int order,
 [in] float points[] );
 void glMap2d( unsigned int target, double u1, double u2, int ustride, int
-    uorder, double v1, double v2, int vstride, int vorder, [in] double
+    uorder, double v1, double v2, int vstride, int vorder, [in,bigarray] double
     points[] );
 void glMap2f( unsigned int target, float u1, float u2, int ustride, 
-    int uorder, float v1, float v2, int vstride, int vorder, [in] float
+    int uorder, float v1, float v2, int vstride, int vorder, [in,bigarray] float
     points[] );
 void glGetMapdv( unsigned int target, unsigned int query, [in] double v[] );
 void glGetMapfv( unsigned int target, unsigned int query, [in] float v[] );
