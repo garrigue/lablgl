@@ -1,5 +1,11 @@
 open Bigarray
 
+let float_ba_make n = Array1.create float32 c_layout n
+
+let int_ba_make n = Array1.create int c_layout n
+
+let ubyte_ba_make n = Array1.create int8_unsigned c_layout n
+
 let float_ba_of_array a =
     let n = (Array.length a) in
     let ba = Array1.create float32 c_layout n in
