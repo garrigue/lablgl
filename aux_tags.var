@@ -1,0 +1,28 @@
+(* from aux.h *)
+
+rgb
+rgba
+index
+single
+double
+direct
+indirect
+
+accum
+alpha
+depth
+stencil
+aux
+
+
+left -> AUX_LEFTBUTTON
+middle -> AUX_MIDDLEBUTTON
+right -> AUX_RIGHTBUTTON
+
+return
+escape
+space
+up
+down
+$$
+char

@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.3 1998-01-07 08:52:32 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.4 1998-01-08 09:19:15 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -16,6 +16,9 @@ value ml_##cname (value s) \
 #define ML_GLenum(cname) \
 value ml_##cname (value tag) \
 { cname (GLenum_val(tag)); return Val_unit; }
+#define ML_GLenum2(cname) \
+value ml_##cname (value tag1, value tag2) \
+{ cname (GLenum_val(tag1), GLenum_val(tag2)); return Val_unit; }
 
 #define ML_int(cname) \
 value ml_##cname (value dbl) \

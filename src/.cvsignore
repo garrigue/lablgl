@@ -1,5 +1,7 @@
 var2def
-variants.h
-variants.c
+gl_tags.h
+aux_tags.h
+gl_tags.c
+aux_tags.c
 var2switch
 lablgl

@@ -1,37 +1,31 @@
-/* $Id: ml_aux.c,v 1.3 1998-01-07 08:52:31 garrigue Exp $ */
+/* $Id: ml_aux.c,v 1.4 1998-01-08 09:19:13 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include "aux.h"
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
-#include "variants.h"
 #include "ml_gl.h"
+#include "aux_tags.h"
 
 ML_string(auxInitWindow)
 
-#include <stdio.h>
+extern void invalid_argument (char *) Noreturn;
+
+int AUXenum_val(value tag)
+{
+    switch(tag)
+    {
+#include "aux_tags.c"
+    }
+    invalid_argument ("Unknown AUX tag");
+}
 
 value ml_auxInitDisplayMode(value list)  /* ML */
 {
     GLint mode = 0;
     
-    while (list != Val_int(0))
-    {
-	switch (Field(list, 0))
-	{
-	case MLTAG_rgb: mode |= AUX_RGB; break;
-	case MLTAG_rgba: mode |= AUX_RGBA; break;
-	case MLTAG_index: mode |= AUX_INDEX; break;
-	case MLTAG_single: mode |= AUX_SINGLE; break;
-	case MLTAG_double: mode |= AUX_DOUBLE; break;
-	case MLTAG_depth: mode |= AUX_DEPTH; break;
-	case MLTAG_accum: mode |= AUX_ACCUM; break;
-	case MLTAG_stencil: mode |= AUX_STENCIL; break;
-	}
-	list = Field(list, 1);
-    }
-/*    fprintf (stderr, "Mode: %x", mode);
-      flush (stderr); */
+    for ( ; list != Val_int(0); list = Field(list, 1))
+	mode |= AUXenum_val (Field(list, 0));
     auxInitDisplayMode (mode);
     return Val_unit;
 }
@@ -71,16 +65,7 @@ value ml_auxKeyFunc(value key_desc)  /* ML */
     GLint key = 0;
 
     if (Is_block(key_desc)) key = Int_val(Field(key_desc, 1));
-    else switch (key_desc)
-    {
-    case MLTAG_return: key = AUX_RETURN; break;
-    case MLTAG_escape: key = AUX_ESCAPE; break;
-    case MLTAG_space: key = AUX_SPACE; break;
-    case MLTAG_left: key = AUX_LEFT; break;
-    case MLTAG_up: key = AUX_UP; break;
-    case MLTAG_right: key = AUX_RIGHT; break;
-    case MLTAG_down: key = AUX_DOWN; break;
-    }
+    else key = AUXenum_val (key_desc);
     auxKeyFunc (key, key_func);
     return Val_unit;
 }
@@ -92,8 +77,8 @@ static void mouse_func(AUX_EVENTREC *event)
     if (mouse_func == NULL)
 	mouse_func = caml_named_value ("mouse_func");
     callback2 (Field(*mouse_func, 0),
-	      Val_int(event->data[AUX_MOUSEX]),
-	      Val_int(event->data[AUX_MOUSEY]));
+	       Val_int(event->data[AUX_MOUSEX]),
+	       Val_int(event->data[AUX_MOUSEY]));
 }
 
 value ml_auxMouseFunc(value button, value mode)  /* ML */
@@ -108,8 +93,8 @@ value ml_auxMouseFunc(value button, value mode)  /* ML */
     }
     switch (mode)
     {
-    case MLTAG_up: m = AUX_UP; break;
-    case MLTAG_down: m = AUX_DOWN; break;
+    case MLTAG_up: m = AUX_MOUSEUP; break;
+    case MLTAG_down: m = AUX_MOUSEDOWN; break;
     }
     auxMouseFunc (b, m, mouse_func);
     return Val_unit;

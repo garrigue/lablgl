@@ -1,14 +1,15 @@
-/* $Id: ml_gl.c,v 1.5 1998-01-07 09:07:42 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.6 1998-01-08 09:19:14 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
-#include "variants.h"
+#include "gl_tags.h"
 #include "ml_gl.h"
 
+extern void invalid_argument (char *) Noreturn;
 extern void raise_with_string (value tag, char * msg) Noreturn;
-static void raise_gl (char *errmsg) Noreturn;
 
+static void raise_gl (char *errmsg) Noreturn;
 static void raise_gl(char *errmsg)
 {
   static value * gl_exn = NULL;
@@ -68,9 +69,8 @@ GLenum GLenum_val(value tag)
 {
     switch(tag)
     {
-#include "variants.c"
+#include "gl_tags.c"
     }
-    Assert(0);
     raise_gl("Unknown tag");
 }
 
@@ -156,10 +156,6 @@ ML_double2(glDepthRange)
 ML_void(glPushMatrix)
 ML_void(glPopMatrix)
 
-static const GLenum planes[6] =
-{ GL_CLIP_PLANE0, GL_CLIP_PLANE1, GL_CLIP_PLANE2,
-  GL_CLIP_PLANE3, GL_CLIP_PLANE4, GL_CLIP_PLANE5 };
-
 value ml_glClipPlane(value plane, value equation)  /* ML */
 {
     double eq[4];
@@ -167,7 +163,7 @@ value ml_glClipPlane(value plane, value equation)  /* ML */
 
     for (i = 0; i < 4; i++)
 	eq[i] = Double_val (Field(equation,i));
-    glClipPlane (planes[Int_val(plane)], eq);
+    glClipPlane (GL_CLIP_PLANE0 + Int_val(plane), eq);
     return Val_unit;
 }
 
@@ -175,3 +171,78 @@ ML_GLenum(glEnable)
 ML_GLenum(glDisable)
 
 ML_GLenum(glShadeModel)
+
+value ml_glLight (value n, value param)  /* ML */
+{
+    float params[4];
+    int i;
+
+    if (Int_val(n) >= GL_MAX_LIGHTS) invalid_argument ("Gl.light");
+    switch (Field(param,0))
+    {
+    case MLTAG_ambient:
+    case MLTAG_diffuse:
+    case MLTAG_specular:
+    case MLTAG_position:
+    case MLTAG_spot_direction:
+	for (i = 0; i < 4; i++)
+	    params[i] = Float_val (Field(Field(param, 1), i));
+	break;
+    default:
+	params[0] = Float_val (Field(param, 1));
+    }
+    glLightfv (GL_LIGHT0 + Int_val(n), GLenum_val(Field(param,0)), params);
+    return Val_unit;
+}
+
+value ml_glLightModel (value param)  /* ML */
+{
+    float params[4];
+    int i;
+
+    switch (Field(param,0))
+    {
+    case MLTAG_ambient:
+	for (i = 0; i < 4; i++)
+	    params[i] = Float_val (Field(Field(param,1),i));
+	glLightModelfv (GL_LIGHT_MODEL_AMBIENT, params);
+	break;
+    case MLTAG_local_viewer:
+	glLightModelf (GL_LIGHT_MODEL_LOCAL_VIEWER,
+		       Float_val(Field(param,1)));
+	break;
+    case MLTAG_two_side:
+	glLightModelf (GL_LIGHT_MODEL_TWO_SIDE,
+		       Float_val(Field(param,1)));
+	break;
+    }
+    return Val_unit;
+}
+
+value ml_glMaterial (value face, value param)  /* ML */
+{
+    float params[4];
+    int i;
+
+    switch (Field(param,0))
+    {
+    case MLTAG_shininess:
+	params[0] = Float_val (Field(param, 1));
+	break;
+    case MLTAG_color_indexes:
+	for (i = 0; i < 3; i++)
+	    params[i] = Float_val (Field(Field(param, 1), i));
+	break;
+    default:
+	for (i = 0; i < 4; i++)
+	    params[i] = Float_val (Field(Field(param, 1), i));
+	break;
+    }
+    glMaterialfv (GLenum_val(face), GLenum_val(Field(param,0)), params);
+    return Val_unit;
+}
+
+ML_GLenum(glDepthFunc)
+ML_bool(glDepthMask)
+
+ML_GLenum2(glBlendFunc)

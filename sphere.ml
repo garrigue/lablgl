@@ -1,4 +1,4 @@
-(* $Id: sphere.ml,v 1.1 1998-01-07 08:52:35 garrigue Exp $ *)
+(* $Id: sphere.ml,v 1.2 1998-01-08 09:19:17 garrigue Exp $ *)
 
 let display () =
   Gl.clear [`color];
@@ -15,11 +15,11 @@ let my_reshape :w :h =
   Gl.viewport x:0 y:0 :w :h;
   Gl.matrix_mode `projection;
   Gl.load_identity ();
-  Gl.perspective fovy:60.0 aspect:(float w /. float h) znear:1.0 zfar:1.0;
+  Gl.perspective fovy:60.0 aspect:(float w /. float h) znear:1.0 zfar:20.0;
   Gl.matrix_mode `modelview
 
 let main () =
-  Aux.init_display_mode color:`rgba number:`single;
+  Aux.init_display_mode color:`rgb number:`single;
   Aux.init_position x:0 y:0 w:400 h:400;
   Aux.init_window title:"Sphere";
   my_init ();

@@ -97,22 +97,56 @@ texture_gen_t
 flat
 smooth
 
+(* glLight *)
+ambient
+diffuse
+specular
+position
+spot_direction
+spot_exponent
+spot_cutoff
+constant_attenuation
+linear_attenuation
+quadratic_attenuation
+
+(* glMaterial *)
+(* ambient *)
+(* diffuse *)
+(* specular *)
+emission
+shininess
+ambient_and_diffuse
+color_indexes
+
+(* glDepthFunc *)
+never
+less
+equal
+lequal
+greater
+notequal
+gequal
+always
+
+(* glBlendFunc *)
+zero
+one
+dst_color
+one_minus_dst_color
+src_alpha
+one_minus_src_alpha
+dst_alpha
+one_minus_dst_alpha
+src_alpha_saturate
+constant_color_ext
+one_minus_constant_color_ext
+constant_alpha_ext
+one_minus_constant_alpha_ext
+src_color
+one_minus_src_color
+
 $$
-(* from aux.h *)
-
-rgb
-rgba
-index
-single
-double
-
-left
-middle
-right
-
-return
-escape
-space
-up
-down
-char
+(* glLightModel *)
+(* ambient *)
+local_viewer
+two_side

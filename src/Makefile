@@ -9,7 +9,7 @@ COBJS =		ml_gl.o		ml_aux.o
 
 # Default rules
 
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h
 
 .ml.cmo:
 	$(COMPILER) $(INCLUDES) $<
@@ -19,6 +19,9 @@ COBJS =		ml_gl.o		ml_aux.o
 
 .c.o:
 	$(COMPILER) $(INCLUDES) $<
+
+.var.h:
+	var2def < $< > $@
 
 all: 	var2def	var2switch lablgl.cma liblablgl.a
 
@@ -39,15 +42,15 @@ lablgl: lablgl.cma liblablgl.a
 		-cclib -llablgl -cclib -lunix -cclib -laux \
 		-cclib -lGL -cclib -lGLU -cclib -lX11
 
-variants.h: variants
-	./var2def < variants > $@
+gl_tags.c: gl_tags.var
+	./var2switch GL_ < gl_tags.var > $@
 
-variants.c: variants
-	./var2switch GL_ < variants > $@
+aux_tags.c: aux_tags.var
+	./var2switch AUX_ < aux_tags.var > $@
+
 clean:
-	rm -f *.cm? *.o variants.[ch] *~ #*
+	rm -f *.cm? *.o gl_tags.[ch] aux_tags.[ch] *~ #*
 
-ml_gl.o ml_aux.o: ml_gl.h variants.h
-ml_gl.o: variants.c
-variants:;
+ml_gl.o: ml_gl.h gl_tags.h gl_tags.c
+ml_aux.o: ml_gl.h aux_tags.h aux_tags.c
 glm.cmo: gl.cmi

@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.4 1998-01-07 08:52:29 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.5 1998-01-08 09:19:11 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -60,12 +60,14 @@ external line_width : float -> unit
 external line_stipple : factor:int -> pattern:int -> unit
     = "ml_glLineStipple"
 
+type face = [front back both]
+
 external polygon_mode :
-    face:[front back both] -> mode:[point line fill] -> unit
+    face:face -> mode:[point line fill] -> unit
     = "ml_glPolygonMode"
-external front_face : mode:[cw ccw] -> unit
+external front_face : [cw ccw] -> unit
     = "ml_glFrontFace"
-external cull_face : mode:[front back both] -> unit
+external cull_face : [front back both] -> unit
     = "ml_glCullFace"
 external polygon_stipple : mask:string -> unit
     = "ml_glPolygonStipple"
@@ -219,3 +221,96 @@ external enable : cap -> unit = "ml_glEnable"
 external disable : cap -> unit = "ml_glDisable"
 
 external shade_model : [flat smooth] -> unit = "ml_glShadeModel"
+
+(*
+type rgba = { red: float; green: float; blue: float; alpha: float }
+type coords = { x: float; y: float; z: float; w: float }
+*)
+
+type rgba = float * float * float * float
+type coords = float * float * float * float
+
+type light_param = [
+      ambient (rgba)
+      diffuse (rgba)
+      specular (rgba)
+      position (coords)
+      spot_direction (coords)
+      spot_exponent (float)
+      spot_cutoff (float)
+      constant_attenuation (float)
+      linear_attenuation (float)
+      quadratic_attenuation (float)
+  ] 
+
+external light : num:int -> param:light_param -> unit
+    = "ml_glLight"
+
+type light_model_param = [
+      ambient (rgba)
+      local_viewer (float)
+      two_side (float)
+  ] 
+
+external light_model : light_model_param -> unit = "ml_glLightModel"
+
+type material_param = [
+      ambient (rgba)
+      diffuse (rgba)
+      specular (rgba)
+      emission (rgba)
+      shininess (float)
+      ambient_and_diffuse (rgba)
+      color_indexes (float * float * float)
+  ] 
+
+external material : face:face -> param:material_param -> unit
+    = "ml_glMaterial"
+
+type depth_func = [
+      never
+      less
+      equal
+      lequal
+      greater
+      notequal
+      gequal
+      always
+  ]
+
+external depth_func : depth_func -> unit = "ml_glDepthFunc"
+external depth_mask : bool -> unit = "ml_glDepthMask"
+
+type sfactor = [
+      zero
+      one
+      dst_color
+      one_minus_dst_color
+      src_alpha
+      one_minus_src_alpha
+      dst_alpha
+      one_minus_dst_alpha
+      src_alpha_saturate
+      constant_color_ext
+      one_minus_constant_color_ext
+      constant_alpha_ext
+      one_minus_constant_alpha_ext
+  ]
+
+type dfactor = [
+      zero
+      one
+      src_color
+      one_minus_src_color
+      src_alpha
+      one_minus_src_alpha
+      dst_alpha
+      one_minus_dst_alpha
+      constant_color_ext
+      one_minus_constant_color_ext
+      constant_alpha_ext
+      one_minus_constant_alpha_ext
+  ]
+      
+external blend_func : src:sfactor -> dst:dfactor -> unit
+    = "ml_glBlendFunc"
