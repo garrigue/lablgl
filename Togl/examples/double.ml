@@ -1,8 +1,6 @@
-(* $Id: double.ml,v 1.3 1998-01-29 11:46:22 garrigue Exp $ *)
+(* $Id: double.ml,v 1.4 1998-09-01 09:28:49 garrigue Exp $ *)
 
-class view togl :title as self =
-  val togl = togl
-  val title = title
+class view togl :title = object (self)
   val mutable corner_x = 0.
   val mutable corner_y = 0.
   val mutable corner_z = 0.

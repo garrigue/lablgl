@@ -1,4 +1,4 @@
-(* $Id: tennis.ml,v 1.5 1998-01-29 11:46:27 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.6 1998-09-01 09:28:51 garrigue Exp $ *)
 
 let ft x = x *. 0.03
 
@@ -9,7 +9,7 @@ let sl = ft 21.0
 let lw = 0.015 
 let wlw = 0.02
 
-class ball () =
+class ball = object
   val mutable x = 0.0
   val mutable y = 0.0
   val mutable z = 0.15
@@ -42,7 +42,7 @@ class ball () =
   method switch = moving <- not moving; moving
 end
 
-class view :togl :ball :setup =
+class view :togl :ball :setup = object
   val togl = togl
   val ball = ball
   val setup = setup
@@ -156,7 +156,7 @@ let main () =
     Button.create parent:f1 text:"Start"
   in
 
-  let ball = new ball () in
+  let ball = new ball in
   let view3d = new view togl:canvas :ball setup:setup3d
   and view2d = new view togl:court2d :ball setup:setup2d
   in

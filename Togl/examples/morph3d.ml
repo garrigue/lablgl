@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.8 1998-04-07 02:07:08 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.9 1998-09-01 09:28:50 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -444,12 +444,12 @@ let draw_ico :amp :divisions :color =
 
   GlList.delete list
 
-class view togl as self =
+class view togl = object (self)
   val togl = togl
   val mutable mono = false
   val mutable smooth = true
   val mutable step = 0.
-  val mutable object = 1
+  val mutable obj = 1
   val mutable draw_object = fun :amp -> ()
   val mutable magnitude = 0.
 
@@ -483,11 +483,11 @@ class view togl as self =
 
   method key sym =
     begin match sym with
-      "1" -> object <- 1
-    | "2" -> object <- 2
-    | "3" -> object <- 3
-    | "4" -> object <- 4
-    | "5" -> object <- 5
+      "1" -> obj <- 1
+    | "2" -> obj <- 2
+    | "3" -> obj <- 3
+    | "4" -> obj <- 4
+    | "5" -> obj <- 5
     | "Space" -> mono <- not mono
     | "Return" -> smooth <- not smooth
     | "Escape" -> Tk.destroy (Winfo.toplevel togl)
@@ -496,7 +496,7 @@ class view togl as self =
     self#pinit
 
   method pinit =
-    begin match object with
+    begin match obj with
       1 ->
 	draw_object <- draw_tetra
 	     divisions:tetradivisions

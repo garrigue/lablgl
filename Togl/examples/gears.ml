@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.5 1998-01-29 11:46:22 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.6 1998-09-01 09:28:49 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -118,12 +118,7 @@ let gear :inner :outer :width :teeth :tooth_depth =
   done;
   GlDraw.ends ()
 
-class view :togl :gear1 :gear2 :gear3 ?:limit as self =
-  val togl = togl
-  val gear1 = gear1
-  val gear2 = gear2
-  val gear3 = gear3
-  val limit = match limit with None -> 0 | Some n -> n
+class view :togl :gear1 :gear2 :gear3 ?:limit [< 0 >] = object (self)
   val mutable view_rotx = 0.0
   val mutable view_roty = 0.0
   val mutable view_rotz = 0.0

@@ -1,6 +1,6 @@
-(* $Id: planet.ml,v 1.7 1998-01-30 10:18:50 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.8 1998-09-01 09:28:51 garrigue Exp $ *)
 
-class planet togl as self =
+class planet togl = object (self)
   val togl = togl
   val mutable year = 0.0
   val mutable day = 0.0
