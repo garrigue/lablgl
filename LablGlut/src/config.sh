@@ -7,6 +7,7 @@ echo "Making commands"
 grep typedef $gl_dir/gl.h | \
     grep -v '\<void\>' | \
     perl -pe 's/typedef\s+(.*)\s+(\S+)\s*;.*$/s\/\2\/\1\/g/' | \
+    perl -pe 's#s/GLboolean\b.*$#s/GLboolean/boolean/g#' | \
     perl -pe 's/\bGL/gl_/g' \
     > commands
 
