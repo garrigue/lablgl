@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.1 1998-09-16 10:14:17 garrigue Exp $ */
+/* $Id: togl.c,v 1.2 1998-09-16 10:17:33 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -10,8 +10,8 @@
 
 /*
  * $Log: togl.c,v $
- * Revision 1.1  1998-09-16 10:14:17  garrigue
- * Initial revision
+ * Revision 1.2  1998-09-16 10:17:33  garrigue
+ * patched for use with LablGL
  *
  * Revision 1.31  1997/09/17 02:41:07  brianp
  * added Geza Groma's Windows NT/95 patches
@@ -1177,7 +1177,7 @@ static int SetupOverlay( struct Togl *togl )
 
 #ifdef GLX_TRANSPARENT_INDEX_EXT
    {
-      int fail = glXGetConfig(dpy, visinfo,GLX_TRANSPARENT_INDEX_VALUE_EXT,
+      int fail = glXGetConfig(dpy, visinfo,GLX_TRANSPARENT_INDEX_EXT,
                               &togl->OverlayTransparentPixel);
       if (fail)
          togl->OverlayTransparentPixel=0; /* maybe, maybe ... */

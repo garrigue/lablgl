@@ -1,14 +1,13 @@
-# $Id: Makefile,v 1.1 1998-09-16 10:14:16 garrigue Exp $
+# $Id: Makefile,v 1.2 1998-09-16 10:17:27 garrigue Exp $
 
 # Togl - a Tk OpenGL widget
 # Version 1.4
 # Copyright (C) 1996-1997  Brian Paul and Ben Bederson
 # See the LICENSE file for copyright details.
 
-
 # $Log: Makefile,v $
-# Revision 1.1  1998-09-16 10:14:16  garrigue
-# Initial revision
+# Revision 1.2  1998-09-16 10:17:27  garrigue
+# patched for use with LablGL
 #
 # Revision 1.10  1997/09/17 02:51:45  brianp
 # updated tar file list
@@ -72,6 +71,9 @@ LIBS = -ltk -ltcl -lGLU -lGL -L/usr/X11/lib -lX11 -lXmu -lXext -lm -ldl
 
 TK_FLAGS =
 
+# Jacques Garrigue added this line
+# Setup in Makefile.config overrides the above definitions
+include ../Makefile.config
 
 #### Shouldn't have to change anything beyond this point ####
 
