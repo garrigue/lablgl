@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.14 2000-04-12 09:49:07 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.15 2000-04-16 12:35:34 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -417,7 +417,7 @@ open Tk
 
 let main () =
   let top = openTk () in
-  Wm.title_set top ~title:"Tennis Court";
+  Wm.title_set top "Tennis Court";
 
   let f0 = Frame.create top in
   let court3d =

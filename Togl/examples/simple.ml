@@ -1,4 +1,4 @@
-(* $Id: simple.ml,v 1.8 2000-04-12 07:40:28 garrigue Exp $ *)
+(* $Id: simple.ml,v 1.9 2000-04-16 12:35:34 garrigue Exp $ *)
 
 open Tk
 
@@ -9,7 +9,7 @@ let main () =
   let top = openTk () in
   let togl =
     Togl.create ~width:500 ~height:500 ~rgba:true ~depth:true top in
-  Wm.title_set ~title:"LablGL" top;
+  Wm.title_set top "LablGL";
   pack ~fill:`Both [togl];
   Togl.display_func togl ~cb:
     begin fun () ->

@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.14 2000-04-12 09:49:07 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.15 2000-04-16 12:35:34 garrigue Exp $ *)
 
 class planet togl = object (self)
   val togl = togl
@@ -84,7 +84,7 @@ let main () =
   let togl =
     Togl.create top ~width:700 ~height:500 ~double:true ~rgba:true
       ~depth:true in
-  Wm.title_set top ~title:"Planet";
+  Wm.title_set top "Planet";
 
   myinit ();
 

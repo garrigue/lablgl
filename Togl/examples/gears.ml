@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.13 2000-04-12 09:49:06 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.14 2000-04-16 12:35:33 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -226,7 +226,7 @@ let main () =
   and sv = my_scale top ~orient:`Vertical
   in
   
-  Wm.title_set top ~title:"Gears";
+  Wm.title_set top "Gears";
 
   let gear1, gear2, gear3 = init() in
   let view = new view togl ~gear1 ~gear2 ~gear3 in

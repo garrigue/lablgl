@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.11 2000-04-12 09:49:08 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.12 2000-04-16 12:35:35 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -80,7 +80,7 @@ let main () =
   let togl =
     Togl.create top ~rgba:true ~depth:true ~width:300 ~height:300 ~double:true
   in
-  Wm.title_set top ~title:"Texture Surf";
+  Wm.title_set top "Texture Surf";
   myinit ();
   Togl.reshape_func togl ~cb:(fun () -> my_reshape togl);
   Togl.display_func togl ~cb:(fun () -> display togl);
