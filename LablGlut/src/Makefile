@@ -21,7 +21,8 @@ SOURCES=\
     gL.idl\
     gLU.idl\
     gLUT.mli gLUT.ml\
-    wrap_glut.c
+    wrap_glut.c \
+    aLL_GL.ml
 LIBS=bigarray
 LIBDIRS=$(OCAML)
 CLIBS=camlidl glut GLU GL
