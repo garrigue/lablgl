@@ -16,16 +16,16 @@ lib:
 libopt:
 	cd src && $(MAKE) opt
 
-togl:
+togl: lib
 	cd Togl/src && $(MAKE) all
 
-toglopt:
+toglopt: libopt
 	cd Togl/src && $(MAKE) opt
 
-glut:
+glut: lib
 	cd LablGlut/src && $(MAKE)
 
-glutopt:
+glutopt: libopt
 	cd LablGlut/src && $(MAKE) opt
 
 install:

@@ -85,8 +85,8 @@ toglinstall:
 	@if test -f togl.cmxa; then $(MAKE) toglinstallopt; fi
 
 toglinstallopt:
-	cp togl.cmxa togl(XA) togl.cmx "$(INSTALLDIR)"
-	cd "$(INSTALLDIR)" && $(RANLIB) togl(XA)
+	cp togl.cmxa togl$(XA) togl.cmx "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) togl$(XA)
 
 clean:
 	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \

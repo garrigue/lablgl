@@ -1,16 +1,18 @@
 
-		LablGL 0.99: Installation and Use instructions
+		LablGL 1.00: Installation and Use instructions
 
 1. Description
 
-  LablGL is an OpenGL interface for Objective Caml. Since it includes
-support for the Togl widget, you can comfortably use it with LablTk.
+  LablGL is an OpenGL interface for Objective Caml. It includes two
+interfaces: the Togl widget, for comfortable use with LablTk, and
+LablGlut for standalone applications not using Tcl/Tk
 
 2. Requisites
 
   * Objective Caml 3.05 or 3.06
-  * LablTk (included in Objective Caml, requires Tcl/Tk)
-  * OpenGL version 1.0 or 1.1
+  * LablTk (included in Objective Caml, requires Tcl/Tk) (for Togl support)
+  * OpenGL
+  * glut (included in Mesa) for glut support
   * GNU make (for conditionals)
 
   Objective Caml can be obtained from
@@ -42,31 +44,30 @@ of Linux distributions. In this case you just have to install
 necessary packages. Otherwise, compile from source.
 
   a) Edit Makefile.config
+     Some tested configurations are provided.
 
-  b) Build LablGL
+  b) Build LablGL with both Togl(Tcl/Tk) and Glut support.
 	% make
+
+     If you need only Togl support, do
+        % make togl
+     If you need only Glut support, do
+        % make glut
+     If you need neither (use the library with lablGtk for instance)
+        % make lib
+
 
   c) For the native code version (you need the native code version of LablTk),
 	% make opt
 
+     Similarly, you can also do
+        % make {togl,glut,lib}
+
   d) Install LablGL
 	% make install
 
-If you don't need Tcl/Tk then (b,c,d) can be replaced by:
-	% make allglut
-	% make optglut
-	% make libinstall
+     This will install all the available parts.   
 
-If you don't need Glut then (b,c,d) can be replaced by:
-	% make alltk
-	% make opttk
-	% make install
-
-If you don't need Tcl/Tk nor Glut support (using lablgtk for instance),
-then (b,c,d) can be replaced by:
-        % make lib
-        % make libopt
-        % make libinstall
 
 With the windows binary distribution, copy bin\lablgl.bat,
 lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
@@ -78,10 +79,13 @@ makefile. Also, uncomment the necessary lines in the Makefile.config file.
 
 4. Use
 
+  Examples are in the Togl/examples and LablGlut/examples directories.
+
   * The lablgl toplevel
-    This is a toplevel, like ocaml, including LablTk, Unix, Str and LablGL.
+    This is a toplevel, like ocaml, including LablTk, Unix, Str, LablGL
+    and Togl.
     You may use it either as a toplevel, or directly to run scripts.
-    To run an example, type:
+    To run an example in Togl/examples, type:
         % lablgl example.ml
     where example.ml is one of: (by order of complexity)
  	simple.ml
@@ -97,15 +101,17 @@ makefile. Also, uncomment the necessary lines in the Makefile.config file.
    Note that some XFree86 do not seem to support single buffer
    rendering. The first 3 examples will not work in that case.
 
-  * Similarely, there is a lablglut toplevel. 
-	For instance, move to the folder LablGlut/examples/lablGL and type
+  * Similarely, there is a lablglut toplevel.
+    For instance, move to the folder LablGlut/examples/lablGL and type
 
 	% lablglut gears.ml
 
   * compiling and linking
-    You need to include labltk.cma, lablgl.cma and togl.cma in your link:
+    You need to include either labltk.cma, lablgl.cma and togl.cma or'
+    lablgl.cma and lablglut.cma in your link:
         ocamlc -I +labltk -I +lablGL \
             labltk.cma lablgl.cma togl.cma ... -o program
+        ocamlc -I +lablGL lablgl.cma lablglut.cma ... -o program
 
 5. Writing programs
 
@@ -126,7 +132,11 @@ makefile. Also, uncomment the necessary lines in the Makefile.config file.
 
   Using Togl is also straightforward. Everything works like in
   LablTk. You create an openGL widget with Togl.create, and then you
-  apply various functions on it. See Togl's README for details.
+  apply various functions on it. See Togl's README in Togl/src/Togl/README
+  for details.
+
+  To use LablGlut you need to look at glut's documentation on your system.
+  The approach is close to LablGL's.
 
 6. Comments and bug reports
 
@@ -135,6 +145,11 @@ makefile. Also, uncomment the necessary lines in the Makefile.config file.
    This library has been tested on a number of programs, but this is
    far from testing all of OpenGL functionality. There are bugs, but
    at least we didn't find any in our examples.
+
+7. Authors
+
+   Jacques Garrigue, Isaac Trotts, Erick Tryzelaar and Christophe
+   Raffali participated to this release.
 
 A. Modules
 
@@ -318,4 +333,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.27 2003-09-26 08:24:48 raffalli Exp $
+$Id: README,v 1.28 2003-10-01 04:00:49 garrigue Exp $
