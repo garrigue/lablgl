@@ -1,5 +1,5 @@
 
-		LablGL 0.98: Installation and Use instructions
+		LablGL 0.99: Installation and Use instructions
 
 1. Description
 
@@ -297,4 +297,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.18 2003-01-09 10:13:51 garrigue Exp $
+$Id: README,v 1.19 2003-01-09 10:23:30 garrigue Exp $
