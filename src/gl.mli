@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.7 1998-01-16 08:27:16 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.8 1998-01-19 06:57:07 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -18,6 +18,7 @@ type 'a rawdata = { kind: 'a; size: int; addr: addr }
 
 val coerce_bitmap : gltype rawdata -> [bitmap] rawdata
 
+type cmp_func = [ never less equal lequal greater notequal gequal always ]
 type face = [back both front]
 type cap =
   [alpha_test auto_normal blend clip_plane0 clip_plane1 clip_plane2
@@ -28,13 +29,12 @@ type cap =
    map1_texture_coord_4 map1_vertex_3 map1_vertex_4 map2_color_4 map2_index
    map2_normal map2_texture_coord_1 map2_texture_coord_2 map2_texture_coord_3
    map2_texture_coord_4 map2_vertex_3 map2_vertex_4 normalize point_smooth
-   polygon_smooth polygon_stipple scissor_test stencil_test texture2d
-   texture_1d texture_gen_q texture_gen_r texture_gen_s texture_gen_t]
+   polygon_smooth polygon_stipple scissor_test stencil_test texture_1d
+   texture_2d texture_gen_q texture_gen_r texture_gen_s texture_gen_t]
 
 type accum_op = [accum add load mult return]
 external accum : op:accum_op -> float -> unit = "ml_glAccum"
-type alpha_func = [always equal gequal greater lequal less never notequal]
-external alpha_func : alpha_func -> ref:clampf -> unit = "ml_glAlphaFunc"
+external alpha_func : cmp_func -> ref:clampf -> unit = "ml_glAlphaFunc"
 
 type begin_enum =
   [line_loop line_strip lines points polygon quad_strip quads triangle_fan
@@ -76,8 +76,7 @@ external copy_pixels :
   = "ml_glCopyPixels"
 external cull_face : face -> unit = "ml_glCullFace"
 
-type depth_func = [always equal gequal greater lequal less never notequal]
-external depth_func : depth_func -> unit = "ml_glDepthFunc"
+external depth_func : cmp_func -> unit = "ml_glDepthFunc"
 external depth_mask : bool -> unit = "ml_glDepthMask"
 external depth_range : near:float -> far:float -> unit = "ml_glDepthRange"
 external disable : cap -> unit = "ml_glDisable"
@@ -107,8 +106,8 @@ external eval_point2 : int -> int -> unit = "ml_glEvalPoint2"
 external flush : unit -> unit = "ml_glFlush"
 external finish : unit -> unit = "ml_glFinish"
 type fog_param =
-  [End(float) color(float * float * float * float) density(float)
-   index(float) mode([exp exp2 linear]) start(float)]
+  [End(float) color(rgba) density(float) index(float)
+   mode([exp exp2 linear]) start(float)]
 external fog : fog_param -> unit = "ml_glFog"
 external front_face : [ccw cw] -> unit = "ml_glFrontFace"
 external frustum :
@@ -217,7 +216,7 @@ external read_pixels :
   y:int ->
   width:int ->
   height:int -> format:pixels_format -> type:#gltype -> #gltype rawdata
-  = "ml_glReadPixels"
+  = "ml_glReadPixels_bc" "ml_glReadPixels"
 external rect : point2 -> point2 -> unit = "ml_glRect"
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit
 

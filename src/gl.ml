@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.13 1998-01-16 08:27:15 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.14 1998-01-19 06:57:06 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -17,6 +17,7 @@ type point4 = float * float * float * float
 
 type clampf = float
 type glist = int
+
 type addr
 type gltype = [bitmap byte ubyte short ushort int uint float]
 type 'a rawdata =
@@ -25,6 +26,7 @@ let coerce_bitmap (data : gltype rawdata) : [bitmap] rawdata =
   match data with {kind = `bitmap} as bitmap -> bitmap
   | _ -> invalid_arg "Gl.coerce_bitmap"
 
+type cmp_func = [ never less equal lequal greater notequal gequal always ]
 type face = [front back both]
 type cap = [
       alpha_test
@@ -83,7 +85,7 @@ type cap = [
       scissor_test
       stencil_test
       texture_1d
-      texture2d
+      texture_2d
       texture_gen_q
       texture_gen_r
       texture_gen_s
@@ -92,9 +94,7 @@ type cap = [
 
 type accum_op = [accum load add mult return]
 external accum : op:accum_op -> float -> unit = "ml_glAccum"
-type alpha_func =
-    [never less equal lequal greater notequal gequal always]
-external alpha_func : alpha_func -> ref:clampf -> unit = "ml_glAlphaFunc"
+external alpha_func : cmp_func -> ref:clampf -> unit = "ml_glAlphaFunc"
 
 type begin_enum =
     [ points lines polygon triangles quads line_strip
@@ -178,8 +178,7 @@ external copy_pixels :
 
 external cull_face : face -> unit = "ml_glCullFace"
 
-type depth_func = [ never less equal lequal greater notequal gequal always ]
-external depth_func : depth_func -> unit = "ml_glDepthFunc"
+external depth_func : cmp_func -> unit = "ml_glDepthFunc"
 external depth_mask : bool -> unit = "ml_glDepthMask"
 external depth_range : near:float -> far:float -> unit = "ml_glDepthRange"
 external disable : cap -> unit = "ml_glDisable"
@@ -214,7 +213,7 @@ type fog_param = [
       start (float)
       End (float)
       index (float)
-      color (float * float * float * float)
+      color (rgba)
   ]
 external fog : fog_param -> unit = "ml_glFog"
 external front_face : [cw ccw] -> unit = "ml_glFrontFace"
@@ -380,8 +379,9 @@ external read_buffer : read_buffer -> unit = "ml_glReadBuffer"
 external read_pixels :
     x:int -> y:int -> width:int -> height:int ->
     format:pixels_format -> type:(#gltype as 'a) -> 'a rawdata
-    = "ml_glReadPixels"
+    = "ml_glReadPixels_bc" "ml_glReadPixels"
 external rect : point2 -> point2 -> unit = "ml_glRect"
+external render_mode : [render select feedback] -> int = "ml_glRenderMode"
 external rotate : angle:float -> x:float -> y:float -> z:float -> unit
     = "ml_glRotated"
 let rotate :angle ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
@@ -389,8 +389,73 @@ let rotate :angle ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
 
 external scale : x:float -> y:float -> z:float -> unit = "ml_glScaled"
 let scale ?:x [< 1. >] ?:y [< 1. >] ?:z [< 1. >] = scale :x :y :z
+external select_buffer : [uint] rawdata -> unit = "ml_glSelectBuffer"
 external shade_model : [flat smooth] -> unit = "ml_glShadeModel"
+external stencil_func : cmp_func -> ref:int -> mask:int -> unit
+    = "ml_glStencilFunc"
+external stencil_mask : int -> unit = "ml_glStencilMask"
+type stencil_op = [ keep zero replace incr decr invert ]
+external stencil_op :
+    fail:stencil_op -> zfail:stencil_op -> zpass:stencil_op -> unit
+    = "ml_glStencilOp"
+let stencil_op ?:fail [< `keep >] ?:zfail [< `keep >] ?:zpass [< `keep >] =
+  stencil_op :fail :zfail :zpass
 
+external tex_coord1 : float -> unit = "ml_glTexCoord1d"
+external tex_coord2 : float -> float -> unit = "ml_glTexCoord2d"
+external tex_coord3 : float -> float -> float -> unit = "ml_glTexCoord3d"
+external tex_coord4 : float -> float -> float -> float -> unit
+    = "ml_glTexCoord1d"
+let default x = function Some x -> x | None -> x
+let tex_coord :s ?:t ?:r ?:q =
+  match q with
+    Some q -> tex_coord4 s (default 0.0 t) (default 0.0 r) q
+  | None -> match r with
+      Some r -> tex_coord3 s (default 0.0 t) r
+    | None -> match t with
+	Some t -> tex_coord2 s t
+      |	None -> tex_coord1 s
+let tex_coord2 (s,t) = tex_coord2 s t
+let tex_coord3 (s,t,r) = tex_coord3 s t r
+let tex_coord4 (s,t,r,q) = tex_coord4 s t r q
+type tex_env_param =
+    [mode([modulate decal blend replace]) color(rgba)]
+external tex_env : tex_env_param -> unit = "ml_glTexEnv"
+type tex_coord = [s t r q]
+type tex_gen_param = [
+      mode([object_linear eye_linear sphere_map])
+      object_plane(point4)
+      eye_plane(point4)
+  ]
+external tex_gen : coord:tex_coord -> tex_gen_param -> unit = "ml_glTexGen"
+type tex_format =
+    [ color_index depth_component rgba
+      red green blue alpha rgb luminance luminance_alpha ]
+external tex_image1d :
+    proxy:bool -> level:int -> internal:int ->
+    width:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+    = "ml_glTexImage1D_bc""ml_glTexImage1D"
+let tex_image1d :proxy :level :internal :width :border :format data =
+  if width mod 2 <> 0 then raise (GLerror "Gl.tex_image1d : bad width");
+  tex_image1d :proxy :level :internal :width :border :format data
+external tex_image2d :
+    proxy:bool -> level:int -> internal:int -> width:int ->
+    height:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+    = "ml_glTexImage2D_bc""ml_glTexImage2D"
+let tex_image2d :proxy :level :internal :width :height :border :format data =
+  if width mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad width");
+  if height mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad height");
+  tex_image2d :proxy :level :internal :width :height :border :format data
+type tex_filter =
+    [ nearest linear nearest_mipmap_nearest linear_mipmap_nearest
+      nearest_mipmap_linear linear_mipmap_linear ]
+type tex_wrap = [clamp repeat]
+type tex_param =
+    [ min_filter(tex_filter) mag_filter([nearest linear])
+      wrap_s(tex_wrap) wrap_t(tex_wrap) border_color(rgba)
+      priority(clampf) ]
+external tex_parameter : target:[texture_1d texture_2d] -> tex_param -> unit
+    = "ml_glTexParameter"
 external translate : x:float -> y:float -> z:float -> unit = "ml_glTranslated"
 let translate ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] = translate :x :y :z
 

@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.3 1998-01-13 11:07:16 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.4 1998-01-19 06:57:10 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -29,13 +29,14 @@ value ml_Togl_Init (value unit)  /* ML */
     return Val_unit;
 }
 
-/* Does not register the structure with Caml ! */
+/* Does not register the structure with Caml !
 static value Val_togl (struct Togl *togl)
 {
     value wrapper = alloc(1,No_scan_tag);
     Field(wrapper,0) = (value) togl;
     return wrapper;
 }
+*/
 
 enum {
      CreateFunc = 0,
@@ -52,7 +53,7 @@ static value *callbacks = NULL;
 
 #define CALLBACK(func) \
 static void callback_##func (struct Togl *togl) \
-{ callback (Field(*callbacks, func), Val_togl(togl)); }
+{ callback (Field(*callbacks, func), Val_addr(togl)); }
 
 #define ENABLER(func) \
 value ml_Togl_##func (value unit) \

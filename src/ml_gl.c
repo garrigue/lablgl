@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.13 1998-01-16 08:27:17 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.14 1998-01-19 06:57:08 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -56,12 +56,12 @@ value ml_glBitmap (value width, value height, value orig, value move,
 		   value data)  /* ML */
 {
     if (Int_val(width) * Int_val(height) >
-	Int_val(Field(data,1)) * 8 * sizeof(value))
+	Size_rawdata(data) * 8 * sizeof(value))
 	ml_raise_gl ("GL.bitmap : unsufficient data");
     glBitmap (Int_val(width), Int_val(height),
 	      Float_val(Field(orig,0)), Float_val(Field(orig,1)),
 	      Float_val(Field(move,0)), Float_val(Field(move,1)),
-	      Addr_val(Field(data,2)));
+	      Addr_rawdata(data));
     return Val_unit;
 }
 
@@ -126,7 +126,7 @@ ML_GLenum (glDrawBuffer)
 value ml_glDrawPixels (value width, value height, value format, value data)
 {
     glDrawPixels (Int_val(width), Int_val(height), GLenum_val(format),
-		  GLenum_val(Field(data,0)), Addr_val(Field(data,2)));
+		  Type_rawdata(data), Addr_rawdata(data));
     return Val_unit;
 }
 
@@ -513,6 +513,12 @@ value ml_glReadPixels (value x, value y, value w, value h,
     return data;
 }
 
+value ml_glReadPixels_bc (value *argv, int argn)
+{
+    return ml_glReadPixels (argv[0], argv[1], argv[2],
+			    argv[3], argv[4], argv[5]);
+}
+
 value ml_glRect(value p1, value p2)  /* ML */
 {
     glRectd (Double_val (Field (p1, 0)),
@@ -522,11 +528,120 @@ value ml_glRect(value p1, value p2)  /* ML */
     return Val_unit;
 }
 
+ML_GLenum_int (glRenderMode)
 ML_double4 (glRotated)
 
 ML_double3 (glScaled)
-ML_GLenum(glShadeModel)
+ML_int4 (glScissor)
 
+value ml_glSelectBuffer (value raw)
+{
+    glSelectBuffer (Int_val (Field(raw,1)) / sizeof(GLuint),
+		    (GLuint *) Field(raw,2));
+    return Val_unit;
+}
+
+ML_GLenum (glShadeModel)
+ML_GLenum_int2_ (glStencilFunc)
+ML_int (glStencilMask)
+ML_GLenum3 (glStencilOp)
+
+ML_double (glTexCoord1d)
+ML_double2 (glTexCoord2d)
+ML_double3 (glTexCoord3d)
+ML_double4 (glTexCoord4d)
+
+value ml_glTexEnv (value param)
+{
+    value params = Field(param,1);
+    GLfloat color[4];
+    int i;
+
+    switch (Field(param,0)) {
+    case MLTAG_mode:
+	glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GLenum_val(params));
+	break;
+    case MLTAG_color:
+	for (i = 0; i < 4; i++) color[i] = Float_val(Field(params,i));
+	glTexEnvfv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
+	break;
+    }
+    return Val_unit;
+}
+
+value ml_glTexGen (value coord, value param)
+{
+    value params = Field(param,1);
+    GLdouble point[4];
+    int i;
+
+    if (Field(param,0) == MLTAG_mode)
+	glTexGeni (GLenum_val(coord), GL_TEXTURE_GEN_MODE, GLenum_val(params));
+    else {
+	for (i = 0; i < 4; i++) point[i] = Double_val(Field(params,i));
+	glTexGendv (GLenum_val(coord), GLenum_val(Field(param,0)), point);
+    }
+    return Val_unit;
+}
+
+value ml_glTexImage1D (value proxy, value level, value internal,
+		       value width, value border, value format, value data)
+{
+    glTexImage1D (proxy == Val_int(1)
+		  ? GL_PROXY_TEXTURE_1D_EXT : GL_TEXTURE_1D,
+		  Int_val(level), Int_val(internal), Int_val(width),
+		  Int_val(border), GLenum_val(format),
+		  Type_rawdata(data), Addr_rawdata(data));
+    return Val_unit;
+}
+
+value ml_glTexImage1D_bc (value *argv, int argn)
+{
+    return ml_glTexImage1D (argv[0], argv[1], argv[2],
+			    argv[3], argv[4], argv[5], argv[6]);
+}
+
+value ml_glTexImage2D (value proxy, value level, value internal,
+		       value width, value height, value border,
+		       value format, value data)
+{
+    glTexImage2D (proxy == Val_int(1)
+		  ? GL_PROXY_TEXTURE_2D_EXT : GL_TEXTURE_2D,
+		  Int_val(level), Int_val(internal), Int_val(width),
+		  Int_val(height), Int_val(border), GLenum_val(format),
+		  Type_rawdata(data), Addr_rawdata(data));
+    return Val_unit;
+}
+
+value ml_glTexImage2D_bc (value *argv, int argn)
+{
+    return ml_glTexImage2D (argv[0], argv[1], argv[2], argv[3],
+			    argv[4], argv[5], argv[6], argv[7]);
+}
+
+value ml_glTexParameter (value target, value param)
+{
+    GLenum targ = GLenum_val(target);
+    GLenum pname = GLenum_val(Field(param,0));
+    value params = Field(param,1);
+    GLfloat color[4];
+    int i;
+
+    switch (pname) {
+    case GL_TEXTURE_BORDER_COLOR:
+	for (i = 0; i < 4; i++) color[i] = Float_val(Field(params,i));
+	glTexParameterfv (targ, pname, color);
+	break;
+    case GL_TEXTURE_PRIORITY:
+	glTexParameterf (targ, pname, Float_val(params));
+	break;
+    default:
+	glTexParameteri (targ, pname, GLenum_val(params));
+	break;
+    }
+    return Val_unit;
+}
+    
 ML_double3 (glTranslated)
 
 value ml_glVertex(value x, value y, value z, value w)  /* ML */

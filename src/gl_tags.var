@@ -190,6 +190,27 @@ unpack_alignment
 (* glReadBuffer *)
 front_left front_right back_left back_right left right
 
+(* glStencilOp *)
+keep replace incr decr
+
+(* glTexEnv *)
+modulate decal
+
+(* glTexGen *)
+s t r q
+object_plane eye_plane
+
+(* glTexParameter *)
+min_filter -> GL_TEXTURE_MIN_FILTER
+mag_filter -> GL_TEXTURE_MAG_FILTER
+wrap_s -> GL_TEXTURE_WRAP_S
+wrap_t -> GL_TEXTURE_WRAP_T
+border_color -> GL_TEXTURE_BORDER_COLOR
+priority -> GL_TEXTURE_PRIORITY
+nearest nearest_mipmap_nearest linear_mipmap_nearest
+nearest_mipmap_linear linear_mipmap_linear
+clamp repeat
+
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End

@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.2 1998-01-16 00:19:38 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.3 1998-01-19 06:57:09 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -17,7 +17,7 @@ static GLenum GLUenum_val(value tag)
     ml_raise_gl ("Unknown GLU tag");
 }
 
-/* Does not register the structure with Caml ! */
+/* Does not register the structure with Caml !
 static value Val_addr (void *addr)
 {
     value wrapper;
@@ -26,6 +26,7 @@ static value Val_addr (void *addr)
     Field(wrapper,0) = (value) addr;
     return wrapper;
 }
+*/
 
 /* Called from ML */
 

@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.11 1998-01-15 08:34:41 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.12 1998-01-19 06:57:09 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -6,7 +6,11 @@
 void ml_raise_gl (char *errmsg) Noreturn;
 
 #define Float_val(dbl) ((GLfloat) Double_val(dbl))
-#define Addr_val(addr) ((GLvoid *) Field(addr,0))
+#define Addr_val(addr) ((GLvoid *) addr)
+#define Val_addr(addr) ((value) addr)
+#define Type_rawdata(raw) (GLenum_val(Field(raw,0)))
+#define Size_rawdata(raw) (Int_val(Field(raw,1)))
+#define Addr_rawdata(raw) ((GLvoid *) Field(raw,2))
 
 #define ML_void(cname) \
 value ml_##cname (value unit) \
@@ -25,6 +29,10 @@ value ml_##cname (value tag) \
 #define ML_GLenum2(cname) \
 value ml_##cname (value tag1, value tag2) \
 { cname (GLenum_val(tag1), GLenum_val(tag2)); return Val_unit; }
+#define ML_GLenum3(cname) \
+value ml_##cname (value tag1, value tag2, value tag3) \
+{ cname (GLenum_val(tag1), GLenum_val(tag2), GLenum_val(tag3)); \
+  return Val_unit; }
 #define ML_GLenum_float_(cname) \
 value ml_##cname (value tag1, value x) \
 { cname (GLenum_val(tag1), Float_val(x)); return Val_unit; }
@@ -122,8 +130,12 @@ value ml_##cname (value addr, value n) \
 value ml_##cname (value addr, value tag) \
 { cname (Addr_val(addr), TOGLenum_val(tag)); return Val_unit; }
 
-#ifdef GL_DOUBLE_EXT
+#if !defined(GL_DOUBLE) && defined(GL_DOUBLE_EXT)
 #define GL_DOUBLE GL_DOUBLE_EXT
+#endif
+
+#if !defined(GL_TEXTURE_PRIORITY) && defined(GL_TEXTURE_PRIORITY_EXT)
+#define GL_TEXTURE_PRIORITY GL_TEXTURE_PRIORITY_EXT
 #endif
 
 #endif
