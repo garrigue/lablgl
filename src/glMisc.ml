@@ -1,7 +1,8 @@
-(* $Id: glMisc.ml,v 1.4 2001-02-22 05:01:35 garrigue Exp $ *)
+(* $Id: glMisc.ml,v 1.5 2003-04-22 03:24:02 erickt Exp $ *)
 
 external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
+
 
 type equation = float * float * float * float
 external clip_plane : plane:int -> equation -> unit

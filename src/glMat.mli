@@ -1,4 +1,4 @@
-(* $Id: glMat.mli,v 1.5 2003-03-17 19:38:55 erickt Exp $ *)
+(* $Id: glMat.mli,v 1.6 2003-04-22 03:24:02 erickt Exp $ *)
 
 open Gl
 
@@ -23,6 +23,7 @@ val pop : unit -> unit
     (* Push and pop the matrix on the stack *)
 
 val mode : [`modelview|`projection|`texture] -> unit
+val get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix] -> t
 
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val scale : ?x:float -> ?y:float -> ?z:float -> unit -> unit

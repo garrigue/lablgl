@@ -30,6 +30,10 @@ modelview
 projection
 texture
 
+modelview_matrix
+projection_matrix
+texture_matrix
+
 (* glEnable *)
 alpha_test
 auto_normal

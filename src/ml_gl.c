@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.36 2003-03-17 19:38:55 erickt Exp $ */
+/* $Id: ml_gl.c,v 1.37 2003-04-22 03:24:02 erickt Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -200,7 +200,8 @@ ML_3 (glFrustum, Pair(arg1,Double_val,Double_val),
       Pair(arg2,Double_val,Double_val), Pair(arg3,Double_val,Double_val))
 
 ML_1_ (glGetString, GLenum_val, copy_string_check)
-
+ML_2 (glGetDoublev, GLenum_val, Double_raw)	
+	
 CAMLprim value ml_glHint (value target, value hint)
 {
     GLenum targ;
