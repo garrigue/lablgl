@@ -66,13 +66,13 @@ lablgltop: lablgl.cma liblablgl.a
 		$(GLLIBS) $(XLIBS) $(TKLIBS)
 
 lablgl: lablgl.in Makefile.config
-	sed -e "s|LABLTKDIR|$(LABLTKDIR)|g" -e "s|INSTALLDIR|$(INSTALLDIR)|g" \
+	sed -e 's|LABLTKDIR|$(LABLTKDIR)|g' -e 's|INSTALLDIR|$(INSTALLDIR)|g' \
 		< lablgl.in > $@
 	chmod +x $@
 
 lablglopt: lablglopt.in Makefile.config
-	sed -e "s|INCLUDES|$(INCLUDES)|g" -e "s|INSTALLDIR|$(INSTALLDIR)|g" \
-		-e "s|OTHERLIBS|$(GLLIBS) $(XLIBS) $(TKLIBS)|g" \
+	sed -e 's|INCLUDES|$(INCLUDES)|g' -e 's|INSTALLDIR|$(INSTALLDIR)|g' \
+		-e 's|OTHERLIBS|$(GLLIBS) $(XLIBS) $(TKLIBS)|g' \
 		< lablglopt.in > $@
 	chmod +x $@
 
