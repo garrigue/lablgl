@@ -103,7 +103,7 @@ install:
 
 
 clean:
-	rm -f *.cm* *.o *.opt *_tags.[ch] lablgl lablglopt *~ #*
+	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h lablgl lablglopt *~ #*
 
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c

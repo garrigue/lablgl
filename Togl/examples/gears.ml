@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.2 1998-01-12 05:20:01 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.3 1998-01-28 01:44:11 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -118,16 +118,20 @@ let gear :inner :outer :width :teeth :tooth_depth =
   done;
   Gl.end_block ()
 
-class view :gear1 :gear2 :gear3 ?:limit as self =
+class view :togl :gear1 :gear2 :gear3 ?:limit as self =
+  val togl = togl
   val gear1 = gear1
   val gear2 = gear2
   val gear3 = gear3
   val limit = match limit with None -> 0 | Some n -> n
-  val mutable view_rotx = 20.0
-  val mutable view_roty = 30.0
+  val mutable view_rotx = 0.0
+  val mutable view_roty = 0.0
   val mutable view_rotz = 0.0
   val mutable angle = 0.0
   val mutable count = 1
+
+  method rotx a = view_rotx <- a
+  method roty a = view_roty <- a
 
   method draw =
     Gl.clear [`color;`depth];
@@ -159,45 +163,33 @@ class view :gear1 :gear2 :gear3 ?:limit as self =
     Gl.pop_matrix ();
 
     Gl.pop_matrix ();
-
-    Gltk.swap_buffers ();
+    
+    Togl.swap_buffers togl;
 
     count <- count + 1;
-   if count =limit then Gltk.quit()
+    if count =limit then exit 0
 
-  method idle () =
+  method idle =
     angle <- angle +. 2.0;
     self#draw
 
-  method key :key mode:(_ : Gltk.key_mode list) =
-    (* change view angle, exit upon ESC *)
-    match (key : Gltk.key_desc) with
-      `up -> view_rotx <- view_rotx +. 5.0
-    | `down -> view_rotx <- view_rotx -. 5.0
-    | `left -> view_roty <- view_roty +. 5.0
-    | `right -> view_roty <- view_roty -. 5.0
-    | `char 'z' -> view_rotz <- view_rotz -. 5.0
-    | `char 'Z' -> view_rotz <- view_rotz +. 5.0
-    | `escape | `char 'q' -> Gltk.quit ()
-    | _ -> Gltk.no_changes ()
+  method reshape =
+    let w = Togl.width togl and h = Togl.height togl in
+    Gl.viewport x:0 y:0 :w :h;
+    Gl.matrix_mode `projection;
+    Gl.load_identity ();
+    let r = float w /. float h in
+    let r' = 1. /. r in
+    if (w>h) then
+      Gl.frustum x:(-. r,r) y:(-1.0,1.0) z:(5.0,60.0)
+    else
+      Gl.frustum x:(-1.0,1.0) y:(-.r',r') z:(5.0,60.0);
+
+    Gl.matrix_mode `modelview;
+    Gl.load_identity();
+    Gl.translate z:(-40.0);
+    Gl.clear[`color;`depth]
 end
-
-(* new window size or exposure *)
-let reshape :w :h =
-  Gl.viewport x:0 y:0 :w :h;
-  Gl.matrix_mode `projection;
-  Gl.load_identity ();
-  let r = float w /. float h in
-  let r' = 1. /. r in
-  if (w>h) then
-    Gl.frustum left:(-. r) right:r bottom:(-1.0) top:1.0 near:5.0 far:60.0
-  else
-    Gl.frustum left:(-1.0) right:1.0 bottom:(-.r') top:r' near:5.0 far:60.0;
-
-  Gl.matrix_mode `modelview;
-  Gl.load_identity();
-  Gl.translate z:(-40.0);
-  Gl.clear[`color;`depth]
 
 let init () =
   let pos = 5.0, 5.0, 10.0, 0.0
@@ -205,13 +197,14 @@ let init () =
   and green = 0.0, 0.8, 0.2, 1.0
   and blue = 0.2, 0.2, 1.0, 1.0 in
 
-  Gl.light num:0 param:(`position pos);
-  List.iter fun:Gl.enable [`cull_face;`lighting;`light0;`depth_test;`normalize];
+  Gl.light num:0 (`position pos);
+  List.iter fun:Gl.enable
+    [`cull_face;`lighting;`light0;`depth_test;`normalize];
 
   (* make the gears *)
   let make_gear :inner :outer :width :teeth :color =
     let list = Glm.new_list `compile in
-    Gl.material face:`front param:(`ambient_and_diffuse color);
+    Gl.material face:`front (`ambient_and_diffuse color);
     gear :inner :outer :width :teeth tooth_depth:0.7;
     Gl.end_list ();
     list
@@ -220,22 +213,38 @@ let init () =
   and gear2 = make_gear inner:0.5 outer:2.0 width:2.0 teeth:10 color:green
   and gear3 = make_gear inner:1.3 outer:2.0 width:0.5 teeth:10 color:blue in
 
-(*  Gl.enable `normalize; *)
   (gear1, gear2, gear3)
 
-let main () =
-  Gltk.init_position x:0 y:0 w:300 h:300;
-  Gltk.init_display_mode [`rgb;`depth;`double;`direct];
+open Tk
 
-  Gltk.init_window title:"Gears";
+let main () =
+  let top = openTk () in
+  let f = Frame.create parent:top in
+  let v = Textvariable.create () in
+  let my_scale =
+    Scale.create from:0. to:180. showvalue:false
+      highlightbackground:`Black in
+  let togl =
+    Togl.create parent:f width:300 height:300
+      rgba:true depth:true double:true
+  and sh = my_scale parent:f orient:`Horizontal
+  and sv = my_scale parent:top orient:`Vertical
+  in
+  
+  Wm.title_set top title:"Gears";
 
   let gear1, gear2, gear3 = init() in
-  let view = new view :gear1 :gear2 :gear3 in
-  Gltk.expose_func reshape;
-  Gltk.reshape_func reshape;
-  Gltk.key_down_func (view#key);
-  Gltk.idle_func (view#idle);
-  Gltk.display_func (fun () -> view#draw);
-  Gltk.exec ()
+  let view = new view :togl :gear1 :gear2 :gear3 in
+  Scale.configure sv command:(view#rotx);
+  Scale.configure sh command:(view#roty);
+  Scale.set sh to:20.; Scale.set sv to:40.;
+  Togl.reshape_func togl cb:(fun () -> view#reshape);
+  Togl.display_func togl cb:(fun () -> view#draw);
+  Togl.timer_func ms:20 cb:(fun () -> view#idle);
+  pack [sv] side:`Right fill:`Y;
+  pack [f] expand:true fill:`Both;
+  pack [togl] side:`Top expand:true fill:`Both;
+  pack [sh] side:`Bottom fill:`X;
+  Tk.mainLoop ()
 
 let _ = main ()
