@@ -18,8 +18,9 @@ support for the Togl widget, you can comfortably use it with LablTk.
   OpenGL (with hardware support) is already on your machine on SGI and
 most DEC Alpha systems. It may also be the case with Solaris machines,
 and if you do not have it you may obtain it from Sun.
-  XFree86 also supports the GLX protocol since version 4.0, with
-hardware acceleration on some platforms.
+  XFree86 supports the GLX protocol since version 4.0, with hardware
+acceleration on some platforms. It is available on most recent Linux
+configurations.
   If you are not lucky enough to have built-in OpenGL support, you can
 still use Mesa, an openGL-compatible freeware, which works on almost
 everything.
@@ -49,7 +50,7 @@ about Togl at:
     This is a toplevel, like ocaml, including LablTk, Unix, Str and LablGL.
     You may use it either as a toplevel, or directly to run scripts.
     To run an example, type:
-        % lablgl -labels example.ml
+        % lablgl example.ml
     where example.ml is one of: (by order of complexity)
  	simple.ml
 	scene.ml
@@ -61,27 +62,30 @@ about Togl at:
 	morph3d.ml
 	tennis.ml
 
+   Note that some XFree86 do not seem to support single buffer
+   rendering. The first 3 examples will not work in that case.
+
   * compiling and linking
-    You need to include labltk.cma, lablgl.cma and togl.cmo in your link:
-        ocamlc -I CAMLLIB/labltk -I CAMLLIB/lablGL \
-            labltk.cma lablgl.cma togl.cmo ... -o program
+    You need to include labltk.cma, lablgl.cma and togl.cma in your link:
+        ocamlc -I +labltk -I +lablGL \
+            labltk.cma lablgl.cma togl.cma ... -o program
 
 5. Writing programs
 
   All of the GL and GLU libraries are available. Read a good book
   about how to use these. Translating from OpenGL to LablGL is rather
-  straitforward: there is a LablGL function for each OpenGL one.  For
-  ease of retrieving, bot GL and GLU are cut in smaller modules of
-  related functions.  See in appendix A which modules your function is
-  in. By default it has the same name, gl or glu omited, and capitals
-  replaced by underscores.  When arguments are labelled, the name is
-  taken from the man page or the C prototype.
+  straightforward: there is a LablGL function for each OpenGL one.
+  For ease of retrieving, both GL and GLU are cut in smaller modules
+  of related functions.  See in appendix A which modules your function
+  is in. By default it has the same name, gl or glu omited, and
+  capitals replaced by underscores.  When arguments are labelled, the
+  names are taken from the man page or the C prototype.
 
-  OpenGL makes heavy using of enumerations, with names staring with
+  OpenGL makes heavy use of enumerations, with names starting with
   GL_ or GLU_ . Since their meaning is often overloaded, they are all
   converted to polymorphic variants. In most cases just replace prefix
   by a backquote and convert to low case. When you have a doubt the
-  best way is to have a look with LablBrowser.
+  best way is to have a look with OCamlBrowser.
 
   Using Togl is also straightforward. Everything works like in
   LablTk. You create an openGL widget with Togl.create, and then you
@@ -275,4 +279,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.14 2002-03-14 06:14:03 garrigue Exp $
+$Id: README,v 1.15 2002-03-14 06:21:02 garrigue Exp $
