@@ -63,7 +63,7 @@ lablgl.cmxa: lablgl.cma $(OPTOBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(OPTOBJS)
 
 togl.cma: togl.cmo $(TOGLOBJS) Makefile.config
-	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) -cclib -llabltk41
+	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS)
 
 togl.cmxa: togl.cma togl.cmx Makefile.config
 	$(LIBRARIAN) -o togl togl.cmx
@@ -78,7 +78,7 @@ $(TOGLDIR)/togl.o:
 lablgltop: lablgl.cma togl.cma
 	ocamlmktop -I . $(OCAMLINC) -o lablgltop \
 	    -dllpath $(LABLTKDIR) -dllpath $(INSTALLDIR) \
-	   str.cma unix.cma labltk.cma lablgl.cma togl.cma
+	   labltk.cma lablgl.cma togl.cma
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
