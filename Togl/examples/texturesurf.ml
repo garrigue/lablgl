@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.8 1999-11-23 17:18:20 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.9 1999-12-16 08:38:02 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -84,15 +84,15 @@ let main () =
   myinit ();
   Togl.reshape_func togl cb:(fun () -> my_reshape togl);
   Togl.display_func togl cb:(fun () -> display togl);
-  bind top events:[[],`KeyPress]
-    action:(`Set([`KeySymString], fun ev ->
+  bind top events:[`KeyPress] fields:[`KeySymString]
+    action:(fun ev ->
       match ev.ev_KeySymString with
 	"Up" -> GlMat.rotate angle:(-5.) z:1.0 (); display togl
       |	"Down" -> GlMat.rotate angle:(5.) z:1.0 (); display togl
       |	"Left" -> GlMat.rotate angle:(5.) x:1.0 (); display togl
       |	"Right" -> GlMat.rotate angle:(-5.) x:1.0 (); display togl
       |	"Escape" -> destroy top; exit 0
-      |	_ -> ()));
+      |	_ -> ());
   pack [togl] expand:true fill:`Both;
   mainLoop ()
 

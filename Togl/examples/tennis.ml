@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.11 1999-11-23 17:18:19 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.12 1999-12-16 08:38:01 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -466,17 +466,17 @@ let main () =
     cb:(fun () -> if ball#do_tick 0.02 then (view3d#draw; view2d#draw));
   Togl.display_func court3d cb:(fun () -> view3d#draw);
   Togl.display_func court2d cb:(fun () -> view2d#draw);
-  bind court3d events:[[`Button1],`Motion] action:
-        (`Set([`MouseX;`MouseY], fun ev ->
+  bind court3d events:[`Modified([`Button1],`Motion)] fields:[`MouseX;`MouseY]
+    action:(fun ev ->
           let width = Togl.width court3d
           and height =Togl.height court3d in 
 	  let y = -. (float ev.ev_MouseX /. float width) +. 0.5
           and x = float ev.ev_MouseY  /. float height in
 	  player#move x y;
 	  view2d#draw;
-	  view3d#draw));
-  bind court2d events:[[`Button1],`Motion] action:
-        (`Set([`MouseX;`MouseY], fun ev ->
+	  view3d#draw);
+  bind court2d events:[`Modified([`Button1],`Motion)] fields:[`MouseX;`MouseY]
+    action:(fun ev ->
           let width = Togl.width court2d
           and height =Togl.height court2d in 
 	  let y = (float ev.ev_MouseX /. float width ) -. 0.5
@@ -485,9 +485,9 @@ let main () =
           and x = -. (x *. 3.0)  in
 	  ball#set_position x y;
 	  view2d#draw;
-	  view3d#draw));
-  bind court2d events:[[`Button2],`Motion] action:
-        (`Set([`MouseX;`MouseY], fun ev ->
+	  view3d#draw);
+  bind court2d events:[`Modified([`Button2],`Motion)] fields:[`MouseX;`MouseY]
+    action:(fun ev ->
           let width = Togl.width court2d
           and height =Togl.height court2d in 
 	  let y = (float ev.ev_MouseX /. float width ) -. 0.5
@@ -499,7 +499,7 @@ let main () =
 	  print_float y;
 	  print_string "\n"; 
 	  view2d#draw;
-	  view3d#draw));
+	  view3d#draw);
   let rec viewselfn () =  
     begin
       Textvariable.handle viewseltv viewselfn;

@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.11 1999-11-23 17:18:19 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.12 1999-12-16 08:38:01 garrigue Exp $ *)
 
 class planet togl = object (self)
   val togl = togl
@@ -92,10 +92,10 @@ let main () =
   let scale =
     Scale.create top from:(-45.) to:45. orient:`Vertical
       command:(planet#eye) showvalue:false highlightbackground:`Black in
-  bind togl events:[[],`Enter] action:(`Set([],fun _ -> Focus.set togl));
-  bind scale events:[[],`Enter] action:(`Set([],fun _ -> Focus.set scale));
-  bind togl events:[[],`KeyPress]
-    action:(`Set([`KeySymString], fun ev ->
+  bind togl events:[`Enter] action:(fun _ -> Focus.set togl);
+  bind scale events:[`Enter] action:(fun _ -> Focus.set scale);
+  bind togl events:[`KeyPress] fields:[`KeySymString]
+    action:(fun ev ->
       begin match ev.ev_KeySymString with
 	"Left" ->  planet#year_subtract
       |	"Right" -> planet#year_add
@@ -104,7 +104,7 @@ let main () =
       |	"Escape" -> destroy top; exit 0
       |	_ -> ()
       end;
-      planet#display));
+      planet#display);
   Togl.timer_func ms:20
     cb:(fun () -> planet#tick (Unix.gettimeofday()); planet#display);
   Togl.display_func togl cb:(fun () -> planet#display);

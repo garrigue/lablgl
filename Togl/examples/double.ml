@@ -1,4 +1,4 @@
-(* $Id: double.ml,v 1.7 1999-11-23 17:18:17 garrigue Exp $ *)
+(* $Id: double.ml,v 1.8 1999-12-16 08:38:00 garrigue Exp $ *)
 
 class view togl :title = object (self)
   val mutable corner_x = 0.
@@ -102,8 +102,9 @@ let main () =
     (fun o ->
       Togl.display_func o#togl cb:(fun () -> o#display);
       Togl.reshape_func o#togl cb:(fun () -> o#reshape);
-      bind o#togl events:[[`Button1],`Motion] action:
-	(`Set([`MouseX;`MouseY], fun ev ->
+      bind o#togl events:[`Modified([`Button1],`Motion)]
+        fields:[`MouseX;`MouseY]
+        action:(fun ev ->
 	  let width = Togl.width o#togl
 	  and height =Togl.height o#togl
 	  and x = ev.ev_MouseX
@@ -111,10 +112,10 @@ let main () =
 	  let x_angle = 360. *. float y /. float height
 	  and y_angle = 360. *. float (width - x) /. float width in
 	  Scale.set to:x_angle sx;
-	  Scale.set to:y_angle sy)))
+	  Scale.set to:y_angle sy))
     [single;double];
 
-  pack side:`Left padx:(`Pix 3) pady:(`Pix 3) fill:`Both expand:true
+  pack side:`Left padx:3 pady:3 fill:`Both expand:true
     [single#togl; double#togl];
   pack fill:`Both expand:true [f];
   pack fill:`X [coe sx; coe sy; coe button];

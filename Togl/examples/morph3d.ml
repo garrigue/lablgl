@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.13 1999-11-23 17:18:18 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.14 1999-12-16 08:38:00 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -588,9 +588,9 @@ let main () =
   Togl.display_func togl cb:(fun () -> view#draw);
   Togl.reshape_func togl cb:(fun () -> view#reshape);
   Togl.timer_func ms:20 cb:(fun () -> view#draw);
-  bind togl events:[[],`KeyPress]
-    action:(`Set([`KeySymString], fun ev -> view#key ev.ev_KeySymString));
-  bind togl events:[[],`Enter] action:(`Set([], fun _ -> Focus.set togl));
+  bind togl events:[`KeyPress] fields:[`KeySymString]
+    action:(fun ev -> view#key ev.ev_KeySymString);
+  bind togl events:[`Enter] action:(fun _ -> Focus.set togl);
   pack [togl] expand:true fill:`Both;
   mainLoop ()
 
