@@ -37,6 +37,10 @@ Note that Togl is only compatible with vanilla Tcl/Tk: specially
 patched versions may not work. For instance 8.2.3+ included in old
 debian distributions does not work.
 
+  LablGlut requires glut, which is already included in recent versions
+of Mesa and XFree86. For windows you need to obtain it from
+	http://www.xmission.com/~nate/glut.html
+
 3. Installation
 
 Precompiled versions of lablGL are available for windows, and a number
@@ -72,7 +76,9 @@ necessary packages. Otherwise, compile from source.
 
   With the windows binary distribution, copy bin\lablgl.bat,
   lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
-  in the OCaml distribution. 
+  in the OCaml distribution. For glut support, copy glut32.dll to
+  the bin directory of the OCaml distribution (or somewhere else in
+  your path).
 
   To compile for Windows, Makefile.config.msvc and
   Makefile.config.mingw are provided.
@@ -345,4 +351,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.32 2003-10-03 10:21:17 garrigue Exp $
+$Id: README,v 1.33 2003-10-03 10:26:25 garrigue Exp $
