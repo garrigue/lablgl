@@ -11,7 +11,7 @@
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  *
- * RCS: @(#) $Id: tkIntDecls8.2.h,v 1.1 1999-08-05 02:07:27 garrigue Exp $
+ * RCS: @(#) $Id: tkIntDecls8.2.h,v 1.2 2000-04-27 01:09:58 garrigue Exp $
  */
 
 #ifndef _TKINTDECLS
@@ -499,6 +499,13 @@ EXTERN void		TkGenWMConfigureEvent _ANSI_ARGS_((Tk_Window tkwin,
 				int x, int y, int width, int height, 
 				int flags));
 #endif /* MAC_TCL */
+/* 135 */
+EXTERN void		TkpDrawHighlightBorder _ANSI_ARGS_((Tk_Window tkwin, 
+				GC fgGC, GC bgGC, int highlightWidth, 
+				Drawable drawable));
+/* 136 */
+EXTERN void		TkSetFocusWin _ANSI_ARGS_((TkWindow * winPtr, 
+				int force));
 
 typedef struct TkIntStubs {
     int magic;
@@ -799,6 +806,8 @@ typedef struct TkIntStubs {
 #ifdef MAC_TCL
     void (*tkGenWMConfigureEvent) _ANSI_ARGS_((Tk_Window tkwin, int x, int y, int width, int height, int flags)); /* 134 */
 #endif /* MAC_TCL */
+    void (*tkpDrawHighlightBorder) _ANSI_ARGS_((Tk_Window tkwin, GC fgGC, GC bgGC, int highlightWidth, Drawable drawable)); /* 135 */
+    void (*tkSetFocusWin) _ANSI_ARGS_((TkWindow * winPtr, int force)); /* 136 */
 } TkIntStubs;
 
 #ifdef __cplusplus
@@ -1431,6 +1440,14 @@ extern TkIntStubs *tkIntStubsPtr;
 	(tkIntStubsPtr->tkGenWMConfigureEvent) /* 134 */
 #endif
 #endif /* MAC_TCL */
+#ifndef TkpDrawHighlightBorder
+#define TkpDrawHighlightBorder \
+	(tkIntStubsPtr->tkpDrawHighlightBorder) /* 135 */
+#endif
+#ifndef TkSetFocusWin
+#define TkSetFocusWin \
+	(tkIntStubsPtr->tkSetFocusWin) /* 136 */
+#endif
 
 #endif /* defined(USE_TK_STUBS) && !defined(USE_TK_STUB_PROCS) */
 
