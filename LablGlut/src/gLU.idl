@@ -40,6 +40,8 @@ quote(C,"typedef void* glu_quadric;");
 quote(C,"typedef void* glu_tesselator;");
 quote(C,"typedef void* glu_triangulator;");
 quote(C,"typedef void (*glu_callback)(void);");
+quote(C,"typedef GLint idlglu_errcode;");
+quote(C,"typedef GLint idlglu_tf_errcode;");
 
 typedef [abstract] void* glu_nurbs;
 typedef [abstract] void* glu_quadric;
@@ -48,18 +50,43 @@ typedef [abstract] void* glu_triangulator;
 
 typedef [abstract,mltype("unit->unit")] void* glu_callback; 
 
+/* zero on sucess */
+typedef [errorcode, errorcheck(idlglu_errcode_check)] int idlglu_errcode;
+/* GL_TRUE on success */
+typedef [errorcode, errorcheck(idlglu_tf_errcode_check)] int idlglu_tf_errcode;
+quote(C,"
+    #include <string.h>
+    void idlglu_errcode_check(idlglu_errcode ecode) 
+    {
+        if(ecode != 0) {
+            char buf[80*40];
+            strncpy(buf,gluErrorString(ecode),sizeof(buf)-1);
+            failwith(buf);
+        }
+    }
+");
+
+quote(C,"
+    void idlglu_tf_errcode_check(idlglu_tf_errcode ecode) 
+    {
+        if(ecode == GL_FALSE) {
+            failwith(\"GLU call (idlglu)\");
+        }
+    }
+");
+
 void gluBeginCurve (glu_nurbs nurb);
 void gluBeginPolygon (glu_tesselator tess);
 void gluBeginSurface (glu_nurbs nurb);
 void gluBeginTrim (glu_nurbs nurb);
 
 // Use Obj.magic to user other types of bigarrays with gluBuild*
-int gluBuild1DMipmapLevels (int target, int internalFormat, int width, int format, int type, int level, int base, int max, [in,bigarray] void *data);
-int gluBuild1DMipmaps (int target, int internalFormat, int width, int format, int type, [in,bigarray] void *data);
-int gluBuild2DMipmapLevels (int target, int internalFormat, int width, int height, int format, int type, int level, int base, int max, [in,bigarray] void *data);
-int gluBuild2DMipmaps (int target, int internalFormat, int width, int height, int format, int type, [in,bigarray] void *data);
-int gluBuild3DMipmapLevels (int target, int internalFormat, int width, int height, int depth, int format, int type, int level, int base, int max, [in,bigarray] void *data);
-int gluBuild3DMipmaps (int target, int internalFormat, int width, int height, int depth, int format, int type, [in,bigarray] void *data);
+idlglu_errcode gluBuild1DMipmapLevels (int target, int internalFormat, int width, int format, int type, int level, int base, int max, [in,bigarray] void *data);
+idlglu_errcode gluBuild1DMipmaps (int target, int internalFormat, int width, int format, int type, [in,bigarray] void *data);
+idlglu_errcode gluBuild2DMipmapLevels (int target, int internalFormat, int width, int height, int format, int type, int level, int base, int max, [in,bigarray] void *data);
+idlglu_errcode gluBuild2DMipmaps (int target, int internalFormat, int width, int height, int format, int type, [in,bigarray] void *data);
+idlglu_errcode gluBuild3DMipmapLevels (int target, int internalFormat, int width, int height, int depth, int format, int type, int level, int base, int max, [in,bigarray] void *data);
+idlglu_errcode gluBuild3DMipmaps (int target, int internalFormat, int width, int height, int depth, int format, int type, [in,bigarray] void *data);
 unsigned char gluCheckExtension ([string] char *extName, [string] char *extString);
 void gluCylinder (glu_quadric quad, double base, double top, double height, int slices, int stacks);
 void gluDeleteNurbsRenderer (glu_nurbs nurb);
@@ -112,7 +139,7 @@ void gluPartialDisk (glu_quadric quad, double inner, double outer, int slices, i
 void gluPerspective (double fovy, double aspect, double zNear, double zFar);
 void gluPickMatrix (double x, double y, double delX, double delY,
     [in,*int32,bigarray] int viewport[4]);
-int gluProject (double objX, double objY, double objZ, [in,bigarray] double
+idlglu_tf_errcode gluProject (double objX, double objY, double objZ, [in,bigarray] double
 model[16], [in,bigarray] double proj[16], [in,bigarray] int view[16], [out, ref] double* winX, [out, ref] double* winY, [out, ref] double* winZ);
 void gluPwlCurve (glu_nurbs nurb, int count, [in,bigarray] float data[], int stride, unsigned int type);
 
@@ -135,7 +162,7 @@ void gluQuadricNormals (glu_quadric quad, unsigned int normal);
 void gluQuadricOrientation (glu_quadric quad, unsigned int orientation);
 void gluQuadricTexture (glu_quadric quad, unsigned char texture);
 
-int gluScaleImage (int format, int wIn, int hIn, int typeIn, [in,bigarray] void *dataIn, 
+idlglu_errcode gluScaleImage (int format, int wIn, int hIn, int typeIn, [in,bigarray] void *dataIn, 
     int wOut, int hOut, int typeOut, [in,out,bigarray] void *dataOut);
 void gluSphere (glu_quadric quad, double radius, int slices, int stacks);
 void gluTessBeginContour (glu_tesselator tess);
@@ -162,11 +189,11 @@ void gluTessNormal (glu_tesselator tess, double valueX, double valueY, double va
 void gluTessProperty (glu_tesselator tess, unsigned int which, double data);
 void gluTessVertex (glu_tesselator tess, [in,bigarray] double location[]) // void* data argument omitted
     quote(call, "gluTessVertex(tess, location, NULL);");
-int gluUnProject (double winX, double winY, double winZ, [in,bigarray]
+idlglu_tf_errcode gluUnProject (double winX, double winY, double winZ, [in,bigarray]
     double model[16], [in,bigarray] double proj[16], 
     [in,*int32,bigarray] int view[4], 
     [out,ref] double* objX, [out,ref] double* objY, [out,ref] double* objZ);
-int gluUnProject4 (double winX, double winY, double winZ, double clipW,
+idlglu_tf_errcode gluUnProject4 (double winX, double winY, double winZ, double clipW,
     [in,bigarray] double model[16], [in,bigarray] double proj[16], 
     [in,bigarray] int view[16], double near, double far, 
     [out,ref] double* objX, [out,ref] double* objY, [out,ref] double* objZ, 
