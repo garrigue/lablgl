@@ -1,4 +1,4 @@
-(* $Id: var2def.ml,v 1.2 1998-01-05 06:32:46 garrigue Exp $ *)
+(* $Id: var2def.ml,v 1.3 1998-01-06 10:22:55 garrigue Exp $ *)
 
 (* Compile a list of variant tags into CPP defines *) 
 
@@ -16,7 +16,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["->"]
+let lexer = make_lexer ["->"; "$$"]
 
 let main () =
   let s = lexer (Stream.of_channel stdin) in
@@ -25,7 +25,7 @@ let main () =
       [< ' Ident tag >] ->
 	print_string "#define MLTAG_";
 	print_string tag;
-	print_string "\t(";
+	print_string "\tVal_int(";
 	let hash = hash_variant tag in
 	begin try
 	  failwith
@@ -34,8 +34,9 @@ let main () =
 	with Not_found -> Hashtbl.add key:hash data:tag tags
 	end;
 	print_int hash;
-	print_string " << 1)\n"
+	print_string ")\n"
     | [< ' Kwd "->"; ' Ident _ >] -> ()
+    | [< ' Kwd "$$" >] -> ()
     | [< >] -> raise End_of_file
   done with End_of_file -> ()
 

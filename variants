@@ -25,3 +25,26 @@ fill
 
 cw
 ccw
+
+modelview
+projection
+texture
+
+$$
+(* from aux.h *)
+
+rgba
+index
+single
+double
+
+left
+middle
+right
+
+return
+escape
+space
+up
+down
+char

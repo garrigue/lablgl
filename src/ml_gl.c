@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.2 1998-01-05 06:32:45 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.3 1998-01-06 10:22:54 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -12,7 +12,7 @@ static void raise_gl(char *errmsg)
 {
   static value * gl_exn = NULL;
   if (gl_exn == NULL)
-    gl_exn = caml_named_value("glerror");
+      gl_exn = caml_named_value("glerror");
   raise_with_string(*gl_exn, errmsg);
 }
 
@@ -101,4 +101,87 @@ ML_enum(glCullFace)
 ML_string(glPolygonStipple)
 
 ML_bool(glEdgeFlag)
-ML_double3(glNormal)
+ML_double3(glNormal3d)
+
+value ml_glMatrixMode(value mode)  /* ML */
+{
+    GLenum m;
+
+    switch (mode)
+    {
+    case MLTAG_modelview:	m = GL_MODELVIEW;
+    case MLTAG_projection:	m = GL_PROJECTION;
+    case MLTAG_texture:	        m = GL_TEXTURE;
+    }
+    glMatrixMode (m);
+    return Val_unit;
+}
+
+ML_void(glLoadIdentity)
+
+value ml_glLoadMatrix(value m)  /* ML */
+{
+    GLdouble matrix[16];
+    int i, j;
+
+    for (i = 0; i < 4; i++)
+	for (j = 0; j < 4; j++)
+	    matrix[i*4+j] = Double_val (Field (Field (m, i), j));
+    glLoadMatrixd (matrix);
+    return Val_unit;
+}
+
+value ml_glMultMatrix(value m)  /* ML */
+{
+    GLdouble matrix[16];
+    int i, j;
+
+    for (i = 0; i < 4; i++)
+	for (j = 0; j < 4; j++)
+	    matrix[i*4+j] = Double_val (Field (Field (m, i), j));
+    glMultMatrixd (matrix);
+    return Val_unit;
+}
+
+ML_double3(glTranslated)
+ML_double4(glRotated)
+ML_double3(glScaled)
+
+#include <GL/glu.h>
+
+value ml_gluLookAt(value eye, value center, value up)  /* ML */
+{
+    gluLookAt (Double_val(Field(eye,0)), Double_val(Field(eye,1)),
+	       Double_val(Field(eye,2)), Double_val(Field(center,0)),
+	       Double_val(Field(center,1)), Double_val(Field(center,2)),
+	       Double_val(Field(up,0)), Double_val(Field(up,1)),
+	       Double_val(Field(up,2)));
+    return Val_unit;
+}
+
+ML_double6(glFrustum)
+ML_double4(gluPerspective)
+
+ML_double6(glOrtho)
+ML_double4(gluOrtho2D)
+
+ML_int4(glViewport)
+ML_double2(glDepthRange)
+
+ML_void(glPushMatrix)
+ML_void(glPopMatrix)
+
+static const GLenum planes[6] =
+{ GL_CLIP_PLANE0, GL_CLIP_PLANE1, GL_CLIP_PLANE2,
+  GL_CLIP_PLANE3, GL_CLIP_PLANE4, GL_CLIP_PLANE5 };
+
+value ml_glClipPlane(value plane, value equation)  /* ML */
+{
+    double eq[4];
+    int i;
+
+    for (i = 0; i < 4; i++)
+	eq[i] = Double_val (Field(equation,i));
+    glClipPlane (planes[Int_val(plane)], eq);
+    return Val_unit;
+}
