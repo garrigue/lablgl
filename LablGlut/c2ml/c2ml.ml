@@ -479,9 +479,11 @@ and print_expression (exp : expression) (lvl : int) =
 			print "else ";
 			print_expression exp3 2;
 		| CAST (typ, exp) ->
+			print "(* ";
 			print "(";
 			print_onlytype typ;
 			print ")";
+			print " *)";
 			print_expression exp 15
 		| CALL (exp, args) ->
 			print_expression exp 16;
@@ -549,23 +551,23 @@ and print_expression (exp : expression) (lvl : int) =
 (*
 ** Statement printing
 *)
-and print_statement stat =
+and print_statement ?(will_print_semi=true) ?(include_parens=true) stat =
 	match stat with
 	NOP ->
 		print ";";
 		new_line ()
 	| COMPUTATION exp ->
 		print_expression exp 0;
-		print ";";
+		if will_print_semi then print ";";
 		new_line ()
 	| BLOCK (defs, stat) ->
 		new_line ();
-		print "(";
+		if include_parens then print "(";
 		indent ();
 		print_defs defs;
 		if stat <> NOP then print_statement stat else ();
 		unindent ();
-		print ")";
+		if include_parens then print ")";
 		new_line ();
 	| SEQUENCE (s1, s2) ->
 		print_statement s1;
@@ -574,12 +576,12 @@ and print_statement stat =
 		print "if ";
 		print_expression exp 0;
 		print " then ";
-		print_substatement s1;
+		print_substatement ~will_print_semi:false s1;
 		if s2 = NOP
 			then ()
 			else begin
 				print " else ";
-				print_substatement s2;
+				print_substatement ~will_print_semi:false s2;
 			end;
                 print ";";
                 new_line()
@@ -587,12 +589,12 @@ and print_statement stat =
 		print "while ";
 		print_expression exp 0;
 		print " do ";
-		print_substatement stat;
+		print_substatement ~include_parens:false stat;
 		print "done;";
                 new_line();
 	| DOWHILE (exp, stat) ->
                 print "let dowhile_aux () ="; 
-		print_substatement stat;
+		print_substatement ~include_parens:false stat;
                 print "in";
                 print "dowhile_aux();";
                 print "while ";
@@ -609,7 +611,7 @@ and print_statement stat =
 		space ();
 		print_expression exp3 0;
 		print " do ";
-		print_substatement stat;
+		print_substatement ~include_parens:false stat;
 		print "done;";
                 new_line();
 	| BREAK ->
@@ -630,7 +632,7 @@ and print_statement stat =
 		print "match ";
 		print_expression exp 0;
 		print " with ";
-		print_substatement stat
+		print_substatement ~include_parens:false stat
 	| CASE (exp, stat) ->
 		unindent ();
 		print "| ";
@@ -651,7 +653,7 @@ and print_statement stat =
 		print ("goto " ^ name ^ ";");
 		new_line ()
 
-and print_substatement stat =
+and print_substatement ?(will_print_semi=true) ?(include_parens=true) stat =
 	match stat with
 	IF _
 	| SEQUENCE _
@@ -659,15 +661,15 @@ and print_substatement stat =
 		new_line ();
 		print "(";
 		indent ();
-		print_statement stat;
+		print_statement ~include_parens stat;
 		unindent ();
 		print ");";
 		new_line ();
 	| BLOCK _ ->
-		print_statement stat
+		print_statement ~include_parens stat
 	| _ ->
 		indent ();
-		print_statement stat;
+		print_statement ~will_print_semi ~include_parens stat;
 		unindent ()
 
 
@@ -947,15 +949,6 @@ let process filename =
                                 end) with
         Frontc.PARSING_ERROR -> ()
         | Frontc.PARSING_OK defs ->
-                output_string !out ("\n(* Translated by " ^ version ^ " *)\n");
-                output_string !out "
-open GL
-open GLU
-open GLUT
-open BA
-open Printf
-open Bigarray
-                        ";
                 if !verbose then prerr_string "Rewriting...\n";
                 print !out defs
 
