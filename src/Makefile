@@ -19,7 +19,7 @@ LIBOBJS =	raw.cmo \
 		glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo \
 		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo
 MLOBJS = $(LIBOBJS)	togl.cmo
-OPTOBJS = $(MLOBJS:.cmo=.cmx)
+OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =		ml_gl.o		ml_glu.o	ml_raw.o
 TOGLOBJS =	ml_togl.o	$(TOGLDIR)/togl.o
 
