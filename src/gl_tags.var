@@ -145,7 +145,10 @@ linear exp exp2
 compile compile_and_execute
 
 (* data types *)
-byte short int float double
+bitmap byte short int float double
+ubyte -> GL_UNSIGNED_BYTE
+ushort -> GL_UNSIGNED_SHORT
+uint -> GL_UNSIGNED_INT
 
 (* glAccum *)
 load add mult return
@@ -170,6 +173,23 @@ g_to_g -> GL_PIXEL_MAP_G_TO_G
 b_to_b -> GL_PIXEL_MAP_B_TO_B
 a_to_a -> GL_PIXEL_MAP_A_TO_A
 
+(* glPixelStore *)
+pack_swap_bytes
+pack_lsb_first
+pack_row_length
+pack_skip_pixels
+pack_skip_rows
+pack_alignment
+unpack_swap_bytes
+unpack_lsb_first
+unpack_row_length
+unpack_skip_pixels
+unpack_skip_rows
+unpack_alignment
+
+(* glReadBuffer *)
+front_left front_right back_left back_right left right
+
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End
@@ -180,3 +200,10 @@ perspective_correction
 (* glMap1, glMap2 *)
 vertex_3 vertex_4 color_4 normal texture_coord_1 texture_coord_2
 texture_coord_3 texture_coord_4
+
+(* glPushAttrib *)
+accum_buffer color_buffer current depth_buffer enable eval
+hint list pixel_mode scissor stencil_buffer transform viewport
+
+(* glReadBuffer *)
+aux
