@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.4 1998-01-19 06:57:10 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.5 1998-01-23 13:39:21 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -76,12 +76,12 @@ ENABLER (DestroyFunc)
 ENABLER (TimerFunc)
 ENABLER (OverlayDisplayFunc)
 
-ML_void (Togl_ResetDefaultCallbacks)
-ML_addr (Togl_PostRedisplay)
-ML_addr (Togl_SwapBuffers)
-ML_addr_string (Togl_Ident)
-ML_addr_int (Togl_Width)
-ML_addr_int (Togl_Height)
+ML_0 (Togl_ResetDefaultCallbacks)
+ML_1 (Togl_PostRedisplay, Addr_val)
+ML_1 (Togl_SwapBuffers, Addr_val)
+ML_1_ (Togl_Ident, Addr_val, copy_string)
+ML_1_ (Togl_Width, Addr_val, Val_int)
+ML_1_ (Togl_Height, Addr_val, Val_int)
 
 value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 {
@@ -100,13 +100,13 @@ value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
     return Val_int (Togl_LoadBitmapFont (Addr_val(togl), fontname));
 }
 
-ML_addr_int_ (Togl_UnloadBitmapFont)
-ML_addr_TOGLenum_ (Togl_UseLayer)
-ML_addr (Togl_ShowOverlay)
-ML_addr (Togl_HideOverlay)
-ML_addr (Togl_PostOverlayRedisplay)
-ML_addr_int (Togl_ExistsOverlay)
-ML_addr_int (Togl_GetOverlayTransparentValue)
+ML_2 (Togl_UnloadBitmapFont, Addr_val, Int_val)
+ML_2 (Togl_UseLayer, Addr_val, TOGLenum_val)
+ML_1 (Togl_ShowOverlay, Addr_val)
+ML_1 (Togl_HideOverlay, Addr_val)
+ML_1 (Togl_PostOverlayRedisplay, Addr_val)
+ML_1_ (Togl_ExistsOverlay, Addr_val, Val_int)
+ML_1_ (Togl_GetOverlayTransparentValue, Addr_val, Val_int)
 
 value ml_Togl_DumpToEpsFile (value togl, value filename, value rgbFlag)
 {

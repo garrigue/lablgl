@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.8 1998-01-23 13:30:21 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.9 1998-01-23 13:39:20 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -219,7 +219,7 @@ value ml_gluNurbsSurface (value nurb, value sKnots, value tKnots,
 
 ML_bc8 (ml_gluNurbsSurface)
 
-ML_double4(gluOrtho2D)
+ML_4 (gluOrtho2D, Double_val, Double_val, Double_val, Double_val)
 
 ML_7 (gluPartialDisk, Quad_val, Double_val, Double_val, Int_val, Int_val,
       Double_val, Double_val)
