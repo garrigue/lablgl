@@ -9,7 +9,7 @@ LablGlut for standalone applications not using Tcl/Tk
 
 2. Requisites
 
-  * Objective Caml 3.05 or 3.06
+  * Objective Caml 3.05, 3.06 or 3.07
   * LablTk (included in Objective Caml, requires Tcl/Tk) (for Togl support)
   * OpenGL
   * glut (included in Mesa) for glut support
@@ -61,7 +61,7 @@ necessary packages. Otherwise, compile from source.
 	% make opt
 
      Similarly, you can also do
-        % make {togl,glut,lib}
+        % make {toglopt,glutopt,libopt}
 
   d) Install LablGL
 	% make install
@@ -153,7 +153,7 @@ makefile. Also, uncomment the necessary lines in the Makefile.config file.
 
 A. Modules
 
-   There are 11 modules for GL and 5 modules for GLU.
+   There are 12 modules for GL and 5 modules for GLU.
    Modules marked with (*) contain LablGL specific functions.
 
 Gl: Common data types and functions.
@@ -162,6 +162,18 @@ Gl: Common data types and functions.
    glEnable
    glDisable
    glIsEnabled
+
+GlArray: Array functions
+   glEdgeFlagPointer   
+   glTexCoordPointer
+   glIndexPointer
+   glNormalPointer
+   glVertexPointer
+   glEnableClientState
+   glDisableClientState
+   glArrayElement
+   glDrawArrays
+   glDrawElements
 
 GlClear: Clearing functions.
    glClear
@@ -333,4 +345,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.28 2003-10-01 04:00:49 garrigue Exp $
+$Id: README,v 1.29 2003-10-01 08:03:59 raffalli Exp $
