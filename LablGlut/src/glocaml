@@ -1,4 +1,0 @@
-# Run the lablglut custom toplevel with some include directories.
-
-lablglut.top -I +lablGL -I +lablgl -I +labltk -I +lablglut $*
-
