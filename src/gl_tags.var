@@ -209,6 +209,9 @@ unpack_alignment
 (* glReadBuffer *)
 front_left front_right back_left back_right left right
 
+(* glDrawBuffer *)
+none
+
 (* glStencilOp *)
 keep replace incr decr
 

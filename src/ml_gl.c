@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.41 2003-10-03 22:52:19 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.42 2003-10-29 09:27:07 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -154,7 +154,19 @@ ML_1 (glDisable, GLenum_val)
 ML_1 (glDepthFunc, GLenum_val)
 ML_1 (glDepthMask, Int_val)
 ML_2 (glDepthRange, Double_val, Double_val)
-ML_1 (glDrawBuffer, GLenum_val)
+
+CAMLprim value ml_glDrawBuffer (value buffer)
+{
+    if (Is_block(buffer)) {
+	int n = Int_val (Field(buffer,1));
+	if (n >= GL_AUX_BUFFERS)
+	    ml_raise_gl ("GlFunc.draw_buffer : no such auxiliary buffer");
+	glDrawBuffer (GL_AUX0 + n);
+    }
+    else glDrawBuffer (GLenum_val(buffer));
+    return Val_unit;
+}
+
 ML_4 (glDrawPixels, Int_val, Int_val, GLenum_val, Type_void_raw)
 
 ML_1 (glEdgeFlag, Int_val)
@@ -506,7 +518,7 @@ CAMLprim value ml_glReadBuffer (value buffer)
     if (Is_block(buffer)) {
 	int n = Int_val (Field(buffer,1));
 	if (n >= GL_AUX_BUFFERS)
-	    ml_raise_gl ("Gl.read_buffer : no such auxiliary buffer");
+	    ml_raise_gl ("GlFunc.read_buffer : no such auxiliary buffer");
 	glReadBuffer (GL_AUX0 + n);
     }
     else glReadBuffer (GLenum_val(buffer));
