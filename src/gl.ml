@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.27 2001-10-01 02:59:12 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.28 2004-07-20 03:24:36 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -53,7 +53,8 @@ type cap =
   [`alpha_test|`auto_normal|`blend|`clip_plane0|`clip_plane1|`clip_plane2
   |`clip_plane3|`clip_plane4|`clip_plane5|`color_material|`cull_face
   |`depth_test|`dither|`fog|`light0|`light1|`light2|`light3|`light4|`light5
-  |`light6|`light7|`lighting|`line_smooth|`line_stipple|`logic_op
+  |`light6|`light7|`lighting|`line_smooth|`line_stipple
+  |`index_logic_op |`color_logic_op
   |`map1_color_4|`map1_index|`map1_normal|`map1_texture_coord_1
   |`map1_texture_coord_2|`map1_texture_coord_3|`map1_texture_coord_4
   |`map1_vertex_3|`map1_vertex_4|`map2_color_4|`map2_index|`map2_normal

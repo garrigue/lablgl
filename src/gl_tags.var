@@ -63,6 +63,8 @@ lighting
 line_smooth
 line_stipple
 logic_op
+index_logic_op
+color_logic_op
 map1_color_4
 map1_index
 map1_normal
