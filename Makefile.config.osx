@@ -13,37 +13,20 @@ CAMLOPT = ocamlopt.opt
 # Where to put the lablgl script
 BINDIR = /usr/local/bin
 
-# Where to find X headers
-XINCLUDES = -I/usr/X11R6/include
-# X libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-XLIBS = -L/usr/X11R6/lib -lXext -lXmu -lX11
-
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
-TKINCLUDES = -I/opt/local/include
-# Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-#TKLIBS = -L/usr/local/lib -ltk83 -ltcl83
+# Togl works only with the X11 version of Tk
+TKINCLUDES = -I/usr/local/include -I/usr/X11R6/include
+# Libs for Togl
+TKLIBS = -L/usr/X11R6/lib -lGL -lXmu
 
 # Where to find OpenGL/Mesa headers and libraries
-#GLINCLUDES = -I/usr/X11R6/include/GL
-GLLIBS = -lGL -lGLU
+GLINCLUDES =
+GLLIBS = -framework OpenGL 
 GLUTLIBS = -framework GLUT
-# The following libraries may be required (try to add them one at a time)
-#GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
 
 # How to index a library after installing (ranlib required on MacOSX)
-#RANLIB = :
 RANLIB = ranlib
-
-##### Uncomment these for windows
-#TKLIBS = tk83.lib tcl83.lib gdi32.lib user32.lib
-#GLLIBS = opengl32.lib glu32.lib
-#TOOLCHAIN = msvc
-#XA = .lib
-#XB = .bat
-#XE = .exe
-#XO = .obj
-#XS = .dll
 
 ##### Adjust these if non standard
 

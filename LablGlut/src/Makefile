@@ -47,11 +47,17 @@ lablgluttop$(XE): lablglut.cma
 	ocamlmktop $(CUSTOMTOP) -I . -I $(SRCDIR) $(OCAMLINC) -o $@ \
 	  lablglut.cma lablgl.cma
 
-lablglut: lablglut.in ../../Makefile.config
-	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
-	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
-	    < lablglut.in > $@
-	chmod 755 $@
+lablglut: $(CONFIG) Makefile liblablglut$(XA)
+	$(MAKE) INSTALLDIR="$(INSTALLDIR)" real-$@
+
+real-lablglut:
+	@echo generate lablglut
+	echo "#!/bin/sh" > lablglut
+	echo "# toplevel with lablGL and LablGlut" >> lablglut
+	if test -f dlllablglut$(XS); then \
+	    echo 'exec ocaml -I "$(INSTALLDIR)" lablgl.cma lablglut.cma $$*' >> lablglut; \
+	 else echo 'exec "$(INSTALLDIR)/lablgluttop" -I "$(INSTALLDIR)" $$*' >> lablglut; fi
+	chmod 755 lablglut
 
 install:
 	@if test -f lablglut.cma; then $(MAKE) real-install; fi
@@ -62,12 +68,16 @@ real-install:
 	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
 	cp liblablglut$(XA) lablglut.cma "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) liblablglut$(XA)
+	@if test -f dlllablglut$(XS); then $(MAKE) installdll; \
+	 else $(MAKE) installtop; fi
 	cp lablglut$(XB) "$(BINDIR)"
-	@if test -f dlllablglut$(XS); then $(MAKE) installdll; fi
 	@if test -f lablglut.cmxa; then $(MAKE) installopt; fi
 
 installdll:
 	cp dlllablglut$(XS) "$(DLLDIR)"
+
+installtop:
+	cp lablgluttop$(XE) "$(INSTALLDIR)"
 
 installopt:
 	cp lablglut.cmxa lablglut$(XA) $(LIBOBJS:.cmo=.cmx) "$(INSTALLDIR)"
