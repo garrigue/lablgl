@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.3 1998-01-06 10:22:54 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.4 1998-01-07 08:52:31 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -6,6 +6,7 @@
 #include "variants.h"
 #include "ml_gl.h"
 
+extern void raise_with_string (value tag, char * msg) Noreturn;
 static void raise_gl (char *errmsg) Noreturn;
 
 static void raise_gl(char *errmsg)
@@ -17,10 +18,11 @@ static void raise_gl(char *errmsg)
 }
 
 ML_double4(glClearColor)
+ML_double4(glColor4d)
 
 value ml_glClear(value bit_list)  /* ML */
 {
-    GLbitfield accu;
+    GLbitfield accu = 0;
 
     while (bit_list != Val_int(0)) {
 	switch (Field (bit_list, 0)) {
@@ -62,7 +64,7 @@ value ml_glVertex(value x, value y, value z, value w)  /* ML */
     return Val_unit;
 }
 
-GLenum ml_glTag(value tag)
+GLenum GLenum_val(value tag)
 {
     switch(tag)
     {
@@ -72,12 +74,7 @@ GLenum ml_glTag(value tag)
     raise_gl("Unknown tag");
 }
 
-value ml_glBegin(value mode)  /* ML */
-{
-    glBegin (ml_glTag (mode));
-    return Val_unit;
-}
-
+ML_GLenum(glBegin)
 ML_void(glEnd)
 
 ML_float(glPointSize)
@@ -91,12 +88,12 @@ value ml_glLineStipple(value factor, value pattern)  /* ML */
 
 value ml_glPolygonMode(value face, value mode)  /* ML */
 {
-    glPolygonMode(ml_glTag(face), ml_glTag(mode));
+    glPolygonMode(GLenum_val(face), GLenum_val(mode));
     return Val_unit;
 }
 
-ML_enum(glFrontFace)
-ML_enum(glCullFace)
+ML_GLenum(glFrontFace)
+ML_GLenum(glCullFace)
 
 ML_string(glPolygonStipple)
 
@@ -185,3 +182,8 @@ value ml_glClipPlane(value plane, value equation)  /* ML */
     glClipPlane (planes[Int_val(plane)], eq);
     return Val_unit;
 }
+
+ML_GLenum(glEnable)
+ML_GLenum(glDisable)
+
+ML_GLenum(glShadeModel)

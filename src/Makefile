@@ -4,7 +4,7 @@ COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
 
-MLOBJS =	gl.cmo		aux.cmo
+MLOBJS =	gl.cmo		aux.cmo		glm.cmo
 COBJS =		ml_gl.o		ml_aux.o
 
 # Default rules
@@ -35,8 +35,8 @@ liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
 
 lablgl: lablgl.cma liblablgl.a
-	olablmktop -custom -o lablgl lablgl.cma -ccopt -L. \
-		-cclib -llablgl -cclib -laux \
+	olablmktop -custom -o lablgl unix.cma lablgl.cma -ccopt -L. \
+		-cclib -llablgl -cclib -lunix -cclib -laux \
 		-cclib -lGL -cclib -lGLU -cclib -lX11
 
 variants.h: variants
@@ -50,3 +50,4 @@ clean:
 ml_gl.o ml_aux.o: ml_gl.h variants.h
 ml_gl.o: variants.c
 variants:;
+glm.cmo: gl.cmi

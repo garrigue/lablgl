@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.2 1998-01-06 10:22:54 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.3 1998-01-07 08:52:32 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -12,6 +12,10 @@ value ml_##cname (value unit) \
 #define ML_string(cname) \
 value ml_##cname (value s) \
 { cname (String_val(s)); return Val_unit; }
+
+#define ML_GLenum(cname) \
+value ml_##cname (value tag) \
+{ cname (GLenum_val(tag)); return Val_unit; }
 
 #define ML_int(cname) \
 value ml_##cname (value dbl) \
@@ -54,14 +58,10 @@ value ml_##cname (value x, value y, value z, value w) \
 { cname (Double_val(x), Double_val(y), Double_val(z), Double_val(w)); \
   return Val_unit; }
 #define ML_double6(cname) \
-value ml_##cname (value *argv) \
+value ml_##cname (value *argv, int argn) \
 { cname (Double_val(argv[0]), Double_val(argv[1]), Double_val(argv[2]), \
 	 Double_val(argv[3]), Double_val(argv[4]), Double_val(argv[5])); \
   return Val_unit; }
-
-#define ML_enum(cname) \
-value ml_##cname (value tag) \
-{ cname (ml_glTag(tag)); return Val_unit; }
 
 #define ML_bool(cname) \
 value ml_##cname (value bool) \

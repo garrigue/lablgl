@@ -1,17 +1,17 @@
-(* $Id: aux.ml,v 1.2 1998-01-06 10:22:51 garrigue Exp $ *)
+(* $Id: aux.ml,v 1.3 1998-01-07 08:52:28 garrigue Exp $ *)
 
 let null_func () = ()
 
 external init_window : title:string -> unit = "ml_auxInitWindow"
 
-type display_mode = [rgba index single double depth accum stencil]
+type display_mode = [rgb rgba index single double depth accum stencil]
 
 external auxInitDisplayMode : display_mode list -> unit
     = "ml_auxInitDisplayMode"
 
-let init_display_mode :buffer ?:color [< `index >] ?:number [< `single >] =
+let init_display_mode :color :number ?:buffer [< [] >] =
   auxInitDisplayMode
-    ((color : [index rgba] :> display_mode)
+    ((color : [index rgb rgba] :> display_mode)
      :: (number : [single double] :> display_mode)
      :: (buffer : [depth accum stencil] list :> display_mode list))
 

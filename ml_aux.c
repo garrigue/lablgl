@@ -1,4 +1,4 @@
-/* $Id: ml_aux.c,v 1.2 1998-01-06 10:22:53 garrigue Exp $ */
+/* $Id: ml_aux.c,v 1.3 1998-01-07 08:52:31 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include "aux.h"
@@ -19,6 +19,7 @@ value ml_auxInitDisplayMode(value list)  /* ML */
     {
 	switch (Field(list, 0))
 	{
+	case MLTAG_rgb: mode |= AUX_RGB; break;
 	case MLTAG_rgba: mode |= AUX_RGBA; break;
 	case MLTAG_index: mode |= AUX_INDEX; break;
 	case MLTAG_single: mode |= AUX_SINGLE; break;
