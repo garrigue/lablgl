@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.19 1998-01-23 13:30:17 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.20 1998-01-26 00:54:22 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -267,7 +267,7 @@ type light_param = [
 external light : num:int -> light_param -> unit
     = "ml_glLight"
 type light_model_param =
-    [ ambient (rgba) local_viewer (float) two_side (float) ]
+    [ ambient(rgba) local_viewer(float) two_side(bool) ]
 external light_model : light_model_param -> unit = "ml_glLightModel"
 external line_width : float -> unit = "ml_glLineWidth"
 external line_stipple : factor:int -> pattern:int -> unit = "ml_glLineStipple"

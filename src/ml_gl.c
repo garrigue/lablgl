@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.18 1998-01-23 13:30:20 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.19 1998-01-26 00:54:26 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -200,8 +200,8 @@ value ml_glLightModel (value param)  /* ML */
 		       Float_val(Field(param,1)));
 	break;
     case MLTAG_two_side:
-	glLightModelf (GL_LIGHT_MODEL_TWO_SIDE,
-		       Float_val(Field(param,1)));
+	glLightModeli (GL_LIGHT_MODEL_TWO_SIDE,
+		       Int_val(Field(param,1)));
 	break;
     }
     return Val_unit;

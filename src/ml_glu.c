@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.9 1998-01-23 13:39:20 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.10 1998-01-26 00:54:27 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -8,6 +8,17 @@
 #include "gl_tags.h"
 #include "glu_tags.h"
 #include "ml_gl.h"
+
+#ifndef GLU_VERSION_1_2
+#define GLU_TESS_WINDING_RULE
+#define GLU_TESS_WINDING_ODD
+#define GLU_TESS_WINDING_NONZERO
+#define GLU_TESS_WINDING_POSITIVE
+#define GLU_TESS_WINDING_NEGATIVE
+#define GLU_TESS_WINDING_ABS_GEQ_TWO
+#define GLU_TESS_BOUNDARY_ONLY
+#define GLU_TESS_TOLERANCE
+#endif
 
 static GLenum GLUenum_val(value tag)
 {
@@ -288,9 +299,11 @@ ML_7 (gluScaleImage, GLenum_val, Int_val, Int_val,
 ML_bc7 (ml_gluScaleImage)
 ML_4 (gluSphere, Quad_val, Double_val, Int_val, Int_val)
 
+#define Opt_val(opt) (opt == Val_int(0) ? NULL : (void *) Field(opt,0)) 
+
+#ifdef GLU_VERSION_1_2
 ML_1 (gluTessBeginContour, Tess_val)
 ML_1 (gluTessEndContour, Tess_val)
-#define Opt_val(opt) (opt == Val_int(0) ? NULL : (void *) Field(opt,0)) 
 ML_2 (gluTessBeginPolygon, Tess_val, Opt_val)
 ML_1 (gluTessEndPolygon, Tess_val)
 ML_4 (gluTessNormal, Tess_val, Double_val, Double_val, Double_val)
@@ -308,6 +321,17 @@ value ml_gluTessProperty (value tess, value prop)
     gluTessProperty (Tess_val(tess), which, data);
     return Val_unit;
 }
+#else
+#define ML_fail(cname) \
+value ml_##cname (value any) \
+{ ml_raise_gl ("Function not available"); }
+ML_fail (gluTessBeginContour)
+ML_fail (gluTessEndContour)
+ML_fail (gluTessBeginPolygon)
+ML_fail (gluTessEndPolygon)
+ML_fail (gluTessNormal)
+ML_fail (gluTessProperty)
+#endif
 
 ML_3 (gluTessVertex, Tess_val, Double_raw, Opt_val)
 

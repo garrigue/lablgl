@@ -157,6 +157,9 @@ load add mult return
 color_index stencil_index depth_component rgba
 red green blue alpha rgb luminance luminance_alpha
 
+(* glHint *)
+dont_care fastest nicest
+
 (* glLogicOp *)
 clear set copy copy_inverted noop invert And nand Or nor
 xor equiv and_reverse and_inverted or_reverse or_inverted
