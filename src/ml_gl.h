@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.17 2002-05-01 03:35:00 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.18 2002-06-19 14:26:36 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -6,6 +6,7 @@
 #include "ml_raw.h"
 
 void ml_raise_gl (const char *errmsg) Noreturn;
+#define copy_string_check lablgl_copy_string_check
 value copy_string_check (const char *str);
 
 #define Float_val(dbl) ((GLfloat) Double_val(dbl))

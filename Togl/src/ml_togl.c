@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.7 2000-11-13 01:12:28 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.8 2002-06-19 14:26:36 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -7,6 +7,8 @@
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
+#include <caml/alloc.h>
+#include <caml/fail.h>
 #include "togl.h"
 #include "ml_gl.h"
 #include "togl_tags.h"
