@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.10 1998-01-27 08:02:02 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.11 1998-01-29 11:46:17 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -94,9 +94,9 @@ type font = [
       Xfont(string)
   ]
 
-external _load_bitmap_font : t -> font:font -> Gl.glist
+external _load_bitmap_font : t -> font:font -> GlList.base
     = "ml_Togl_LoadBitmapFont"
-external _unload_bitmap_font : t -> base:Gl.glist -> unit
+external _unload_bitmap_font : t -> base:GlList.base -> unit
     = "ml_Togl_UnloadBitmapFont"
 
 external _use_layer : t -> num:int -> unit = "ml_Togl_UseLayer"

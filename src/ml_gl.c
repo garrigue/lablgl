@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.20 1998-01-29 08:32:25 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.21 1998-01-29 11:46:16 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -21,6 +21,52 @@ void ml_raise_gl(const char *errmsg)
   raise_with_string(*gl_exn, errmsg);
 }
 
+struct record {
+    value key; 
+    GLenum data;
+};
+
+static struct record input_table[] = {
+#include "gl_tags.c"
+};
+
+static struct record *tag_table = NULL;
+
+#define TABLE_SIZE (TAG_NUMBER*2+1)
+#include <strings.h>
+
+value ml_gl_make_table (value unit)
+{
+    int i;
+    unsigned int hash;
+
+    tag_table = stat_alloc (TABLE_SIZE * sizeof(struct record));
+    bzero ((char *) tag_table, TABLE_SIZE * sizeof(struct record));
+    for (i = 0; i < TAG_NUMBER; i++) {
+	hash = (unsigned long) input_table[i].key % TABLE_SIZE;
+	while (tag_table[hash].key != 0) {
+	    hash ++;
+	    if (hash == TABLE_SIZE) hash = 0;
+	}
+	tag_table[hash].key = input_table[i].key;
+	tag_table[hash].data = input_table[i].data;
+    }
+}
+
+GLenum GLenum_val(value tag)
+{
+    unsigned int hash = (unsigned long) tag % TABLE_SIZE;
+
+    if (!tag_table) ml_gl_make_table (Val_unit);
+    while (tag_table[hash].key != tag) {
+	if (tag_table[hash].key == 0) ml_raise_gl ("Unknown tag");
+	hash++;
+	if (hash == TABLE_SIZE) hash = 0;
+    }
+    return tag_table[hash].data;
+}
+
+/*
 GLenum GLenum_val(value tag)
 {
     switch(tag)
@@ -29,6 +75,7 @@ GLenum GLenum_val(value tag)
     }
     ml_raise_gl("Unknown tag");
 }
+*/
 
 extern mlsize_t string_length (value);
 

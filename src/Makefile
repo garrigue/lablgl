@@ -9,14 +9,16 @@ OPTLINK=olablopt
 include Makefile.config
 
 # Files
-MLOBJS =	raw.cmo 	gl.cmo		glu.cmo		togl.cmo
-OPTOBJS =	raw.cmx 	gl.cmx		glu.cmx		togl.cmx
-#gltk.cmo	aux.cmo
+MLOBJS =	raw.cmo 	togl.cmo \
+		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
+		glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo \
+		glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo \
+		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo
+OPTOBJS = $(MLOBJS:.cmo=.cmx)
 COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 		$(TOGLDIR)/togl.o
-#ml_tk.o	ml_aux.o
-# Default rules
 
+# Default rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt
 
 .ml.cmo:
@@ -77,7 +79,7 @@ lablglopt: lablglopt.in Makefile.config
 	chmod +x $@
 
 gl_tags.c: gl_tags.var
-	./var2switch GL_ < gl_tags.var > $@
+	./var2switch -table GL_ < gl_tags.var > $@
 
 tk_tags.c: tk_tags.var
 	./var2switch TK_ < tk_tags.var > $@
@@ -90,8 +92,8 @@ glu_tags.c: glu_tags.var
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	cp raw.cmi gl.cmi glu.cmi togl.cmi $(INSTALLDIR)
-	cp raw.mli gl.mli togl.mli $(INSTALLDIR)
+	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
+	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
 	cp lablgl.cma liblablgl.a $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
@@ -104,17 +106,14 @@ clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
 		var2def var2switch lablgltop lablgl lablglopt
 
+depend:
+	olabldep *.ml *.mli > .depend
+
+#dependencies
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
 ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
 ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
 ml_raw.o: raw_tags.h ml_raw.h
-raw.cmo raw.cmx: raw.cmi
-gl.cmi: raw.cmi
-gl.cmo gl.cmx: gl.cmi
-glu.cmo glu.cmx: gl.cmi raw.cmi
-glm.cmo glm.cmx: gl.cmi
-aux.cmo: gltk.cmi
-togl.cmi: gl.cmi
-togl.cmo togl.cmx: togl.cmi
+include .depend

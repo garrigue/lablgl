@@ -1,4 +1,4 @@
-(* $Id: simple.ml,v 1.4 1998-01-21 09:12:38 garrigue Exp $ *)
+(* $Id: simple.ml,v 1.5 1998-01-29 11:46:26 garrigue Exp $ *)
 
 open Tk
 
@@ -13,21 +13,21 @@ let main () =
   pack [togl] fill:`Both;
   Togl.display_func togl cb:
     begin fun () ->
-      Gl.clear_color (0.0, 0.0, 0.0);
-      Gl.clear [`color];
-      Gl.color (1.0, 1.0, 1.0);
-      Gl.matrix_mode `projection;
-      Gl.load_identity ();
-      Gl.ortho x:(-1.0,1.0) y:(-1.0,1.0) z:(-1.0,1.0);
-      Gl.begin_block `polygon;
-      Gl.vertex x:(-0.5) y:(-0.5);
-      Gl.vertex x:(-0.5) y:(0.5);
-      Gl.vertex x:(0.5) y:(0.5);
-      Gl.vertex x:(0.5) y:(-0.5);
-      Gl.end_block ();
+      GlClear.color (0.0, 0.0, 0.0);
+      GlClear.clear [`color];
+      GlDraw.color (1.0, 1.0, 1.0);
+      GlMat.mode `projection;
+      GlMat.load_identity ();
+      GlMat.ortho x:(-1.0,1.0) y:(-1.0,1.0) z:(-1.0,1.0);
+      GlDraw.begins `polygon;
+      GlDraw.vertex x:(-0.5) y:(-0.5);
+      GlDraw.vertex x:(-0.5) y:(0.5);
+      GlDraw.vertex x:(0.5) y:(0.5);
+      GlDraw.vertex x:(0.5) y:(-0.5);
+      GlDraw.ends ();
       Gl.flush ()
     end;
   Timer.add ms:10000 callback:(fun () -> destroy top);
   mainLoop ()
 
-let _ = Printexc.print main ()
+let _ = main ()

@@ -1,4 +1,4 @@
-(* $Id: double.ml,v 1.2 1998-01-21 09:12:31 garrigue Exp $ *)
+(* $Id: double.ml,v 1.3 1998-01-29 11:46:22 garrigue Exp $ *)
 
 class view togl :title as self =
   val togl = togl
@@ -16,62 +16,61 @@ class view togl :title as self =
   method reshape =
     let width = Togl.width togl and height = Togl.height togl in
     let aspect = float width /. float height in
-    Gl.viewport x:0 y:0 w:width h:height;
+    GlDraw.viewport x:0 y:0 w:width h:height;
     (* Set up projection transform *)
-    Gl.matrix_mode `projection;
-    Gl.load_identity ();
-    Gl.frustum x:(-.aspect, aspect) y:(-1.0, 1.0) z:(1.0, 10.0);
+    GlMat.mode `projection;
+    GlMat.load_identity ();
+    GlMat.frustum x:(-.aspect, aspect) y:(-1.0, 1.0) z:(1.0, 10.0);
     corner_x <- -. aspect;
     corner_y <- -1.0;
     corner_z <- -1.1;
     (* Change back to model view transform for rendering *)
-    Gl.matrix_mode `modelview
+    GlMat.mode `modelview
 
   method print_string s =
-    Gl.list_base font_base;
-    Gl.call_lists (`byte s)
+    GlList.call_lists (`byte s) base:font_base
 
   method display =
-    Gl.clear [`color;`depth];
-    Gl.load_identity();	(* Reset modelview matrix to the identity matrix *)
-    Gl.translate z:(-3.0);      (* Move the camera back three units *)
-    Gl.rotate angle:x_angle x:1.0;  (* Rotate by X, Y, and Z angles *)
-    Gl.rotate angle:y_angle y:1.0;
-    Gl.rotate angle:z_angle z:1.0;
+    GlClear.clear [`color;`depth];
+    GlMat.load_identity(); (* Reset modelview matrix to the identity matrix *)
+    GlMat.translate z:(-3.0);      (* Move the camera back three units *)
+    GlMat.rotate angle:x_angle x:1.0;  (* Rotate by X, Y, and Z angles *)
+    GlMat.rotate angle:y_angle y:1.0;
+    GlMat.rotate angle:z_angle z:1.0;
     
     Gl.enable `depth_test;
 
     (* Front face *)
-    Gl.begin_block `quads;
-    Gl.color (0.0, 0.7, 0.1);	(* Green *)
-    Gl.vertex3 (-1.0, 1.0, 1.0);
-    Gl.vertex3(1.0, 1.0, 1.0);
-    Gl.vertex3(1.0, -1.0, 1.0);
-    Gl.vertex3(-1.0, -1.0, 1.0);
+    GlDraw.begins `quads;
+    GlDraw.color (0.0, 0.7, 0.1);	(* Green *)
+    GlDraw.vertex3 (-1.0, 1.0, 1.0);
+    GlDraw.vertex3(1.0, 1.0, 1.0);
+    GlDraw.vertex3(1.0, -1.0, 1.0);
+    GlDraw.vertex3(-1.0, -1.0, 1.0);
     (* Back face *)
-    Gl.color (0.9, 1.0, 0.0);   (* Yellow *)
-    Gl.vertex3(-1.0, 1.0, -1.0);
-    Gl.vertex3(1.0, 1.0, -1.0);
-    Gl.vertex3(1.0, -1.0, -1.0);
-    Gl.vertex3(-1.0, -1.0, -1.0);
+    GlDraw.color (0.9, 1.0, 0.0);   (* Yellow *)
+    GlDraw.vertex3(-1.0, 1.0, -1.0);
+    GlDraw.vertex3(1.0, 1.0, -1.0);
+    GlDraw.vertex3(1.0, -1.0, -1.0);
+    GlDraw.vertex3(-1.0, -1.0, -1.0);
     (* Top side face *)
-    Gl.color (0.2, 0.2, 1.0);   (* Blue *)
-    Gl.vertex3(-1.0, 1.0, 1.0);
-    Gl.vertex3(1.0, 1.0, 1.0);
-    Gl.vertex3(1.0, 1.0, -1.0);
-    Gl.vertex3(-1.0, 1.0, -1.0);
+    GlDraw.color (0.2, 0.2, 1.0);   (* Blue *)
+    GlDraw.vertex3(-1.0, 1.0, 1.0);
+    GlDraw.vertex3(1.0, 1.0, 1.0);
+    GlDraw.vertex3(1.0, 1.0, -1.0);
+    GlDraw.vertex3(-1.0, 1.0, -1.0);
     (* Bottom side face *)
-    Gl.color (0.7, 0.0, 0.1);   (* Red *)
-    Gl.vertex3(-1.0, -1.0, 1.0);
-    Gl.vertex3(1.0, -1.0, 1.0);
-    Gl.vertex3(1.0, -1.0, -1.0);
-    Gl.vertex3(-1.0, -1.0, -1.0);
-    Gl.end_block();
+    GlDraw.color (0.7, 0.0, 0.1);   (* Red *)
+    GlDraw.vertex3(-1.0, -1.0, 1.0);
+    GlDraw.vertex3(1.0, -1.0, 1.0);
+    GlDraw.vertex3(1.0, -1.0, -1.0);
+    GlDraw.vertex3(-1.0, -1.0, -1.0);
+    GlDraw.ends();
    
     Gl.disable `depth_test;
-    Gl.load_identity();
-    Gl.color( 1.0, 1.0, 1.0 );
-    Gl.raster_pos x:corner_x y:corner_y z:corner_z;
+    GlMat.load_identity();
+    GlDraw.color( 1.0, 1.0, 1.0 );
+    GlPix.raster_pos x:corner_x y:corner_y z:corner_z;
     self#print_string title;
     Togl.swap_buffers togl
 

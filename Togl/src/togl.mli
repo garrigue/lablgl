@@ -1,4 +1,4 @@
-(* $Id: togl.mli,v 1.2 1998-01-15 08:34:43 garrigue Exp $ *)
+(* $Id: togl.mli,v 1.3 1998-01-29 11:46:18 garrigue Exp $ *)
 
 type w
 type widget = w Widget.widget
@@ -17,8 +17,8 @@ type font = [
       helvetica_18
       Xfont(string)
   ]
-val load_bitmap_font : widget -> font:font -> Gl.glist
-val unload_bitmap_font : widget -> base:Gl.glist -> unit
+val load_bitmap_font : widget -> font:font -> GlList.base
+val unload_bitmap_font : widget -> base:GlList.base -> unit
 val use_layer : widget -> num:int -> unit
 val show_overlay : widget -> unit
 val hide_overlay : widget -> unit

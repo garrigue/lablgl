@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.4 1998-01-28 11:13:08 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.5 1998-01-29 11:46:24 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -196,8 +196,8 @@ let vertex :xf :yf :zf :ampvr2 =
   let neiax = factor1 *. xa -. vertx and neiay = factor1 *. yf -. verty
   and neiaz = factor1 *. zf -. vertz and neibx = factor2 *. xf -. vertx
   and neiby = factor2 *. yb -. verty and neibz = factor2 *. zf -. vertz in
-  Gl.normal3 (vect_mul (neiax, neiay, neiaz) (neibx, neiby, neibz));
-  Gl.vertex3 (vertx, verty, vertz)
+  GlDraw.normal3 (vect_mul (neiax, neiay, neiaz) (neibx, neiby, neibz));
+  GlDraw.vertex3 (vertx, verty, vertz)
 
 let triangle :edge :amp :divisions :z =
   let divi = float divisions in
@@ -208,7 +208,7 @@ let triangle :edge :amp :divisions :z =
   and ay = edge *. (-0.5 *. sqrt3 /. divi)
   and bx = edge *. (-0.5 /. divi) in
   for ri = 1 to divisions do
-    Gl.begin_block `triangle_strip;
+    GlDraw.begins `triangle_strip;
     for ti = 0 to ri - 1 do
       vertex :zf :ampvr2
 	xf:(float (ri-ti) *. ax +. float ti *. bx)
@@ -218,7 +218,7 @@ let triangle :edge :amp :divisions :z =
 	yf:(vr +. float (ri-ti-1) *. ay +. float ti *. ay)
     done;
     vertex xf:(float ri *. bx) yf:(vr +. float ri *. ay) :zf :ampvr2;
-    Gl.end_block ()
+    GlDraw.ends ()
   done
 
 let square :edge :amp :divisions :z =
@@ -230,13 +230,13 @@ let square :edge :amp :divisions :z =
     let yf2 = sqr yf in
     let y = yf +. 1.0 /. divi *. edge in
     let y2 = sqr y in
-    Gl.begin_block `quad_strip;
+    GlDraw.begins `quad_strip;
     for xi = 0 to divisions do
       let xf = edge *. (-0.5 +. float xi /. divi) in
       vertex :xf yf:y :zf :ampvr2;
       vertex :xf :yf :zf :ampvr2
     done;
-    Gl.end_block ()
+    GlDraw.ends ()
   done
 
 let pentagon :edge :amp :divisions :z =
@@ -254,7 +254,7 @@ let pentagon :edge :amp :divisions :z =
   in
   for ri = 1 to divisions do
     for fi = 0 to 4 do
-      Gl.begin_block `triangle_strip;
+      GlDraw.begins `triangle_strip;
       for ti = 0 to ri-1 do
 	vertex :zf :ampvr2
 	  xf:(float(ri-ti) *. x.(fi) +. float ti *. x.(fi+1))
@@ -264,190 +264,185 @@ let pentagon :edge :amp :divisions :z =
 	  yf:(float(ri-ti-1) *. y.(fi) +. float ti *. y.(fi+1))
       done;
       vertex xf:(float ri *. x.(fi+1)) yf:(float ri *. y.(fi+1)) :zf :ampvr2;
-      Gl.end_block ()
+      GlDraw.ends ()
     done
   done
 
 let call_list list color =
-  Gl.material face:`both (`diffuse color);
-  Gl.call_list list
+  GlLight.material face:`both (`diffuse color);
+  GlList.call list
 
 let draw_tetra :amp :divisions :color =
-  let list = Gl.gen_lists 1 in
-  Gl.new_list list mode:`compile;
+  let list = GlList.create `compile in
   triangle edge:2.0 :amp :divisions z:(0.5 /. sqrt6);
-  Gl.end_list();
+  GlList.ends();
 
   call_list list color.(0);
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 z:1.0;
-  Gl.rotate angle:(-.tetraangle) x:1.0;
+  GlMat.push();
+  GlMat.rotate angle:180.0 z:1.0;
+  GlMat.rotate angle:(-.tetraangle) x:1.0;
   call_list list color.(1);
-  Gl.pop_matrix();
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 y:1.0;
-  Gl.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(sqrt3 /. 2.);
+  GlMat.pop();
+  GlMat.push();
+  GlMat.rotate angle:180.0 y:1.0;
+  GlMat.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(sqrt3 /. 2.);
   call_list list color.(2);
-  Gl.pop_matrix();
-  Gl.rotate angle:180.0 y:1.0;
-  Gl.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(-.sqrt3 /. 2.);
+  GlMat.pop();
+  GlMat.rotate angle:180.0 y:1.0;
+  GlMat.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(-.sqrt3 /. 2.);
   call_list list color.(3);
 
-  Gl.delete_lists from:list range:1
+  GlList.delete list
 
 let draw_cube :amp :divisions :color =
-  let list = Gl.gen_lists 1 in
-  Gl.new_list list mode:`compile;
+  let list = GlList.create `compile in
   square edge:2.0 :amp :divisions z:0.5;
-  Gl.end_list();
+  GlList.ends ();
 
   call_list list color.(0);
   for i = 1 to 3 do
-    Gl.rotate angle:cubeangle x:1.0;
+    GlMat.rotate angle:cubeangle x:1.0;
     call_list list color.(i)
   done;
-  Gl.rotate angle:cubeangle y:1.0;
+  GlMat.rotate angle:cubeangle y:1.0;
   call_list list color.(4);
-  Gl.rotate angle:(2.0 *. cubeangle) y:1.0;
+  GlMat.rotate angle:(2.0 *. cubeangle) y:1.0;
   call_list list color.(5);
 
-  Gl.delete_lists from:list range:1
+  GlList.delete list
 
 let draw_octa :amp :divisions :color =
-  let list = Gl.gen_lists 1 in
-  Gl.new_list list mode:`compile;
+  let list = GlList.create `compile in
   triangle edge:2.0 :amp :divisions z:(1.0 /. sqrt6);
-  Gl.end_list();
+  GlList.ends ();
 
   let do_list (i,y) =
-    Gl.push_matrix();
-    Gl.rotate angle:180.0 y:1.0;
-    Gl.rotate angle:(-.octaangle) x:0.5 :y;
+    GlMat.push();
+    GlMat.rotate angle:180.0 y:1.0;
+    GlMat.rotate angle:(-.octaangle) x:0.5 :y;
     call_list list color.(i);
-    Gl.pop_matrix()
+    GlMat.pop()
   in
   call_list list color.(0);
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 z:1.0;
-  Gl.rotate angle:(-180.0 +. octaangle) x:1.0;
+  GlMat.push();
+  GlMat.rotate angle:180.0 z:1.0;
+  GlMat.rotate angle:(-180.0 +. octaangle) x:1.0;
   call_list list color.(1);
-  Gl.pop_matrix();
+  GlMat.pop();
   List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] fun:do_list;
-  Gl.rotate angle:180.0 x:1.0;
-  Gl.material face:`both (`diffuse color.(4));
-  Gl.call_list list;
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 z:1.0;
-  Gl.rotate angle:(-180.0 +. octaangle) x:1.0;
-  Gl.material face:`both (`diffuse color.(5));
-  Gl.call_list list;
-  Gl.pop_matrix();
+  GlMat.rotate angle:180.0 x:1.0;
+  GlLight.material face:`both (`diffuse color.(4));
+  GlList.call list;
+  GlMat.push();
+  GlMat.rotate angle:180.0 z:1.0;
+  GlMat.rotate angle:(-180.0 +. octaangle) x:1.0;
+  GlLight.material face:`both (`diffuse color.(5));
+  GlList.call list;
+  GlMat.pop();
   List.iter [6, sqrt3 /. 2.0; 7, -.sqrt3 /. 2.0] fun:do_list;
 
-  Gl.delete_lists from:list range:1
+  GlList.delete list
 
 let draw_dodeca :amp :divisions :color =
   let tau = (sqrt5 +. 1.0) /. 2.0 in
-  let list = Gl.gen_lists 1 in
-  Gl.new_list list mode:`compile;
+  let list = GlList.create `compile in
   pentagon edge:2.0 :amp :divisions
     z:(sqr(tau) *. sqrt ((tau+.2.0)/.5.0) /. 2.0);
-  Gl.end_list();
+  GlList.ends ();
 
   let do_list (i,angle,x,y) =
-    Gl.push_matrix();
-    Gl.rotate :angle :x :y;
+    GlMat.push();
+    GlMat.rotate :angle :x :y;
     call_list list color.(i);
-    Gl.pop_matrix();
+    GlMat.pop();
   in
-  Gl.push_matrix ();
+  GlMat.push ();
   call_list list color.(0);
-  Gl.rotate angle:180.0 z:1.0;
+  GlMat.rotate angle:180.0 z:1.0;
   List.iter fun:do_list
     [ 1, -.dodecaangle, 1.0, 0.0;
       2, -.dodecaangle, cos72, sin72;
       3, -.dodecaangle, cos72, -.sin72;
       4, dodecaangle, cos36, -.sin36;
       5, dodecaangle, cos36, sin36 ];
-  Gl.pop_matrix ();
-  Gl.rotate angle:180.0 x:1.0;
+  GlMat.pop ();
+  GlMat.rotate angle:180.0 x:1.0;
   call_list list color.(6);
-  Gl.rotate angle:180.0 z:1.0;
+  GlMat.rotate angle:180.0 z:1.0;
   List.iter fun:do_list
     [ 7, -.dodecaangle, 1.0, 0.0;
       8, -.dodecaangle, cos72, sin72;
       9, -.dodecaangle, cos72, -.sin72;
       10, dodecaangle, cos36, -.sin36 ];
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list (11, dodecaangle, cos36, sin36);
 
-  Gl.delete_lists from:list range:1
+  GlList.delete list
 
 let draw_ico :amp :divisions :color =
-  let list = Gl.gen_lists 1 in
-  Gl.new_list list mode:`compile;
+  let list = GlList.create `compile in
   triangle edge:1.5 :amp :divisions
     z:((3.0 *. sqrt3 +. sqrt15) /. 12.0);
-  Gl.end_list();
+  GlList.ends ();
 
   let do_list1 i =
-    Gl.rotate angle:180.0 y:1.0;
-    Gl.rotate angle:(-180.0 +. icoangle) x:0.5 y:(sqrt3/.2.0);
+    GlMat.rotate angle:180.0 y:1.0;
+    GlMat.rotate angle:(-180.0 +. icoangle) x:0.5 y:(sqrt3/.2.0);
     call_list list color.(i)
   and do_list2 i =
-    Gl.rotate angle:180.0 y:1.0;
-    Gl.rotate angle:(-180.0 +. icoangle) x:0.5 y:(-.sqrt3/.2.0);
+    GlMat.rotate angle:180.0 y:1.0;
+    GlMat.rotate angle:(-180.0 +. icoangle) x:0.5 y:(-.sqrt3/.2.0);
     call_list list color.(i)
   and do_list3 i =
-    Gl.rotate angle:180.0 z:1.0;
-    Gl.rotate angle:(-.icoangle) x:1.0;
+    GlMat.rotate angle:180.0 z:1.0;
+    GlMat.rotate angle:(-.icoangle) x:1.0;
     call_list list color.(i)
   in
-  Gl.push_matrix ();
+  GlMat.push ();
   call_list list color.(0);
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list3 1;
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list1 2;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list2 3;
-  Gl.pop_matrix ();
-  Gl.push_matrix ();
+  GlMat.pop ();
+  GlMat.push ();
   do_list1 4;
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list1 5;
-  Gl.pop_matrix();
+  GlMat.pop();
   do_list3 6;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list2 7;
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list2 8;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list3 9;
-  Gl.pop_matrix ();
-  Gl.rotate angle:180.0 x:1.0;
+  GlMat.pop ();
+  GlMat.rotate angle:180.0 x:1.0;
   call_list list color.(10);
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list3 11;
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list1 12;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list2 13;
-  Gl.pop_matrix ();
-  Gl.push_matrix ();
+  GlMat.pop ();
+  GlMat.push ();
   do_list1 14;
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list1 15;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list3 16;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list2 17;
-  Gl.push_matrix ();
+  GlMat.push ();
   do_list2 18;
-  Gl.pop_matrix ();
+  GlMat.pop ();
   do_list3 19;
 
-  Gl.delete_lists from:list range:1
+  GlList.delete list
 
 class view togl as self =
   val togl = togl
@@ -463,28 +458,28 @@ class view togl as self =
 
   method draw =
     let ratio = float self#height /. float self#width in
-    Gl.clear [`color;`depth];
-    Gl.push_matrix();
-    Gl.translate z:(-10.0);
-    Gl.scale x:(scale *. ratio) y:scale z:scale;
-    Gl.translate
+    GlClear.clear [`color;`depth];
+    GlMat.push();
+    GlMat.translate z:(-10.0);
+    GlMat.scale x:(scale *. ratio) y:scale z:scale;
+    GlMat.translate
       x:(2.5 *. ratio *. sin (step *. 1.11))
       y:(2.5 *. cos (step *. 1.25 *. 1.11));
-    Gl.rotate angle:(step *. 100.) x:1.0;
-    Gl.rotate angle:(step *. 95.) y:1.0;
-    Gl.rotate angle:(step *. 90.) z:1.0;
+    GlMat.rotate angle:(step *. 100.) x:1.0;
+    GlMat.rotate angle:(step *. 95.) y:1.0;
+    GlMat.rotate angle:(step *. 90.) z:1.0;
     draw_object amp:((sin step +. 1.0/.3.0) *. (4.0/.5.0) *. magnitude);
-    Gl.pop_matrix();
+    GlMat.pop();
     Gl.flush();
     Togl.swap_buffers togl;
     step <- step +. 0.05
 
   method reshape =
-    Gl.viewport x:0 y:0 w:self#width h:self#height;
-    Gl.matrix_mode `projection;
-    Gl.load_identity();
-    Gl.frustum x:(-1.0, 1.0) y:(-1.0, 1.0) z:(5.0, 15.0);
-    Gl.matrix_mode `modelview
+    GlDraw.viewport x:0 y:0 w:self#width h:self#height;
+    GlMat.mode `projection;
+    GlMat.load_identity();
+    GlMat.frustum x:(-1.0, 1.0) y:(-1.0, 1.0) z:(5.0, 15.0);
+    GlMat.mode `modelview
 
   method key sym =
     begin match sym with
@@ -548,7 +543,7 @@ class view togl as self =
     for (loop=0; loop<20; loop++) MaterialColor[loop]=MaterialGray;
   }
 *)
-    Gl.shade_model (if smooth then `smooth else `flat)
+    GlDraw.shade_model (if smooth then `smooth else `flat)
 end
 
 open Tk
@@ -571,31 +566,29 @@ let main () =
   let togl = Togl.create parent:top width:640 height:480
       depth:true double:true rgba:true in
   Wm.title_set top title:"Morph 3D - Shows morphing platonic polyhedra";
-  Gl.clear_depth 1.0;
-  Gl.clear_color (0.0, 0.0, 0.0);
-  Gl.color (1.0, 1.0, 1.0);
+  GlClear.depth 1.0;
+  GlClear.color (0.0, 0.0, 0.0);
+  GlDraw.color (1.0, 1.0, 1.0);
 
-  Gl.clear [`color;`depth];
+  GlClear.clear [`color;`depth];
   Gl.flush();
   Togl.swap_buffers togl;
 
-  Gl.light num:0 (`ambient ambient);
-  Gl.light num:0 (`diffuse diffuse);
-  Gl.light num:0 (`position position0);
-  Gl.light num:1 (`ambient ambient);
-  Gl.light num:1 (`diffuse diffuse);
-  Gl.light num:1 (`position position1);
-  Gl.light_model (`ambient lmodel_ambient);
-  Gl.light_model (`two_side lmodel_twoside);
+  List.iter fun:(GlLight.light num:0)
+    [`ambient ambient; `diffuse diffuse; `position position0];
+  List.iter fun:(GlLight.light num:1)
+    [`ambient ambient; `diffuse diffuse; `position position1];
+  GlLight.model (`ambient lmodel_ambient);
+  GlLight.model (`two_side lmodel_twoside);
   List.iter fun:Gl.enable
     [`lighting;`light0;`light1;`depth_test;`normalize];
 
-  Gl.material face:`both (`shininess front_shininess);
-  Gl.material face:`both (`specular front_specular);
+  GlLight.material face:`both (`shininess front_shininess);
+  GlLight.material face:`both (`specular front_specular);
 
-  Gl.hint target:`fog `fastest;
-  Gl.hint target:`perspective_correction `fastest;
-  Gl.hint target:`polygon_smooth `fastest;
+  GlMisc.hint `fog `fastest;
+  GlMisc.hint `perspective_correction `fastest;
+  GlMisc.hint `polygon_smooth `fastest;
 
   let view = new view togl in
   view#pinit;

@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.5 1998-01-28 01:44:13 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.6 1998-01-29 11:46:25 garrigue Exp $ *)
 
 class planet togl as self =
   val togl = togl
@@ -25,26 +25,26 @@ class planet togl as self =
     eye <- x; self#display
 
   method display =
-    Gl.clear [`color;`depth];
+    GlClear.clear [`color;`depth];
 
-    Gl.color (1.0, 1.0, 1.0);
-    Gl.push_matrix();
-    Gl.rotate angle:eye x:1.;
+    GlDraw.color (1.0, 1.0, 1.0);
+    GlMat.push();
+    GlMat.rotate angle:eye x:1.;
 (*	draw sun	*)
-    Gl.material face:`front (`specular (1.0,1.0,0.0,1.0));
-    Gl.material face:`front (`shininess 5.0);
-    Glu.sphere radius:1.0 slices:32 stacks:32 (Glu.new_quadric ());
+    GlLight.material face:`front (`specular (1.0,1.0,0.0,1.0));
+    GlLight.material face:`front (`shininess 5.0);
+    GluQuadric.sphere radius:1.0 slices:32 stacks:32;
 (*	draw smaller planet	*)
-    Gl.rotate angle:year y:1.0;
-    Gl.translate x:3.0;
-    Gl.rotate angle:day y:1.0;
-    Gl.color (0.0, 1.0, 1.0);
-    Gl.shade_model `flat;
-    Gl.material face:`front(`shininess 128.0);
-    Glu.sphere radius:0.2 slices:10 stacks:10 (Glu.new_quadric());
-    Gl.shade_model `smooth;
-    Gl.pop_matrix();
-    Gl.flush();
+    GlMat.rotate angle:year y:1.0;
+    GlMat.translate x:3.0;
+    GlMat.rotate angle:day y:1.0;
+    GlDraw.color (0.0, 1.0, 1.0);
+    GlDraw.shade_model `flat;
+    GlLight.material face:`front(`shininess 128.0);
+    GluQuadric.sphere radius:0.2 slices:10 stacks:10;
+    GlLight.shade_model `smooth;
+    GlMat.pop ();
+    Gl.flush ();
     Togl.swap_buffers togl
 end
 
@@ -55,30 +55,23 @@ let myinit () =
   (*  light_position is NOT default value	*)
   and light_position = 1.0, 1.0, 1.0, 0.0
   in
-  Gl.light num:0 (`ambient light_ambient);
-  Gl.light num:0 (`diffuse light_diffuse);
-  Gl.light num:0 (`specular light_specular);
-  Gl.light num:0 (`position light_position);
-(*  
-  Gl.enable `fog;
-  Gl.fog (`mode `exp);
-  Gl.fog (`density 0.1);
-  Gl.fog (`color (0.3,0.3,0.3,1.0));
-*)
-  Gl.depth_func `less;
+  List.iter fun:(GlLight.light num:0)
+    [ `ambient light_ambient; `diffuse light_diffuse;
+      `specular light_specular; `position light_position ];
+  GlFunc.depth_func `less;
   List.iter fun:Gl.enable [`lighting; `light0; `depth_test];
-  Gl.shade_model `smooth
+  GlDraw.shade_model `smooth
 
 
 let my_reshape togl =
   let w = Togl.width togl and h = Togl.height togl in
-  Gl.viewport x:0 y:0 :w :h;
-  Gl.matrix_mode `projection;
-  Gl.load_identity();
-  Glu.perspective fovy:60.0 aspect:(float w /. float h) z:(1.0,20.0);
-  Gl.matrix_mode `modelview;
-  Gl.load_identity();
-  Gl.translate z:(-5.0)
+  GlDraw.viewport x:0 y:0 :w :h;
+  GlMat.mode `projection;
+  GlMat.load_identity();
+  GluMat.perspective fovy:60.0 aspect:(float w /. float h) z:(1.0,20.0);
+  GlMat.mode `modelview;
+  GlMat.load_identity();
+  GlMat.translate z:(-5.0)
 
 (*  Main Loop
  *  Open window with initial window size, title bar, 

@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.4 1998-01-28 01:44:13 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.5 1998-01-29 11:46:25 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -9,12 +9,12 @@ let myinit () =
   (*  light_position is NOT default value	*)
   and light_position = 1.0, 1.0, 1.0, 0.0
   in
-  Gl.light num:0 (`ambient light_ambient);
-  Gl.light num:0 (`diffuse light_diffuse);
-  Gl.light num:0 (`specular light_specular);
-  Gl.light num:0 (`position light_position);
+  GlLight.light num:0 (`ambient light_ambient);
+  GlLight.light num:0 (`diffuse light_diffuse);
+  GlLight.light num:0 (`specular light_specular);
+  GlLight.light num:0 (`position light_position);
   
-  Gl.depth_func `less;
+  GlFunc.depth_func `less;
   List.iter fun:Gl.enable [`lighting; `light0; `depth_test]
 
 let pi = acos (-1.)
@@ -26,15 +26,15 @@ let solid_torus :inner :outer =
   let vertex :i :j =
     let angle1 = slice_angle *. float i
     and angle2 = face_angle *. float j in
-    Gl.normal x:(cos angle1 *. cos angle2)
+    GlDraw.normal x:(cos angle1 *. cos angle2)
       y:(-. sin angle1 *. cos angle2)
       z:(sin angle2);
-    Gl.vertex
+    GlDraw.vertex
       x:((outer +. inner *. cos angle2) *. cos angle1)
       y:(-. (outer +. inner *. cos angle2) *. sin angle1)
       z:(inner *. sin angle2)
   in
-  Gl.begin_block `quads;
+  GlDraw.begins `quads;
   for i = 0 to slices - 1 do
     for j = 0 to faces - 1 do
       vertex :i :j;
@@ -43,52 +43,51 @@ let solid_torus :inner :outer =
       vertex :i j:(j+1);
     done
   done;
-  Gl.end_block ()
+  GlDraw.ends ()
 
 let solid_cone :radius :height =
-  Glu.cylinder base:radius top:0. :height slices:15 stacks:10
-    (Glu.new_quadric ())
+  GluQuadric.cylinder base:radius top:0. :height slices:15 stacks:10
 
 let solid_sphere :radius =
-  Glu.sphere :radius slices:32 stacks:32 (Glu.new_quadric ())
+  GluQuadric.sphere :radius slices:32 stacks:32
 
 let display () =
-  Gl.clear [`color; `depth];
+  GlClear.clear [`color; `depth];
 
-  Gl.push_matrix ();
-  Gl.rotate angle:20.0 x:1.0;
+  GlMat.push ();
+  GlMat.rotate angle:20.0 x:1.0;
 
-  Gl.push_matrix ();
-  Gl.translate x:(-0.75) y:0.5; 
-  Gl.rotate angle:90.0 x:1.0;
+  GlMat.push ();
+  GlMat.translate x:(-0.75) y:0.5; 
+  GlMat.rotate angle:90.0 x:1.0;
   solid_torus inner:0.275 outer:0.85;
-  Gl.pop_matrix ();
+  GlMat.pop ();
 
-  Gl.push_matrix ();
-  Gl.translate x:(-0.75) y:(-0.5); 
-  Gl.rotate angle:270.0 x:1.0;
+  GlMat.push ();
+  GlMat.translate x:(-0.75) y:(-0.5); 
+  GlMat.rotate angle:270.0 x:1.0;
   solid_cone radius:1.0 height:2.0;
-  Gl.pop_matrix ();
+  GlMat.pop ();
 
-  Gl.push_matrix ();
-  Gl.translate x:0.75 z:(-1.0); 
+  GlMat.push ();
+  GlMat.translate x:0.75 z:(-1.0); 
   solid_sphere radius:1.0;
-  Gl.pop_matrix ();
+  GlMat.pop ();
 
-  Gl.pop_matrix ();
+  GlMat.pop ();
   Gl.flush ()
 
 let my_reshape :w :h =
-  Gl.viewport x:0 y:0 :w :h;
-  Gl.matrix_mode `projection;
-  Gl.load_identity ();
+  GlDraw.viewport x:0 y:0 :w :h;
+  GlMat.mode `projection;
+  GlMat.load_identity ();
   if w <= h then
-    Gl.ortho x:(-2.5,2.5) z:(-10.0,10.0)
+    GlMat.ortho x:(-2.5,2.5) z:(-10.0,10.0)
       y:(-2.5 *. float h /. float w, 2.5 *. float h /. float w)
   else 
-    Gl.ortho y:(-2.5,2.5) z:(-10.0,10.0)
+    GlMat.ortho y:(-2.5,2.5) z:(-10.0,10.0)
       x:(-2.5 *. float w /. float h, 2.5 *. float w /. float h);
-  Gl.matrix_mode `modelview
+  GlMat.mode `modelview
 
 (*  Main Loop
  *  Open window with initial window size, title bar, 

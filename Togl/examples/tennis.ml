@@ -1,4 +1,4 @@
-(* $Id: tennis.ml,v 1.4 1998-01-23 13:30:24 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.5 1998-01-29 11:46:27 garrigue Exp $ *)
 
 let ft x = x *. 0.03
 
@@ -21,11 +21,11 @@ class ball () =
 
   method draw =
     Gl.disable `blend;
-    Gl.color (1.0, 1.0, 0.0);
-    Gl.push_matrix ();
-    Gl.translate :x :y :z;
-    Glu.sphere radius:0.01 slices:8 stacks:8 (Glu.new_quadric ());
-    Gl.pop_matrix ()
+    GlDraw.color (1.0, 1.0, 0.0);
+    GlMat.push ();
+    GlMat.translate :x :y :z;
+    GluQuadric.sphere radius:0.01 slices:8 stacks:8;
+    GlMat.pop ()
 
   method do_tick delta =
     if moving then begin
@@ -52,39 +52,39 @@ class view :togl :ball :setup =
     setup ();
 
     (* Sky *)
-    Gl.shade_model `smooth;
+    GlDraw.shade_model `smooth;
     Gl.disable `depth_test;
-    Gl.begin_block `polygon;
-    Gl.color (0.0, 0.0, 1.0);
-    Gl.vertex3 (2.0, -2.0, 2.0);
-    Gl.vertex3 (2.0, 2.0, 2.0);
-    Gl.color (0.5, 0.5, 1.0);
-    Gl.vertex2 (2.0, 2.0);
-    Gl.vertex2 (2.0, -2.0);
-    Gl.end_block (); 
+    GlDraw.begins `polygon;
+    GlDraw.color (0.0, 0.0, 1.0);
+    GlDraw.vertex3 (2.0, -2.0, 2.0);
+    GlDraw.vertex3 (2.0, 2.0, 2.0);
+    GlDraw.color (0.5, 0.5, 1.0);
+    GlDraw.vertex2 (2.0, 2.0);
+    GlDraw.vertex2 (2.0, -2.0);
+    GlDraw.ends (); 
    
-    Gl.shade_model `flat;
+    GlDraw.shade_model `flat;
 
     let square (x1, y1) (x2, y2) =
-      List.iter fun:Gl.vertex2
+      List.iter fun:GlDraw.vertex2
 	[ x1, y1;
 	  x2, y1;
 	  x2, y2;
 	  x1, y2 ]
     in
     (* Ground *)
-    Gl.begin_block `quads;
-    Gl.color (0.5, 0.5, 0.5);
+    GlDraw.begins `quads;
+    GlDraw.color (0.5, 0.5, 0.5);
     square (-2.0, 2.0) (2.0, -2.0);
-    Gl.end_block ();
+    GlDraw.ends ();
 
     (* Court *)
-    Gl.begin_block `quads;
-    Gl.color (0.2, 0.7, 0.2);
+    GlDraw.begins `quads;
+    GlDraw.color (0.2, 0.7, 0.2);
     square (cl, cw) (-.cl, -.cw);
 
     (* Lines *)
-    Gl.color (1.0, 1.0, 1.0);
+    GlDraw.color (1.0, 1.0, 1.0);
     square (-.cl, cw)   (cl, cw -. lw);
     square (-.cl, -.cw)	(cl, -.cw +. lw);
     square (cl, cw)     (cl -. wlw, -. cw);
@@ -94,22 +94,22 @@ class view :togl :ball :setup =
     square (-.cl, -.sw) (cl, -.sw +. lw);
     square (sl, sw)     (sl -. lw, -. sw);
     square (-.sl, sw)   (-.sl +. lw, -.sw);
-    Gl.end_block ();
+    GlDraw.ends ();
 
     (* Net ( translucent ) *)
     Gl.enable `blend;
-    Gl.blend_func src:`src_alpha dst:`one_minus_src_alpha;
+    GlFunc.blend_func src:`src_alpha dst:`one_minus_src_alpha;
 
-    Gl.begin_block `quad_strip;
-    Gl.color (0.7, 0.7, 0.0) alpha:0.7;
-    List.iter fun:(fun (y,z) -> Gl.vertex x:0.0 :y :z)
+    GlDraw.begins `quad_strip;
+    GlDraw.color (0.7, 0.7, 0.0) alpha:0.7;
+    List.iter fun:(fun (y,z) -> GlDraw.vertex x:0.0 :y :z)
       [ cw +. 0.05, 0.0;
 	cw +. 0.05, 0.115;
 	0.0, 0.0;
 	0.0, 0.09;
 	-.cw -. 0.05, 0.0;
 	-.cw -. 0.05, 0.115 ];
-    Gl.end_block ();
+    GlDraw.ends ();
 
     ball#draw;
     
@@ -118,21 +118,22 @@ class view :togl :ball :setup =
 end
 
 let setup3d () =
-  Gl.clear [`color;`depth];
-  Gl.matrix_mode `projection;
-  Gl.load_identity ();
-  Glu.perspective fovy:40.0 aspect:1.0 z:(0.1,20.0);
-  Gl.matrix_mode `modelview;
-  Gl.load_identity ();
-  Glu.look_at eye:(-1.0, 0.0, 0.2) center:(0.0, 0.0, 0.09) up:(1.0, 0.0, 0.0)
+  GlClear.clear [`color;`depth];
+  GlMat.mode `projection;
+  GlMat.load_identity ();
+  GluMat.perspective fovy:40.0 aspect:1.0 z:(0.1,20.0);
+  GlMat.mode `modelview;
+  GlMat.load_identity ();
+  GluMat.look_at
+    eye:(-1.0, 0.0, 0.2) center:(0.0, 0.0, 0.09) up:(1.0, 0.0, 0.0)
 
 let setup2d () =
-  Gl.matrix_mode `projection;
-  Gl.load_identity ();
-  Glu.perspective fovy:45.0 aspect:1.0 z:(0.1,20.0);
-  Gl.matrix_mode `modelview;
-  Gl.load_identity ();
-  Glu.look_at eye:(0.0, 0.0, 3.0) center:(0.0, 0.0, 0.0) up:(1.0, 0.0, 0.0)
+  GlMat.mode `projection;
+  GlMat.load_identity ();
+  GluMat.perspective fovy:45.0 aspect:1.0 z:(0.1,20.0);
+  GlMat.mode `modelview;
+  GlMat.load_identity ();
+  GluMat.look_at eye:(0.0, 0.0, 3.0) center:(0.0, 0.0, 0.0) up:(1.0, 0.0, 0.0)
 
 open Tk
 

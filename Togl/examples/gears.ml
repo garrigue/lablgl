@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.4 1998-01-28 06:30:22 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.5 1998-01-29 11:46:22 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -27,96 +27,96 @@ let gear :inner :outer :width :teeth :tooth_depth =
   let ta = 2.0 *. pi /. float teeth in
   let da = ta /. 4.0 in
 
-  Gl.shade_model `flat;
+  GlDraw.shade_model `flat;
 
-  Gl.normal z:1.0;
+  GlDraw.normal z:1.0;
 
   let vertex :i :r :z ?:s [< 0 >] =
     let angle = float i *. ta +. float s *. da in
-    Gl.vertex x:(r *. cos angle) y:(r *. sin angle) :z
+    GlDraw.vertex x:(r *. cos angle) y:(r *. sin angle) :z
   in
 
   (* draw front face *)
   let z = width *. 0.5 in
-  Gl.begin_block `quad_strip;
+  GlDraw.begins `quad_strip;
   for i=0 to teeth do
     vertex :i r:r0 :z;
     vertex :i r:r1 :z;
     vertex :i r:r0 :z;
     vertex :i r:r1 :z s:3;
   done;
-  Gl.end_block ();
+  GlDraw.ends ();
   
   (* draw front sides of teeth *)
-  Gl.begin_block `quads;
+  GlDraw.begins `quads;
   for i=0 to teeth - 1 do
     vertex :i r:r1 :z;
     vertex :i r:r2 s:1 :z;
     vertex :i r:r2 s:2 :z;
     vertex :i r:r1 s:3 :z;
   done;
-  Gl.end_block ();
+  GlDraw.ends ();
 
-  Gl.normal z:(-1.0);
+  GlDraw.normal z:(-1.0);
 
   (* draw back face *)
   let z = -. width *. 0.5 in
-  Gl.begin_block `quad_strip;
+  GlDraw.begins `quad_strip;
   for i=0 to teeth do
     vertex :i r:r1 :z;
     vertex :i r:r0 :z;
     vertex :i r:r1 s:3 :z;
     vertex :i r:r0 :z;
   done;
-  Gl.end_block ();
+  GlDraw.ends ();
 
   (* draw back sides of teeth *)
-  Gl.begin_block `quads;
+  GlDraw.begins `quads;
   for i=0 to teeth - 1 do
     vertex :i r:r1 s:3 :z;
     vertex :i r:r2 s:2 :z;
     vertex :i r:r2 s:1 :z;
     vertex :i r:r1 :z;
   done;
-  Gl.end_block ();
+  GlDraw.ends ();
 
   (* draw outward faces of teeth *)
   let z = width *. 0.5 and z' = width *. (-0.5) in
-  Gl.begin_block `quad_strip;
+  GlDraw.begins `quad_strip;
   for i=0 to teeth - 1 do
     let angle = float i *. ta in
     vertex :i r:r1 :z;
     vertex :i r:r1 z:z';
     let u = r2 *. cos(angle+.da) -. r1 *. cos(angle)
     and v = r2 *. sin(angle+.da) -. r1 *. sin(angle) in
-    Gl.normal x:v y:(-.u);
+    GlDraw.normal x:v y:(-.u);
     vertex :i r:r2 s:1 :z;
     vertex :i r:r2 s:1 z:z';
-    Gl.normal x:(cos angle) y:(sin angle);
+    GlDraw.normal x:(cos angle) y:(sin angle);
     vertex :i r:r2 s:2 :z;
     vertex :i r:r2 s:2 z:z';
     let u = r1 *. cos(angle +. 3. *. da) -. r2 *. cos(angle +. 2. *. da)
     and v = r1 *. sin(angle +. 3. *. da) -. r2 *. sin(angle +. 2. *. da) in
-    Gl.normal x:v y:(-.u);
+    GlDraw.normal x:v y:(-.u);
     vertex :i r:r1 s:3 :z;
     vertex :i r:r1 s:3 z:z';
-    Gl.normal x:(cos angle) y:(sin angle);
+    GlDraw.normal x:(cos angle) y:(sin angle);
   done;
   vertex i:0 r:r1 :z;
   vertex i:0 r:r1 z:z';
-  Gl.end_block ();
+  GlDraw.ends ();
 
-  Gl.shade_model `smooth;
+  GlDraw.shade_model `smooth;
 
   (* draw inside radius cylinder *)
-  Gl.begin_block `quad_strip;
+  GlDraw.begins `quad_strip;
   for i=0 to teeth do
     let angle = float i *. ta in
-    Gl.normal x:(-. cos angle) y:(-. sin angle);
+    GlDraw.normal x:(-. cos angle) y:(-. sin angle);
     vertex :i r:r0 z:z';
     vertex :i r:r0 :z;
   done;
-  Gl.end_block ()
+  GlDraw.ends ()
 
 class view :togl :gear1 :gear2 :gear3 ?:limit as self =
   val togl = togl
@@ -134,35 +134,35 @@ class view :togl :gear1 :gear2 :gear3 ?:limit as self =
   method roty a = view_roty <- a
 
   method draw =
-    Gl.clear [`color;`depth];
+    GlClear.clear [`color;`depth];
 
-    Gl.push_matrix ();
-    Gl.rotate angle:view_rotx x:1.0;
-    Gl.rotate angle:view_roty y:1.0;
-    Gl.rotate angle:view_rotz z:1.0;
+    GlMat.push ();
+    GlMat.rotate angle:view_rotx x:1.0;
+    GlMat.rotate angle:view_roty y:1.0;
+    GlMat.rotate angle:view_rotz z:1.0;
 
-    Gl.push_matrix ();
-    Gl.translate x:(-3.0) y:(-2.0);
-    Gl.rotate :angle z:1.0;
+    GlMat.push ();
+    GlMat.translate x:(-3.0) y:(-2.0);
+    GlMat.rotate :angle z:1.0;
     (* gear inner:1.0 outer:4.0 width:1.0 teeth:20 tooth_depth:0.7; *)
-    Gl.call_list gear1;
-    Gl.pop_matrix ();
+    GlList.call gear1;
+    GlMat.pop ();
 
-    Gl.push_matrix ();
-    Gl.translate x:3.1 y:(-2.0);
-    Gl.rotate angle:(-2.0 *. angle -. 9.0) z:1.0;
+    GlMat.push ();
+    GlMat.translate x:3.1 y:(-2.0);
+    GlMat.rotate angle:(-2.0 *. angle -. 9.0) z:1.0;
     (* gear inner:0.5 outer:2.0 width:2.0 teeth:10 tooth_depth:0.7; *)
-    Gl.call_list gear2;
-    Gl.pop_matrix ();
+    GlList.call gear2;
+    GlMat.pop ();
 
-    Gl.push_matrix ();
-    Gl.translate x:(-3.1) y:4.2;
-    Gl.rotate angle:(-2.0 *. angle -. 25.0) z:1.0;
+    GlMat.push ();
+    GlMat.translate x:(-3.1) y:4.2;
+    GlMat.rotate angle:(-2.0 *. angle -. 25.0) z:1.0;
     (* gear inner:1.3 outer:2.0 width:0.5 teeth:10 tooth_depth:0.7; *)
-    Gl.call_list gear3;
-    Gl.pop_matrix ();
+    GlList.call gear3;
+    GlMat.pop ();
 
-    Gl.pop_matrix ();
+    GlMat.pop ();
     
     Togl.swap_buffers togl;
 
@@ -175,20 +175,20 @@ class view :togl :gear1 :gear2 :gear3 ?:limit as self =
 
   method reshape =
     let w = Togl.width togl and h = Togl.height togl in
-    Gl.viewport x:0 y:0 :w :h;
-    Gl.matrix_mode `projection;
-    Gl.load_identity ();
+    GlDraw.viewport x:0 y:0 :w :h;
+    GlMat.mode `projection;
+    GlMat.load_identity ();
     let r = float w /. float h in
     let r' = 1. /. r in
     if (w>h) then
-      Gl.frustum x:(-. r,r) y:(-1.0,1.0) z:(5.0,60.0)
+      GlMat.frustum x:(-. r,r) y:(-1.0,1.0) z:(5.0,60.0)
     else
-      Gl.frustum x:(-1.0,1.0) y:(-.r',r') z:(5.0,60.0);
+      GlMat.frustum x:(-1.0,1.0) y:(-.r',r') z:(5.0,60.0);
 
-    Gl.matrix_mode `modelview;
-    Gl.load_identity();
-    Gl.translate z:(-40.0);
-    Gl.clear[`color;`depth]
+    GlMat.mode `modelview;
+    GlMat.load_identity();
+    GlMat.translate z:(-40.0);
+    GlClear.clear[`color;`depth]
 end
 
 let init () =
@@ -197,17 +197,16 @@ let init () =
   and green = 0.0, 0.8, 0.2, 1.0
   and blue = 0.2, 0.2, 1.0, 1.0 in
 
-  Gl.light num:0 (`position pos);
+  GlLight.light num:0 (`position pos);
   List.iter fun:Gl.enable
     [`cull_face;`lighting;`light0;`depth_test;`normalize];
 
   (* make the gears *)
   let make_gear :inner :outer :width :teeth :color =
-    let list = Gl.gen_lists 1 in
-    Gl.new_list list mode:`compile;
-    Gl.material face:`front (`ambient_and_diffuse color);
+    let list = GlList.create `compile in
+    GlLight.material face:`front (`ambient_and_diffuse color);
     gear :inner :outer :width :teeth tooth_depth:0.7;
-    Gl.end_list ();
+    GlList.ends ();
     list
   in
   let gear1 = make_gear inner:1.0 outer:4.0 width:1.0 teeth:20 color:red

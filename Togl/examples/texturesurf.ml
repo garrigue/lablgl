@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.4 1998-01-23 13:30:24 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.5 1998-01-29 11:46:28 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -16,60 +16,62 @@ and image_height = 64
 let pi = acos (-1.0)
 
 let display togl =
-  Gl.clear [`color;`depth];
-  Gl.color (1.0,1.0,1.0);
-  Gl.eval_mesh2 mode:`fill 0 20 0 20;
+  GlClear.clear [`color;`depth];
+  GlDraw.color (1.0,1.0,1.0);
+  GlMap.eval_mesh2 mode:`fill range:(0,20) range:(0,20);
   Gl.flush ();
   Togl.swap_buffers togl
 
 let make_image () =
-  let image = Raw.create `ubyte len:(3*image_height*image_width) in
+  let image =
+    GlPix.create `ubyte height:image_height width:image_width format:`rgb in
+  let raw = GlPix.to_raw image
+  and pos = GlPix.raw_pos image in
   for i = 0 to image_width - 1 do
     let ti = 2.0 *. pi *. float i /. float image_width in
     for j = 0 to image_height - 1 do
       let tj = 2.0 *. pi *. float j /. float image_height in
-      Raw.sets image pos:(3*(image_height*i+j))
+      Raw.sets raw pos:(pos x:j y:i)
 	(Array.map fun:(fun x -> truncate (127.0 *. (1.0 +. x)))
 	   [|sin ti; cos (2.0 *. ti); cos (ti +. tj)|]);
       done;
   done;
-  { Gl.width = image_width;
-    Gl.height = image_height;
-    Gl.format = `rgb;
-    Gl.raw = image }
+  image
 
 let myinit () =
   let ctrlpoints = Raw.of_matrix kind:`double ctrlpoints
   and texpts = Raw.of_matrix kind:`double texpts in
-  Gl.map2 target:`vertex_3 (0.0, 1.0) order:4 (0.0, 1.0) order:4 ctrlpoints;
-  Gl.map2 target:`texture_coord_2 (0.0,1.0) order:2 (0.0,1.0) order:2 texpts;
+  GlMap.map2 target:`vertex_3
+    (0.0, 1.0) order:4 (0.0, 1.0) order:4 ctrlpoints;
+  GlMap.map2 target:`texture_coord_2
+    (0.0,1.0) order:2 (0.0,1.0) order:2 texpts;
   Gl.enable `map2_texture_coord_2;
   Gl.enable `map2_vertex_3;
-  Gl.map_grid2 n:20 range:(0.0,1.0) n:20 range:(0.0,1.0);
+  GlMap.grid2 n:20 range:(0.0,1.0) n:20 range:(0.0,1.0);
   let image = make_image () in
-  Gl.tex_env (`mode `decal);
-  List.iter fun:(Gl.tex_parameter target:`texture_2d)
+  GlTex.env (`mode `decal);
+  List.iter fun:(GlTex.parameter target:`texture_2d)
     [ `wrap_s `repeat;
       `wrap_t `repeat;
       `mag_filter `nearest;
       `min_filter `nearest ];
-  Gl.tex_image2d image;
+  GlTex.image2d image;
   List.iter fun:Gl.enable [`texture_2d;`depth_test;`normalize];
-  Gl.shade_model `flat
+  GlDraw.shade_model `flat
 
 let my_reshape togl =
   let h = Togl.height togl and w = Togl.width togl in
-  Gl.viewport x:0 y:0 :w :h;
-  Gl.matrix_mode `projection;
-  Gl.load_identity ();
+  GlDraw.viewport x:0 y:0 :w :h;
+  GlMat.mode `projection;
+  GlMat.load_identity ();
   let r = float h /. float w in
   if w <= h then
-    Gl.ortho x:(-4.0, 4.0) y:(-4.0 *. r, 4.0 *. r) z:(-4.0, 4.0)
+    GlMat.ortho x:(-4.0, 4.0) y:(-4.0 *. r, 4.0 *. r) z:(-4.0, 4.0)
   else
-    Gl.ortho x:(-4.0 /. r, 4.0 /. r) y:(-4.0, 4.0) z:(-4.0, 4.0);
-  Gl.matrix_mode `modelview;
-  Gl.load_identity ();
-  Gl.rotate angle:(85.0) x:1.0 y:1.0 z:1.0
+    GlMat.ortho x:(-4.0 /. r, 4.0 /. r) y:(-4.0, 4.0) z:(-4.0, 4.0);
+  GlMat.mode `modelview;
+  GlMat.load_identity ();
+  GlMat.rotate angle:(85.0) x:1.0 y:1.0 z:1.0
 
 open Tk
 
@@ -87,10 +89,10 @@ let main () =
   bind togl events:[[],`KeyPress]
     action:(`Set([`KeySymString], fun ev ->
       match ev.ev_KeySymString with
-	"Up" -> Gl.rotate angle:(-5.) z:1.0; display togl
-      |	"Down" -> Gl.rotate angle:(5.) z:1.0; display togl
-      |	"Left" -> Gl.rotate angle:(5.) x:1.0; display togl
-      |	"Right" -> Gl.rotate angle:(-5.) x:1.0; display togl
+	"Up" -> GlMat.rotate angle:(-5.) z:1.0; display togl
+      |	"Down" -> GlMat.rotate angle:(5.) z:1.0; display togl
+      |	"Left" -> GlMat.rotate angle:(5.) x:1.0; display togl
+      |	"Right" -> GlMat.rotate angle:(-5.) x:1.0; display togl
       |	_ -> ()));
   pack [togl] expand:true fill:`Both;
   mainLoop ()
