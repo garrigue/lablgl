@@ -1,4 +1,4 @@
-/* $Id: ml_tk.c,v 1.4 1998-01-12 05:20:03 garrigue Exp $ */
+/* $Id: ml_tk.c,v 1.5 1998-01-14 09:32:39 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -37,7 +37,7 @@ ML_TKenum (tkInitDisplayModePolicy)
 ML_int_bool (tkInitDisplayModeID)
 */
 ML_int4 (tkInitPosition)
-ML_string_bool (tkInitWindow)
+ML_string_int (tkInitWindow)
 ML_void (tkCloseWindow)
 ML_void (tkQuit)
 /* ML_TKenum_bool (tkSetWindowLevel) */

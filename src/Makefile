@@ -69,6 +69,8 @@ ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
 ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
 ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
+gl.cmo: gl.cmi
 glm.cmo: gl.cmi
 aux.cmo: gltk.cmi
-togl.cmo: gl.cmi
+togl.cmi: gl.cmi
+togl.cmo: togl.cmi

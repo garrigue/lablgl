@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.9 1998-01-13 11:07:11 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.10 1998-01-14 09:32:35 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -8,16 +8,18 @@ let _ = Callback.register_exception "glerror" (GLerror "")
 
 (* Plenty of small C wrappers *)
 
+type rgb = float * float * float
+
 external _clear_color :
     red:float -> green:float -> blue:float -> alpha:float -> unit
     = "ml_glClearColor"
-let clear_color :red :green :blue ?:alpha [< 1. >] =
+let clear_color (red, green, blue : rgb) ?:alpha [< 1. >] =
   _clear_color :red :green :blue :alpha
 
 external _color :
     red:float -> green:float -> blue:float -> alpha:float -> unit
     = "ml_glColor4d"
-let color :red :green :blue ?:alpha [< 1. >] =
+let color (red, green, blue : rgb) ?:alpha [< 1. >] =
   _color :red :green :blue :alpha
 
 type buffer_bit = [color depth accum stencil]
@@ -28,12 +30,17 @@ external clear : buffer_bit list -> unit
 external flush : unit -> unit = "ml_glFlush"
 external finish : unit -> unit = "ml_glFinish"
 
-type point = float * float
+type point2 = float * float
+type point3 = float * float * float
+type point4 = float * float * float * float
 
-external rect : point -> point -> unit
+external rect : point2 -> point2 -> unit
     = "ml_glRect"
 external vertex : x:float -> y:float -> ?z:float -> ?w:float -> unit
     = "ml_glVertex"
+let vertex2 (x,y : point2) = vertex :x :y
+and vertex3 (x,y,z : point3) = vertex :x :y :z
+and vertex4 (x,y,z,w : point4) = vertex :x :y :z :w
 
 type begin_enum = [
     points
@@ -78,6 +85,7 @@ external edge_flag : bool -> unit
 external _normal : x:float -> y:float -> z:float -> unit
     = "ml_glNormal3d"
 let normal ?:x [< 0.0 >] ?:y [< 0.0 >] ?:z [< 0.0 >] = _normal :x :y :z
+and normal3d (x,y,z) = _normal :x :y :z
 
 external matrix_mode : [modelview projection texture] -> unit
     = "ml_glMatrixMode"
@@ -116,7 +124,7 @@ let translate ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
   _translate :x :y :z
 and rotate :angle ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
   _rotate :angle :x :y :z
-and scale ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
+and scale ?:x [< 1. >] ?:y [< 1. >] ?:z [< 1. >] =
   _scale :x :y :z
 
 external frustum :
@@ -222,14 +230,13 @@ type coords = { x: float; y: float; z: float; w: float }
 *)
 
 type rgba = float * float * float * float
-type coords = float * float * float * float
 
 type light_param = [
       ambient (rgba)
       diffuse (rgba)
       specular (rgba)
-      position (coords)
-      spot_direction (coords)
+      position (point4)
+      spot_direction (point4)
       spot_exponent (float)
       spot_cutoff (float)
       constant_attenuation (float)
@@ -237,7 +244,7 @@ type light_param = [
       quadratic_attenuation (float)
   ] 
 
-external light : num:int -> param:light_param -> unit
+external light : num:int -> light_param -> unit
     = "ml_glLight"
 
 type light_model_param = [
@@ -258,7 +265,7 @@ type material_param = [
       color_indexes (float * float * float)
   ] 
 
-external material : face:face -> param:material_param -> unit
+external material : face:face -> material_param -> unit
     = "ml_glMaterial"
 
 type depth_func = [
@@ -337,6 +344,99 @@ external call_lists : [byte(string) int(int array)] -> unit
     = "ml_glCallLists"
 external list_base : glist -> unit = "ml_glListBase"
 
+type accum_op = [accum load add mult return]
+external accum : op:accum_op -> float -> unit = "ml_glAccum"
+
+type clampf = float
+
+type alpha_func =
+    [never less equal lequal greater notequal gequal always]
+external alpha_func : alpha_func -> ref:clampf -> unit = "ml_glAlphaFunc"
+
+type bitmap
+external bitmap :
+    width:int -> height:int -> orig:point2 -> move:point2 ->
+    bitmap -> unit
+    = "ml_glBitmap"
+
+external clear_accum : float -> float -> float -> float -> unit
+    = "ml_glClearAccum"
+let clear_accum (r,g,b : rgb) ?:alpha [< 1. >] =
+  clear_accum r g b alpha
+
+external clear_depth : clampf -> unit = "ml_glClearDepth"
+external clear_index : float -> unit = "ml_glClearIndex"
+external clear_stencil : int -> unit = "ml_glClearStencil"
+
+external color_mask : bool -> bool -> bool -> bool -> unit
+    = "ml_glColorMask"
+let color_mask ?:red [< false >] ?:green [< false >] ?:blue [< false >]
+    ?:alpha [< false >] =
+  color_mask red green blue alpha
+
+type color_material = [emission ambient diffuse specular ambient_and_diffuse]
+external color_material : :face -> color_material -> unit
+    = "ml_glColorMaterial"
+
+external copy_pixels :
+    x:int -> y:int -> width:int -> height:int ->
+    type:[color depth stencil] -> unit
+    = "ml_glCopyPixels"
+
+type draw_buffer_mode =
+    [ none front_left front_right back_left back_right
+      front back left right front_and_back aux(int) ] 
+external draw_buffer : draw_buffer_mode -> unit = "ml_glDrawBuffer"
+
+type draw_pixels_format =
+    [ color_index stencil_index depth_component rgba
+      red green blue alpha rgb luminance luminance_alpha ]
+type data =
+    [ byte(string) bitmap(bitmap) int(int array) float(float array) ]
+external draw_pixels :
+      width:int -> height:int ->
+      format:draw_pixels_format -> data -> unit
+      = "ml_glDrawPixels"
+
+external eval_coord1 : float -> unit = "ml_glEvalCoord1d"
+external eval_coord2 : float -> float -> unit = "ml_glEvalCoord1d"
+
+external eval_mesh1 : mode:[point line] -> int -> int -> unit
+    = "ml_glEvalMesh1"
+external eval_mesh2 : mode:[point line] -> int -> int -> int -> int -> unit
+    = "ml_glEvalMesh1"
+
+external eval_point1 : int -> unit = "ml_glEvalPoint1"
+external eval_point2 : int -> int -> unit = "ml_glEvalPoint2"
+
+type hint_target =
+    [fog line_smooth perspective_correction point_smooth polygon_smooth]
+type hint = [fastest nicest dont_care]
+external hint : target:hint_target -> hint -> unit = "ml_glHint"
+
+external index_mask : int -> unit = "ml_glIndexMask"
+external index : float -> unit = "ml_glIndexd"
+external init_names : unit -> unit = "ml_glInitNames"
+external is_enabled : cap -> bool = "ml_glIsEnabled"
+
+external load_name : int -> unit = "ml_glLoadName"
+
+type logic_op =
+    [ clear set copy copy_inverted noop invert And nand Or nor
+      xor equiv and_reverse and_inverted or_reverse or_inverted ]
+external logic_op : logic_op -> unit = "ml_glLogicOp"
+
+type map_target =
+    [ vertex_3 vertex_4 index color_4 normal texture_coord_1 texture_coord_2
+      texture_coord_3 texture_coord_4 ]
+external map1 :
+    target:map_target -> u:(float*float) -> float array array -> unit
+    = "ml_glMap1d"
+external map2 :
+    target:map_target ->
+    u:(float*float) -> v:(float*float) -> float array array -> unit
+    = "ml_glMap1d"
+
 (*
 type component = [
       alpha
@@ -361,13 +461,6 @@ type format = [
   ]
 
 type bitmap
-
-type data = [
-      byte (string)
-      bitmap (bitmap)
-      int (int array)
-      float (float array)
-  ]
 
 external _tex_image_2D :
       level:int -> components:component -> width:int -> height:int ->

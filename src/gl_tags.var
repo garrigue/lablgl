@@ -118,15 +118,8 @@ shininess
 ambient_and_diffuse
 color_indexes
 
-(* glDepthFunc *)
-never
-less
-equal
-lequal
-greater
-notequal
-gequal
-always
+(* glDepthFunc, glAlphaFunc *)
+never less equal lequal greater notequal gequal always
 
 (* glBlendFunc *)
 zero
@@ -146,28 +139,32 @@ src_color
 one_minus_src_color
 
 (* glFog *)
-linear
-exp
-exp2
+linear exp exp2
 
 (* glNewList *)
-compile
-compile_and_execute
+compile compile_and_execute
 
 (* data types *)
-byte
-short
-int
-float
-double -> GL_DOUBLE_EXT
+byte short int float double
+
+(* glAccum *)
+load add mult return
+
+(* glDrawPixels *)
+color_index stencil_index depth_component rgba
+red green blue alpha rgb luminance luminance_alpha
+
+(* glLogicOp *)
+clear set copy copy_inverted noop invert And nand Or nor
+xor equiv and_reverse and_inverted or_reverse or_inverted
 
 $$
 (* glLightModel *)
-(* ambient *)
-local_viewer
-two_side
-mode
-density
-start
-index
-End
+local_viewer two_side mode density start index End
+
+(* glHint *)
+perspective_correction
+
+(* glMap1 *)
+vertex_3 vertex_4 color_4 normal texture_coord_1 texture_coord_2
+texture_coord_3 texture_coord_4

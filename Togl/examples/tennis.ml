@@ -1,4 +1,4 @@
-(* $Id: tennis.ml,v 1.1 1998-01-13 11:07:16 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.2 1998-01-14 09:32:40 garrigue Exp $ *)
 
 let ft x = x *. 0.03
 
@@ -21,10 +21,10 @@ class ball () =
 
   method draw =
     Gl.disable `blend;
-    Gl.color red:1. green:1. blue:0.;
+    Gl.color (1.0, 1.0, 0.0);
     Gl.push_matrix ();
     Gl.translate :x :y :z;
-    Glu.sphere (Glu.new_quadric ()) radius:0.01 slices:8 stacks:8;
+    Glu.sphere radius:0.01 slices:8 stacks:8 (Glu.new_quadric ());
     Gl.pop_matrix ()
 
   method do_tick =
@@ -48,25 +48,25 @@ class view :togl :ball :setup =
   val setup = setup
 
   method draw =
-    togl#make_current;
+    Togl.make_current togl;
     setup ();
 
     (* Sky *)
     Gl.shade_model `smooth;
     Gl.disable `depth_test;
     Gl.begin_block `polygon;
-    Gl.color red:0.0 green:0.0 blue:1.0;
-    Gl.vertex x:2.0 y:(-2.0) z:2.0;
-    Gl.vertex x:2.0 y:2.0 z:2.0;
-    Gl.color red:0.5 green:0.5 blue:1.0;
-    Gl.vertex x:2.0 y:2.0;
-    Gl.vertex x:2.0 y:(-2.0);
+    Gl.color (0.0, 0.0, 1.0);
+    Gl.vertex3 (2.0, -2.0, 2.0);
+    Gl.vertex3 (2.0, 2.0, 2.0);
+    Gl.color (0.5, 0.5, 1.0);
+    Gl.vertex2 (2.0, 2.0);
+    Gl.vertex2 (2.0, -2.0);
     Gl.end_block (); 
    
     Gl.shade_model `flat;
 
     let square (x1, y1) (x2, y2) =
-      List.iter fun:(fun (x,y) -> Gl.vertex :x :y)
+      List.iter fun:Gl.vertex2
 	[ x1, y1;
 	  x2, y1;
 	  x2, y2;
@@ -74,17 +74,17 @@ class view :togl :ball :setup =
     in
     (* Ground *)
     Gl.begin_block `quads;
-    Gl.color red:0.5 green:0.5 blue:0.5;
+    Gl.color (0.5, 0.5, 0.5);
     square (-2.0, 2.0) (2.0, -2.0);
     Gl.end_block ();
 
     (* Court *)
     Gl.begin_block `quads;
-    Gl.color red:0.2 green:0.7 blue:0.2;
+    Gl.color (0.2, 0.7, 0.2);
     square (cl, cw) (-.cl, -.cw);
 
     (* Lines *)
-    Gl.color red:1.0 green:1.0 blue:1.0;
+    Gl.color (1.0, 1.0, 1.0);
     square (-.cl, cw)   (cl, cw -. lw);
     square (-.cl, -.cw)	(cl, -.cw +. lw);
     square (cl, cw)     (cl -. wlw, -. cw);
@@ -101,7 +101,7 @@ class view :togl :ball :setup =
     Gl.blend_func src:`src_alpha dst:`one_minus_src_alpha;
 
     Gl.begin_block `quad_strip;
-    Gl.color red:0.7 green:0.7 blue:0.0 alpha:0.7;
+    Gl.color (0.7, 0.7, 0.0) alpha:0.7;
     List.iter fun:(fun (y,z) -> Gl.vertex x:0.0 :y :z)
       [ cw +. 0.05, 0.0;
 	cw +. 0.05, 0.115;
@@ -113,7 +113,7 @@ class view :togl :ball :setup =
 
     ball#draw;
     
-    togl#swap_buffers;
+    Togl.swap_buffers togl;
     Gl.flush ()
 end
 
@@ -164,13 +164,15 @@ let main () =
     begin fun () ->
       Button.configure start text:(if ball#switch then "Stop" else "Start")
     end;
-  Togl.timer_func ms:500
-    fun:(fun () -> if ball#do_tick then (view3d#draw; view2d#draw));
-  bind top events:[[],`Visibility]
-    action:(`Set([],fun _ -> view3d#draw; view2d#draw));
+  Togl.timer_func ms:50
+    cb:(fun () -> if ball#do_tick then (view3d#draw; view2d#draw));
+  (* bind top events:[[],`Visibility]
+    action:(`Set([],fun _ -> view3d#draw; view2d#draw)); *)
+  Togl.display_func canvas cb:(fun () -> view3d#draw);
+  Togl.display_func court2d cb:(fun () -> view2d#draw);
 
-  pack [court2d#name; coe sx; coe start];
-  pack [canvas#name; coe f1] side:`Left;
+  pack [coe court2d; coe sx; coe start];
+  pack [coe canvas; coe f1] side:`Left;
   pack [f0] expand:true fill:`Both;
   mainLoop ()
 
