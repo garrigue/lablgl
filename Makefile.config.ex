@@ -6,6 +6,10 @@
 
 ##### Adjust these always
 
+# Uncomment if you have the fast ".opt" compilers
+#CAMLC = ocamlc.opt
+#CAMLOPT = ocamlopt.opt
+
 # Where to put the lablgl script
 BINDIR = /usr/local/bin
 
@@ -26,7 +30,7 @@ GLLIBS = -lGL -lGLU
 # The following libraries may be required (try to add them one at a time)
 #GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
 
-# How to index a library after installing (required on MacOSX)
+# How to index a library after installing (ranlib required on MacOSX)
 RANLIB = :
 #RANLIB = ranlib
 

@@ -52,6 +52,12 @@ necessary packages. Otherwise, compile from source.
   d) Install LablGL
 	% make install
 
+If you don't need Tcl/Tk support (using lablglut or lablgtk for instance),
+then (b,c,d) can be replaced by:
+        % make lib
+        % make libopt
+        % make libinstall
+
 With the windows binary distribution, copy bin\lablgl.bat,
 lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
 in the OCaml distribution.
@@ -291,4 +297,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.17 2002-08-02 02:39:41 garrigue Exp $
+$Id: README,v 1.18 2003-01-09 10:13:51 garrigue Exp $

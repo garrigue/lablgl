@@ -5,6 +5,8 @@ LablGL 0.99:
 
 * add support for Tcl/Tk8.4
 
+* allow compiling and installing without Tk
+
 LablGL 0.98:
 ------------
 

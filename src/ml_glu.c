@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.21 2002-07-12 15:48:06 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.22 2003-01-09 10:13:51 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -13,7 +13,7 @@
 #include "glu_tags.h"
 #include "ml_gl.h"
 
-#ifndef GLU_VERSION_1_2
+#if !defined(GLU_VERSION_1_2) && !defined(GLU_TESS_WINDING_RULE)
 #define GLU_TESS_WINDING_RULE
 #define GLU_TESS_WINDING_ODD
 #define GLU_TESS_WINDING_NONZERO

@@ -70,9 +70,13 @@ TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 	$(OPTLINK) -o $@ $(OCAMLINC) -ccopt -L. \
 	    unix.cmxa labltk.cmxa lablgl.cmxa togl.cmxa $<
 
-all: 	var2def$(XE) var2switch$(XE) lablgltop$(XE) lablgl$(XB)
+all: 	lib lablgltop$(XE) lablgl$(XB)
+
+lib:	var2def$(XE) var2switch$(XE) lablgl.cma
 
 opt:	lablgl.cmxa togl.cmxa
+
+libopt: lablgl.cmxa
 
 var2def$(XE): var2def.ml
 	$(LINKER) -pp camlp4o var2def.ml -o $@
@@ -154,8 +158,17 @@ togl_tags.c: togl_tags.var
 glu_tags.c: glu_tags.var
 	./var2switch GLU_ < glu_tags.var > $@
 
-install:
-	@$(MAKE) real-install LIBDIR="$(LIBDIR)"
+install libinstall:
+	@$(MAKE) real-$@ LIBDIR="$(LIBDIR)"
+
+real-libinstall:
+	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
+	cp $(LIBOBJS:.cmo=.cmi) "$(INSTALLDIR)"
+	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
+	cp liblablgl$(XA) lablgl.cma "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) liblablgl$(XA)
+	@if test -f dlllablgl$(XS); then cp dlllablgl$(XS) "$(DLLDIR)"; fi
+	@if test -f lablgl.cmxa; then $(MAKE) libinstallopt LIBDIR="$(LIBDIR)"; fi
 
 real-install:
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
@@ -169,6 +182,10 @@ real-install:
 
 installdll:
 	cp dlllablgl$(XS) dlltogl$(XS) "$(DLLDIR)"
+
+libinstallopt:
+	cp lablgl.cmxa lablgl$(XA) $(LIBOBJS:.cmo=.cmx) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) lablgl$(XA)
 
 installopt:
 	cp lablgl.cmxa lablgl$(XA) togl.cmxa togl$(XA) \
