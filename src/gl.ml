@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.15 1998-01-19 07:29:09 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.16 1998-01-21 03:29:31 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -18,13 +18,12 @@ type point4 = float * float * float * float
 type clampf = float
 type glist = int
 
-type addr
 type gltype = [bitmap byte ubyte short ushort int uint float]
-type 'a rawdata =
-    { kind: 'a; size: int; addr: addr}
-let coerce_bitmap (data : gltype rawdata) : [bitmap] rawdata =
+(*
+let coerce_bitmap (data : #gltype Raw.t) : [bitmap] Raw.t =
   match data with {kind = `bitmap} as bitmap -> bitmap
   | _ -> invalid_arg "Gl.coerce_bitmap"
+*)
 
 type cmp_func = [ never less equal lequal greater notequal gequal always ]
 type face = [front back both]
@@ -102,7 +101,7 @@ type begin_enum =
 external begin_block : begin_enum -> unit = "ml_glBegin"
 external bitmap :
     width:int -> height:int -> orig:point2 -> move:point2 ->
-    [bitmap] rawdata -> unit
+    [bitmap] Raw.t -> unit
     = "ml_glBitmap"
 type sfactor = [
       zero
@@ -190,7 +189,7 @@ type pixels_format =
     [ color_index stencil_index depth_component rgba
       red green blue alpha rgb luminance luminance_alpha ]
 external draw_pixels :
-    width:int -> height:int -> format:pixels_format -> gltype rawdata -> unit
+    width:int -> height:int -> format:pixels_format -> #gltype Raw.t -> unit
     = "ml_glDrawPixels"
 
 external edge_flag : bool -> unit = "ml_glEdgeFlag"
@@ -200,8 +199,9 @@ external eval_coord1 : float -> unit = "ml_glEvalCoord1d"
 external eval_coord2 : float -> float -> unit = "ml_glEvalCoord1d"
 external eval_mesh1 : mode:[point line] -> int -> int -> unit
     = "ml_glEvalMesh1"
-external eval_mesh2 : mode:[point line] -> int -> int -> int -> int -> unit
-    = "ml_glEvalMesh1"
+external eval_mesh2 :
+    mode:[point line fill] -> int -> int -> int -> int -> unit
+    = "ml_glEvalMesh2"
 external eval_point1 : int -> unit = "ml_glEvalPoint1"
 external eval_point2 : int -> int -> unit = "ml_glEvalPoint2"
 
@@ -378,7 +378,7 @@ type read_buffer =
 external read_buffer : read_buffer -> unit = "ml_glReadBuffer"
 external read_pixels :
     x:int -> y:int -> width:int -> height:int ->
-    format:pixels_format -> type:(#gltype as 'a) -> 'a rawdata
+    format:pixels_format -> type:(#gltype as 'a) -> 'a Raw.t
     = "ml_glReadPixels_bc" "ml_glReadPixels"
 external rect : point2 -> point2 -> unit = "ml_glRect"
 external render_mode : [render select feedback] -> int = "ml_glRenderMode"
@@ -389,7 +389,7 @@ let rotate :angle ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
 
 external scale : x:float -> y:float -> z:float -> unit = "ml_glScaled"
 let scale ?:x [< 1. >] ?:y [< 1. >] ?:z [< 1. >] = scale :x :y :z
-external select_buffer : [uint] rawdata -> unit = "ml_glSelectBuffer"
+external select_buffer : [uint] Raw.t -> unit = "ml_glSelectBuffer"
 external shade_model : [flat smooth] -> unit = "ml_glShadeModel"
 external stencil_func : cmp_func -> ref:int -> mask:int -> unit
     = "ml_glStencilFunc"
@@ -433,14 +433,14 @@ type tex_format =
       red green blue alpha rgb luminance luminance_alpha ]
 external tex_image1d :
     proxy:bool -> level:int -> internal:int ->
-    width:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+    width:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
 let tex_image1d :proxy :level :internal :width :border :format data =
   if width mod 2 <> 0 then raise (GLerror "Gl.tex_image1d : bad width");
   tex_image1d :proxy :level :internal :width :border :format data
 external tex_image2d :
     proxy:bool -> level:int -> internal:int -> width:int ->
-    height:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+    height:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
 let tex_image2d :proxy :level :internal :width :height :border :format data =
   if width mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad width");

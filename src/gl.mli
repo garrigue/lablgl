@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.9 1998-01-19 07:29:10 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.10 1998-01-21 03:29:32 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -12,10 +12,10 @@ type point4 = float * float * float * float
 type clampf = float
 type glist = int
 
-type addr
 type gltype = [bitmap byte float int short ubyte uint ushort]
-type 'a rawdata
-val coerce_bitmap : gltype rawdata -> [bitmap] rawdata
+(*
+val coerce_bitmap : #gltype Raw.t -> [bitmap] Raw.t
+*)
 
 type cmp_func = [always equal gequal greater lequal less never notequal]
 type face = [back both front]
@@ -41,7 +41,7 @@ type begin_enum =
 external begin_block : begin_enum -> unit = "ml_glBegin"
 external bitmap :
   width:int ->
-  height:int -> orig:point2 -> move:point2 -> [bitmap] rawdata -> unit
+  height:int -> orig:point2 -> move:point2 -> [bitmap] Raw.t -> unit
   = "ml_glBitmap"
 type sfactor =
   [constant_alpha_ext constant_color_ext dst_alpha dst_color one
@@ -87,7 +87,7 @@ type pixels_format =
   [alpha blue color_index depth_component green luminance luminance_alpha 
    red rgb rgba stencil_index]
 external draw_pixels :
-  width:int -> height:int -> format:pixels_format -> gltype rawdata -> unit
+  width:int -> height:int -> format:pixels_format -> #gltype Raw.t -> unit
   = "ml_glDrawPixels"
 
 external edge_flag : bool -> unit = "ml_glEdgeFlag"
@@ -97,8 +97,9 @@ external eval_coord1 : float -> unit = "ml_glEvalCoord1d"
 external eval_coord2 : float -> float -> unit = "ml_glEvalCoord1d"
 external eval_mesh1 : mode:[line point] -> int -> int -> unit
   = "ml_glEvalMesh1"
-external eval_mesh2 : mode:[line point] -> int -> int -> int -> int -> unit
-  = "ml_glEvalMesh1"
+external eval_mesh2 :
+  mode:[line point fill] -> int -> int -> int -> int -> unit
+  = "ml_glEvalMesh2"
 external eval_point1 : int -> unit = "ml_glEvalPoint1"
 external eval_point2 : int -> int -> unit = "ml_glEvalPoint2"
 
@@ -214,14 +215,14 @@ external read_pixels :
   x:int ->
   y:int ->
   width:int ->
-  height:int -> format:pixels_format -> type:#gltype -> #gltype rawdata
+  height:int -> format:pixels_format -> type:(#gltype as 'a) -> 'a Raw.t
   = "ml_glReadPixels_bc" "ml_glReadPixels"
 external rect : point2 -> point2 -> unit = "ml_glRect"
 external render_mode : [feedback render select] -> int = "ml_glRenderMode"
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit
 
 val scale : ?x:float -> ?y:float -> ?z:float -> unit
-external select_buffer : [uint] rawdata -> unit = "ml_glSelectBuffer"
+external select_buffer : [uint] Raw.t -> unit = "ml_glSelectBuffer"
 external shade_model : [flat smooth] -> unit = "ml_glShadeModel"
 external stencil_func : cmp_func -> ref:int -> mask:int -> unit
   = "ml_glStencilFunc"
@@ -249,13 +250,13 @@ val tex_image1d :
   proxy:bool ->
   level:int ->
   internal:int ->
-  width:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+  width:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
 val tex_image2d :
   proxy:bool ->
   level:int ->
   internal:int ->
   width:int ->
-  height:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+  height:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
 type tex_filter =
   [linear linear_mipmap_linear linear_mipmap_nearest nearest
    nearest_mipmap_linear nearest_mipmap_nearest]
