@@ -1,4 +1,4 @@
-(* $Id: glMisc.ml,v 1.3 2000-04-12 07:40:24 garrigue Exp $ *)
+(* $Id: glMisc.ml,v 1.4 2001-02-22 05:01:35 garrigue Exp $ *)
 
 external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
@@ -29,4 +29,5 @@ external push_attrib : attrib list -> unit = "ml_glPushAttrib"
 
 external pass_through : float -> unit = "ml_glPassThrough"
 external render_mode : [`render|`select|`feedback] -> int = "ml_glRenderMode"
-external select_buffer : [`uint] Raw.t -> unit = "ml_glSelectBuffer"
+external select_buffer : int -> [`uint] Raw.t -> unit = "ml_glSelectBuffer"
+let select_buffer raw = select_buffer (Raw.length raw) raw

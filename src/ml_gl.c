@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.25 2001-02-20 01:05:02 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.26 2001-02-22 05:01:35 garrigue Exp $ */
 
 #include <strings.h>
 #include <GL/gl.h>
@@ -469,7 +469,7 @@ ML_4 (glRotated, Double_val, Double_val, Double_val, Double_val)
 ML_3 (glScaled, Double_val, Double_val, Double_val)
 
 ML_4 (glScissor, Int_val, Int_val, Int_val, Int_val)
-ML_1 (glSelectBuffer, Type_void_raw)
+ML_2 (glSelectBuffer, Int_val, (GLuint*)Addr_raw)
 ML_1 (glShadeModel, GLenum_val)
 ML_3 (glStencilFunc, GLenum_val, Int_val, Int_val)
 ML_1 (glStencilMask, Int_val)
