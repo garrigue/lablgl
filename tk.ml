@@ -1,4 +1,4 @@
-(* $Id: tk.ml,v 1.2 1998-01-09 13:12:38 garrigue Exp $ *)
+(* $Id: tk.ml,v 1.3 1998-01-12 02:45:02 garrigue Exp $ *)
 
 exception TKerror of string
 
@@ -114,6 +114,8 @@ let mouse_up_func =
 external _mouse_move_func : unit -> unit = "ml_tkMouseMoveFunc"
 let mouse_move_func =
   register_func name:"mouse_move_func" init:mouse_func call:_mouse_move_func
+
+external no_changes : unit -> unit = "ml_tkNoChanges"
 
 external _idle_func : unit -> unit = "ml_tkIdleFunc"
 let idle_func =

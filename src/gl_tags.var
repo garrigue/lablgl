@@ -150,6 +150,10 @@ linear
 exp
 exp2
 
+(* glNewList *)
+compile
+compile_and_execute
+
 $$
 (* glLightModel *)
 (* ambient *)

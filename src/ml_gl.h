@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.5 1998-01-09 13:12:33 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.6 1998-01-12 02:45:00 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -99,5 +99,9 @@ value ml_##cname (value s) \
 #define ML_void_int(cname) \
 value ml_##cname (value unit) \
 { return Val_int (cname ()); }
+
+#define ML_int_int(cname) \
+value ml_##cname (value i) \
+{ return Val_int (cname (Int_val (i))); }
 
 #endif

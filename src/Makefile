@@ -3,6 +3,10 @@ LIBDIR=/usr/local/lib/olabl
 COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
+CINCLUDES=-ccopt "-I/usr/local/include"
+GLLIBS=	-ccopt "-L/usr/local/lib" -cclib -lMesaaux -cclib -lMesatk \
+	-cclib -lMesaGL -cclib -lMesaGLU
+XLIBS= -ccopt "-L/usr/X11R6/lib" -cclib -lX11 -cclib -lXext
 
 MLOBJS =	gl.cmo		tk.cmo		aux.cmo		glm.cmo
 COBJS =		ml_gl.o		ml_tk.o		ml_aux.o
@@ -18,12 +22,12 @@ COBJS =		ml_gl.o		ml_tk.o		ml_aux.o
 	$(COMPILER) $(INCLUDES) $<
 
 .c.o:
-	$(COMPILER) $(INCLUDES) $<
+	$(COMPILER) $(CINCLUDES) $<
 
 .var.h:
 	var2def < $< > $@
 
-all: 	var2def	var2switch lablgl.cma liblablgl.a
+all: 	var2def	var2switch lablgl
 
 var2def: var2def.cmo
 	$(LINKER) var2def.cmo -o $@
@@ -39,8 +43,7 @@ liblablgl.a: $(COBJS)
 
 lablgl: lablgl.cma liblablgl.a
 	olablmktop -custom -o lablgl unix.cma lablgl.cma -ccopt -L. \
-		-cclib -llablgl -cclib -lunix -cclib -laux \
-		-cclib -lGL -cclib -lGLU -cclib -lX11
+		-cclib -llablgl -cclib -lunix $(GLLIBS) $(XLIBS)
 
 gl_tags.c: gl_tags.var
 	./var2switch GL_ < gl_tags.var > $@

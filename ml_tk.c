@@ -1,4 +1,4 @@
-/* $Id: ml_tk.c,v 1.2 1998-01-09 13:12:33 garrigue Exp $ */
+/* $Id: ml_tk.c,v 1.3 1998-01-12 02:45:01 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -89,6 +89,14 @@ value ml_tkDisplayFunc(value unit)  /* ML */
     return Val_unit;
 }
 
+static GLenum changes = GL_TRUE;
+
+value ml_tkNoChanges (value unit)  /* ML */
+{
+    changes = GL_FALSE;
+    return Val_unit;
+}
+
 static GLenum key_func(int key, GLenum mode)
 {
     static value * key_func = NULL;
@@ -125,9 +133,10 @@ static GLenum key_func(int key, GLenum mode)
 	Field(ml_mode,0) = MLTAG_control;
 	Field(ml_mode,1) = tmp;
     }
+    changes = GL_TRUE;
     callback2 (Field(*key_func, 0), ml_key, ml_mode);
     End_roots ();
-    return GL_TRUE;
+    return changes;
 }
 
 value ml_tkKeyDownFunc(value unit)  /* ML */
@@ -163,9 +172,10 @@ static GLenum mouse_down_func(int x, int y, GLenum button)
     }
     if (mouse_down_func == NULL)
 	mouse_down_func = caml_named_value ("mouse_down_func");
+    changes = GL_TRUE;
     callback3 (Field(*mouse_down_func, 0), Val_int(x), Val_int(y), ml_button);
     End_roots ();
-    return GL_TRUE;
+    return changes;
 }
 
 value ml_tkMouseDownFunc(value unit)  /* ML */
@@ -201,9 +211,10 @@ static GLenum mouse_up_func(int x, int y, GLenum button)
     }
     if (mouse_up_func == NULL)
 	mouse_up_func = caml_named_value ("mouse_up_func");
+    changes = GL_TRUE;
     callback3 (Field(*mouse_up_func, 0), Val_int(x), Val_int(y), ml_button);
     End_roots();
-    return GL_TRUE;
+    return changes;
 }
 
 value ml_tkMouseUpFunc(value unit)  /* ML */
@@ -239,9 +250,10 @@ static GLenum mouse_move_func(int x, int y, GLenum button)
     }
     if (mouse_move_func == NULL)
 	mouse_move_func = caml_named_value ("mouse_move_func");
+    changes = GL_TRUE;
     callback3 (Field(*mouse_move_func, 0), Val_int(x), Val_int(y), ml_button);
     End_roots();
-    return GL_TRUE;
+    return changes;
 }
 
 value ml_tkMouseMoveFunc(value unit)  /* ML */
@@ -300,9 +312,9 @@ value ml_tkSetRGBMap (value array)  /* ML */
     size = Wosize_val (array);
     rgb = (float *) calloc (3 * size, sizeof(float));
     for (i = 0; i < size; i++) {
-	*(rgb+i) = Float_val (Field(Field(array, i), 0));
-	*(rgb+size+i) = Float_val (Field(Field(array, i), 1));
-	*(rgb+size*2+i) = Float_val (Field(Field(array, i), 2));
+	rgb[i] = Float_val (Field(Field(array, i), 0));
+	rgb[size+i] = Float_val (Field(Field(array, i), 1));
+	rgb[size*2+i] = Float_val (Field(Field(array, i), 2));
     }
     tkSetRGBMap (size, rgb);
     free (rgb);
@@ -318,9 +330,9 @@ value ml_tkSetOverlayMap (value array)
     size = Wosize_val (array);
     rgb = (float *) calloc (3 * size, sizeof(float));
     for (i = 0; i < size; i++) {
-	*(rgb+i) = Float_val (Field(Field(array, i), 0));
-	*(rgb+size+i) = Float_val (Field(Field(array, i), 1));
-	*(rgb+size*2+i) = Float_val (Field(Field(array, i), 2));
+	rgb[i] = Float_val (Field(Field(array, i), 0));
+	rgb[size+i] = Float_val (Field(Field(array, i), 1));
+	rgb[size*2+i] = Float_val (Field(Field(array, i), 2));
     }
     tkSetOverlayMap (size, rgb);
     free (rgb);

@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.7 1998-01-09 13:44:03 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.8 1998-01-12 02:44:59 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -276,3 +276,17 @@ value ml_glFog (value param) /* ML */
     }
     return Val_unit;
 }
+
+
+ML_int_bool (glIsList)
+ML_int2 (glDeleteLists)
+ML_int_int (glGenLists)
+
+value ml_glNewList (value glist, value mode)  /* ML */
+{
+    glNewList (Int_val (glist), GLenum_val (mode));
+    return Val_unit;
+}
+
+ML_void (glEndList)
+ML_int (glCallList)

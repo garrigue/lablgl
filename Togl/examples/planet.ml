@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.2 1998-01-09 13:44:04 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.3 1998-01-12 02:45:01 garrigue Exp $ *)
 
 class planet () as self =
   val mutable year = 0
@@ -50,12 +50,14 @@ let myinit () =
   Gl.light num:0 param:(`diffuse light_diffuse);
   Gl.light num:0 param:(`specular light_specular);
   Gl.light num:0 param:(`position light_position);
-  
-  Gl.depth_func `less;
-  List.iter fun:Gl.enable [`lighting; `light0; `depth_test; `fog];
+(*  
+  Gl.enable `fog;
   Gl.fog (`mode `exp);
   Gl.fog (`density 0.1);
-  Gl.fog (`color (0.3,0.3,0.3,1.0))
+  Gl.fog (`color (0.3,0.3,0.3,1.0));
+*)
+  Gl.depth_func `less;
+  List.iter fun:Gl.enable [`lighting; `light0; `depth_test]
 (*  Gl.shade_model `flat *)
 
 

@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.7 1998-01-09 13:44:02 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.8 1998-01-12 02:44:58 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -75,8 +75,9 @@ external polygon_stipple : mask:string -> unit
 external edge_flag : bool -> unit
     = "ml_glEdgeFlag"
 
-external normal : x:float -> y:float -> z:float -> unit
+external _normal : x:float -> y:float -> z:float -> unit
     = "ml_glNormal3d"
+let normal ?:x [< 0.0 >] ?:y [< 0.0 >] ?:z [< 0.0 >] = _normal :x :y :z
 
 external matrix_mode : [modelview projection texture] -> unit
     = "ml_glMatrixMode"
@@ -113,7 +114,7 @@ external _scale : x:float -> y:float -> z:float -> unit
 
 let translate ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
   _translate :x :y :z
-and rotate ?:angle [< 0. >] ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
+and rotate :angle ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
   _rotate :angle :x :y :z
 and scale ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
   _scale :x :y :z
@@ -332,3 +333,21 @@ type fog_param = [
   ]
 
 external fog : fog_param -> unit = "ml_glFog"
+
+type glist = int
+
+let next_list : glist -> glist = succ
+
+external is_list : glist -> bool = "ml_glIsList"
+external gen_lists : int -> glist = "ml_glGenLists"
+external delete_lists : from:glist -> range:int -> unit = "ml_glDeleteLists"
+external new_list :
+    glist -> mode:[compile compile_and_execute] -> unit
+    = "ml_glNewList"
+external end_list : unit -> unit = "ml_glEndList"
+external call_list : glist -> unit = "ml_glCallList"
+
+(*
+external call_lists
+external list_base
+*)
