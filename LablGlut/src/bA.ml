@@ -2,6 +2,11 @@ open Bigarray
 
 let i32toi = Int32.to_int
 
+let ba_make1 kind n = Array1.create kind c_layout n
+let ba_make2 kind m n = Array2.create kind c_layout m n
+let ba_make3 kind m n p = Array3.create kind c_layout m n p
+let ba_make = ba_make1
+
 let init1 m f kind = 
     let ba = Array1.create kind c_layout m in
     for i = 0 to m-1 do ba.{i} <- f i done;
@@ -26,6 +31,8 @@ let init3 m n p f kind =
         done
     done;
     ba
+
+let init = init1
 
 (* map a big array to an array, using a function *)
 let amap1 f ba =
