@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.5 1998-01-08 09:19:11 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.6 1998-01-09 09:11:38 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -104,12 +104,19 @@ let mult_matrix m =
     end;
   _mult_matrix m
 
-external translate : x:float -> y:float -> z:float -> unit
+external _translate : x:float -> y:float -> z:float -> unit
     = "ml_glTranslated"
-external rotate : angle:float -> x:float -> y:float -> z:float -> unit
+external _rotate : angle:float -> x:float -> y:float -> z:float -> unit
     = "ml_glRotated"
-external scale : x:float -> y:float -> z:float -> unit
+external _scale : x:float -> y:float -> z:float -> unit
     = "ml_glScaled"
+
+let translate ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
+  _translate :x :y :z
+and rotate ?:angle [< 0. >] ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
+  _rotate :angle :x :y :z
+and scale ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
+  _scale :x :y :z
 
 external look_at :
     eye:(float * float * float) ->

@@ -14,15 +14,13 @@ depth
 stencil
 aux
 
-
-left -> AUX_LEFTBUTTON
-middle -> AUX_MIDDLEBUTTON
-right -> AUX_RIGHTBUTTON
-
 return
 escape
 space
+left
+right
 up
 down
 $$
 char
+middle

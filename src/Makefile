@@ -4,7 +4,7 @@ COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
 
-MLOBJS =	gl.cmo		aux.cmo		glm.cmo
+MLOBJS =	gl.cmo		tk.cmo		aux.cmo		glm.cmo
 COBJS =		ml_gl.o		ml_aux.o
 
 # Default rules
