@@ -57,11 +57,11 @@ var2switch: var2switch.cmo
 	$(LINKER) var2switch.cmo -o $@
 
 lablgl.cma: $(LIBOBJS) Makefile.config
-	$(LIBRARIAN) -o lablgl.cma $(LIBOBJS) \
+	$(LIBRARIAN) -custom -o lablgl.cma $(LIBOBJS) \
 		-cclib "-llablgl $(OTHERLIBS)"
 
 lablgl.cmxa: $(OPTOBJS) Makefile.config
-	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS) \
+	$(OPTLIB) -custom -o lablgl.cmxa $(OPTOBJS) \
 		-cclib "-llablgl $(OTHERLIBS)"
 
 liblablgl.a: $(COBJS)
