@@ -1,3 +1,5 @@
+(* GLenum *)
+
 color
 depth
 accum
@@ -12,3 +14,14 @@ line_loop
 triangle_strip
 triangle_fan
 quad_strip     
+
+front
+back
+both -> GL_FRONT_AND_BACK
+
+point
+line
+fill
+
+cw
+ccw

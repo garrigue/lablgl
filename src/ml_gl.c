@@ -1,15 +1,22 @@
-/* $Id: ml_gl.c,v 1.1 1997-12-26 02:50:28 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.2 1998-01-05 06:32:45 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
+#include <caml/callback.h>
 #include "variants.h"
+#include "ml_gl.h"
 
-value ml_glClearColor(value red, value green, value blue, value alpha)   /* ML */
+static void raise_gl (char *errmsg) Noreturn;
+
+static void raise_gl(char *errmsg)
 {
-    glClearColor(Double_val(red), Double_val(green),
-		 Double_val(blue), Double_val(alpha));
-    return Val_unit;
+  static value * gl_exn = NULL;
+  if (gl_exn == NULL)
+    gl_exn = caml_named_value("glerror");
+  raise_with_string(*gl_exn, errmsg);
 }
+
+ML_double4(glClearColor)
 
 value ml_glClear(value bit_list)  /* ML */
 {
@@ -32,12 +39,8 @@ value ml_glClear(value bit_list)  /* ML */
     return Val_unit;
 }
 
-#define ML_simple(cname) \
-value ml_##cname (value unit) \
-{ cname(); return Val_unit; }
-
-ML_simple(glFlush)
-ML_simple(glFinish)
+ML_void(glFlush)
+ML_void(glFinish)
 
 value ml_glRect(value p1, value p2)  /* ML */
 {
@@ -58,3 +61,44 @@ value ml_glVertex(value x, value y, value z, value w)  /* ML */
 		    Double_val(Field(w, 0)));
     return Val_unit;
 }
+
+GLenum ml_glTag(value tag)
+{
+    switch(tag)
+    {
+#include "variants.c"
+    }
+    Assert(0);
+    raise_gl("Unknown tag");
+}
+
+value ml_glBegin(value mode)  /* ML */
+{
+    glBegin (ml_glTag (mode));
+    return Val_unit;
+}
+
+ML_void(glEnd)
+
+ML_float(glPointSize)
+ML_float(glLineWidth)
+
+value ml_glLineStipple(value factor, value pattern)  /* ML */
+{
+    glLineStipple(Int_val(factor), Int_val(pattern));
+    return Val_unit;
+}
+
+value ml_glPolygonMode(value face, value mode)  /* ML */
+{
+    glPolygonMode(ml_glTag(face), ml_glTag(mode));
+    return Val_unit;
+}
+
+ML_enum(glFrontFace)
+ML_enum(glCullFace)
+
+ML_string(glPolygonStipple)
+
+ML_bool(glEdgeFlag)
+ML_double3(glNormal)

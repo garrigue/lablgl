@@ -1,4 +1,12 @@
-(* $Id: gl.ml,v 1.1 1997-12-26 02:50:27 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.2 1998-01-05 06:32:42 garrigue Exp $ *)
+
+(* Register an exception *)
+
+exception GLerror of string
+
+let _ = Callback.register_exception "glerror" (GLerror "")
+
+(* Plenty of small C wrappers *)
 
 external glClearColor : float -> float -> float -> float -> unit
     = "ml_glClearColor"
@@ -19,7 +27,7 @@ type point = float * float
 
 external gl_rect : point -> point -> unit
     = "ml_glRect"
-external gl_vertex : x:float -> y:float -> ?z:float -> ?w:float 
+external gl_vertex : x:float -> y:float -> ?z:float -> ?w:float -> unit
     = "ml_glVertex"
 
 type gl_begin_enum = [
