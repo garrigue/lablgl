@@ -9,10 +9,13 @@ indirect
 accum
 alpha
 depth
+(*
 overlay
 underlay
+*)
 stencil
 
+(*
 use_id
 exact_match
 minimum_criteria
@@ -21,6 +24,7 @@ x_display
 x_window
 x_screen
 context
+*)
 
 leftbutton
 rightbutton
@@ -37,3 +41,4 @@ up
 down
 $$
 char
+middle

@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.4 1998-01-08 09:19:15 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.5 1998-01-09 13:12:33 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -19,6 +19,10 @@ value ml_##cname (value tag) \
 #define ML_GLenum2(cname) \
 value ml_##cname (value tag1, value tag2) \
 { cname (GLenum_val(tag1), GLenum_val(tag2)); return Val_unit; }
+
+#define ML_TKenum(cname) \
+value ml_##cname (value tag) \
+{ cname (TKenum_val(tag)); return Val_unit; }
 
 #define ML_int(cname) \
 value ml_##cname (value dbl) \
@@ -71,5 +75,29 @@ value ml_##cname (value bool) \
 { if (bool == Val_int(0)) cname(GL_FALSE); \
   else cname(GL_TRUE); \
   return Val_unit; }
+
+#define ML_void_bool(cname) \
+value ml_##cname (value unit) \
+{ if (cname() == GL_TRUE) return Val_true; \
+  else return Val_false; }
+
+#define ML_int_bool(cname) \
+value ml_##cname (value i) \
+{ if (cname(Int_val(i)) == GL_TRUE) return Val_true; \
+  else return Val_false; }
+
+#define ML_string_bool(cname) \
+value ml_##cname (value s) \
+{ if (cname(String_val(s)) == GL_TRUE) return Val_true; \
+  else return Val_false; }
+
+#define ML_TKenum_bool(cname) \
+value ml_##cname (value s) \
+{ if (cname(TKenum_val(s)) == GL_TRUE) return Val_true; \
+  else return Val_false; }
+
+#define ML_void_int(cname) \
+value ml_##cname (value unit) \
+{ return Val_int (cname ()); }
 
 #endif

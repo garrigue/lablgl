@@ -5,7 +5,7 @@ LIBRARIAN=olablc -a
 LINKER=olablc
 
 MLOBJS =	gl.cmo		tk.cmo		aux.cmo		glm.cmo
-COBJS =		ml_gl.o		ml_aux.o
+COBJS =		ml_gl.o		ml_tk.o		ml_aux.o
 
 # Default rules
 
@@ -45,12 +45,14 @@ lablgl: lablgl.cma liblablgl.a
 gl_tags.c: gl_tags.var
 	./var2switch GL_ < gl_tags.var > $@
 
-aux_tags.c: aux_tags.var
-	./var2switch AUX_ < aux_tags.var > $@
+tk_tags.c: tk_tags.var
+	./var2switch TK_ < tk_tags.var > $@
 
 clean:
-	rm -f *.cm? *.o gl_tags.[ch] aux_tags.[ch] *~ #*
+	rm -f *.cm? *.o gl_tags.[ch] tk_tags.[ch] *~ #*
 
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c
-ml_aux.o: ml_gl.h aux_tags.h aux_tags.c
+ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
+ml_aux.o: ml_gl.h
 glm.cmo: gl.cmi
+aux.cmo: tk.cmi

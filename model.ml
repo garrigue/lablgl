@@ -1,4 +1,4 @@
-(* $Id: model.ml,v 1.1 1998-01-07 08:52:33 garrigue Exp $ *)
+(* $Id: model.ml,v 1.2 1998-01-09 13:12:34 garrigue Exp $ *)
 
 let draw_triangle () =
   Glm.block mode:`line_loop
@@ -47,7 +47,7 @@ let my_reshape :w :h =
   Gl.matrix_mode `modelview
 
 let main () =
-  Aux.init_display_mode number:`single color:`rgb;
+  Aux.init_display_mode [`single;`rgb];
   Aux.init_position x:0 y:0 w:500 h:500;
   Aux.init_window title:"Model";
   my_init ();

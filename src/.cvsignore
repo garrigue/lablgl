@@ -1,7 +1,7 @@
 var2def
 gl_tags.h
-aux_tags.h
+tk_tags.h
 gl_tags.c
-aux_tags.c
+tk_tags.c
 var2switch
 lablgl

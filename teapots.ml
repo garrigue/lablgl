@@ -1,4 +1,4 @@
-(* $Id: teapots.ml,v 1.1 1998-01-08 09:19:18 garrigue Exp $ *)
+(* $Id: teapots.ml,v 1.2 1998-01-09 13:12:38 garrigue Exp $ *)
 
 let myinit () =
   let ambient = 0.0, 0.0, 0.0, 1.0
@@ -112,7 +112,7 @@ let my_reshape :w :h =
  *  RGBA display mode, and handle input events.
  *)
 let main () =
-    Aux.init_display_mode number:`single color:`rgb buffer:[`depth];
+    Aux.init_display_mode [`single;`rgb;`depth];
     Aux.init_position x:0 y:0 w:500 h:500;
     Aux.init_window title:"Teapots";
     myinit ();

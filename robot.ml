@@ -1,16 +1,16 @@
-(* $Id: robot.ml,v 1.1 1998-01-09 09:11:39 garrigue Exp $ *)
+(* $Id: robot.ml,v 1.2 1998-01-09 13:12:35 garrigue Exp $ *)
 
 class robot () =
   val mutable shoulder = 0
   val mutable elbow = 0
 
-  method elbow_add () =
+  method elbow_add =
     elbow <- (elbow+5) mod 360
-  method elbow_subtract () =
+  method elbow_subtract =
     elbow <- (elbow-5) mod 360
-  method shoulder_add () =
+  method shoulder_add =
     shoulder <- (shoulder+5) mod 360
-  method shoulder_subtract () =
+  method shoulder_subtract =
     shoulder <- (shoulder-5) mod 360
 
   method display () =
@@ -56,12 +56,15 @@ let main () =
   myinit ();
 
   let robot = new robot () in
-  List.iter fun:(fun (key,func) -> Aux.key_func :key fun:func)
-    [ `left, robot#shoulder_subtract;
-      `right, robot#shoulder_add;
-      `up, robot#elbow_add;
-      `down, robot#elbow_subtract ];
-    Aux.reshape_func my_reshape;
-    Aux.main_loop display:(robot#display)
+  Tk.key_down_func
+    (fun :key :mode ->
+      match key with
+	`left ->  robot#shoulder_subtract
+      |	`right -> robot#shoulder_add
+      |	`up -> robot#elbow_add
+      |	`down -> robot#elbow_subtract
+      |	_ -> ());
+  Aux.reshape_func my_reshape;
+  Aux.main_loop display:(robot#display)
 
 let _ = Printexc.print main ()

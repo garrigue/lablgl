@@ -1,6 +1,7 @@
-(* $Id: sphere.ml,v 1.2 1998-01-08 09:19:17 garrigue Exp $ *)
+(* $Id: sphere.ml,v 1.3 1998-01-09 13:12:37 garrigue Exp $ *)
 
 let display () =
+  Gl.clear_color red:0.0 green:0.0 blue:0.0;
   Gl.clear [`color];
   Gl.color red:1. green:1. blue:1.;
   Gl.push_matrix ();

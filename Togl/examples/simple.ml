@@ -1,7 +1,7 @@
-(* $Id: simple.ml,v 1.1 1998-01-07 08:52:34 garrigue Exp $ *)
+(* $Id: simple.ml,v 1.2 1998-01-09 13:12:36 garrigue Exp $ *)
 
 let main () =
-  Aux.init_display_mode color:`rgba number:`single buffer:[`depth];
+  Aux.init_display_mode [`rgb;`single;`depth];
   Aux.init_position x:0 y:0 w:500 h:500;
   Aux.init_window title:"LablGL";
   Gl.clear_color red:0. green:0. blue:0. alpha:0.;

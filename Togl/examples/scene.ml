@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.1 1998-01-08 09:19:16 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.2 1998-01-09 13:12:36 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -61,7 +61,7 @@ let my_reshape :w :h =
  *  RGBA display mode, and handle input events.
  *)
 let main () =
-    Aux.init_display_mode number:`single color:`rgb buffer:[`depth];
+    Aux.init_display_mode [`single;`rgb;`depth];
     Aux.init_position x:0 y:0 w:500 h:500;
     Aux.init_window title:"Scene";
     myinit ();

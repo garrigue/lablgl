@@ -1,15 +1,16 @@
-(* $Id: tk.ml,v 1.1 1998-01-09 09:11:40 garrigue Exp $ *)
+(* $Id: tk.ml,v 1.2 1998-01-09 13:12:38 garrigue Exp $ *)
 
 exception TKerror of string
 
+(*
 external _init_display : unit -> bool = "ml_tkInitDisplay"
 let init_display () =
   if _init_display () then ()
   else raise (TKerror "init_display")
+*)
 
 type display_mode = [
       rgb
-      rgba
       index
       single
       direct
@@ -17,12 +18,14 @@ type display_mode = [
       double
       depth
       accum
+      (* overlay underlay *)
       stencil
   ]
 
 external init_display_mode : display_mode list -> unit
     = "ml_tkInitDisplayMode"
 
+(*
 type display_policy = [use_id exact_match minimum_criteria]
 
 external init_display_mode_policy : display_policy -> unit
@@ -33,6 +36,7 @@ external _init_display_mode_id : int -> bool =
 let init_display_mode_id id =
   if _init_display_mode_id id then ()
   else raise (TKerror "init_display_mode_id")
+*)
 
 external init_position : x:int -> y:int -> w:int -> h:int -> unit
     = "ml_tkInitPosition"
@@ -45,10 +49,12 @@ let init_window :title =
 external close_window : unit -> unit = "ml_tkCloseWindow"
 external quit : unit -> unit = "ml_tkQuit"
 
+(*
 external _set_window_level : display_mode -> bool = "ml_tkSetWindowLevel"
 let set_window_level mode =
   if _set_window_level mode then ()
   else raise (TKerror "set_window_level")
+*)
 
 external swap_buffers : unit -> unit = "ml_tkSwapBuffers"
 
@@ -91,7 +97,7 @@ type key_mode = [shift control]
 external _key_down_func : unit -> unit = "ml_tkKeyDownFunc"
 let key_down_func =
   register_func name:"key_down_func" call:_key_down_func 
-    init:(fun key:(_ : key_desc) mode:(_ : key_mode) -> ())
+    init:(fun key:(_ : key_desc) mode:(_ : key_mode list) -> ())
 
 type button = [left middle right]
 
@@ -125,12 +131,14 @@ type sys_info = [
 
 (* external get_system : sys_info -> various *)
 
+(*
 external get_display_mode_policy : unit -> display_policy
     = "ml_tkGetDisplayModePolicy"
 external get_display_mode_id : unit -> int
     = "ml_tkGetDisplayModeID"
 external get_display_mode : unit -> display_mode
     = "ml_tkGetDisplayMode"
+*)
 
 external set_one_color :
     int -> red:float -> green:float -> blue:float -> unit
@@ -140,6 +148,8 @@ external set_fog_ramp : density:int -> start:int -> unit
 external set_grey_ramp : unit -> unit = "ml_tkSetGreyRamp"
 external set_rgb_map : (float * float * float) array -> unit
     = "ml_tkSetRGBMap"
+
+(*
 external set_overlay_map : (float * float * float) array -> unit
     = "ml_tkSetOverlayMap"
 
@@ -179,3 +189,4 @@ external wire_cone : radius:float -> height:float -> unit
     = "ml_tkWireCone"
 external solid_cone : radius:float -> height:float -> unit
     = "ml_tkSolidCone"
+*)
