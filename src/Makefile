@@ -50,11 +50,11 @@ all: 	var2def	var2switch lablgltop lablgl
 
 opt:	lablgl.cmxa togl.cmxa
 
-var2def: var2def.cmo
-	$(LINKER) var2def.cmo -o $@
+var2def: var2def.ml
+	$(LINKER) -pp camlp4o var2def.ml -o $@
 
-var2switch: var2switch.cmo
-	$(LINKER) var2switch.cmo -o $@
+var2switch: var2switch.ml
+	$(LINKER) -pp camlp4o var2switch.ml -o $@
 
 lablgl.cma: $(LIBOBJS) $(COBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(OTHERLIBS) $(XLIBS)
