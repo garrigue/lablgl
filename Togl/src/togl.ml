@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.12 1999-11-15 14:32:15 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.13 1999-11-17 13:23:27 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -239,9 +239,9 @@ let init_togl () =
   _destroy_func ();
   ready := true
 
-let create :parent ?:name =
+let create ?:name =
   togl_options_optionals
-    (fun options () ->
+    (fun options parent ->
       if not !ready then init_togl ();
       let w : widget =
 	Widget.new_atom "togl" :parent ?:name in

@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.6 1999-11-15 14:32:20 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.7 1999-11-17 13:23:31 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -78,8 +78,7 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top rgba:true depth:true
-      width:300 height:300 double:true ()
+    Togl.create top rgba:true depth:true width:300 height:300 double:true
   in
   Wm.title_set top title:"Texture Surf";
   myinit ();

@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.11 1999-11-15 14:32:18 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.12 1999-11-17 13:23:29 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -555,8 +555,8 @@ let main () =
   flush stdout;
 
   let top = openTk () in
-  let togl = Togl.create parent:top width:640 height:480
-      depth:true double:true rgba:true () in
+  let togl = Togl.create top width:640 height:480
+      depth:true double:true rgba:true in
   Wm.title_set top title:"Morph 3D - Shows morphing platonic polyhedra";
   GlClear.depth 1.0;
   GlClear.color (0.0, 0.0, 0.0);

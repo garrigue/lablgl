@@ -31,7 +31,7 @@ RANLIB= ranlib
 ##### Adjust these if non standard
 
 # Where is LablTk (standard)
-LABLTKDIR = $(LIBDIR)/labltk41
+LABLTKDIR = $(LIBDIR)/labltk
 
 # Where to put LablGL (standard)
 INSTALLDIR = $(LIBDIR)/lablGL

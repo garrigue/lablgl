@@ -1,4 +1,4 @@
-(* $Id: checker.ml,v 1.4 1999-11-15 14:32:17 garrigue Exp $ *)
+(* $Id: checker.ml,v 1.5 1999-11-17 13:23:28 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -63,7 +63,7 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top width:500 height:500 rgba:true depth:true () in
+    Togl.create width:500 height:500 rgba:true depth:true top in
   myinit ();
   Togl.display_func togl cb:display;
   Togl.reshape_func togl cb:(fun () -> reshape togl);

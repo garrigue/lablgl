@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.9 1999-11-15 14:32:19 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.10 1999-11-17 13:23:29 garrigue Exp $ *)
 
 class planet togl = object (self)
   val togl = togl
@@ -82,16 +82,16 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top width:700 height:500 double:true rgba:true
-      depth:true () in
+    Togl.create top width:700 height:500 double:true rgba:true
+      depth:true in
   Wm.title_set top title:"Planet";
 
   myinit ();
 
   let planet = new planet togl in
   let scale =
-    Scale.create parent:top from:(-45.) to:45. orient:`Vertical
-      command:(planet#eye) showvalue:false highlightbackground:`Black () in
+    Scale.create top from:(-45.) to:45. orient:`Vertical
+      command:(planet#eye) showvalue:false highlightbackground:`Black in
   bind togl events:[[],`Enter] action:(`Set([],fun _ -> Focus.set togl));
   bind scale events:[[],`Enter] action:(`Set([],fun _ -> Focus.set scale));
   bind togl events:[[],`KeyPress]

@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.9 1999-11-15 14:32:20 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.10 1999-11-17 13:23:31 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -419,33 +419,33 @@ let main () =
   let top = openTk () in
   Wm.title_set top title:"Tennis Court";
 
-  let f0 = Frame.create parent:top () in
+  let f0 = Frame.create top in
   let court3d =
-    Togl.create parent:f0 width:600 height:600
-      rgba:true double:true depth:true ()
-  and f1 = Frame.create parent:f0 () in
+    Togl.create f0 width:600 height:600
+      rgba:true double:true depth:true
+  and f1 = Frame.create f0 in
   let court2d =
-    Togl.create parent:f1 width:200 height:200
-      rgba:true double:true depth:true ()
+    Togl.create f1 width:200 height:200
+      rgba:true double:true depth:true
   and sx =
-    Scale.create parent:f1 label:"Velocity"
-      from:0. to:200. orient:`Horizontal ()
+    Scale.create f1 label:"Velocity"
+      from:0. to:200. orient:`Horizontal
   and sz =
-    Scale.create parent:f1 label:"Direction"
-      from: (-. 90.) to:90. orient:`Horizontal ()
+    Scale.create f1 label:"Direction"
+      from: (-. 90.) to:90. orient:`Horizontal
   and sht =
-    Scale.create parent:f1 label:"Height"
-      from: 0. to:100. orient:`Horizontal ()
+    Scale.create f1 label:"Height"
+      from: 0. to:100. orient:`Horizontal
   and start =
-    Button.create parent:f1 text:"Start" ()
+    Button.create f1 text:"Start"
   in
   let viewseltv = Textvariable.create () in
     Textvariable.set viewseltv to: "Top View";
-    let viewself = Frame.create parent: f1 () in
+    let viewself = Frame.create  f1 in
     let viewsel = List.map ["Top View"; "Center"; "Ball"] fun:
 	begin fun t ->
-	  Radiobutton.create parent: viewself text: t value: t
-	    variable: viewseltv ()
+	  Radiobutton.create viewself text: t value: t
+	    variable: viewseltv
 	end
     in
     pack viewsel;

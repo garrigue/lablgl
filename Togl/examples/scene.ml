@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.6 1999-11-15 14:32:19 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.7 1999-11-17 13:23:30 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -99,7 +99,7 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top rgba:true depth:true width:500 height:500 () in
+    Togl.create top rgba:true depth:true width:500 height:500 in
   Wm.title_set top title:"Scene";
   myinit ();
   Togl.reshape_func togl

@@ -1,4 +1,4 @@
-(* $Id: double.ml,v 1.5 1999-11-15 14:32:17 garrigue Exp $ *)
+(* $Id: double.ml,v 1.6 1999-11-17 13:23:28 garrigue Exp $ *)
 
 class view togl :title = object (self)
   val mutable corner_x = 0.
@@ -79,23 +79,23 @@ end
 
 let create_view :parent :double =
   new view
-    (Togl.create :parent width:200 height:200 depth:true rgba:true :double ())
+    (Togl.create width:200 height:200 depth:true rgba:true :double parent)
 
 open Tk
 
 let main () =
   let top = openTk () in
-  let f = Frame.create parent:top () in
+  let f = Frame.create top in
   let single = create_view parent:f double:false title:"Single buffer"
   and double = create_view parent:f double:true title:"Double buffer" in
   let sx =
-    Scale.create parent:top label:"X Axis" from:0. to:360. orient:`Horizontal
-      command:(fun x -> single#x_angle x; double#x_angle x) ()
+    Scale.create label:"X Axis" from:0. to:360. orient:`Horizontal
+      command:(fun x -> single#x_angle x; double#x_angle x) top
   and sy =
-    Scale.create parent:top label:"Y Axis" from:0. to:360. orient:`Horizontal
-      command:(fun y -> single#y_angle y; double#y_angle y) ()
+    Scale.create label:"Y Axis" from:0. to:360. orient:`Horizontal
+      command:(fun y -> single#y_angle y; double#y_angle y) top
   and button =
-    Button.create parent:top text:"Quit" command:(fun () -> destroy top) ()
+    Button.create text:"Quit" command:(fun () -> destroy top) top
   in
 
   List.iter fun:

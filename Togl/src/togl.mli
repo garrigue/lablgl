@@ -1,4 +1,4 @@
-(* $Id: togl.mli,v 1.4 1999-11-15 14:32:16 garrigue Exp $ *)
+(* $Id: togl.mli,v 1.5 1999-11-17 13:23:27 garrigue Exp $ *)
 
 type w
 type widget = w Widget.widget
@@ -39,7 +39,6 @@ val timer_func : ms:int -> cb:(unit -> unit) -> unit
 val configure : ?height:int -> ?width:int -> widget -> string
 
 val create :
-  parent:'a Widget.widget ->
   ?name:string ->
   ?accum:bool ->
   ?accumalphasize:int ->
@@ -60,4 +59,4 @@ val create :
   ?redsize:int ->
   ?rgba:bool ->
   ?stencil:bool ->
-  ?stencilsize:int -> ?stereo:bool -> ?width:int -> unit -> widget
+  ?stencilsize:int -> ?stereo:bool -> ?width:int -> 'a Widget.widget -> widget
