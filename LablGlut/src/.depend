@@ -1,2 +1,12 @@
+gl_constants.cmo: gl_constants.cmi 
+gl_constants.cmx: gl_constants.cmi 
+glocaml.cmo: glutcaml.cmi 
+glocaml.cmx: glutcaml.cmx 
+glu_constants.cmo: glu_constants.cmi 
+glu_constants.cmx: glu_constants.cmi 
 glut.cmo: glut.cmi 
 glut.cmx: glut.cmi 
+glut_constants.cmo: glut_constants.cmi 
+glut_constants.cmx: glut_constants.cmi 
+glutcaml.cmo: glutcaml.cmi 
+glutcaml.cmx: glutcaml.cmi 

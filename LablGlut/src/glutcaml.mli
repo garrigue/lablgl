@@ -1,4 +1,4 @@
-(* glut2.mli is the OCaml interface for Mark Kilgard's simple, 
+(* glutcaml.mli is the OCaml interface for Mark Kilgard's simple, 
    cross-platform OpenGL windowing library GLUT.
 
    Copyright (c) Issac Trotts 2003.

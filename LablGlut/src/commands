@@ -1,0 +1,14 @@
+s/gl_enum/unsigned int/g
+s/gl_boolean/unsigned char/g
+s/gl_bitfield/unsigned int/g
+s/gl_byte/signed char/g
+s/gl_short/short	/g
+s/gl_int/int	/g
+s/gl_ubyte/unsigned char/g
+s/gl_ushort/unsigned short/g
+s/gl_uint/unsigned int/g
+s/gl_sizei/int	/g
+s/gl_float/float	/g
+s/gl_clampf/float	/g
+s/gl_double/double	/g
+s/gl_clampd/double	/g
