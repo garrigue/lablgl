@@ -1,16 +1,16 @@
-/* $Id: ml_gl.h,v 1.12 1998-01-19 06:57:09 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.13 1998-01-21 09:12:35 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
 
-void ml_raise_gl (char *errmsg) Noreturn;
+#include "ml_raw.h"
+
+void ml_raise_gl (const char *errmsg) Noreturn;
 
 #define Float_val(dbl) ((GLfloat) Double_val(dbl))
 #define Addr_val(addr) ((GLvoid *) addr)
 #define Val_addr(addr) ((value) addr)
-#define Type_rawdata(raw) (GLenum_val(Field(raw,0)))
-#define Size_rawdata(raw) (Int_val(Field(raw,1)))
-#define Addr_rawdata(raw) ((GLvoid *) Field(raw,2))
+#define Type_raw(raw) (GLenum_val(Kind_raw(raw)))
 
 #define ML_void(cname) \
 value ml_##cname (value unit) \
@@ -26,6 +26,9 @@ value ml_##cname (value tag) \
 #define ML_GLenum_int(cname) \
 value ml_##cname (value tag) \
 { return Val_int (cname (GLenum_val(tag))); }
+#define ML_GLenum_string(cname) \
+value ml_##cname (value tag) \
+{ return copy_string (cname (GLenum_val(tag))); }
 #define ML_GLenum2(cname) \
 value ml_##cname (value tag1, value tag2) \
 { cname (GLenum_val(tag1), GLenum_val(tag2)); return Val_unit; }
@@ -92,10 +95,10 @@ value ml_##cname (value x, value y, value z) \
 value ml_##cname (value x, value y, value z, value w) \
 { cname (Double_val(x), Double_val(y), Double_val(z), Double_val(w)); \
   return Val_unit; }
-#define ML_double6(cname) \
-value ml_##cname (value *argv, int argn) \
-{ cname (Double_val(argv[0]), Double_val(argv[1]), Double_val(argv[2]), \
-	 Double_val(argv[3]), Double_val(argv[4]), Double_val(argv[5])); \
+#define ML_double3x2(cname) \
+value ml_##cname (value *arg1, value *arg2, value *arg3) \
+{ cname (Double_val(arg1[0]), Double_val(arg1[1]), Double_val(arg2[0]), \
+	 Double_val(arg2[1]), Double_val(arg3[0]), Double_val(arg3[1])); \
   return Val_unit; }
 
 #define ML_int_int(cname) \

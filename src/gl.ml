@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.16 1998-01-21 03:29:31 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.17 1998-01-21 09:12:32 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -218,9 +218,11 @@ type fog_param = [
 external fog : fog_param -> unit = "ml_glFog"
 external front_face : [cw ccw] -> unit = "ml_glFrontFace"
 external frustum :
-    left:float -> right:float -> bottom:float ->
-    top:float -> near:float -> far:float -> unit
+    x:(float * float) -> y:(float * float) -> z:(float * float) -> unit
     = "ml_glFrustum"
+
+external get_string : [vendor renderer version extensions] -> string
+    = "ml_glGetString"
 
 type hint_target =
     [fog line_smooth perspective_correction point_smooth polygon_smooth]
@@ -306,11 +308,10 @@ let mult_matrix m =
 external normal : x:float -> y:float -> z:float -> unit
     = "ml_glNormal3d"
 let normal ?:x [< 0.0 >] ?:y [< 0.0 >] ?:z [< 0.0 >] = normal :x :y :z
-and normal3d (x,y,z) = normal :x :y :z
+and normal3 (x,y,z) = normal :x :y :z
 
 external ortho :
-    left:float -> right:float -> bottom:float ->
-    top:float -> near:float -> far:float -> unit
+    x:(float * float) -> y:(float * float) -> z:(float * float) -> unit
     = "ml_glOrtho"
 
 external pass_through : float -> unit = "ml_glPassThrough"
@@ -429,8 +430,7 @@ type tex_gen_param = [
   ]
 external tex_gen : coord:tex_coord -> tex_gen_param -> unit = "ml_glTexGen"
 type tex_format =
-    [ color_index depth_component rgba
-      red green blue alpha rgb luminance luminance_alpha ]
+    [ color_index red green blue alpha rgb rgba luminance luminance_alpha ]
 external tex_image1d :
     proxy:bool -> level:int -> internal:int ->
     width:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit

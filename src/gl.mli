@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.10 1998-01-21 03:29:32 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.11 1998-01-21 09:12:33 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -111,8 +111,7 @@ type fog_param =
 external fog : fog_param -> unit = "ml_glFog"
 external front_face : [ccw cw] -> unit = "ml_glFrontFace"
 external frustum :
-  left:float ->
-  right:float -> bottom:float -> top:float -> near:float -> far:float -> unit
+  x:(float * float) -> y:(float * float) -> z:(float * float) -> unit
   = "ml_glFrustum"
 
 type hint_target =
@@ -166,12 +165,11 @@ external matrix_mode : [modelview projection texture] -> unit
 val mult_matrix : float array array -> unit
 
 val normal : ?x:float -> ?y:float -> ?z:float -> unit
-val normal3d : float * float * float -> unit
+val normal3 : float * float * float -> unit
 
 external ortho :
-  left:float ->
-  right:float -> bottom:float -> top:float -> near:float -> far:float -> unit
-  = "ml_glOrtho"
+    x:(float * float) -> y:(float * float) -> z:(float * float) -> unit
+    = "ml_glOrtho"
 
 external pass_through : float -> unit = "ml_glPassThrough"
 type pixel_map =
@@ -244,8 +242,7 @@ type tex_gen_param =
    object_plane(point4)]
 external tex_gen : coord:tex_coord -> tex_gen_param -> unit = "ml_glTexGen"
 type tex_format =
-  [alpha blue color_index depth_component green luminance luminance_alpha 
-   red rgb rgba]
+  [alpha blue color_index green luminance luminance_alpha red rgb rgba]
 val tex_image1d :
   proxy:bool ->
   level:int ->

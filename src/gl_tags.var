@@ -211,6 +211,9 @@ nearest nearest_mipmap_nearest linear_mipmap_nearest
 nearest_mipmap_linear linear_mipmap_linear
 clamp repeat
 
+(* glGetString *)
+vendor renderer version extensions
+
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End

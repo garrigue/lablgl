@@ -1,4 +1,4 @@
-(* $Id: tennis.ml,v 1.2 1998-01-14 09:32:40 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.3 1998-01-21 09:12:38 garrigue Exp $ *)
 
 let ft x = x *. 0.03
 
@@ -9,8 +9,6 @@ let sl = ft 21.0
 let lw = 0.015 
 let wlw = 0.02
 
-let delta = 0.02
-
 class ball () =
   val mutable x = 0.0
   val mutable y = 0.0
@@ -18,6 +16,8 @@ class ball () =
   val mutable vel_z = 0.0
   val mutable vel_x = 0.3
   val mutable moving = false
+
+  method set_vel v = vel_x <- v /. 3.6
 
   method draw =
     Gl.disable `blend;
@@ -27,7 +27,7 @@ class ball () =
     Glu.sphere radius:0.01 slices:8 stacks:8 (Glu.new_quadric ());
     Gl.pop_matrix ()
 
-  method do_tick =
+  method do_tick delta =
     if moving then begin
       x <- x -. vel_x *. delta;
       z <- z +. vel_z *. delta;
@@ -160,12 +160,13 @@ let main () =
   and view2d = new view togl:court2d :ball setup:setup2d
   in
 
+  Scale.configure sx command:(ball#set_vel);
   Button.configure start command:
     begin fun () ->
       Button.configure start text:(if ball#switch then "Stop" else "Start")
     end;
-  Togl.timer_func ms:50
-    cb:(fun () -> if ball#do_tick then (view3d#draw; view2d#draw));
+  Togl.timer_func ms:20
+    cb:(fun () -> if ball#do_tick 0.002 then (view3d#draw; view2d#draw));
   (* bind top events:[[],`Visibility]
     action:(`Set([],fun _ -> view3d#draw; view2d#draw)); *)
   Togl.display_func canvas cb:(fun () -> view3d#draw);

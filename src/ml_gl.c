@@ -1,16 +1,19 @@
-/* $Id: ml_gl.c,v 1.14 1998-01-19 06:57:08 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.15 1998-01-21 09:12:35 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
+#include "ml_raw.h"
 #include "gl_tags.h"
 #include "ml_gl.h"
 
-extern void invalid_argument (char *) Noreturn;
-extern void raise_with_string (value tag, char * msg) Noreturn;
+/* #include <stdio.h> */
 
-void ml_raise_gl(char *errmsg)
+extern void invalid_argument (char *) Noreturn;
+extern void raise_with_string (value tag, const char * msg) Noreturn;
+
+void ml_raise_gl(const char *errmsg)
 {
   static value * gl_exn = NULL;
   if (gl_exn == NULL)
@@ -56,12 +59,12 @@ value ml_glBitmap (value width, value height, value orig, value move,
 		   value data)  /* ML */
 {
     if (Int_val(width) * Int_val(height) >
-	Size_rawdata(data) * 8 * sizeof(value))
+	Int_val(Size_raw(data)) * 8 * sizeof(value))
 	ml_raise_gl ("GL.bitmap : unsufficient data");
     glBitmap (Int_val(width), Int_val(height),
 	      Float_val(Field(orig,0)), Float_val(Field(orig,1)),
 	      Float_val(Field(move,0)), Float_val(Field(move,1)),
-	      Addr_rawdata(data));
+	      Void_raw(data));
     return Val_unit;
 }
 
@@ -126,7 +129,7 @@ ML_GLenum (glDrawBuffer)
 value ml_glDrawPixels (value width, value height, value format, value data)
 {
     glDrawPixels (Int_val(width), Int_val(height), GLenum_val(format),
-		  Type_rawdata(data), Addr_rawdata(data));
+		  Type_raw(data), Void_raw(data));
     return Val_unit;
 }
 
@@ -170,10 +173,12 @@ value ml_glFog (value param) /* ML */
     return Val_unit;
 }
 
-ML_void(glFlush)
-ML_void(glFinish)
-ML_GLenum(glFrontFace)
-ML_double6(glFrustum)
+ML_void (glFlush)
+ML_void (glFinish)
+ML_GLenum (glFrontFace)
+ML_double3x2 (glFrustum)
+
+ML_GLenum_string (glGetString)
 
 value ml_glHint (value target, value hint)
 {
@@ -262,78 +267,100 @@ value ml_glLoadMatrix(value m)  /* ML */
 
 ML_GLenum (glLogicOp)
 
-value ml_glMap1d (value target, value u, value points)
+value ml_glMap1d (value target, value *u, value points)
 {
-    int order = Wosize_val(points);
-    int i;
+    int uorder, ustride, i;
     double *dpoints;
     GLenum targ;
 
-    dpoints = calloc (order, sizeof(GLdouble));
-    for (i = 0; i < order; i++)
-	*dpoints++ = Double_val(Field(points,i));
     switch (target) {
-    case MLTAG_vertex_3:	targ = GL_MAP1_VERTEX_3; break;
-    case MLTAG_vertex_4:	targ = GL_MAP1_VERTEX_4; break;
-    case MLTAG_index:	targ = GL_MAP1_INDEX; break;
-    case MLTAG_color_4:	targ = GL_MAP1_COLOR_4; break;
-    case MLTAG_normal:	targ = GL_MAP1_NORMAL; break;
-    case MLTAG_texture_coord_1:	targ = GL_MAP1_TEXTURE_COORD_1; break;
-    case MLTAG_texture_coord_2:	targ = GL_MAP1_TEXTURE_COORD_2; break;
-    case MLTAG_texture_coord_3:	targ = GL_MAP1_TEXTURE_COORD_3; break;
-    case MLTAG_texture_coord_4:	targ = GL_MAP1_TEXTURE_COORD_4; break;
+    case MLTAG_vertex_3:
+	targ = GL_MAP1_VERTEX_3; ustride = 3; break;
+    case MLTAG_vertex_4:
+	targ = GL_MAP1_VERTEX_4; ustride = 4; break;
+    case MLTAG_index:
+	targ = GL_MAP1_INDEX; ustride = 1; break;
+    case MLTAG_color_4:
+	targ = GL_MAP1_COLOR_4; ustride = 4; break;
+    case MLTAG_normal:
+	targ = GL_MAP1_NORMAL; ustride = 3; break;
+    case MLTAG_texture_coord_1:
+	targ = GL_MAP1_TEXTURE_COORD_1; ustride = 1; break;
+    case MLTAG_texture_coord_2:
+	targ = GL_MAP1_TEXTURE_COORD_2; ustride = 2; break;
+    case MLTAG_texture_coord_3:
+	targ = GL_MAP1_TEXTURE_COORD_3; ustride = 3; break;
+    case MLTAG_texture_coord_4:
+	targ = GL_MAP1_TEXTURE_COORD_4; ustride = 4; break;
     }
-    glMap1d (targ, Double_val(Field(u,0)), Double_val(Field(u,1)),
-	     1, order, dpoints);
+    uorder = Wosize_val(points) / ustride;
+    dpoints = calloc (uorder*ustride, sizeof(GLdouble));
+    for (i = 0; i < uorder*ustride; i++)
+	dpoints[i] = Double_val(Field(points,i));
+    glMap1d (targ, Double_val(u[0]), Double_val(u[1]),
+	     ustride, uorder, dpoints);
     free (dpoints);
     return Val_unit;
 }
 
-value ml_glMap2d (value target, value u, value v, value points)
+value ml_glMap2d (value target, value *u, value *v, value points)
 {
     int vorder = Wosize_val(points);
-    int i, uorder;
+    int i, j, k, uorder, ustride, vstride;
     double *dpoints;
+    value row;
     GLenum targ;
 
     if (vorder == 0) invalid_argument("Gl.map2");
-    uorder = Wosize_val(Field(points,0));
-    dpoints = calloc (uorder*vorder, sizeof(GLdouble));
-    for (i = 0; i < vorder; i++) {
-	int j;
-	value point = Field(points,i);
-	if (Wosize_val(point) != uorder) invalid_argument("Gl.map2");
-	for (j = 0; j < uorder; j++)
-	    *dpoints++ = Double_val(Field(point,j));
-    }
     switch (target) {
-    case MLTAG_vertex_3:	targ = GL_MAP1_VERTEX_3; break;
-    case MLTAG_vertex_4:	targ = GL_MAP1_VERTEX_4; break;
-    case MLTAG_index:	targ = GL_MAP1_INDEX; break;
-    case MLTAG_color_4:	targ = GL_MAP1_COLOR_4; break;
-    case MLTAG_normal:	targ = GL_MAP1_NORMAL; break;
-    case MLTAG_texture_coord_1:	targ = GL_MAP1_TEXTURE_COORD_1; break;
-    case MLTAG_texture_coord_2:	targ = GL_MAP1_TEXTURE_COORD_2; break;
-    case MLTAG_texture_coord_3:	targ = GL_MAP1_TEXTURE_COORD_3; break;
-    case MLTAG_texture_coord_4:	targ = GL_MAP1_TEXTURE_COORD_4; break;
+    case MLTAG_vertex_3:
+	targ = GL_MAP2_VERTEX_3; ustride = 3; break;
+    case MLTAG_vertex_4:
+	targ = GL_MAP2_VERTEX_4; ustride = 4; break;
+    case MLTAG_index:
+	targ = GL_MAP2_INDEX; ustride = 1; break;
+    case MLTAG_color_4:
+	targ = GL_MAP2_COLOR_4; ustride = 4; break;
+    case MLTAG_normal:
+	targ = GL_MAP2_NORMAL; ustride = 3; break;
+    case MLTAG_texture_coord_1:
+	targ = GL_MAP2_TEXTURE_COORD_1; ustride = 1; break;
+    case MLTAG_texture_coord_2:
+	targ = GL_MAP2_TEXTURE_COORD_2; ustride = 2; break;
+    case MLTAG_texture_coord_3:
+	targ = GL_MAP2_TEXTURE_COORD_3; ustride = 3; break;
+    case MLTAG_texture_coord_4:
+	targ = GL_MAP2_TEXTURE_COORD_4; ustride = 4; break;
     }
-    glMap2d (targ, Double_val(Field(u,0)), Double_val(Field(u,1)), 1, uorder,
-	     Double_val(Field(v,0)), Double_val(Field(v,1)), uorder, vorder,
+    vstride = Wosize_val(Field(points,0));
+    uorder = vstride / ustride;
+    dpoints = calloc (vstride*vorder, sizeof(GLdouble));
+    for (i = 0; i < vorder; i++) {
+	row = Field(points,i);
+	if (Wosize_val(row) != ustride * uorder) {
+	    free (dpoints);
+	    invalid_argument("Gl.map2");
+	}
+	for (j = 0; j < uorder*ustride; j++)
+	    dpoints[i*vstride+j] = Double_val(Field(row,j));
+    }
+    glMap2d (targ, Double_val(u[0]), Double_val(u[1]), ustride, uorder,
+	     Double_val(v[0]), Double_val(v[1]), vstride, vorder,
 	     dpoints);
     free (dpoints);
     return Val_unit;
 }
 
-value ml_glMapGrid1d (value n, value u)
+value ml_glMapGrid1d (value n, value *u)
 {
-    glMapGrid1d (Int_val(n), Double_val(Field(u,0)), Double_val(Field(u,1)));
+    glMapGrid1d (Int_val(n), Double_val(u[0]), Double_val(u[1]));
     return Val_unit;
 }
 
-value ml_glMapGrid2d (value un, value u, value vn, value v)
+value ml_glMapGrid2d (value un, value *u, value vn, value *v)
 {
-    glMapGrid2d (Int_val(un), Double_val(Field(u,0)), Double_val(Field(u,1)),
-		 Int_val(vn), Double_val(Field(v,0)), Double_val(Field(v,1)));
+    glMapGrid2d (Int_val(un), Double_val(u[0]), Double_val(u[1]),
+		 Int_val(vn), Double_val(v[0]), Double_val(v[1]));
     return Val_unit;
 }
 
@@ -389,7 +416,7 @@ value ml_glPixelMapfv (value map, value array)
     return Val_unit;
 }
 
-ML_double6 (glOrtho)
+ML_double3x2 (glOrtho)
 
 value ml_glPixelStore (value param)
 {
@@ -591,7 +618,7 @@ value ml_glTexImage1D (value proxy, value level, value internal,
 		  ? GL_PROXY_TEXTURE_1D_EXT : GL_TEXTURE_1D,
 		  Int_val(level), Int_val(internal), Int_val(width),
 		  Int_val(border), GLenum_val(format),
-		  Type_rawdata(data), Addr_rawdata(data));
+		  Type_raw(data), Void_raw(data));
     return Val_unit;
 }
 
@@ -605,11 +632,13 @@ value ml_glTexImage2D (value proxy, value level, value internal,
 		       value width, value height, value border,
 		       value format, value data)
 {
+    /* printf("p=%x,l=%d,i=%d,w=%d,h=%d,b=%d,f=%x,t=%x,d=%x\n", */
     glTexImage2D (proxy == Val_int(1)
 		  ? GL_PROXY_TEXTURE_2D_EXT : GL_TEXTURE_2D,
 		  Int_val(level), Int_val(internal), Int_val(width),
 		  Int_val(height), Int_val(border), GLenum_val(format),
-		  Type_rawdata(data), Addr_rawdata(data));
+		  Type_raw(data), Void_raw(data));
+    /*  flush(stdout); */
     return Val_unit;
 }
 

@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.1 1998-01-21 03:29:33 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.2 1998-01-21 09:12:39 garrigue Exp $ *)
 
 let ctrlpoints =
   [|[|-1.5; -1.5; 4.9;  -0.5; -1.5; 2.0;  0.5; -1.5; -1.0;  1.5; -1.5; 2.0|];
@@ -10,19 +10,19 @@ let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
     [|1.0; 0.0;  1.0; 1.0|]|]
 
+let image_width = 64
+and image_height = 64
+
+let pi = acos (-1.0)
+
 let display () =
   Gl.clear [`color;`depth];
   Gl.color (1.0,1.0,1.0);
   Gl.eval_mesh2 mode:`fill 0 20 0 20;
   Gl.flush ()
 
-let image_width = 64
-and image_height = 64
-
-let pi = acos (-1.0)
-
 let make_image () =
-  let image = Raw.create `ubyte len:(3*image_height*image_width) in
+  let image = Raw.create_static `ubyte len:(3*image_height*image_width) in
   for i = 0 to image_width - 1 do
     let ti = 2.0 *. pi *. float i /. float image_width in
     for j = 0 to image_height - 1 do
@@ -35,16 +35,6 @@ let make_image () =
   image
 
 let myinit () =
-  (*
-  let rawctrl = Raw.create `float len:(4*4*3) in
-  Array.iteri ctrlpoints fun:
-    begin fun :i :data ->
-      Array.iteri data fun:
-	begin fun i:j data:(r,g,b) ->
-	  Raw.write_float rawctrl pos:(3*(4*i+j)) src:[|r;g;b|]
-	end
-    end;
-  *)
   Gl.map2 target:`vertex_3 (0.0, 1.0) (0.0, 1.0) ctrlpoints;
   Gl.map2 target:`texture_coord_2 (0.0,1.0) (0.0,1.0) texpts;
   Gl.enable `map2_texture_coord_2;
@@ -57,8 +47,8 @@ let myinit () =
       `wrap_t `repeat;
       `mag_filter `nearest;
       `min_filter `nearest ];
-  Gl.tex_image2d image proxy:false  level:0 internal:3 width:image_width
-    height:image_height border:false format:`rgb;
+  Gl.tex_image2d image proxy:false level:0 internal:3
+    width:image_width height:image_height border:false format:`rgb;
   List.iter fun:Gl.enable [`texture_2d;`depth_test;`normalize];
   Gl.shade_model `flat
 
@@ -69,11 +59,9 @@ let my_reshape togl =
   Gl.load_identity ();
   let r = float h /. float w in
   if w <= h then
-    Gl.ortho left:(-4.0) right:4.0 bottom:(-4.0 *. r)
-      top:(4.0 *. r) near:(-4.0) far:(4.0)
+    Gl.ortho x:(-4.0, 4.0) y:(-4.0 *. r, 4.0 *. r) z:(-4.0, 4.0)
   else
-    Gl.ortho left:(-4.0 /. r) right:(4.0 /. r) bottom:(-4.0)
-      top:(4.0) near:(-4.0) far:(4.0);
+    Gl.ortho x:(-4.0 /. r, 4.0 /. r) y:(-4.0, 4.0) z:(-4.0, 4.0);
   Gl.matrix_mode `modelview;
   Gl.load_identity ();
   Gl.rotate angle:(85.0) x:1.0 y:1.0 z:1.0

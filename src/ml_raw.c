@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.1 1998-01-20 11:36:09 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.2 1998-01-21 09:12:37 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -49,7 +49,8 @@ value ml_raw_sizeof (value kind)  /* ML */
 
 static void check_size (value raw, long pos, char *msg)
 {
-    if (pos < 0 || (pos+1) * raw_sizeof(Kind_raw(raw)) > Size_raw(raw))
+    if (pos < 0 ||
+	(pos+1) * raw_sizeof(Kind_raw(raw)) > Int_val(Size_raw(raw)))
 	invalid_argument (msg);
 }
 
@@ -125,7 +126,7 @@ value ml_raw_read_string (value raw, value pos, value len)  /* ML */
     int l = Int_val(len);
     value ret;
 
-    if (l<0 || s<0 || s+l > Size_raw(raw))
+    if (l<0 || s<0 || s+l > Int_val(Size_raw(raw)))
 	invalid_argument("Raw.read_string");
     ret = alloc_string (l);
     bcopy (Bp_val(Addr_raw(raw))+s, String_val(ret), l);
@@ -138,7 +139,7 @@ value ml_raw_write_string (value raw, value pos, value data)  /* ML */
     int l = string_length(data);
     value ret;
 
-    if (s<0 || s+l > Size_raw(raw))
+    if (s<0 || s+l > Int_val(Size_raw(raw)))
 	invalid_argument("Raw.write_string");
     bcopy (String_val(data), Bp_val(Addr_raw(raw))+s, l);
     return Val_unit;
@@ -230,17 +231,21 @@ value ml_raw_read_float (value raw, value pos, value len)  /* ML */
 {
     int s = Int_val(pos);
     int i, l = Int_val(len);
-    value ret;
+    value ret = Val_unit;
 
     check_size (raw,s+l-1,"Raw.read_float");
     if (l<0 || s<0) invalid_argument("Raw.read_float");
+    Begin_roots1(ret);
     ret = alloc_shr (l, 0);
     if (Kind_raw(raw) == MLTAG_float)
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = copy_double ((double) Float_raw(raw)[s+i]);
+	    initialize (&Field(ret,i),
+			copy_double ((double) Float_raw(raw)[s+i]));
     else
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = copy_double (Double_raw(raw)[s+i]);
+	    initialize (&Field(ret,i),
+			copy_double (Double_raw(raw)[s+i]));
+    End_roots ();
     return ret;
 }
 
@@ -371,10 +376,10 @@ value ml_raw_alloc (value kind, value len)  /* ML */
     Begin_roots2 (raw,data);
     data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
     raw = alloc_tuple (4);
-    Field(raw,0) = kind;
-    Field(raw,1) = Val_int(size);
-    Field(raw,2) = data;
-    Field(raw,3) = Val_false;
+    Kind_raw(raw) = kind;
+    Size_raw(raw) = Val_int(size);
+    Addr_raw(raw) = data;
+    Static_raw(raw) = Val_false;
     End_roots ();
     return raw;
 }
@@ -387,18 +392,18 @@ value ml_raw_alloc_static (value kind, value len)  /* ML */
 
     data = stat_alloc (size);
     raw = alloc_tuple (4);
-    Field(raw,0) = kind;
-    Field(raw,1) = Val_int(size);
+    Kind_raw(raw) = kind;
+    Size_raw(raw) = Val_int(size);
     Addr_raw(raw) = data;
-    Field(raw,3) = Val_true;
+    Static_raw(raw) = Val_true;
     return raw;
 }
 
 value ml_raw_free_static (value raw)  /* ML */
 {
-    if (!Static_raw(raw)) invalid_argument ("Raw.free_static");
+    if (Static_raw(raw) != Val_int(1)) invalid_argument ("Raw.free_static");
     stat_free (Addr_raw(raw));
-    Field(raw,2) = Val_unit;
-    Field(raw,1) = Val_unit;
+    Addr_raw(raw) = Val_unit;
+    Size_raw(raw) = Val_unit;
     return Val_unit;
 }

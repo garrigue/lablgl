@@ -66,7 +66,7 @@ glu_tags.c: glu_tags.var
 clean:
 	rm -f *.cm? ml_*.o gl_tags.[ch] tk_tags.[ch] *~ #*
 
-ml_gl.o: ml_gl.h gl_tags.h gl_tags.c
+ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
 ml_togl.o : ml_gl.h togl_tags.h togl_tags.c

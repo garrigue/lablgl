@@ -1,4 +1,4 @@
-(* $Id: double.ml,v 1.1 1998-01-15 08:34:38 garrigue Exp $ *)
+(* $Id: double.ml,v 1.2 1998-01-21 09:12:31 garrigue Exp $ *)
 
 class view togl :title as self =
   val togl = togl
@@ -20,8 +20,7 @@ class view togl :title as self =
     (* Set up projection transform *)
     Gl.matrix_mode `projection;
     Gl.load_identity ();
-    Gl.frustum
-      left:(-.aspect) right:aspect bottom:(-1.0) top:1.0 near:1.0 far:10.0;
+    Gl.frustum x:(-.aspect, aspect) y:(-1.0, 1.0) z:(1.0, 10.0);
     corner_x <- -. aspect;
     corner_y <- -1.0;
     corner_z <- -1.1;

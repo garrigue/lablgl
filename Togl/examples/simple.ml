@@ -1,4 +1,4 @@
-(* $Id: simple.ml,v 1.3 1998-01-15 08:34:42 garrigue Exp $ *)
+(* $Id: simple.ml,v 1.4 1998-01-21 09:12:38 garrigue Exp $ *)
 
 open Tk
 
@@ -18,7 +18,7 @@ let main () =
       Gl.color (1.0, 1.0, 1.0);
       Gl.matrix_mode `projection;
       Gl.load_identity ();
-      Gl.ortho left:(-1.) right:1. bottom:(-1.) top:1. near:(-1.) far:1.;
+      Gl.ortho x:(-1.0,1.0) y:(-1.0,1.0) z:(-1.0,1.0);
       Gl.begin_block `polygon;
       Gl.vertex x:(-0.5) y:(-0.5);
       Gl.vertex x:(-0.5) y:(0.5);
