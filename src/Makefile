@@ -12,12 +12,11 @@ OLABLINC=-I $(LABLTKDIR)
 OTHERLIBS=-L$(LABLTKDIR) -llabltk41 $(LIBS)
 
 # Files
-LIBOBJS =	raw.cmo \
+MLOBJS =	raw.cmo 	togl.cmo \
 		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
 		glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo \
 		glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo \
 		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo
-MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(MLOBJS:.cmo=.cmx)
 COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 		$(TOGLDIR)/togl.o
@@ -54,8 +53,8 @@ var2def: var2def.cmo
 var2switch: var2switch.cmo
 	$(LINKER) var2switch.cmo -o $@
 
-lablgl.cma: $(LIBOBJS)
-	$(LIBRARIAN) -o lablgl.cma $(LIBOBJS)
+lablgl.cma: $(MLOBJS)
+	$(LIBRARIAN) -o lablgl.cma $(MLOBJS)
 
 lablgl.cmxa: $(OPTOBJS)
 	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS)
@@ -67,9 +66,9 @@ liblablgl.a: $(COBJS)
 $(TOGLDIR)/togl.o:
 	cd $(TOGLDIR) && $(MAKE) togl.o
 
-lablgltop: lablgl.cma togl.cmo liblablgl.a
+lablgltop: lablgl.cma liblablgl.a
 	olablmktop $(OLABLINC) -custom -o lablgltop \
-		unix.cma tk41.cma lablgl.cma togl.cmo \
+		unix.cma tk41.cma lablgl.cma \
 		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
 
 lablgl: lablgl.in Makefile.config
@@ -108,7 +107,7 @@ install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp lablgl.cma togl.cmo liblablgl.a $(INSTALLDIR)
+	cp lablgl.cma liblablgl.a $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl lablgllink $(BINDIR)
 	if test -f lablgl.cmxa; then : ; \

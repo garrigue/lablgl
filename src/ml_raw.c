@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.8 1999-04-14 14:05:51 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.7 1998-09-03 04:24:39 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -93,61 +93,29 @@ value ml_raw_read (value raw, value pos, value len)  /* ML */
     switch (Kind_raw(raw)) {
     case MLTAG_bitmap:
     case MLTAG_ubyte:
-    {
-	unsigned char *byte_raw = Byte_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*byte_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long ((unsigned char) Byte_raw(raw)[s+i]);
     case MLTAG_byte:
-    {
-	char *byte_raw = Byte_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*byte_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long (Byte_raw(raw)[s+i]);
     case MLTAG_short:
-    {
-	short *short_raw = Short_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*short_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long (Short_raw(raw)[s+i]);
     case MLTAG_ushort:
-    {
-	unsigned short *short_raw = Short_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*short_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long ((unsigned short) Short_raw(raw)[s+i]);
     case MLTAG_int:
-    {
-	int *int_raw = Int_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*int_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long (Int_raw(raw)[s+i]);
     case MLTAG_uint:
-    {
-	unsigned int *int_raw = Int_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*int_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long ((unsigned int) Int_raw(raw)[s+i]);
     case MLTAG_long:
-    {
-	long *long_raw = Long_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*long_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long (Long_raw(raw)[s+i]);
     case MLTAG_ulong:
-    {
-	unsigned long *long_raw = Long_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    Field(ret,i) = Val_long (*long_raw++);
-	break;
-    }
+	    Field(ret,i) = Val_long ((unsigned long) Long_raw(raw)[s+i]);
     }
     return ret;
 }
@@ -220,48 +188,30 @@ value ml_raw_write (value raw, value pos, value data)  /* ML */
     case MLTAG_bitmap:
     case MLTAG_ubyte:
     case MLTAG_byte:
-    {
-	char *byte_raw = Byte_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    *byte_raw++ = Long_val(Field(data,i));
+	    Byte_raw(raw)[s+i] = Long_val(Field(data,i));
 	break;
-    }
     case MLTAG_short:
     case MLTAG_ushort:
-    {
-	short *short_raw = Short_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    *short_raw++ = Long_val(Field(data,i));
+	    Short_raw(raw)[s+i] = Long_val(Field(data,i));
 	break;
-    }
     case MLTAG_int:
-    {
-	int *int_raw = Int_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    *int_raw++ = Long_val(Field(data,i));
+	    Int_raw(raw)[s+i] = Long_val(Field(data,i));
 	break;
-    }
     case MLTAG_uint:
-    {
-	int *int_raw = Int_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    *int_raw++ = Long_val((unsigned long) Field(data,i));
+	    Int_raw(raw)[s+i] = Long_val((unsigned long) Field(data,i));
 	break;
-    }
     case MLTAG_long:
-    {
-	long *long_raw = Long_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    *long_raw++ = Long_val(Field(data,i));
+	    Long_raw(raw)[s+i] = Long_val(Field(data,i));
 	break;
-    }
     case MLTAG_ulong:
-    {
-	long *long_raw = Long_raw(raw)+s;
 	for (i = 0; i < l; i++)
-	    *long_raw++ = Long_val((unsigned long) Field(data,i));
+	    Long_raw(raw)[s+i] = Long_val((unsigned long) Field(data,i));
 	break;
-    }
     }
     return Val_unit;
 }
@@ -286,15 +236,12 @@ value ml_raw_read_float (value raw, value pos, value len)  /* ML */
     check_size (raw,s+l-1,"Raw.read_float");
     if (l<0 || s<0) invalid_argument("Raw.read_float");
     ret = alloc_shr (l*sizeof(double)/sizeof(value), Double_array_tag);
-    if (Kind_raw(raw) == MLTAG_float) {
-	float *float_raw = Float_raw(raw)+s;
+    if (Kind_raw(raw) == MLTAG_float)
 	for (i = 0; i < l; i++)
-	    Store_double_field(ret, i, (double) *float_raw++);
-    } else {
-	double *double_raw = Double_raw(raw)+s;
+	    Store_double_field(ret, i, (double) Float_raw(raw)[s+i]);
+    else
 	for (i = 0; i < l; i++)
-	    Store_double_field(ret, i, *double_raw++);
-    }
+	    Store_double_field(ret, i, Double_raw(raw)[s+i]);
     return ret;
 }
 
@@ -317,15 +264,12 @@ value ml_raw_write_float (value raw, value pos, value data)  /* ML */
 
     check_size (raw,s+l-1,"Raw.write_float");
     if (s<0) invalid_argument("Raw.write_float");
-    if (Kind_raw(raw) == MLTAG_float) {
-	float *float_raw = Float_raw(raw)+s;
+    if (Kind_raw(raw) == MLTAG_float)
 	for (i = 0; i < l; i++)
-	    *float_raw++ = (float) Double_field(data,i);
-    } else {
-	double *double_raw = Double_raw(raw)+s;
+	    Float_raw(raw)[s+i] = (float) Double_field(data,i);
+    else 
 	for (i = 0; i < l; i++)
-	    *double_raw++ = Double_field(data,i);
-    }
+	    Double_raw(raw)[s+i] = Double_field(data,i);
     return Val_unit;
 }
 
@@ -424,19 +368,14 @@ value ml_raw_alloc (value kind, value len)  /* ML */
     value raw = Val_unit;
     value data = Val_unit;
     int size = raw_sizeof(kind) * Int_val(len);
-    int offset = 0;
 
     Begin_roots2 (raw,data);
-    raw = alloc_shr (SIZE_RAW,0);
-    if (kind == MLTAG_double && sizeof(double) > sizeof(value)) {
-	data = alloc_shr ((size-1)/sizeof(value)+2, Abstract_tag);
-	offset = (data % sizeof(double) ? sizeof(value) : 0);
-    } else data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
-    Kind_raw(raw) = kind;
-    Size_raw(raw) = Val_int(size);
-    initialize(&Base_raw(raw),data);
-    Offset_raw(raw) = Val_int(offset);
-    Static_raw(raw) = Val_false;
+    raw = alloc_shr (4,0);
+    data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
+    initialize(&Kind_raw(raw),kind);
+    initialize(&Size_raw(raw),Val_int(size));
+    initialize(&Addr_raw(raw),data);
+    initialize(&Static_raw(raw),Val_false);
     End_roots ();
     return raw;
 }
@@ -446,17 +385,12 @@ value ml_raw_alloc_static (value kind, value len)  /* ML */
     value raw = Val_unit;
     void  *data;
     int size = raw_sizeof(kind) * Int_val(len);
-    int offset = 0;
 
-    if (kind == MLTAG_double && sizeof(double) > sizeof(long)) {
-	data = stat_alloc (size+sizeof(long));
-	offset = ((long)data % sizeof(double) ? sizeof(value) : 0);
-    } else data = stat_alloc (size);
-    raw = alloc_tuple (SIZE_RAW);
+    data = stat_alloc (size);
+    raw = alloc_tuple (4);
     Kind_raw(raw) = kind;
     Size_raw(raw) = Val_int(size);
-    Base_raw(raw) = (value) data;
-    Offset_raw(raw) = Val_int(offset);
+    Addr_raw(raw) = (value) data;
     Static_raw(raw) = Val_true;
     return raw;
 }
@@ -465,8 +399,7 @@ value ml_raw_free_static (value raw)  /* ML */
 {
     if (Static_raw(raw) != Val_int(1)) invalid_argument ("Raw.free_static");
     stat_free (Void_raw(raw));
-    Base_raw(raw) = Val_unit;
+    Addr_raw(raw) = Val_unit;
     Size_raw(raw) = Val_unit;
-    Offset_raw(raw) = Val_unit;
     return Val_unit;
 }

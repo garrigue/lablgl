@@ -1,5 +1,5 @@
 
-		LablGL 0.92: Installation and Use instructions
+		LablGL 0.91: Installation and Use instructions
 
 1. Description
 
@@ -8,8 +8,8 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Label 2.02 or more
-  * LablTk 2.02 or more (included in Objective Label, requires Tcl/Tk)
+  * Objective Label 2.00 or more
+  * LablTk 2.00 or more (included in Objective Label, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
   Objective Label and LablTk can be obtained from

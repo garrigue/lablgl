@@ -1,4 +1,4 @@
-(* $Id: raw.ml,v 1.5 1999-04-14 14:05:52 garrigue Exp $ *)
+(* $Id: raw.ml,v 1.4 1998-01-23 13:30:22 garrigue Exp $ *)
 
 type addr
 type kind =
@@ -7,21 +7,16 @@ type fkind = [float double]
 type ikind = [bitmap byte ubyte short ushort int uint long ulong]
 type lkind = [int uint long ulong]
 type 'a t =
-    { kind: 'a; base: addr; offset: int; size: int; static: bool}
+    { kind: 'a; size: int; addr: addr; static: bool}
 
 let kind raw = raw.kind
 let byte_size raw = raw.size
 let static raw = raw.static
 let cast raw to:kind =
-  { kind = kind; size = raw.size; base = raw.base;
-    offset = raw.offset; static = raw.static }
+  {kind = kind; size = raw.size; addr = raw.addr; static = raw.static}
 
 external sizeof : #kind -> int = "ml_raw_sizeof"
 let length raw = raw.size / sizeof raw.kind
-let sub raw ?:pos [< 0 >] ?:len [< length raw - pos >] =
-  let size = sizeof raw.kind in
-  if pos < 0 or (pos+len) * size > raw.size then invalid_arg "Raw.sub";
-  { raw with offset = raw.offset + pos * size; size = len * size }
 
 external get : #ikind t -> pos:int -> int = "ml_raw_get"
 external set : #ikind t -> pos:int -> int -> unit = "ml_raw_set"
