@@ -62,10 +62,9 @@ With the windows binary distribution, copy bin\lablgl.bat,
 lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
 in the OCaml distribution. 
 
-To compile for Windows, just uncomment the necessary lines in the 
-Makefile.config file. Currently, it is set up for the standard locations of TCL 
-and Visual Studio .NET. If you are using a different compiler, the paths must 
-be changed. 
+To compile for Windows, just remember to add the include and lib directories to
+the corresponding environment variables, or the appropriate switches in the 
+makefile. Also, uncomment the necessary lines in the Makefile.config file. 
 
 4. Use
 
@@ -304,4 +303,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.24 2003-07-23 07:45:29 erickt Exp $
+$Id: README,v 1.25 2003-07-24 21:14:24 erickt Exp $
