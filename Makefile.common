@@ -1,0 +1,56 @@
+# Common parts of the Makefile, shared by everybody
+
+# Ocaml commands
+CAMLC=ocamlc
+CAMLOPT=ocamlopt
+COMPILER=$(CAMLC) -c -w s
+OPTCOMP=$(CAMLOPT) -c
+LIBRARIAN=ocamlmklib
+OPTLIB=$(CAMLOPT) -a
+LINKER=$(CAMLC)
+OPTLINK=$(CAMLOPT)
+SRCDIR=$(TOPDIR)/src
+VAR2DEF=ocamlrun $(SRCDIR)/var2def
+VAR2SWITCH=ocamlrun $(SRCDIR)/var2switch
+
+# Default settings
+CONFIG = $(TOPDIR)/Makefile.config
+LIBDIR = `$(CAMLC) -where`
+DLLDIR = $(LIBDIR)/stublibs
+INSTALLDIR = $(LIBDIR)/lablGL
+TOGLDIR = Togl
+COPTS = -c -O
+
+# Default toolchain (unix)
+TOOLCHAIN = unix
+XA = .a
+XB =
+XE =
+XO = .o
+XS = .so
+
+# Windows specific
+MKLIB=lib /nologo /debugtype:CV /out:
+MKDLL=link /nologo /dll "$(LIBDIR)/ocamlrun.lib" /out:
+
+# Default rules
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE) .d.obj
+
+.ml.cmo:
+	$(COMPILER) $(OCAMLINC) $<
+
+.ml.cmx:
+	$(OPTCOMP) $(OCAMLINC) $<
+
+.mli.cmi:
+	$(COMPILER) $(OCAMLINC) $<
+
+.c$(XO):
+	$(COMPILER) -ccopt "$(COPTS) $(INCLUDES) -I$(TOGLDIR)" $<
+
+.c.d.obj:
+	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(INCLUDES) -I $(TOGLDIR)" $<
+
+.var.h:
+	$(VAR2DEF) < $< > $@
+

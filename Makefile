@@ -29,7 +29,7 @@ glutopt:
 	cd LablGlut/src && $(MAKE) opt
 
 install:
-	@$(MAKE) real-install INSTALLDIR="$(INSTALLDIR)" DLLDIR="$(DLLDIR)
+	@$(MAKE) real-install INSTALLDIR="$(INSTALLDIR)" DLLDIR="$(DLLDIR)"
 
 real-install:
 	cd src && $(MAKE) install
