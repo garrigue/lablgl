@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.7 2001-10-01 02:59:13 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.8 2002-11-12 03:40:12 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -66,3 +66,11 @@ type parameter = [
 ] 
 external parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
     = "ml_glTexParameter"
+
+type texture_id = int32
+external gen_texture : unit -> texture_id = "ml_glGenTexture"
+let gen_textures n = Array.init n (fun _ -> gen_texture ())
+external bind_texture : target:[`texture_1d|`texture_2d] -> texture_id -> unit
+    = "ml_glBindTexture"
+external delete_texture : texture_id -> unit = "ml_glDeleteTexture"
+let delete_textures a = Array.iter (fun id -> delete_texture id) a

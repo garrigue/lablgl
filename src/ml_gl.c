@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.31 2002-07-15 02:15:48 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.32 2002-11-12 03:40:12 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -576,6 +576,28 @@ CAMLprim value ml_glTexParameter (value target, value param)
     return Val_unit;
 }
     
+CAMLprim value ml_glGenTexture (value unit)
+{
+    GLuint id;
+    glGenTextures(1,&id);
+    return copy_int32(id);
+}
+
+CAMLprim value ml_glBindTexture (value target, value texture_id)
+{
+    GLenum targ = GLenum_val(target);
+    GLuint id = Int32_val(texture_id);
+    glBindTexture(targ,id);
+    return Val_unit;
+}
+
+CAMLprim value ml_glDeleteTexture (value texture_id)
+{
+    GLuint id = Int32_val(texture_id);
+    glDeleteTextures(1,&id);
+    return Val_unit;
+}
+
 ML_3 (glTranslated, Double_val, Double_val, Double_val)
 
 CAMLprim value ml_glVertex(value x, value y, value z, value w)  /* ML */

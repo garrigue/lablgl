@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.4 2001-10-01 02:59:13 garrigue Exp $ *)
+(* $Id: glTex.mli,v 1.5 2002-11-12 03:40:12 garrigue Exp $ *)
 
 open Gl
 
@@ -41,3 +41,10 @@ type parameter = [
   | `priority of clampf
 ] 
 val parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
+
+type texture_id
+val gen_texture : unit -> texture_id
+val gen_textures : int -> texture_id array
+val bind_texture : target:[`texture_1d|`texture_2d] -> texture_id -> unit
+val delete_texture : texture_id -> unit
+val delete_textures : texture_id array -> unit
