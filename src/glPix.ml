@@ -1,4 +1,4 @@
-(* $Id: glPix.ml,v 1.2 1998-04-06 12:09:58 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.3 1999-11-15 09:55:09 garrigue Exp $ *)
 
 open Gl
 
@@ -33,15 +33,15 @@ let raw_pos img =
 
 external bitmap :
     width:int -> height:int -> orig:point2 -> move:point2 ->
-    [bitmap] Raw.t -> unit
+    [`bitmap] Raw.t -> unit
     = "ml_glBitmap"
-type bitmap = ([color_index], [bitmap]) t
+type bitmap = ([`color_index], [`bitmap]) t
 let bitmap (img : bitmap) =
   bitmap width:img.width height:img.height img.raw
 
 external copy :
     x:int -> y:int -> width:int -> height:int ->
-    type:[color depth stencil] -> unit
+    type:[`color|`depth|`stencil] -> unit
     = "ml_glCopyPixels"
 
 external draw :
@@ -51,42 +51,43 @@ let draw img =
   draw img.raw width:img.width height:img.height format:img.format
 
 type map =
-    [i_to_i i_to_r i_to_g i_to_b i_to_a s_to_s r_to_r g_to_g b_to_b a_to_a]
+    [`i_to_i|`i_to_r|`i_to_g|`i_to_b|`i_to_a
+    |`s_to_s|`r_to_r|`g_to_g|`b_to_b|`a_to_a]
 external map : map -> float array -> unit
     = "ml_glPixelMapfv"
 
 type store_param = [
-      pack_swap_bytes (bool)
-      pack_lsb_first (bool)
-      pack_row_length (int)
-      pack_skip_pixels (int)
-      pack_skip_rows (int)
-      pack_alignment (int)
-      unpack_swap_bytes (bool)
-      unpack_lsb_first (bool)
-      unpack_row_length (int)
-      unpack_skip_pixels (int)
-      unpack_skip_rows (int)
-      unpack_alignment (int)
-  ]
+    `pack_swap_bytes bool
+  | `pack_lsb_first bool
+  | `pack_row_length int
+  | `pack_skip_pixels int
+  | `pack_skip_rows int
+  | `pack_alignment int
+  | `unpack_swap_bytes bool
+  | `unpack_lsb_first bool
+  | `unpack_row_length int
+  | `unpack_skip_pixels int
+  | `unpack_skip_rows int
+  | `unpack_alignment int
+]
 external store : store_param -> unit = "ml_glPixelStorei"
 
 type transfer_param = [
-      map_color (bool)
-      map_stencil (bool)
-      index_shift (int)
-      index_offset (int)
-      red_scale (float)
-      red_bias (float)
-      green_scale (float)
-      green_bias (float)
-      blue_scale (float)
-      blue_bias (float)
-      alpha_scale (float)
-      alpha_bias (float)
-      depth_scale (float)
-      depth_bias (float)
-  ]
+    `map_color bool
+  | `map_stencil bool
+  | `index_shift int
+  | `index_offset int
+  | `red_scale float
+  | `red_bias float
+  | `green_scale float
+  | `green_bias float
+  | `blue_scale float
+  | `blue_bias float
+  | `alpha_scale float
+  | `alpha_bias float
+  | `depth_scale float
+  | `depth_bias float
+]
 external transfer : transfer_param -> unit = "ml_glPixelTransfer"
 
 external zoom : x:float -> y:float -> unit = "ml_glPixelZoom"

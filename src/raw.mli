@@ -1,4 +1,4 @@
-(* $Id: raw.mli,v 1.4 1999-04-14 14:05:52 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.5 1999-11-15 09:55:11 garrigue Exp $ *)
 
 (* This module provides a direct way to access C arrays of basic types.
    This is particularly useful when one wants to avoid costly
@@ -6,12 +6,14 @@
 
 type 'a t
 
-type kind = [bitmap byte double float int long short ubyte uint ulong ushort]
+type kind =
+    [`bitmap|`byte|`double|`float|`int|`long|`short
+    |`ubyte|`uint|`ulong|`ushort]
     (* Supported element types. [bitmap] is equivalent to [ubyte] but
        allows user modules to distinguish between them *)
-type fkind = [double float]
-type ikind = [bitmap byte int long short ubyte uint ulong ushort]
-type lkind = [int long uint ulong]
+type fkind = [`double|`float]
+type ikind = [`bitmap|`byte|`int|`long|`short|`ubyte|`uint|`ulong|`ushort]
+type lkind = [`int|`long|`uint|`ulong]
 
 val create : (#kind as 'a) -> len:int -> 'a t
     (* [create t :len] returns a new raw array of C type t
@@ -39,7 +41,7 @@ external sizeof : #kind -> int = "ml_raw_sizeof"
 val length : #kind t -> int
     (* [length raw] returns the length of raw array according to
        its contents type *)
-val sub : (#kind t as 'a) -> ?pos:int -> ?len:int -> 'a
+val sub : (#kind t as 'a) -> pos:int -> len:int -> 'a
     (* returns the slice of length len starting at position pos *)
 
 (* The following functions access raw arrays in the intuitive way.
@@ -59,15 +61,15 @@ external set_lo : #lkind t -> pos:int -> int -> unit = "ml_raw_set_lo"
 (* Simultaneous access versions are much more efficient than individual
    access, the overhead being paid only once *)
 
-val gets : #ikind t -> ?pos:int -> ?len:int -> int array
+val gets : #ikind t -> pos:int -> len:int -> int array
 val sets : #ikind t -> pos:int -> int array -> unit
-val gets_float : #fkind t -> ?pos:int -> ?len:int -> float array
+val gets_float : #fkind t -> pos:int -> len:int -> float array
 val sets_float : #fkind t -> pos:int -> float array -> unit
 
 (* Fastest version: simply copy the contents of the array to and from
    a string *)
 
-val gets_string : 'a t -> ?pos:int -> ?len:int -> string
+val gets_string : 'a t -> pos:int -> len:int -> string
 val sets_string : 'a t -> pos:int -> string -> unit
 
 (* Abbreviations to create raw arrays from ML arrays and strings *)

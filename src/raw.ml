@@ -1,11 +1,12 @@
-(* $Id: raw.ml,v 1.5 1999-04-14 14:05:52 garrigue Exp $ *)
+(* $Id: raw.ml,v 1.6 1999-11-15 09:55:11 garrigue Exp $ *)
 
 type addr
 type kind =
-    [bitmap byte ubyte short ushort int uint long ulong float double]
-type fkind = [float double]
-type ikind = [bitmap byte ubyte short ushort int uint long ulong]
-type lkind = [int uint long ulong]
+    [`bitmap|`byte|`double|`float|`int|`long|`short
+    |`ubyte|`uint|`ulong|`ushort]
+type fkind = [`double|`float]
+type ikind = [`bitmap|`byte|`int|`long|`short|`ubyte|`uint|`ulong|`ushort]
+type lkind = [`int|`long|`uint|`ulong]
 type 'a t =
     { kind: 'a; base: addr; offset: int; size: int; static: bool}
 
@@ -18,7 +19,7 @@ let cast raw to:kind =
 
 external sizeof : #kind -> int = "ml_raw_sizeof"
 let length raw = raw.size / sizeof raw.kind
-let sub raw ?:pos [< 0 >] ?:len [< length raw - pos >] =
+let sub raw :pos :len =
   let size = sizeof raw.kind in
   if pos < 0 or (pos+len) * size > raw.size then invalid_arg "Raw.sub";
   { raw with offset = raw.offset + pos * size; size = len * size }
@@ -35,15 +36,10 @@ external set_lo : #lkind t -> pos:int -> int -> unit = "ml_raw_set_lo"
 
 external gets : #ikind t -> pos:int -> len:int -> int array
     = "ml_raw_read"
-let gets raw ?:pos [< 0 >] ?:len [< length raw - pos >] = gets raw :pos :len
 external gets_string : 'a t -> pos:int -> len:int -> string
     = "ml_raw_read_string"
-let gets_string raw ?:pos [< 0 >] ?:len [< byte_size raw - pos >] =
-  gets_string raw :pos :len
 external gets_float : #fkind t -> pos:int -> len:int -> float array
     = "ml_raw_read_float"
-let gets_float raw ?:pos [< 0 >] ?:len [< length raw - pos >] =
-  gets_float raw :pos :len
 external sets : #ikind t -> pos:int -> int array -> unit = "ml_raw_write"
 external sets_string : 'a t -> pos:int -> string -> unit
     = "ml_raw_write_string"

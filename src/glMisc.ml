@@ -1,6 +1,6 @@
-(* $Id: glMisc.ml,v 1.1 1998-01-29 11:45:57 garrigue Exp $ *)
+(* $Id: glMisc.ml,v 1.2 1999-11-15 09:55:09 garrigue Exp $ *)
 
-external get_string : [vendor renderer version extensions] -> string
+external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
 
 type equation = float * float * float * float
@@ -11,8 +11,8 @@ let clip_plane :plane equation =
   clip_plane :plane equation
 
 type hint_target =
-    [fog line_smooth perspective_correction point_smooth polygon_smooth]
-external hint : hint_target -> [fastest nicest dont_care] -> unit
+    [`fog|`line_smooth|`perspective_correction|`point_smooth|`polygon_smooth]
+external hint : hint_target -> [`fastest|`nicest|`dont_care] -> unit
     = "ml_glHint"
 
 external init_names : unit -> unit = "ml_glInitNames"
@@ -22,11 +22,11 @@ external push_name : int -> unit = "ml_glPushName"
 
 external pop_attrib : unit -> unit = "ml_glPopAttrib"
 type attrib =
-    [ accum_buffer color_buffer current depth_buffer enable eval fog
-      hint lighting line list pixel_mode point polygon polygon_stipple
-      scissor stencil_buffer texture transform viewport ]
+    [ `accum_buffer|`color_buffer|`current|`depth_buffer|`enable|`eval|`fog
+    | `hint|`lighting|`line|`list|`pixel_mode|`point|`polygon|`polygon_stipple
+    | `scissor|`stencil_buffer|`texture|`transform|`viewport ]
 external push_attrib : attrib list -> unit = "ml_glPushAttrib"
 
 external pass_through : float -> unit = "ml_glPassThrough"
-external render_mode : [render select feedback] -> int = "ml_glRenderMode"
-external select_buffer : [uint] Raw.t -> unit = "ml_glSelectBuffer"
+external render_mode : [`render|`select|`feedback] -> int = "ml_glRenderMode"
+external select_buffer : [`uint] Raw.t -> unit = "ml_glSelectBuffer"

@@ -1,14 +1,14 @@
-# OLabl commands
-COMPILER=olablc -c
-OPTCOMP=olablopt -c
-LIBRARIAN=olablc -a
-OPTLIB=olablopt -a
-LINKER=olablc
-OPTLINK=olablopt
+# Ocaml commands
+COMPILER=ocamlc -c -modern
+OPTCOMP=ocamlopt -c -modern
+LIBRARIAN=ocamlc -a
+OPTLIB=ocamlopt -a
+LINKER=ocamlc
+OPTLINK=ocamlopt
 
 include Makefile.config
 
-OLABLINC=-I $(LABLTKDIR)
+OCAMLINC=-I $(LABLTKDIR)
 OTHERLIBS=-L$(LABLTKDIR) -llabltk41 $(LIBS)
 
 # Files
@@ -26,13 +26,13 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt
 
 .ml.cmo:
-	$(COMPILER) $(OLABLINC) $<
+	$(COMPILER) $(OCAMLINC) $<
 
 .ml.cmx:
-	$(OPTCOMP) $(OLABLINC) $<
+	$(OPTCOMP) $(OCAMLINC) $<
 
 .mli.cmi:
-	$(COMPILER) $(OLABLINC) $<
+	$(COMPILER) $(OCAMLINC) $<
 
 .c.o:
 	$(COMPILER) -ccopt "-I$(TOGLDIR) $(INCLUDES)" $<
@@ -41,7 +41,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 	var2def < $< > $@
 
 .cmx.opt: lablgl.cmxa liblablgl.a
-	$(OPTLINK) -o $@ $(OLABLINC) unix.cmxa tk41.cmxa lablgl.cmxa $< \
+	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa tk41.cmxa lablgl.cmxa $< \
 		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
 
 all: 	var2def	var2switch lablgltop lablgl lablgllink
@@ -68,7 +68,7 @@ $(TOGLDIR)/togl.o:
 	cd $(TOGLDIR) && $(MAKE) togl.o
 
 lablgltop: lablgl.cma togl.cmo liblablgl.a
-	olablmktop $(OLABLINC) -custom -o lablgltop \
+	ocamlmktop $(OCAMLINC) -custom -o lablgltop \
 		unix.cma tk41.cma lablgl.cma togl.cmo \
 		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
 
@@ -79,14 +79,14 @@ lablgl: lablgl.in Makefile.config
 	chmod 755 $@
 
 lablgllink: lablgllink.in Makefile.config
-	sed -e 's|@INCLUDES@|$(OLABLINC)|g'	\
+	sed -e 's|@INCLUDES@|$(OCAMLINC)|g'	\
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
 	    -e 's|@OTHERLIBS@|$(OTHERLIBS)|g' \
 	    < lablgllink.in > $@
 	chmod 755 $@
 
 lablglopt: lablglopt.in Makefile.config
-	sed -e 's|@INCLUDES@|$(OLABLINC)|g'	\
+	sed -e 's|@INCLUDES@|$(OCAMLINC)|g'	\
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
 	    -e 's|@OTHERLIBS@|$(OTHERLIBS)|g' \
 	    < lablglopt.in > $@
@@ -122,7 +122,7 @@ clean:
 	cd $(TOGLDIR) && $(MAKE) clean
 
 depend:
-	olabldep *.ml *.mli > .depend
+	ocamldep *.ml *.mli > .depend
 
 #dependencies
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h

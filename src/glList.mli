@@ -1,8 +1,8 @@
-(* $Id: glList.mli,v 1.2 1998-01-30 10:18:45 garrigue Exp $ *)
+(* $Id: glList.mli,v 1.3 1999-11-15 09:55:06 garrigue Exp $ *)
 
 type t
 
-val create : [compile compile_and_execute] -> t
+val create : [`compile|`compile_and_execute] -> t
     (* [create mode] creates a new display list in given mode.
        It is equivalent to
        [let base = gen_lists len:1 in begins (nth base pos:0)] *)
@@ -20,11 +20,11 @@ val is_list : t -> bool
 val gen_lists : len:int -> base
     (* Generate len new display lists. They are indexed by
        [nth base pos:0] to [nth base pos:(len-1)] *)
-val begins : t -> mode:[compile compile_and_execute] -> unit
+val begins : t -> mode:[`compile|`compile_and_execute] -> unit
     (* glNewList: start the definition of a display list in given mode *)
 val delete_lists : base -> len:int -> unit
     (* Delete len lists starting at base *)
-val call_lists : [byte(string) int(int array)] -> ?base:base -> unit
+val call_lists : ?base:base -> [`byte string|`int(int array)] -> unit
     (* Call the lists whose indexes are given either by a string
        (code of each character) or an array.
        If the base is omited, the base given in a previous call is assumed *)
