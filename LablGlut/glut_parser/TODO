@@ -1,9 +1,0 @@
-- Go ahead and do this the right way, with a proper hand-made lexer.
-  genlex is going to get confused by things like 
-    a&*b 
-  where the the operators are mushed together.  Genlex will probably think it's
-  all one keyword or just freak out and give an error.  
-
-- Change the comments to a form that genlex won't strip away. 
-  We want to keep the comments.  They help understand the demos.
-
