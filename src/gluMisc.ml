@@ -1,4 +1,4 @@
-(* $Id: gluMisc.ml,v 1.3 2000-04-12 07:40:25 garrigue Exp $ *)
+(* $Id: gluMisc.ml,v 1.4 2000-06-06 02:15:35 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -29,7 +29,7 @@ external scale_image :
     format:#Gl.format ->
     w:int -> h:int -> data:#kind Raw.t ->
     w:int -> h:int -> data:#kind Raw.t -> unit
-    = "ml_gluScaleImage"
+    = "ml_gluScaleImage_bc" "ml_gluScaleImage"
 let scale_image ~width ~height img =
   let k = Raw.kind (to_raw img) and format = format img in
   let new_img = GlPix.create k ~format ~height ~width in
