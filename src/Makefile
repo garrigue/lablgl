@@ -43,7 +43,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 
 all: 	var2def	var2switch lablgltop lablgl
 
-opt:	var2def var2switch lablgl.cmxa
+opt:	var2def var2switch lablgl.cmxa lablglopt
 
 var2def: var2def.cmo
 	$(LINKER) var2def.cmo -o $@
@@ -70,6 +70,13 @@ lablgltop: lablgl.cma liblablgl.a
 lablgl: lablgl.in Makefile.config
 	sed -e "s|LABLTKDIR|$(LABLTKDIR)|" -e "s|INSTALLDIR|$(INSTALLDIR)|" \
 		< lablgl.in > $@
+	chmod +x $@
+
+lablglopt: lablglopt.in Makefile.config
+	sed -e "s|INCLUDES|$(INCLUDES)|" -e "s|INSTALLDIR|$(INSTALLDIR)|" \
+		-e "s|OTHERLIBS|$(GLLIBS) $(XLIBS) $(TKLIBS)|" \
+		< lablglopt.in > $@
+	chmod +x $@
 
 gl_tags.c: gl_tags.var
 	./var2switch GL_ < gl_tags.var > $@
@@ -89,12 +96,14 @@ install:
 	cp raw.mli gl.mli togl.mli $(INSTALLDIR)
 	cp lablgl.cma liblablgl.a $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
+	cp lablgl $(LIBDIR)
 	if test -f lablgl.cmxa; then : ; \
-		cp lablgl.cmxa lablgl.cma $(INSTALLDIR); fi
+		cp lablgl.cmxa lablgl.cma $(INSTALLDIR); \
+		cp lablglopt $(BINDIR); fi
 
 
 clean:
-	rm -f *.cm? ml_*.o gl_tags.[ch] tk_tags.[ch] *~ #*
+	rm -f *.cm* *.o *.opt *_tags.[ch] lablgl lablglopt *~ #*
 
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
