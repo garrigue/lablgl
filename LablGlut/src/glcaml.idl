@@ -398,7 +398,19 @@ void glFogiv( unsigned int pname, [in,size_is(nparams)] int params[], int nparam
     quote(call, "glFogiv(pname, params);");
 void glFeedbackBuffer( int size, unsigned int type, [out,size_is(size)] float buffer[] );
 void glPassThrough( float token );
+
 void glSelectBuffer( int size, [in,out,length_is(size),*int32,bigarray] int buffer[] );
+// bitwise_int64of32 is needed to get some of the values returned by
+// glSelectBuffer, since unsigned 32-bit integers do not seem to be supported
+// in OCaml.
+quote(mli,"val bitwise_int64of32 : int32 -> int64")
+quote(ml,"
+let bitwise_int64of32 i32 =
+   Int64.add 
+    (if i32<Int32.zero then Int64.shift_left Int64.one 32 else Int64.zero) 
+    (Int64.of_int32 (Int32.logand i32 (Int32.of_int 0x7fffffff)));;
+");
+
 void glInitNames( void );
 void glLoadName( unsigned int name );
 void glPushName( unsigned int name );
