@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.ml,v 1.4 2000-04-12 07:40:26 garrigue Exp $ *)
+(* $Id: gluNurbs.ml,v 1.5 2001-06-22 04:51:18 garrigue Exp $ *)
 
 open Gl
 
@@ -26,7 +26,7 @@ external curve :
 let curve nurb ~knots ~control ~order ~kind:t =
   let arity = target_size t in
   if (Array.length knots - order) * arity <> Array.length control
-  then invalid_arg "GluNurb.curve";
+  then invalid_arg "GluNurbs.curve";
   let knots = Raw.of_float_array ~kind:`float knots
   and control = Raw.of_float_array ~kind:`float control in
   curve nurb ~knots ~control ~order ~kind:t
