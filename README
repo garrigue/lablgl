@@ -8,7 +8,7 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Caml 3.05
+  * Objective Caml 3.05 or 3.06
   * LablTk (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
   * GNU make (for conditionals)
@@ -60,7 +60,12 @@ then (b,c,d) can be replaced by:
 
 With the windows binary distribution, copy bin\lablgl.bat,
 lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
-in the OCaml distribution.
+in the OCaml distribution. 
+
+To compile for Windows, just uncomment the necessary lines in the 
+Makefile.config file. Currently, it is set up for the standard locations of TCL 
+and Visual Studio .NET. If you are using a different compiler, the paths must 
+be changed. 
 
 4. Use
 
@@ -299,4 +304,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.23 2003-04-22 03:24:02 erickt Exp $
+$Id: README,v 1.24 2003-07-23 07:45:29 erickt Exp $
