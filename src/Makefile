@@ -111,11 +111,11 @@ real-install:
 	cp liblablgl.a lablgl.cma libtogl.a togl.cma $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
-	@if test -f liblablgl.so; then $(MAKE) installdll; fi
+	@if test -f dlllablgl.so; then $(MAKE) installdll; fi
 	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
 
 installdll:
-	cp liblablgl.so libtogl.so $(INSTALLDIR)
+	cp dlllablgl.so dlltogl.so $(INSTALLDIR)
 
 installopt:
 	cp lablgl.cmxa lablgl.a togl.cmxa togl.a $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
