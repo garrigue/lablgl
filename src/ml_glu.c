@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.13 1998-04-27 07:35:28 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.14 2000-02-29 05:30:38 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -40,19 +40,9 @@ static value Val_addr (void *addr)
 }
 */
 
-#ifdef GLU_VERSION_1_2
-
-#define Nurb_val(struc) ((GLUnurbs *) Field(struc,1))
-#define Quad_val(struc) ((GLUquadric *) Field(struc,1))
-#define Tess_val(struc) ((GLUtesselator *) Field(struc,1))
-
-#else /* GLU_VERSION_1_1 */
-
 #define Nurb_val(struc) ((GLUnurbsObj *) Field(struc,1))
 #define Quad_val(struc) ((GLUquadricObj *) Field(struc,1))
 #define Tess_val(struc) ((GLUtriangulatorObj *) Field(struc,1))
-
-#endif /* GLU_VERSION_1_1 */
 
 #define Store_addr(struc, addr) Field(struc,1) = (value) addr
 

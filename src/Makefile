@@ -35,7 +35,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 	$(COMPILER) $(OCAMLINC) $<
 
 .c.o:
-	$(COMPILER) -ccopt "-I$(TOGLDIR) $(INCLUDES)" $<
+	$(COMPILER) -ccopt "-g -I$(TOGLDIR) $(INCLUDES)" $<
 
 .var.h:
 	var2def < $< > $@
@@ -114,6 +114,7 @@ install:
 	if test -f lablgl.cmxa; then $(MAKE) installopt; fi
 
 installopt:
+	cp $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
 	cp lablgl.cmxa lablgl.a $(INSTALLDIR)
 	cp lablglopt $(BINDIR)
 
