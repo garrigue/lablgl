@@ -1,5 +1,5 @@
 #!/bin/sh
 
-exec olablc -custom @INCLUDES@ -I @INSTALLDIR@ \
+exec ocamlc -custom @INCLUDES@ -I @INSTALLDIR@ \
 	tk41.cma lablgl.cma togl.cmo $* -cclib "-L@INSTALLDIR@ -llablgl" \
 	-cclib "@OTHERLIBS@"
