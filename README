@@ -10,7 +10,7 @@ LablGlut for standalone applications not using Tcl/Tk
 2. Requisites
 
   * Objective Caml 3.05, 3.06 or 3.07
-  * LablTk (included in Objective Caml, requires Tcl/Tk) (for Togl support)
+  * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
   * GNU make (for conditionals)
@@ -345,4 +345,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.29 2003-10-01 08:03:59 raffalli Exp $
+$Id: README,v 1.30 2003-10-01 08:20:26 garrigue Exp $
