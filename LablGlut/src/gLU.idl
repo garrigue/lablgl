@@ -36,6 +36,8 @@
 
 quote(C,"#include <GL/gl.h>");
 quote(C,"#include <GL/glu.h>");
+quote(C,"#include <assert.h>");
+quote(C,"#include <string.h>");
 quote(C,"typedef void* glu_nurbs;");
 quote(C,"typedef void* glu_quadric;");
 quote(C,"typedef void* glu_tesselator;");
@@ -43,6 +45,7 @@ quote(C,"typedef void* glu_triangulator;");
 quote(C,"typedef void (*glu_callback)(void);");
 quote(C,"typedef GLint idlglu_errcode;");
 quote(C,"typedef GLint idlglu_tf_errcode;");
+quote(C,"typedef struct caml_bigarray caml_bigarray;");
 
 typedef [abstract] void* glu_nurbs;
 typedef [abstract] void* glu_quadric;
@@ -60,7 +63,6 @@ typedef [errorcode, errorcheck(idlglu_errcode_check)] int idlglu_errcode;
 /* GL_TRUE on success */
 typedef [errorcode, errorcheck(idlglu_tf_errcode_check)] int idlglu_tf_errcode;
 quote(C,"
-    #include <string.h>
     void idlglu_errcode_check(idlglu_errcode ecode) 
     {
         if(ecode != 0) {
@@ -184,8 +186,25 @@ void gluTessEndContour (glu_tesselator tess);
 void gluTessEndPolygon (glu_tesselator tess);
 void gluTessNormal (glu_tesselator tess, double valueX, double valueY, double valueZ);
 void gluTessProperty (glu_tesselator tess, unsigned int which, double data);
+
+/*
+quote(C,"
+static void print_ba(caml_bigarray * ba)
+{
+    int i;
+    GLdouble* data=(GLdouble*)ba->data;
+    printf(\"(bigarray %p : data=%p, num_dims=%i, flags=%i, dim[0]=%i\\n\",
+        ba, ba->data, ba->num_dims, ba->flags, ba->dim[0]);
+    for(i=0; i<ba->dim[0]; i++) {
+        printf(\"\t%f\", data[i]);
+    }
+    printf(\")\\n\");
+}
+");
+*/
+
 void gluTessVertex (glu_tesselator tess, [in,bigarray] double location[], 
-    [in, bigarray] double* data) // FIXME: allow void* data?
+    [in, bigarray] double data[]) // FIXME: allow void* data?
     quote(call, "gluTessVertex(tess, location, Bigarray_val(_v_data));");
 idlglu_tf_errcode gluUnProject (double winX, double winY, double winZ, [in,bigarray]
     double model[16], [in,bigarray] double proj[16], 
@@ -262,6 +281,7 @@ void CALLBACK idlglu_tess_vertex_callback(void* vp_bigarray, void* vp_tess)
     value ba_val;
     struct caml_bigarray* ba=(struct caml_bigarray*) vp_bigarray;
     ba_val = alloc_bigarray(ba->flags, ba->num_dims, ba->data, ba->dim);
+    assert(ba->num_dims<=16); /* caml supports no more than 16. */
     callback(*caml_named_value(_cbname(\"TessVertex\", ptr2str(vp_tess))), 
         ba_val);
 }
@@ -278,39 +298,41 @@ void CALLBACK idlglu_tess_error_callback(int msg, void* vp_tess)
         Val_int(msg)); 
 }
 
-    #include <assert.h>
 
 void CALLBACK idlglu_tess_combine_callback( GLdouble coords[3], 
     void *vertex_data[4], GLfloat weights[4], void **dataOut, void* vp_tess )
 {
-    GLdouble weights2[4];
-    value val_args[6], ba_data_out_val, *cb;
-    struct caml_bigarray * ba_data_out;
+    GLdouble *alloc_coords, *alloc_weights;
+    value val_args[6], vba_data_out, *cb, vba_coords;
+    caml_bigarray* ba;
     int i, k, flags;
 
+    alloc_coords = (GLdouble*) stat_alloc(sizeof(GLdouble)*3);
+    alloc_weights = (GLdouble*) stat_alloc(sizeof(GLdouble)*4);
+    for(i=0;i<3;i++) { alloc_coords[i] = coords[i]; }
+    for(i=0;i<4;i++) { alloc_weights[i] = weights[i]; }
+
     k=0;
-    flags = BIGARRAY_FLOAT64 | BIGARRAY_C_LAYOUT; 
-    val_args[k++]=alloc_bigarray_dims(flags, /*numdims*/1, coords, /*size*/3);
+    flags = BIGARRAY_FLOAT64 | BIGARRAY_C_LAYOUT | BIGARRAY_MANAGED; 
+    val_args[k++] = alloc_bigarray_dims(flags, /*numdims*/1, alloc_coords, /*size*/3);
 
     for(i=0; i<4; i++) {
         struct caml_bigarray* ba = (struct caml_bigarray*)vertex_data[i];
+        assert(ba!=NULL);
+        assert(ba->num_dims<=8);
         val_args[k++] = alloc_bigarray(ba->flags, ba->num_dims, ba->data, ba->dim);
     }
 
-    for(i=0; i<4; i++) { weights2[i] = (GLdouble) weights[i]; }
-    val_args[k++]=alloc_bigarray_dims(flags, 1, weights2, /*size*/4);
+    val_args[k++]=alloc_bigarray_dims(flags, /*numdims*/1, alloc_weights, /*size*/4);
 
     cb = caml_named_value(_cbname(\"TessCombine\", ptr2str(vp_tess))); 
-    ba_data_out_val = callbackN(*cb, k, val_args);
+    assert(cb!=NULL);
+    assert(k==6);
+    vba_data_out = callbackN(*cb, k, val_args); /* invoke OCaml callback */
 
-    /* ba_data_out is a 2D bigarray.  Use it to fill dataOut. */
-    ba_data_out = Bigarray_val(ba_data_out_val);
-    assert(ba_data_out->num_dims == 2);
-    for(i=0; i<ba_data_out->dim[0]; i++) {
-        int size_each = ba_data_out->dim[1];
-        GLdouble * data = ba_data_out->data;
-        dataOut[i] = &data[i*size_each];
-    }
+    /* dataOut := result of the OCaml callback */
+    ba = Bigarray_val(vba_data_out);
+    *dataOut = ba;
 }
 ");
 
@@ -351,9 +373,7 @@ val gluTessCallback : glu_tesselator -> glu_tess_callback -> unit
 ");
 
 quote(ml, "
-let register_cb name cb = 
-    prerr_endline (\"Registering callback \"^name);
-    Callback.register name cb
+let register_cb name cb = Callback.register name cb
 
 let gluTessCallback tess callback =
     let idstr = _idlglu_tess_id_str tess in
@@ -379,7 +399,7 @@ let gluTessCallback tess callback =
         register_cb name cb;
         _gluTessCallback tess glu_tess_error_data
     | GLU_TESS_COMBINE cb ->
-        let name = _cbname \"TessError\" idstr in
+        let name = _cbname \"TessCombine\" idstr in
         register_cb name cb;
         _gluTessCallback tess glu_tess_combine_data
 ");
