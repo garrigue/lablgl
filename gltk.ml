@@ -1,4 +1,4 @@
-(* $Id: tk.ml,v 1.3 1998-01-12 02:45:02 garrigue Exp $ *)
+(* $Id: gltk.ml,v 1.1 1998-01-12 04:47:36 garrigue Exp $ *)
 
 exception TKerror of string
 
