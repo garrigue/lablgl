@@ -41,7 +41,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 
 all: 	var2def	var2switch lablgltop lablgl
 
-opt:	var2def var2switch lablgl.cmxa lablglopt
+opt:	lablgl.cmxa lablglopt
 
 var2def: var2def.cmo
 	$(LINKER) var2def.cmo -o $@
@@ -57,7 +57,7 @@ lablgl.cmxa: $(OPTOBJS)
 
 liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
-#	$(RANLIB) liblablgl.a
+	$(RANLIB) liblablgl.a
 
 lablgltop: lablgl.cma liblablgl.a
 	olablmktop $(INCLUDES) -custom -o lablgltop \
@@ -96,7 +96,7 @@ install:
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
 	if test -f lablgl.cmxa; then : ; \
-		cp lablgl.cmxa lablgl.cma $(INSTALLDIR); \
+		cp lablgl.cmxa lablgl.a $(INSTALLDIR); \
 		cp lablglopt $(BINDIR); fi
 
 
