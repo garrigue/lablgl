@@ -3,10 +3,11 @@ LIBDIR=/usr/local/lib/olabl
 COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
-CINCLUDES=-ccopt "-I/usr/local/include"
+CINCLUDES=-ccopt "-I/usr/local/lib/tcl8.0 -I/usr/local/lib/tk8.0" \
+	-ccopt "-I/usr/local/include"
 #GLLIBS=	-ccopt "-L/usr/local/lib" -cclib -lMesaaux -cclib -lMesatk \
 #	-cclib -lMesaGL -cclib -lMesaGLU
-GLLIBS=-ccopt -L. -cclib -lglaux -cclib -lGL -cclib -lGLU
+#GLLIBS=-ccopt -L. -cclib -lglaux -cclib -lGL -cclib -lGLU
 XLIBS= -ccopt "-L/usr/X11R6/lib" -cclib -lX11 -cclib -lXext
 
 MLOBJS =	gl.cmo		gltk.cmo	aux.cmo		glm.cmo
