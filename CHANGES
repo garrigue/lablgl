@@ -1,3 +1,12 @@
+2003-09-29: [Jacques]
+* reorganized directories and Makefiles
+
+2003-09-25: [Christophe]
+* merge ijtrotts' LablGlut
+
+2003-09-24: [Christophe]
+* add glArray support
+
 LablGL 0.99:
 ------------
 

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1998-12-11 08:44:04 garrigue Exp $
+# $Id: Makefile,v 1.4 2003-09-29 04:17:51 garrigue Exp $
 
 # Togl - a Tk OpenGL widget
 # Version 1.5
@@ -6,7 +6,10 @@
 # See the LICENSE file for copyright details.
 
 # $Log: Makefile,v $
-# Revision 1.3  1998-12-11 08:44:04  garrigue
+# Revision 1.4  2003-09-29 04:17:51  garrigue
+# reorganize directories
+#
+# Revision 1.3  1998/12/11 08:44:04  garrigue
 # Togl 1.5
 #
 # Revision 1.2  1998/09/16 10:17:27  garrigue
@@ -91,7 +94,7 @@ TK_FLAGS =
 
 # Jacques Garrigue added this line
 # Setup in Makefile.config overrides the above definitions
-include ../Makefile.config
+include ../../Makefile.config
 
 #### Shouldn't have to change anything beyond this point ####
 

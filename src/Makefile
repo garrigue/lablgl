@@ -8,6 +8,7 @@ OPTLIB=$(CAMLOPT) -a
 LINKER=$(CAMLC)
 OPTLINK=$(CAMLOPT)
 # Default settings
+CONFIG = ../Makefile.config
 LIBDIR = `$(CAMLC) -where`
 DLLDIR = $(LIBDIR)/stublibs
 INSTALLDIR = $(LIBDIR)/lablGL
@@ -24,7 +25,7 @@ XS = .so
 MKLIB=lib /nologo /debugtype:CV /out:
 MKDLL=link /nologo /dll "$(LIBDIR)/ocamlrun.lib" /out:
 
-include Makefile.config
+include $(CONFIG)
 
 # Composite options
 INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
@@ -71,21 +72,18 @@ TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 	$(OPTLINK) -o $@ $(OCAMLINC) -ccopt -L. \
 	    unix.cmxa labltk.cmxa lablgl.cmxa togl.cmxa $<
 
-all: 	lib lablgltop$(XE) lablgl$(XB) glut
-
-alltk:  lib lablgltop$(XE) lablgl$(XB)
-
-allglut: lib lablgl$(XB) glut
+all: 	lib togl
 
 lib:	var2def$(XE) var2switch$(XE) lablgl.cma
 
-opt:	lablgl.cmxa togl.cmxa glutopt
+togl:	lib lablgltop$(XE) lablgl$(XB)
 
-opttk:	lablgl.cmxa togl.cmxa
-
-optglut: lablgl.cmxa glutopt
+opt:	libopt toglopt
 
 libopt: lablgl.cmxa
+
+toglopt: togl.cmxa
+
 
 var2def$(XE): var2def.ml
 	$(LINKER) -pp camlp4o var2def.ml -o $@
@@ -93,47 +91,41 @@ var2def$(XE): var2def.ml
 var2switch$(XE): var2switch.ml
 	$(LINKER) -pp camlp4o var2switch.ml -o $@
 
-glut:
-	cd LablGlut/src_lablglut && $(MAKE)
-
-glutopt:
-	cd LablGlut/src_lablglut && $(MAKE) opt
-
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
 	$(MKLIB)$@ $(COBJS)
 dlllablgl.dll: $(COBJS:.obj=.d.obj)
 	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GLLIBS)
-lablgl.cma: liblablgl$(XA) dlllablgl.dll $(LIBOBJS) Makefile.config
+lablgl.cma: liblablgl$(XA) dlllablgl.dll $(LIBOBJS) $(CONFIG)
 	$(LINKER) -a -o $@ $(LIBOBJS) \
 	  -cclib -llablgl -dllib -llablgl \
 	  -cclib "$(GLLIBS)"
-lablgl.cmxa: liblablgl$(XA) $(OPTOBJS) Makefile.config
+lablgl.cmxa: liblablgl$(XA) $(OPTOBJS) $(CONFIG)
 	$(OPTLINK) -a -o $@ $(OPTOBJS) -cclib -llablgl \
 	  -cclib "$(GLLIBS)"
-libtogl$(XA): $(TOGLOBJS) Makefile.config
+libtogl$(XA): $(TOGLOBJS) $(CONFIG)
 	$(MKLIB)$@ $(TOGLOBJS)
 dlltogl.dll: $(TOGLOBJS:.obj=.d.obj)
 	$(MKDLL)$@ $(TOGLOBJS:.obj=.d.obj) $(GLLIBS) $(TKLIBS)
-togl.cma: libtogl$(XA) dlltogl.dll togl.cmo Makefile.config
+togl.cma: libtogl$(XA) dlltogl.dll togl.cmo $(CONFIG)
 	$(LINKER) -a -o $@ togl.cmo -cclib -ltogl -dllib -ltogl \
 	  -cclib "$(GLLIBS) $(TKLIBS)"
-togl.cmxa: libtogl$(XA) togl.cmx Makefile.config
+togl.cmxa: libtogl$(XA) togl.cmx $(CONFIG)
 	$(OPTLINK) -a -o $@ togl.cmx -cclib -ltogl \
 	  -cclib "$(GLLIBS) $(TKLIBS)"
 #CUSTOMTOP = -verbose -custom unix.cma
 else
-liblablgl.a: $(COBJS) Makefile.config
+liblablgl.a: $(COBJS) $(CONFIG)
 	$(LIBRARIAN) -o lablgl $(COBJS) $(GLLIBS) $(XLIBS)
-lablgl.cma: liblablgl.a $(LIBOBJS) Makefile.config
+lablgl.cma: liblablgl.a $(LIBOBJS) $(CONFIG)
 	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(GLLIBS) $(XLIBS)
-lablgl.cmxa: liblablgl.a $(OPTOBJS) Makefile.config
+lablgl.cmxa: liblablgl.a $(OPTOBJS) $(CONFIG)
 	$(LIBRARIAN) -o lablgl $(OPTOBJS) $(GLLIBS) $(XLIBS)
-libtogl.a: $(TOGLOBJS) Makefile.config
+libtogl.a: $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
-togl.cma: libtogl.a togl.cmo Makefile.config
+togl.cma: libtogl.a togl.cmo $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmo $(GLLIBS) $(TKLIBS) $(XLIBS)
-togl.cmxa: libtogl.a togl.cmx Makefile.config
+togl.cmxa: libtogl.a togl.cmx $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(GLLIBS) $(TKLIBS) $(XLIBS)
 INSTTOP = lablgltop
 endif
@@ -155,7 +147,7 @@ lablgltop$(XE): lablgl.cma togl.cma
 	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
-lablgl$(XB): lablgl.in Makefile.config
+lablgl$(XB): lablgl.in $(CONFIG)
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
 	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
 	    < lablgl.in > $@
@@ -173,49 +165,37 @@ togl_tags.c: togl_tags.var
 glu_tags.c: glu_tags.var
 	./var2switch GLU_ < glu_tags.var > $@
 
-install libinstall:
-	@$(MAKE) real-$@ LIBDIR="$(LIBDIR)"
-	@if test -f LablGlut/src_lablglut/lablglut.cma; then $(MAKE) installglut; fi
+install: libinstall
+	@if test -f lablgltop$(XE); then $(MAKE) toglinstall; fi
 
-real-libinstall:
+libinstall:
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
 	cp $(LIBOBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
 	cp liblablgl$(XA) lablgl.cma "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) liblablgl$(XA)
-	@if test -f dlllablgl$(XS); then cp dlllablgl$(XS) "$(DLLDIR)"; fi
-	@if test -f lablgl.cmxa; then $(MAKE) libinstallopt LIBDIR="$(LIBDIR)"; fi
+	if test -f dlllablgl$(XS); then cp dlllablgl$(XS) "$(DLLDIR)"; fi
+	@if test -f lablgl.cmxa; then $(MAKE) libinstallopt; fi
 
-real-install:
-	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
-	cp $(MLOBJS:.cmo=.cmi) "$(INSTALLDIR)"
-	cp $(MLOBJS:.cmo=.mli) "$(INSTALLDIR)"
-	cp liblablgl$(XA) lablgl.cma libtogl$(XA) togl.cma $(INSTTOP) "$(INSTALLDIR)"
-	cd "$(INSTALLDIR)" && $(RANLIB) liblablgl$(XA) libtogl$(XA)
+toglinstall:
+	cp togl.cmi togl.mli libtogl$(XA) togl.cma $(INSTTOP) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) libtogl$(XA)
+	if test -f dlltogl$(XS); then cp dlltogl$(XS) "$(DLLDIR)"; fi
 	cp lablgl$(XB) "$(BINDIR)"
-	@if test -f dlllablgl$(XS); then $(MAKE) installdll; fi
-	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR="$(LIBDIR)"; fi
-
-installdll:
-	cp dlllablgl$(XS) dlltogl$(XS) "$(DLLDIR)"
-
-installglut:
-	cd LablGlut/src_lablglut && $(MAKE) install
+	@if test -f togl.cmxa; then $(MAKE) toglinstallopt; fi
 
 libinstallopt:
 	cp lablgl.cmxa lablgl$(XA) $(LIBOBJS:.cmo=.cmx) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) lablgl$(XA)
 
-installopt:
-	cp lablgl.cmxa lablgl$(XA) togl.cmxa togl$(XA) \
-	   $(MLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
-	cd "$(INSTALLDIR)" && $(RANLIB) lablgl$(XA) togl$(XA)
+toglinstallopt:
+	cp togl.cmxa togl(XA) togl.cmx "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) togl(XA)
 
 clean:
 	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
 		var2def var2switch lablgltop$(EX) lablgl$(XB) lablgllink lablglopt
 	rm -f $(TOGLDIR)/togl$(XO)
-	cd LablGlut/src_lablglut && $(MAKE) clean
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

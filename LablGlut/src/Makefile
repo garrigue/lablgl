@@ -91,7 +91,7 @@ endif
 
 lablgluttop$(XE): lablglut.cma 
 	ocamlmktop $(CUSTOMTOP) -I . -I ../.. $(OCAMLINC) -o $@ \
-	  lablglut.cma ../../lablgl.cma
+	  lablglut.cma ../../src/lablgl.cma
 
 lablglut$(XB): lablglut.in ../../Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
