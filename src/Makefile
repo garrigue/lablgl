@@ -1,21 +1,11 @@
-#Adjust this directory for installation
-LIBDIR=/usr/local/lib/olabl
+# OLabl commands
 COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
-INCLUDES=-I /usr/local/lib/olabl/labltk41
-CINCLUDES=-ccopt "-I/usr/local/lib/tcl8.0 -I/usr/local/lib/tk8.0" \
-	-ccopt "-I/usr/local/include"
-#GLLIBS=	-ccopt "-L/usr/local/lib" -cclib -lMesaaux -cclib -lMesatk \
-#	-cclib -lMesaGL -cclib -lMesaGLU
-AUXLIB=-ccopt -L. -cclib -lglaux
-GLLIBS=-cclib -lGL -cclib -lGLU
-TKLIBS=-ccopt -L/usr/local/lib/olabl/labltk41 -cclib -llabltk41 \
-	-ccopt -L/usr/local/lib -cclib -ltk8.0 -cclib -ltcl8.0
 
-XLIBS= -ccopt "-L/usr/X11R6/lib" -cclib -lX11 -cclib -lXext -cclib -lXmu
-RANLIB= ranlib
+include Makefile.config
 
+# Files
 MLOBJS =	gl.cmo		gltk.cmo	aux.cmo		glm.cmo \
 		togl.cmo
 COBJS =		ml_gl.o		ml_tk.o		ml_aux.o \
