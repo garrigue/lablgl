@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.4 1998-01-07 08:52:31 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.5 1998-01-07 09:07:42 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -100,19 +100,7 @@ ML_string(glPolygonStipple)
 ML_bool(glEdgeFlag)
 ML_double3(glNormal3d)
 
-value ml_glMatrixMode(value mode)  /* ML */
-{
-    GLenum m;
-
-    switch (mode)
-    {
-    case MLTAG_modelview:	m = GL_MODELVIEW;
-    case MLTAG_projection:	m = GL_PROJECTION;
-    case MLTAG_texture:	        m = GL_TEXTURE;
-    }
-    glMatrixMode (m);
-    return Val_unit;
-}
+ML_GLenum(glMatrixMode)
 
 ML_void(glLoadIdentity)
 
