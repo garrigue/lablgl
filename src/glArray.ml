@@ -6,26 +6,28 @@ type kind = [`edge_flag | `texture_coord | `color | `index | `normal | `vertex ]
 
 external edge_flag : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
 
-external tex_coord
-    : size:int -> [< `short | `int | `float | `double] Raw.t -> unit 
+external tex_coord :
+  [< `one | `two | `three | `four] -> 
+  [< `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glTexCoordPointer"
 
-external color
-    : size:int ->
-      [< `byte | `ubyte | `short | `ushort | `int | `uint | `float | `double]
-      Raw.t -> unit 
+external color :
+  [< `three | `four] ->
+  [< `byte | `ubyte | `short | `ushort | `int | `uint | `float | `double] Raw.t
+  -> unit 
 	= "ml_glColorPointer"
 
-external index
-    : [< `ubyte | `short | `int | `float | `double] Raw.t -> unit 
+external index : 
+  [< `ubyte | `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glIndexPointer"
 
-external normal
-    : [< `byte | `short | `int | `float | `double] Raw.t -> unit 
+external normal : 
+  [< `byte | `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glNormalPointer"
 
-external vertex
-    : size:int -> [< `short | `int | `float | `double] Raw.t -> unit 
+external vertex : 
+  [< `two | `three | `four] -> [< `short | `int | `float | `double] Raw.t 
+  -> unit 
 	= "ml_glVertexPointer"
 
 external enable

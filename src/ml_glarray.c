@@ -18,32 +18,34 @@
 #include "raw_tags.h"
 #include "ml_raw.h"
 
+int ml_glSizeOfValue(value v) {
+   switch(v) {
+   case MLTAG_one: return(1);
+   case MLTAG_two: return(2);
+   case MLTAG_three: return(3);
+   case MLTAG_four: return(4);
+   default: ml_raise_gl("ml_glSizeOfVaue: invalid size");
+   }
+}
+
+
 CAMLprim value ml_glEdgeFlagPointer(value raw)
 {
   glEdgeFlagPointer(0, Addr_raw(raw));
   return Val_unit;
 }
 
-CAMLprim value ml_glTexCoordPointer(value ml_size, value raw)
+CAMLprim value ml_glTexCoordPointer(value size, value raw)
 {
-  int size = Int_val(ml_size);
-  if (size < 1 || size > 4) {
-    ml_raise_gl("glTexCoordPointer: invalid size");
-  }
-
-  glTexCoordPointer (size, GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
+  glTexCoordPointer (ml_glSizeOfValue(size), 
+		     GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
-CAMLprim value ml_glColorPointer(value ml_size, value raw)
+CAMLprim value ml_glColorPointer(value size, value raw)
 {
-  int size = Int_val(ml_size);
-
-  if (size < 3 || size > 4) {
-    ml_raise_gl("glColorPointer: invalid size");
-  }
-
-  glColorPointer (size, GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
+  glColorPointer (ml_glSizeOfValue(size), 
+		  GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
@@ -59,14 +61,10 @@ CAMLprim value ml_glNormalPointer(value raw)
   return Val_unit;
 }
 
-CAMLprim value ml_glVertexPointer(value ml_size, value raw)
+CAMLprim value ml_glVertexPointer(value size, value raw)
 {
-  int size = Int_val(ml_size);
-  if (size < 2 || size > 4) {
-    ml_raise_gl("glVertexPointer: invalid size");
-  }
-
-  glVertexPointer (size, GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
+  glVertexPointer (ml_glSizeOfValue(size), 
+		   GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
