@@ -1,12 +1,16 @@
 LablGL 0.95:
 ------------
 
-* for Objective Caml 3.01
+* corrected variant matching for Objective Caml 3.01
+
+* add variance annotations
+
+* some bug fixes
 
 LablGL 0.94:
 ------------
 
-* for Objective Caml 3.00
+* corrected syntax for Objective Caml 3.00
 
 LablGL 0.93:
 ------------
