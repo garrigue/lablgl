@@ -61,7 +61,7 @@ about Togl at:
 
   * compiling and linking
     You need to include labltk.cma, lablgl.cma and togl.cmo in your link:
-        ocamlc -I CAMLLIB/labltk -I CAMLLIB/lablgl \
+        ocamlc -I CAMLLIB/labltk -I CAMLLIB/lablGL \
             labltk.cma lablgl.cma togl.cmo ... -o program
 
 5. Writing programs
@@ -273,4 +273,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.9 2000-04-26 02:01:25 garrigue Exp $
+$Id: README,v 1.10 2000-12-20 03:02:12 garrigue Exp $

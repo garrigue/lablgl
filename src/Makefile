@@ -40,7 +40,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 	$(CC) $(COPTS) -I$(LIBDIR) -I$(TOGLDIR) $(INCLUDES) $<
 
 .var.h:
-	var2def < $< > $@
+	./var2def < $< > $@
 
 .cmx.opt: lablgl.cmxa liblablgl.a
 	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa labltk.cmxa lablgl.cmxa $< \
