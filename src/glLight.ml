@@ -1,4 +1,4 @@
-(* $Id: glLight.ml,v 1.2 1998-01-30 10:18:43 garrigue Exp $ *)
+(* $Id: glLight.ml,v 1.3 1998-04-22 04:08:19 garrigue Exp $ *)
 
 open Gl
 
@@ -21,7 +21,7 @@ type light_param = [
       diffuse (rgba)
       specular (rgba)
       position (point4)
-      spot_direction (point4)
+      spot_direction (point3)
       spot_exponent (float)
       spot_cutoff (float)
       constant_attenuation (float)

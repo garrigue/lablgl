@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.22 1998-01-30 10:18:46 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.23 1998-04-22 04:08:20 garrigue Exp $ */
 
 #include <strings.h>
 #include <GL/gl.h>
@@ -219,8 +219,11 @@ value ml_glLight (value n, value param)  /* ML */
     case MLTAG_diffuse:
     case MLTAG_specular:
     case MLTAG_position:
-    case MLTAG_spot_direction:
 	for (i = 0; i < 4; i++)
+	    params[i] = Float_val (Field(Field(param, 1), i));
+	break;
+    case MLTAG_spot_direction:
+	for (i = 0; i < 3; i++)
 	    params[i] = Float_val (Field(Field(param, 1), i));
 	break;
     default:

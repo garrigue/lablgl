@@ -1,4 +1,4 @@
-(* $Id: glLight.mli,v 1.2 1998-01-30 10:18:44 garrigue Exp $ *)
+(* $Id: glLight.mli,v 1.3 1998-04-22 04:08:20 garrigue Exp $ *)
 
 open Gl
 
@@ -14,7 +14,7 @@ val fog : fog_param -> unit
 type light_param =
   [ambient(rgba) constant_attenuation(float) diffuse(rgba)
    linear_attenuation(float) position(point4) quadratic_attenuation(float)
-   specular(rgba) spot_cutoff(float) spot_direction(point4)
+   specular(rgba) spot_cutoff(float) spot_direction(point3)
    spot_exponent(float)]
 val light : num:int -> light_param -> unit
 
