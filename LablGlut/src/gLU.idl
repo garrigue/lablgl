@@ -1,0 +1,167 @@
+/* camlglu.idl 
+   Derived from GL/glu.h.  Changes copyright (c) 2003 Issac Trotts. */
+
+/* 
+** Original comments from glu.h:
+**
+** License Applicability. Except to the extent portions of this file are
+** made subject to an alternative license as permitted in the SGI Free
+** Software License B, Version 1.1 (the "License"), the contents of this
+** file are subject only to the provisions of the License. You may not use
+** this file except in compliance with the License. You may obtain a copy
+** of the License at Silicon Graphics, Inc., attn: Legal Services, 1600
+** Amphitheatre Parkway, Mountain View, CA 94043-1351, or at:
+** 
+** http://oss.sgi.com/projects/FreeB
+** 
+** Note that, as provided in the License, the Software is distributed on an
+** "AS IS" basis, with ALL EXPRESS AND IMPLIED WARRANTIES AND CONDITIONS
+** DISCLAIMED, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTIES AND
+** CONDITIONS OF MERCHANTABILITY, SATISFACTORY QUALITY, FITNESS FOR A
+** PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+** 
+** Original Code. The Original Code is: OpenGL Sample Implementation,
+** Version 1.2.1, released January 26, 2000, developed by Silicon Graphics,
+** Inc. The Original Code is Copyright (c) 1991-2000 Silicon Graphics, Inc.
+** Copyright in any portions created by third parties is as indicated
+** elsewhere herein. All Rights Reserved.
+** 
+** Additional Notice Provisions: This software was created using the
+** OpenGL(R) version 1.2.1 Sample Implementation published by SGI, but has
+** not been independently verified as being compliant with the OpenGL(R)
+** version 1.2.1 Specification.
+*/
+
+#include "glu_constants.idl"
+
+quote(C,"#include <GL/glu.h>");
+quote(C,"typedef void* glu_nurbs;");
+quote(C,"typedef void* glu_quadric;");
+quote(C,"typedef void* glu_tesselator;");
+quote(C,"typedef void* glu_triangulator;");
+quote(C,"typedef void (*glu_callback)(void);");
+
+typedef [abstract] void* glu_nurbs;
+typedef [abstract] void* glu_quadric;
+typedef [abstract] void* glu_tesselator;
+typedef [abstract] void* glu_triangulator;
+
+typedef [abstract,mltype("unit->unit")] void* glu_callback; 
+
+void gluBeginCurve (glu_nurbs nurb);
+void gluBeginPolygon (glu_tesselator tess);
+void gluBeginSurface (glu_nurbs nurb);
+void gluBeginTrim (glu_nurbs nurb);
+
+// Use Obj.magic to user other types of bigarrays with gluBuild*
+int gluBuild1DMipmapLevels (int target, int internalFormat, int width, int format, int type, int level, int base, int max, [in,bigarray] void *data);
+int gluBuild1DMipmaps (int target, int internalFormat, int width, int format, int type, [in,bigarray] void *data);
+int gluBuild2DMipmapLevels (int target, int internalFormat, int width, int height, int format, int type, int level, int base, int max, [in,bigarray] void *data);
+int gluBuild2DMipmaps (int target, int internalFormat, int width, int height, int format, int type, [in,bigarray] void *data);
+int gluBuild3DMipmapLevels (int target, int internalFormat, int width, int height, int depth, int format, int type, int level, int base, int max, [in,bigarray] void *data);
+int gluBuild3DMipmaps (int target, int internalFormat, int width, int height, int depth, int format, int type, [in,bigarray] void *data);
+unsigned char gluCheckExtension ([string] char *extName, [string] char *extString);
+void gluCylinder (glu_quadric quad, double base, double top, double height, int slices, int stacks);
+void gluDeleteNurbsRenderer (glu_nurbs nurb);
+void gluDeleteQuadric (glu_quadric quad);
+void gluDeleteTess (glu_tesselator tess);
+void gluDisk (glu_quadric quad, double inner, double outer, int slices, int loops);
+void gluEndCurve (glu_nurbs nurb);
+void gluEndPolygon (glu_tesselator tess);
+void gluEndSurface (glu_nurbs nurb);
+void gluEndTrim (glu_nurbs nurb);
+[string] const char * gluErrorString (unsigned int error);
+void gluGetNurbsProperty (glu_nurbs nurb, unsigned int property, [out,ref] float* data);
+[string] const char * gluGetString (unsigned int name);
+void gluGetTessProperty (glu_tesselator tess, unsigned int which, [out,ref] double* data);
+void gluLoadSamplingMatrices (glu_nurbs nurb, [in] float model[16], [in] float perspective[16], [in] int view[16]);
+void gluLookAt (double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ);
+glu_nurbs gluNewNurbsRenderer (void); // Should throw an exception if it returns null
+glu_quadric gluNewQuadric (void); // Should throw an exception if it returns null
+glu_tesselator gluNewTess (void); // Should throw an exception if it returns null
+void gluNextContour (glu_tesselator tess, unsigned int type);
+
+quote(C, "static void c_nurbs_callback()                                   ");
+quote(C, "{                                                                    ");
+quote(C, "      callback(*caml_named_value(\"ocamlglu_nurbs_cb\"), Val_unit);  ");
+quote(C, "}                                                                    ");
+quote(mli, "val gluNurbsCallback : glu_nurbs -> int -> glu_callback -> unit");
+
+void _gluNurbsCallback (glu_nurbs nurb, unsigned int which)
+    quote(call, "  gluNurbsCallback( nurb, which, &c_nurbs_callback );");
+
+quote(ml, "let gluNurbsCallback nurbs which callback =");
+quote(ml, "        Callback.register \"ocamlglu_nurbs_cb\" callback; ");
+quote(ml, "        _gluNurbsCallback nurbs which;;");
+
+
+// void gluNurbsCallbackData (glu_nurbs nurb, gl_void* userData); <- not needed because we have closures.
+// void gluNurbsCallbackDataEXT (glu_nurbs nurb, gl_void* userData); <- not needed
+void gluNurbsCurve (glu_nurbs nurb, int knotCount, 
+    [in,bigarray] float knots[], int stride, 
+    [in,bigarray] float control[], int order, unsigned int type);
+void gluNurbsProperty (glu_nurbs nurb, unsigned int property, float value);
+void gluNurbsSurface (glu_nurbs nurb, int sKnotCount, 
+    [in,bigarray] float sKnots[], int tKnotCount,
+    [in,bigarray] float tKnots[], int sStride, int tStride, 
+    [in,bigarray] float control[], int sOrder, int tOrder, 
+    unsigned int type);
+void gluOrtho2D (double left, double right, double bottom, double top);
+void gluPartialDisk (glu_quadric quad, double inner, double outer, int slices, int loops, double start, double sweep);
+void gluPerspective (double fovy, double aspect, double zNear, double zFar);
+void gluPickMatrix (double x, double y, double delX, double delY, [in] int viewport[4]);
+int gluProject (double objX, double objY, double objZ, [in] double model[16], [in] double proj[16], [in] int view[16], [out, ref] double* winX, [out, ref] double* winY, [out, ref] double* winZ);
+void gluPwlCurve (glu_nurbs nurb, int count, [in,bigarray] float data[], int stride, unsigned int type);
+
+quote(C, "static void c_quadric_callback()                                   ");
+quote(C, "{                                                                    ");
+quote(C, "      callback(*caml_named_value(\"ocamlglu_quadric_cb\"), Val_unit);  ");
+quote(C, "}                                                                    ");
+
+quote(mli, "val gluQuadricCallback : glu_quadric -> int -> glu_callback -> unit");
+
+void _gluQuadricCallback (glu_quadric quadric, unsigned int which)
+    quote(call, "  gluQuadricCallback( quadric, which, &c_quadric_callback );");
+
+quote(ml, "let gluQuadricCallback quadric which callback =");
+quote(ml, "        Callback.register \"ocamlglu_quadric_cb\" callback; ");
+quote(ml, "        _gluQuadricCallback quadric which;;");
+
+void gluQuadricDrawStyle (glu_quadric quad, unsigned int draw);
+void gluQuadricNormals (glu_quadric quad, unsigned int normal);
+void gluQuadricOrientation (glu_quadric quad, unsigned int orientation);
+void gluQuadricTexture (glu_quadric quad, unsigned char texture);
+
+int gluScaleImage (int format, int wIn, int hIn, int typeIn, [in,bigarray] void *dataIn, 
+    int wOut, int hOut, int typeOut, [in,out,bigarray] void *dataOut);
+void gluSphere (glu_quadric quad, double radius, int slices, int stacks);
+void gluTessBeginContour (glu_tesselator tess);
+void gluTessBeginPolygon (glu_tesselator tess) // void* data argument omitted.  Use closures.
+    quote(call,"gluTessBeginPolygon(tess,NULL);");
+
+quote(C, "static void c_tess_callback()                                   ");
+quote(C, "{                                                                    ");
+quote(C, "      callback(*caml_named_value(\"ocamlglu_tess_cb\"), Val_unit);  ");
+quote(C, "}                                                                    ");
+
+quote(mli, "val gluTessCallback : glu_tesselator -> int -> glu_callback -> unit");
+
+void _gluTessCallback (glu_tesselator tess, unsigned int which)
+    quote(call, "  gluTessCallback( tess, which, &c_tess_callback );");
+
+quote(ml, "let gluTessCallback tess which callback =");
+quote(ml, "        Callback.register \"ocamlglu_tess_cb\" callback; ");
+quote(ml, "        _gluTessCallback tess which;;");
+
+void gluTessEndContour (glu_tesselator tess);
+void gluTessEndPolygon (glu_tesselator tess);
+void gluTessNormal (glu_tesselator tess, double valueX, double valueY, double valueZ);
+void gluTessProperty (glu_tesselator tess, unsigned int which, double data);
+void gluTessVertex (glu_tesselator tess, [in,bigarray] double location[]) // void* data argument omitted
+    quote(call, "gluTessVertex(tess, location, NULL);");
+    
+int gluUnProject (double winX, double winY, double winZ, [in]
+double model[16], [in] double proj[16], [in] int view[4], [out,ref] double* objX, [out,ref] double* objY, [out,ref] double* objZ);
+int gluUnProject4 (double winX, double winY, double winZ, double clipW, [in] double model[16], [in] double proj[16], [in] int view[16], double near, double far, [out,ref] double* objX, [out,ref] double* objY, [out,ref] double* objZ, [out,ref] double* objW);
+
+
