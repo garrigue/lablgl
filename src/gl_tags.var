@@ -228,5 +228,8 @@ texture_coord_3 texture_coord_4
 accum_buffer color_buffer current depth_buffer enable eval
 hint list pixel_mode scissor stencil_buffer transform viewport
 
+(* glRenderMode *)
+render select feedback
+
 (* glReadBuffer *)
 aux
