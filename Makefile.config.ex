@@ -22,7 +22,7 @@ XINCLUDES = -I/usr/X11R6/include
 # This must the same version as for LablTk
 TKINCLUDES = -I/usr/local/include
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-#TKLIBS = -L/usr/local/lib -ltk83 -ltcl83
+#TKLIBS = -L/usr/local/lib -ltk84 -ltcl84
 
 # Where to find OpenGL/Mesa/Glut headers and libraries
 GLINCLUDES =
