@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.16 2000-07-03 04:59:05 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.17 2000-12-20 03:56:21 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -353,5 +353,5 @@ value ml_gluUnProject (value win)
     Field(obj,0) = obj0;
     Field(obj,1) = obj1;
     Field(obj,2) = obj2;
-    return obj;
+    CAMLreturn(obj);
 }
