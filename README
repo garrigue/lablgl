@@ -1,5 +1,5 @@
 
-		LablGL 1.00: Installation and Use instructions
+		LablGL 1.01: Installation and Use instructions
 
 1. Description
 
@@ -9,7 +9,7 @@ LablGlut for standalone applications not using Tcl/Tk
 
 2. Requisites
 
-  * Objective Caml 3.05, 3.06 or 3.07
+  * Objective Caml 3.05 to 3.08
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
@@ -343,4 +343,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.34 2004-07-13 09:44:03 garrigue Exp $
+$Id: README,v 1.35 2004-07-15 01:04:10 garrigue Exp $
