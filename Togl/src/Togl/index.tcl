@@ -1,4 +1,4 @@
-# $Id: index.tcl,v 1.2 1998-09-16 10:17:30 garrigue Exp $
+# $Id: index.tcl,v 1.1.1.2 1998-12-11 08:35:31 garrigue Exp $
 
 # Togl - a Tk OpenGL widget
 # Copyright (C) 1996  Brian Paul and Ben Bederson
@@ -6,8 +6,11 @@
 
 
 # $Log: index.tcl,v $
-# Revision 1.2  1998-09-16 10:17:30  garrigue
-# patched for use with LablGL
+# Revision 1.1.1.2  1998-12-11 08:35:31  garrigue
+# Togl version 1.5
+#
+# Revision 1.3  1998/01/24 14:05:50  brianp
+# added quit button (Ben Bederson)
 #
 # Revision 1.2  1997/04/11 01:37:34  brianp
 # added a timer to rotate the triangles
@@ -24,8 +27,10 @@ proc setup {} {
     wm title . "Color index demo"
 
     togl .win -width 200 -height 200  -rgba false  -double true  -privatecmap false  -time 10
+    button .btn  -text Quit -command exit
 
     pack .win -expand true -fill both
+    pack .btn -expand true -fill both
 }
 
 

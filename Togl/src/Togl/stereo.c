@@ -1,4 +1,4 @@
-/* $Id: double.c,v 1.1.1.2 1998-12-11 08:35:21 garrigue Exp $ */
+/* $Id: stereo.c,v 1.1 1998-12-11 08:35:24 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -8,40 +8,24 @@
 
 
 /*
- * $Log: double.c,v $
- * Revision 1.1.1.2  1998-12-11 08:35:21  garrigue
- * Togl version 1.5
- *
- * Revision 1.7  1998/03/12 03:52:31  brianp
- * now sharing display lists between the widgets
- *
- * Revision 1.6  1997/09/16 02:17:10  brianp
- * Geza Groma's WIN32 changes
- *
- * Revision 1.5  1997/08/22 02:47:54  brianp
- * include togl.h first.  updated for Tcl/Tk 8.0
- *
- * Revision 1.4  1996/10/25 00:37:50  brianp
- * added print_string() wrapper for glCallLists()
- *
- * Revision 1.3  1996/10/23 23:39:56  brianp
- * moved glColor() before glRasterPos()
- *
- * Revision 1.2  1996/10/23 23:33:03  brianp
- * added text labels
- *
- * Revision 1.1  1996/10/23 23:15:49  brianp
+ * $Log: stereo.c,v $
+ * Revision 1.1  1998-12-11 08:35:24  garrigue
  * Initial revision
  *
+ * Revision 1.1  1997/10/01 02:52:37  brianp
+ * Initial revision
+ *
+ *
+ * Revision 1.1  1997/9/28 21:23:50 Ben Evans
+ * Initial revision based on double.c
+ *
  */
-
 
 #include "togl.h"
 #include <stdlib.h>
 #include <string.h>
 #include <tcl.h>
 #include <tk.h>
-
 
 /*
  * The following variable is a special hack that is needed in order for
@@ -54,6 +38,8 @@ int *tclDummyMathPtr = (int *) matherr;
 static GLuint FontBase;
 static float xAngle = 0.0, yAngle = 0.0, zAngle = 0.0;
 static GLfloat CornerX, CornerY, CornerZ;  /* where to print strings */
+static GLfloat scale = 1.0;
+
 
 
 /*
@@ -99,7 +85,8 @@ void reshape_cb( struct Togl *togl )
 
 
 
-static void print_string( const char *s )
+/*static void print_string( const char *s )*/
+static void print_string( char *s)
 {
    glCallLists( strlen(s), GL_UNSIGNED_BYTE, s );
 }
@@ -112,67 +99,106 @@ static void print_string( const char *s )
  */
 void display_cb( struct Togl *togl )
 {
-   static GLuint cubeList = 0;
    char *ident;
+   GLfloat eyeDist = 2.0;
+   GLfloat eyeOffset = 0.05;
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    glLoadIdentity();	/* Reset modelview matrix to the identity matrix */
    glTranslatef(0.0, 0.0, -3.0);      /* Move the camera back three units */
+   glScalef( scale, scale, scale );   /* Zoom in and out */
    glRotatef(xAngle, 1.0, 0.0, 0.0);  /* Rotate by X, Y, and Z angles */
    glRotatef(yAngle, 0.0, 1.0, 0.0);
    glRotatef(zAngle, 0.0, 0.0, 1.0);
     
    glEnable( GL_DEPTH_TEST );
 
-   if (!cubeList) {
-      cubeList = glGenLists(1);
-      glNewList(cubeList, GL_COMPILE);
+   /* stereo right eye */
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   Togl_StereoFrustum(-1, 1, -1, 1, 1, 10, eyeDist, eyeOffset);
+   glMatrixMode(GL_MODELVIEW);
+   Togl_StereoDrawBuffer(GL_BACK_RIGHT);
+   Togl_StereoClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      /* Front face */
-      glBegin(GL_QUADS);
-      glColor3f(0.0, 0.7, 0.1);	/* Green */
-      glVertex3f(-1.0, 1.0, 1.0);
-      glVertex3f(1.0, 1.0, 1.0);
-      glVertex3f(1.0, -1.0, 1.0);
-      glVertex3f(-1.0, -1.0, 1.0);
-      /* Back face */
-      glColor3f(0.9, 1.0, 0.0);   /* Yellow */
-      glVertex3f(-1.0, 1.0, -1.0);
-      glVertex3f(1.0, 1.0, -1.0);
-      glVertex3f(1.0, -1.0, -1.0);
-      glVertex3f(-1.0, -1.0, -1.0);
-      /* Top side face */
-      glColor3f(0.2, 0.2, 1.0);   /* Blue */
-      glVertex3f(-1.0, 1.0, 1.0);
-      glVertex3f(1.0, 1.0, 1.0);
-      glVertex3f(1.0, 1.0, -1.0);
-      glVertex3f(-1.0, 1.0, -1.0);
-      /* Bottom side face */
-      glColor3f(0.7, 0.0, 0.1);   /* Red */
-      glVertex3f(-1.0, -1.0, 1.0);
-      glVertex3f(1.0, -1.0, 1.0);
-      glVertex3f(1.0, -1.0, -1.0);
-      glVertex3f(-1.0, -1.0, -1.0);
-      glEnd();
+   /* Front face */
+   glBegin(GL_QUADS);
+   glColor3f(0.0, 0.7, 0.1);	/* Green */
+   glVertex3f(-1.0, 1.0, 1.0);
+   glVertex3f(1.0, 1.0, 1.0);
+   glVertex3f(1.0, -1.0, 1.0);
+   glVertex3f(-1.0, -1.0, 1.0);
+   /* Back face */
+   glColor3f(0.9, 1.0, 0.0);   /* Yellow */
+   glVertex3f(-1.0, 1.0, -1.0);
+   glVertex3f(1.0, 1.0, -1.0);
+   glVertex3f(1.0, -1.0, -1.0);
+   glVertex3f(-1.0, -1.0, -1.0);
+   /* Top side face */
+   glColor3f(0.2, 0.2, 1.0);   /* Blue */
+   glVertex3f(-1.0, 1.0, 1.0);
+   glVertex3f(1.0, 1.0, 1.0);
+   glVertex3f(1.0, 1.0, -1.0);
+   glVertex3f(-1.0, 1.0, -1.0);
+   /* Bottom side face */
+   glColor3f(0.7, 0.0, 0.1);   /* Red */
+   glVertex3f(-1.0, -1.0, 1.0);
+   glVertex3f(1.0, -1.0, 1.0);
+   glVertex3f(1.0, -1.0, -1.0);
+   glVertex3f(-1.0, -1.0, -1.0);
+   glEnd();
 
-      glEndList();
+/* stereo left eye */
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   Togl_StereoFrustum(-1, 1, -1, 1, 1, 10, eyeDist, -eyeOffset);
+   glMatrixMode(GL_MODELVIEW);
+ 
+   Togl_StereoDrawBuffer(GL_BACK_LEFT);
+   Togl_StereoClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   }
-   glCallList(cubeList);
+   /* Front face */
+   glBegin(GL_QUADS);
+   glColor3f(0.0, 0.7, 0.1);	/* Green */
+   glVertex3f(-1.0, 1.0, 1.0);
+   glVertex3f(1.0, 1.0, 1.0);
+   glVertex3f(1.0, -1.0, 1.0);
+   glVertex3f(-1.0, -1.0, 1.0);
+   /* Back face */
+   glColor3f(0.9, 1.0, 0.0);   /* Yellow */
+   glVertex3f(-1.0, 1.0, -1.0);
+   glVertex3f(1.0, 1.0, -1.0);
+   glVertex3f(1.0, -1.0, -1.0);
+   glVertex3f(-1.0, -1.0, -1.0);
+   /* Top side face */
+   glColor3f(0.2, 0.2, 1.0);   /* Blue */
+   glVertex3f(-1.0, 1.0, 1.0);
+   glVertex3f(1.0, 1.0, 1.0);
+   glVertex3f(1.0, 1.0, -1.0);
+   glVertex3f(-1.0, 1.0, -1.0);
+   /* Bottom side face */
+   glColor3f(0.7, 0.0, 0.1);   /* Red */
+   glVertex3f(-1.0, -1.0, 1.0);
+   glVertex3f(1.0, -1.0, 1.0);
+   glVertex3f(1.0, -1.0, -1.0);
+   glVertex3f(-1.0, -1.0, -1.0);
+   glEnd();
+
    
    glDisable( GL_DEPTH_TEST );
    glLoadIdentity();
    glColor3f( 1.0, 1.0, 1.0 );
    glRasterPos3f( CornerX, CornerY, CornerZ );
    glListBase( FontBase );
-   ident = Togl_Ident( togl );
-   if (strcmp(ident,"Single")==0) {
-      print_string( "Single buffered" );
-   }
-   else {
-      print_string( "Double buffered" );
-   }
+   /*ident = Togl_Ident( togl );
+     if (strcmp(ident,"Single")==0) {
+     print_string( "Single buffered" );
+     }
+     else {
+     print_string( "Double buffered" );
+   }*/
+   print_string( Togl_Ident( togl) );
    Togl_SwapBuffers( togl );
 }
 
@@ -253,6 +279,27 @@ int getYrot_cb( ClientData clientData, Tcl_Interp *interp,
   return TCL_OK;
 }
 
+int scale_cb( struct Togl *togl, int argc, char *argv[] )
+{
+   Tcl_Interp *interp = Togl_Interp(togl);
+
+   /* error checking */
+   if (argc != 3) {
+      Tcl_SetResult( interp,
+                     "wrong # args: should be \"pathName scale ?value?\"",
+                     TCL_STATIC );
+      return TCL_ERROR;
+   }
+
+   scale = atof( argv[2] );
+
+   Togl_PostRedisplay(togl);
+
+   /* Let result string equal value */
+   strcpy( interp->result, argv[2] );
+   return TCL_OK;
+}
+
 #if defined(WIN32)
 EXTERN int		TkConsoleInit(Tcl_Interp *interp);
 #endif /* WIN32 */
@@ -299,6 +346,7 @@ int my_init( Tcl_Interp *interp )
    
    Togl_CreateCommand( "setXrot", setXrot_cb );
    Togl_CreateCommand( "setYrot", setYrot_cb );
+   Togl_CreateCommand( "scale", scale_cb );
 
    /*
     * Call Tcl_CreateCommand for application-specific commands, if
@@ -316,9 +364,9 @@ int my_init( Tcl_Interp *interp )
     * then no user-specific startup file will be run under any conditions.
     */
 #if (TCL_MAJOR_VERSION * 100 + TCL_MINOR_VERSION) >= 705
-   Tcl_SetVar( interp, "tcl_rcFileName", "./double.tcl", TCL_GLOBAL_ONLY );
+   Tcl_SetVar( interp, "tcl_rcFileName", "./stereo.tcl", TCL_GLOBAL_ONLY );
 #else
-   tcl_RcFileName = "./double.tcl";
+   tcl_RcFileName = "./stereo.tcl";
 #endif
 
    return TCL_OK;

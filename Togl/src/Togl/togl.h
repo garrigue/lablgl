@@ -1,8 +1,8 @@
-/* $Id: togl.h,v 1.2 1998-09-16 10:17:34 garrigue Exp $ */
+/* $Id: togl.h,v 1.1.1.2 1998-12-11 08:35:30 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
- * Version 1.4
+ * Version 1.5
  * Copyright (C) 1996-1997  Brian Paul and Ben Bederson
  * See the LICENSE file for copyright details.
  */
@@ -10,8 +10,17 @@
 
 /*
  * $Log: togl.h,v $
- * Revision 1.2  1998-09-16 10:17:34  garrigue
- * patched for use with LablGL
+ * Revision 1.1.1.2  1998-12-11 08:35:30  garrigue
+ * Togl version 1.5
+ *
+ * Revision 1.17  1997/11/15 04:14:37  brianp
+ * changed version to 1.5
+ *
+ * Revision 1.16  1997/11/15 02:58:48  brianp
+ * added Togl_TkWin() per Glenn Lewis
+ *
+ * Revision 1.15  1997/10/01 02:49:45  brianp
+ * added SGI stereo functions from Ben Evans
  *
  * Revision 1.14  1997/08/26 02:05:19  brianp
  * added Togl_ResetDefaultCallbacks() and Togl_ClientData() (Greg Couch)
@@ -80,6 +89,11 @@
 #include <X11/Xlib.h>
 #endif
 
+#ifdef __sgi
+#include <GL/glx.h>
+#include <X11/extensions/SGIStereo.h>
+#endif
+
 
 #ifndef NULL
 #define NULL    0
@@ -92,9 +106,9 @@ extern "C" {
 
 
 
-#define TOGL_VERSION "1.4"
+#define TOGL_VERSION "1.5"
 #define TOGL_MAJOR_VERSION 1
-#define TOGL_MINOR_VERSION 4
+#define TOGL_MINOR_VERSION 5
 
 
 
@@ -189,6 +203,8 @@ extern int Togl_Height( const struct Togl *togl );
 
 extern Tcl_Interp *Togl_Interp( const struct Togl *togl );
 
+extern Tk_Window Togl_TkWin( const struct Togl *togl );
+
 
 /*
  * Color Index mode
@@ -265,13 +281,29 @@ extern Colormap Togl_Colormap( const struct Togl *togl );
 
 
 /*
+ * SGI stereo-only commands.
+ * Contributed by Ben Evans (Ben.Evans@anusf.anu.edu.au)
+ */
+
+#ifdef __sgi
+extern void Togl_StereoDrawBuffer( GLenum mode );
+extern void Togl_StereoFrustum( GLfloat left, GLfloat right,
+                                GLfloat bottom, GLfloat top,
+                                GLfloat near, GLfloat far,
+                                GLfloat eyeDist, GLfloat eyeOffset );
+extern void Togl_StereoClear( GLbitfield mask );
+#endif
+
+
+/*
  * Generate EPS file.
  * Contributed by Miguel A. De Riera Pasenau (miguel@DALILA.UPC.ES)
  */
 
 extern int Togl_DumpToEpsFile( const struct Togl *togl,
                                const char *filename,
-                               int inColor, void (*user_redraw)(const struct Togl *) );
+                               int inColor,
+                               void (*user_redraw)(const struct Togl *) );
 
 
 

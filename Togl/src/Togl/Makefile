@@ -1,14 +1,26 @@
-# $Id: Makefile,v 1.1 1998-09-16 10:14:16 garrigue Exp $
+# $Id: Makefile,v 1.1.1.2 1998-12-11 08:35:21 garrigue Exp $
 
 # Togl - a Tk OpenGL widget
-# Version 1.4
+# Version 1.5
 # Copyright (C) 1996-1997  Brian Paul and Ben Bederson
 # See the LICENSE file for copyright details.
 
 
 # $Log: Makefile,v $
-# Revision 1.1  1998-09-16 10:14:16  garrigue
-# Initial revision
+# Revision 1.1.1.2  1998-12-11 08:35:21  garrigue
+# Togl version 1.5
+#
+# Revision 1.14  1998/03/12 04:11:13  brianp
+# updated LIBS for RedHat Linux 5.0
+#
+# Revision 1.13  1998/03/12 03:08:43  brianp
+# added gears demo
+#
+# Revision 1.12  1997/12/11 02:21:41  brianp
+# updated version to 1.5
+#
+# Revision 1.11  1997/09/18 03:43:00  brianp
+# added zip archive target
 #
 # Revision 1.10  1997/09/17 02:51:45  brianp
 # updated tar file list
@@ -49,7 +61,7 @@
 
 
 # The C compiler:
-CC = gcc
+CC = cc
 
 # Compiler options:
 COPTS = -c -O
@@ -68,7 +80,7 @@ INCLUDES = -I/usr/local/include -I/usr/include/tcl
 LIBDIRS = -L/usr/local/lib
 
 # Libraries to link with (-ldl for Linux only?):
-LIBS = -ltk -ltcl -lGLU -lGL -L/usr/X11/lib -lX11 -lXmu -lXext -lm -ldl
+LIBS = -ltk -ltcl -lGLU -lGL -L/usr/X11/lib -lX11 -lXmu -lXext -lXt -lm -ldl
 
 TK_FLAGS =
 
@@ -81,7 +93,7 @@ CFLAGS = $(COPTS) $(INCLUDES) $(TK_FLAGS)
 LFLAGS = $(LIBDIRS)
 
 
-DEMOS = $(SH_LIB) double texture index overlay
+DEMOS = $(SH_LIB) double texture index overlay gears
 
 
 default: $(DEMOS)
@@ -122,6 +134,14 @@ overlay.o: overlay.c togl.h
 	$(CC) $(CFLAGS) overlay.c
 
 
+# gears demo
+gears: gears.o togl.o
+	$(CC) $(LFLAGS) gears.o togl.o $(LIBS) -o $@
+
+gears.o: gears.c togl.h
+	$(CC) $(CFLAGS) gears.c
+
+
 # the togl widget
 togl.o: togl.c togl.h
 	$(CC) $(CFLAGS) togl.c
@@ -141,24 +161,26 @@ realclean:
 
 
 
-TOGL = Togl-1.4
+TOGL = Togl-1.5
 
-TAR_FILES = \
+FILES = \
 	$(TOGL)/README		\
 	$(TOGL)/Togl.html	\
 	$(TOGL)/LICENSE		\
 	$(TOGL)/Makefile	\
 	$(TOGL)/*.[ch]		\
-	$(TOGL)/double.tcl	\
-	$(TOGL)/texture.tcl	\
-	$(TOGL)/index.tcl	\
-	$(TOGL)/overlay.tcl	\
+	$(TOGL)/*.tcl		\
 	$(TOGL)/tree2.rgba	\
 	$(TOGL)/ben.rgb
 
 tar:
 	cd .. ; \
-	tar -cvf $(TOGL).tar $(TAR_FILES) ; \
+	tar -cvf $(TOGL).tar $(FILES) ; \
 	gzip $(TOGL).tar ; \
 	mv $(TOGL).tar.gz $(TOGL)
 
+
+zip:
+	cd .. ; \
+	zip -r $(TOGL).zip $(FILES) ; \
+	mv $(TOGL).zip $(TOGL)
