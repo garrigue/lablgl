@@ -1,0 +1,96 @@
+
+		LablGL: Installation and Use instructions
+
+1. Description
+
+  LablGL is an OpenGL interface for Objective Label. Since it includes
+support for the Togl widget, you can comfortably use it with LablTk.
+
+2. Requisites
+
+  * Objective Label 1.07, pl1 (patch included) or more
+  * LablTk 1.06 or more (requires Tcl/Tk)
+  * OpenGL version 1.1 or 1.2
+  * Togl-1.4 or more
+
+  Objective Label and LablTk can be obtained from
+	http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/
+	http://pauillac.inria.fr/olabl/			(mirror)
+
+  OpenGL (with hardware support) is already on your machine on SGI and
+most DEC Alpha systems. It may also be the case with Solaris machines,
+and if you do not have it you may obtain it from Sun.
+  If you are not lucky enough to have OpenGL support, you can still
+use Mesa, an openGL-compatible freeware, which works on almost
+everything.
+	http://www.ssec.wisc.edu/~brianp/Mesa.html
+
+  Togl is made by the author of Mesa, and you may find it at:
+	http://www.ssec.wisc.edu/~brianp/Togl.html
+
+3. Installation
+
+  a) Unpack and compile Togl somewhere
+
+  b) Come back to this directory, and edit Makefile.config
+
+  c) Build LablGL
+	% make
+
+  d) For the native code version (you need the native code version of LablTk),
+	% make opt
+
+  e) Install LablGL
+	% make install
+
+4. Use
+
+  Installing LablGL makes two commands available:
+
+  * lablgl
+    This is a toplevel, like olabl, including LablTk, Unix and LablGL.
+    You may use it either as a toplevel, or directly to run scripts.
+    To run an example, type:
+        % lablgl example.ml
+    where example.ml is one of:
+ 	simple.ml
+	scene.ml
+	checker.ml	
+	double.ml
+	planet.ml
+	gears.ml
+	texturesurf.ml
+
+  * lablglopt
+    This script calls olablopt, like labltkopt, linking LablTk and
+    LablGL. Use it as a replacement of olablopt for your LablGL
+    programs.
+	% lablglopt example.ml -o example
+
+    There is no lablgllink, since you will probably want the native
+    code speed as soon as you work with animations.
+
+5. Writing programs
+
+  All of the GL and GLU libraries are available. Read a good book
+  about how using these. Translating from GL to LablGL is rather
+  straitforward: a function named glReadPixels will be renamed to
+  Gl.read_pixels (no capitals). When arguments are labelled, the name
+  is taken from the man page or the C prototype.
+
+  (*) For naming reasons, glBegin had to be changed to Gl.begin_block
+      and glEnd to Gl.end_block.
+
+  OpenGL makes heavy using of enumerations, with names staring with
+  GL_ or GLU_ . Since their meaning is often overloaded, they are all
+  converted to polymorphic variants. In most cases just replace prefix
+  by a backquote and convert to low case. When you have a doubt the
+  best way is to have a look with LablBrowser.
+
+  Using Togl is also straightforward. Everything works like in
+  LablTk. You create an openGL widget with Togl.create, and then you
+  apply various functions on it. See Togl's README for details.
+
+6. Comments and bug reports
+
+   mailto:garrigue@kurims.kyoto-u.ac.jp

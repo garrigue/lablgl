@@ -1,0 +1,5 @@
+#!/bin/sh
+
+exec olablopt INCLUDES tk41.cmxa lablgl.cmxa $* \
+	-ccopt -LINSTALLDIR -cclib -llablgl \
+	OTHERLIBS
