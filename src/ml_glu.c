@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.22 2003-01-09 10:13:51 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.23 2003-02-06 18:19:12 furuse Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -71,7 +71,7 @@ CAMLprim value ml_gluBuild1DMipmaps (value internal, value width,
 {
     GLenum error;
 
-    error = gluBuild1DMipmaps (GL_TEXTURE_1D, GLenum_val(internal),
+    error = gluBuild1DMipmaps (GL_TEXTURE_1D, Int_val(internal),
 			       Int_val(width), GLenum_val(format),
 			       Type_raw(data), Void_raw(data));
     if (error) ml_raise_gl((char*)gluErrorString(error));
@@ -83,7 +83,7 @@ CAMLprim value ml_gluBuild2DMipmaps (value internal, value width, value height,
 {
     GLint error;
 
-    error = gluBuild2DMipmaps (GL_TEXTURE_2D, GLenum_val(internal),
+    error = gluBuild2DMipmaps (GL_TEXTURE_2D, Int_val(internal),
 			       Int_val(width), Int_val(height),
 			       GLenum_val(format),
 			       Type_raw(data), Void_raw(data));

@@ -1,4 +1,4 @@
-(* $Id: gluMisc.ml,v 1.5 2001-10-01 02:59:13 garrigue Exp $ *)
+(* $Id: gluMisc.ml,v 1.6 2003-02-06 18:19:12 furuse Exp $ *)
 
 open Gl
 open GlPix
@@ -17,7 +17,7 @@ let build_1d_mipmaps ?internal:i img =
 external build_2d_mipmaps :
     internal:int -> width:int ->
     height:int -> format:[< GlTex.format] -> [< kind] Raw.t -> unit
-    = "ml_gluBuild1DMipmaps"
+    = "ml_gluBuild2DMipmaps"
 let build_2d_mipmaps ?internal:i img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   build_2d_mipmaps ~internal
