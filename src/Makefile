@@ -59,13 +59,15 @@ lablgl.cma: $(LIBOBJS) $(COBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(GLLIBS) $(XLIBS)
 
 lablgl.cmxa: lablgl.cma $(OPTOBJS) Makefile.config
-	$(LIBRARIAN) -o lablgl $(OPTOBJS)
+	$(LIBRARIAN) -o lablgl $(OPTOBJS) $(GLLIBS) $(XLIBS)
+	$(RANLIB) lablgl.a
 
 togl.cma: togl.cmo $(TOGLOBJS) Makefile.config
 	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 
 togl.cmxa: togl.cma togl.cmx Makefile.config
-	$(LIBRARIAN) -o togl togl.cmx
+	$(LIBRARIAN) -o togl togl.cmx $(GLLIBS) $(TKLIBS) $(XLIBS)
+	$(RANLIB) togl.a
 
 #liblablgl.a: $(COBJS)
 #	ar rc liblablgl.a $(COBJS)
@@ -106,7 +108,7 @@ real-install:
 	then echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp liblablgl.a lablgl.cma togl.cma $(INSTALLDIR)
+	cp liblablgl.a lablgl.cma libtogl.a togl.cma $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
 	@if test -f liblablgl.so; then $(MAKE) installdll; fi
