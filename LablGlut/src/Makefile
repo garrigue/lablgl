@@ -10,7 +10,7 @@ LIBDIRS =
 OCAMLINC=
 
 # Files
-LIBOBJS = glut.cmo
+LIBOBJS = glut.cmo glut2.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =	  wrap_gl$(XO)	wrap_glut$(XO)
 
