@@ -1,4 +1,4 @@
-/* $Id: ml_glutess.c,v 1.4 2004-07-13 13:56:16 garrigue Exp $ */
+/* $Id: ml_glutess.c,v 1.5 2004-07-15 03:07:26 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
 #include <stdio.h>
@@ -35,6 +35,7 @@ ML_fail (gluTesselateAndReturn)
 #ifndef CALLBACK
 #define CALLBACK
 #endif
+#define AS_CB (GLvoid(CALLBACK *)())
 
 static void CALLBACK errorCallback(GLenum error)
 {
@@ -198,11 +199,11 @@ CAMLprim value ml_gluTesselateAndReturn(value winding, value tolerance,
   prim = &res;
 
   iniTesselator(winding, Val_unit, tolerance);
-  gluTessCallback(tobj, GLU_TESS_BEGIN, (GLvoid(*)())beginCallback);
-  gluTessCallback(tobj, GLU_TESS_VERTEX, (GLvoid(*)())vertexCallback);
-  gluTessCallback(tobj, GLU_TESS_END, (GLvoid(*)())endCallback);
-  gluTessCallback(tobj, GLU_TESS_ERROR, (GLvoid(*)())errorCallback);
-  gluTessCallback(tobj, GLU_TESS_COMBINE, (GLvoid(*)())combineCallback);
+  gluTessCallback(tobj, GLU_TESS_BEGIN, AS_CB beginCallback);
+  gluTessCallback(tobj, GLU_TESS_VERTEX, AS_CB vertexCallback);
+  gluTessCallback(tobj, GLU_TESS_END, AS_CB endCallback);
+  gluTessCallback(tobj, GLU_TESS_ERROR, AS_CB errorCallback);
+  gluTessCallback(tobj, GLU_TESS_COMBINE, AS_CB combineCallback);
 
   runTesselator(contours);
 
@@ -214,11 +215,11 @@ CAMLprim value ml_gluTesselate (value winding, value by_only,
 {
   iniTesselator(winding, by_only, tolerance);
 
-  gluTessCallback(tobj, GLU_TESS_BEGIN, (GLvoid(*)())glBegin);
-  gluTessCallback(tobj, GLU_TESS_VERTEX, (GLvoid(*)())glVertex3dv);
-  gluTessCallback(tobj, GLU_TESS_END, (GLvoid(*)())glEnd);
-  gluTessCallback(tobj, GLU_TESS_ERROR, (GLvoid(*)())errorCallback);
-  gluTessCallback(tobj, GLU_TESS_COMBINE, (GLvoid(*)())combineCallback);
+  gluTessCallback(tobj, GLU_TESS_BEGIN, AS_CB glBegin);
+  gluTessCallback(tobj, GLU_TESS_VERTEX, AS_CB glVertex3dv);
+  gluTessCallback(tobj, GLU_TESS_END, AS_CB glEnd);
+  gluTessCallback(tobj, GLU_TESS_ERROR, AS_CB errorCallback);
+  gluTessCallback(tobj, GLU_TESS_COMBINE, AS_CB combineCallback);
 
   runTesselator(contours);
 
