@@ -39,7 +39,7 @@ glDraw.cmi: gl.cmi glPix.cmi
 glFunc.cmi: gl.cmi 
 glLight.cmi: gl.cmi 
 glMap.cmi: raw.cmi 
-glMat.cmi: raw.cmi 
+glMat.cmi: gl.cmi raw.cmi 
 glMisc.cmi: raw.cmi 
 glPix.cmi: gl.cmi raw.cmi 
 glTex.cmi: gl.cmi glPix.cmi 

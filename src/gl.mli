@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.17 1999-11-15 09:55:04 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.18 2000-06-12 07:27:29 garrigue Exp $ *)
 
 (* Exceptions *)
 
@@ -17,6 +17,7 @@ type vect3 = float * float *float
 type clampf = float
 type short = int
 type kind = [`bitmap|`byte|`float|`int|`short|`ubyte|`uint|`ushort]
+type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance

@@ -1,19 +1,20 @@
-(* $Id: glPix.ml,v 1.6 2000-04-12 07:40:25 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.7 2000-06-12 07:27:29 garrigue Exp $ *)
 
 open Gl
 
 type ('a,'b) t = { format: 'a ; width: int ; height:int ; raw: 'b Raw.t }
 
-let create (k : #Gl.kind) ~format ~width ~height =
+let create k ~format ~width ~height =
   let size = format_size format * width * height in
-  let len = match k with `bitmap -> (size-1)/8+1 | _ -> size in
+  let len = match k with `bitmap -> (size-1)/8+1 | #Gl.real_kind -> size in
   let raw = Raw.create k ~len:(width * height * format_size format) in
   { format = format; width = width; height = height; raw = raw }
   
 let of_raw raw ~format ~width ~height =
   let size = format_size format * width * height
   and len = Raw.length raw in
-  let len = match Raw.kind raw with `bitmap -> len * 8 | _ -> len in
+  let len =
+    match Raw.kind raw with `bitmap -> len * 8 | #Gl.real_kind -> len in
   if size > len then invalid_arg "GlPix.of_raw";
   { format = format; width = width; height = height; raw = raw }
 
@@ -25,7 +26,7 @@ let height img = img.height
 let raw_pos img =
   let width =
     match Raw.kind img.raw with `bitmap -> (img.width-1)/8+1
-    | _ -> img.width
+    | #Gl.real_kind -> img.width
   in
   let stride = format_size img.format in
   let line = stride * width in

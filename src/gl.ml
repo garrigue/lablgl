@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.23 1999-11-15 09:55:03 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.24 2000-06-12 07:27:28 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -19,16 +19,18 @@ type vect3 = float * float *float
 type clampf = float
 type short = int
 type kind = [`bitmap|`byte|`float|`int|`short|`ubyte|`uint|`ushort]
+type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance
   |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
-let format_size (format : #format) =
+let format_size format =
   match format with
     `rgba -> 4
   | `rgb -> 3
   | `luminance_alpha -> 2
-  | _ -> 1
+  | `alpha | `blue | `color_index | `depth_component | `green | `luminance
+  | `red | `stencil_index -> 1
 
 type target =
   [`color_4|`index|`normal|`texture_coord_1|`texture_coord_2|`texture_coord_3
