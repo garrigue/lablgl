@@ -1,4 +1,4 @@
-(* $Id: raw.mli,v 1.3 1998-01-23 13:30:23 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.4 1999-04-14 14:05:52 garrigue Exp $ *)
 
 (* This module provides a direct way to access C arrays of basic types.
    This is particularly useful when one wants to avoid costly
@@ -39,6 +39,8 @@ external sizeof : #kind -> int = "ml_raw_sizeof"
 val length : #kind t -> int
     (* [length raw] returns the length of raw array according to
        its contents type *)
+val sub : (#kind t as 'a) -> ?pos:int -> ?len:int -> 'a
+    (* returns the slice of length len starting at position pos *)
 
 (* The following functions access raw arrays in the intuitive way.
    They raise [Invalid_argument] when access is attempted out of
