@@ -1,4 +1,4 @@
-/* $Id: double.c,v 1.2 1998-09-16 10:17:28 garrigue Exp $ */
+/* $Id: double.c,v 1.3 1998-12-11 08:44:04 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -9,8 +9,11 @@
 
 /*
  * $Log: double.c,v $
- * Revision 1.2  1998-09-16 10:17:28  garrigue
- * patched for use with LablGL
+ * Revision 1.3  1998-12-11 08:44:04  garrigue
+ * Togl 1.5
+ *
+ * Revision 1.7  1998/03/12 03:52:31  brianp
+ * now sharing display lists between the widgets
  *
  * Revision 1.6  1997/09/16 02:17:10  brianp
  * Geza Groma's WIN32 changes
@@ -109,6 +112,7 @@ static void print_string( const char *s )
  */
 void display_cb( struct Togl *togl )
 {
+   static GLuint cubeList = 0;
    char *ident;
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -121,33 +125,41 @@ void display_cb( struct Togl *togl )
     
    glEnable( GL_DEPTH_TEST );
 
-   /* Front face */
-   glBegin(GL_QUADS);
-   glColor3f(0.0, 0.7, 0.1);	/* Green */
-   glVertex3f(-1.0, 1.0, 1.0);
-   glVertex3f(1.0, 1.0, 1.0);
-   glVertex3f(1.0, -1.0, 1.0);
-   glVertex3f(-1.0, -1.0, 1.0);
-   /* Back face */
-   glColor3f(0.9, 1.0, 0.0);   /* Yellow */
-   glVertex3f(-1.0, 1.0, -1.0);
-   glVertex3f(1.0, 1.0, -1.0);
-   glVertex3f(1.0, -1.0, -1.0);
-   glVertex3f(-1.0, -1.0, -1.0);
-   /* Top side face */
-   glColor3f(0.2, 0.2, 1.0);   /* Blue */
-   glVertex3f(-1.0, 1.0, 1.0);
-   glVertex3f(1.0, 1.0, 1.0);
-   glVertex3f(1.0, 1.0, -1.0);
-   glVertex3f(-1.0, 1.0, -1.0);
-   /* Bottom side face */
-   glColor3f(0.7, 0.0, 0.1);   /* Red */
-   glVertex3f(-1.0, -1.0, 1.0);
-   glVertex3f(1.0, -1.0, 1.0);
-   glVertex3f(1.0, -1.0, -1.0);
-   glVertex3f(-1.0, -1.0, -1.0);
-   glEnd();
+   if (!cubeList) {
+      cubeList = glGenLists(1);
+      glNewList(cubeList, GL_COMPILE);
 
+      /* Front face */
+      glBegin(GL_QUADS);
+      glColor3f(0.0, 0.7, 0.1);	/* Green */
+      glVertex3f(-1.0, 1.0, 1.0);
+      glVertex3f(1.0, 1.0, 1.0);
+      glVertex3f(1.0, -1.0, 1.0);
+      glVertex3f(-1.0, -1.0, 1.0);
+      /* Back face */
+      glColor3f(0.9, 1.0, 0.0);   /* Yellow */
+      glVertex3f(-1.0, 1.0, -1.0);
+      glVertex3f(1.0, 1.0, -1.0);
+      glVertex3f(1.0, -1.0, -1.0);
+      glVertex3f(-1.0, -1.0, -1.0);
+      /* Top side face */
+      glColor3f(0.2, 0.2, 1.0);   /* Blue */
+      glVertex3f(-1.0, 1.0, 1.0);
+      glVertex3f(1.0, 1.0, 1.0);
+      glVertex3f(1.0, 1.0, -1.0);
+      glVertex3f(-1.0, 1.0, -1.0);
+      /* Bottom side face */
+      glColor3f(0.7, 0.0, 0.1);   /* Red */
+      glVertex3f(-1.0, -1.0, 1.0);
+      glVertex3f(1.0, -1.0, 1.0);
+      glVertex3f(1.0, -1.0, -1.0);
+      glVertex3f(-1.0, -1.0, -1.0);
+      glEnd();
+
+      glEndList();
+
+   }
+   glCallList(cubeList);
    
    glDisable( GL_DEPTH_TEST );
    glLoadIdentity();

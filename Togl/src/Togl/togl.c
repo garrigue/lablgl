@@ -1,8 +1,8 @@
-/* $Id: togl.c,v 1.2 1998-09-16 10:17:33 garrigue Exp $ */
+/* $Id: togl.c,v 1.3 1998-12-11 08:44:05 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
- * Version 1.4
+ * Version 1.5
  * Copyright (C) 1996-1997  Brian Paul and Ben Bederson
  * See the LICENSE file for copyright details.
  */
@@ -10,112 +10,63 @@
 
 /*
  * $Log: togl.c,v $
- * Revision 1.2  1998-09-16 10:17:33  garrigue
- * patched for use with LablGL
+ * Revision 1.3  1998-12-11 08:44:05  garrigue
+ * Togl 1.5
+ *
+ * Revision 1.45  1998/08/22 03:05:53  brianp
+ * added -indirect config option
+ *
+ * Revision 1.44  1998/05/04 23:42:43  brianp
+ * fixed NULL pointer dereference bug in ToglCmdDeletedProc()
+ *
+ * Revision 1.43  1998/03/12 04:10:47  brianp
+ * added display list and OpenGL context sharing options
+ *
+ * Revision 1.42  1998/03/12 03:20:31  brianp
+ * fixed a few overlay update bugs (Yang Guo Liang)
+ *
+ * Revision 1.41  1998/01/20 01:05:10  brianp
+ * added more destroy/clean-up code
+ * added a few Tcl 7.4 / Tk 4.0 #if/#else/#endifs (David Laur)
+ *
+ * Revision 1.40  1997/12/13 02:27:46  brianp
+ * only call Tcl_DeleteCommandFromToken() is using Tcl/Tk 8.0 or later
+ *
+ * Revision 1.39  1997/12/13 02:26:02  brianp
+ * test for STEREO to enable SGI stereo code
+ * general code clean-up
+ *
+ * Revision 1.38  1997/12/11 02:21:18  brianp
+ * added support for Tcl/Tk 8.0p2
+ *
+ * Revision 1.37  1997/11/15 04:11:30  brianp
+ * added Adrian J. Chung's widget destroy code
+ *
+ * Revision 1.36  1997/11/15 03:33:13  brianp
+ * fixed multi-expose/redraw problem (Andy Colebourne)
+ *
+ * Revision 1.35  1997/11/15 03:28:42  brianp
+ * removed code in Togl_Configure(), added for stereo, that caused a new bug
+ *
+ * Revision 1.34  1997/11/15 02:58:48  brianp
+ * added Togl_TkWin() per Glenn Lewis
+ *
+ * Revision 1.33  1997/10/01 02:50:57  brianp
+ * added SGI stereo functions from Ben Evans
+ *
+ * Revision 1.32  1997/10/01 00:25:22  brianp
+ * made small change for HP compilation (Glenn Lewis)
  *
  * Revision 1.31  1997/09/17 02:41:07  brianp
  * added Geza Groma's Windows NT/95 patches
  *
  * Revision 1.30  1997/09/12 01:21:05  brianp
  * a few more tweaks for Windows compilation
- *
- * Revision 1.29  1997/09/09 23:57:51  brianp
- * avoid unneeded ConfigureNotify work (Glenn Lewis)
- *
- * Revision 1.28  1997/09/09 23:52:53  brianp
- * made a few small changes to stop C++ compiler warnings
- *
- * Revision 1.27  1997/08/26 02:05:19  brianp
- * added Togl_ResetDefaultCallbacks() and Togl_ClientData() (Greg Couch)
- *
- * Revision 1.26  1997/08/26 01:55:47  brianp
- * added many config flags (Matthias Ott)
- *
- * Revision 1.25  1997/08/26 01:35:41  brianp
- * added Togl_Set*Func() functions from Matthias Ott
- *
- * Revision 1.24  1997/08/22 02:49:31  brianp
- * misc changes for Tcl/Tk 8.0
- *
- * Revision 1.23  1997/07/29 02:13:20  brianp
- * integrated Robert Casto's initial NT code
- *
- * Revision 1.22  1997/05/03 02:22:22  brianp
- * only compile in Mesa color management if MESA_COLOR_HACK defined
- *
- * Revision 1.21  1997/04/11 01:37:22  brianp
- * added Togl_TimerFunc() and related code from Elmar Gerwalin
- *
- * Revision 1.20  1997/04/11 01:08:30  brianp
- * fixed bug in Togl_PostOverlayRedisplay, per Shalini Venkataraman
- *
- * Revision 1.19  1997/03/07 01:25:55  brianp
- * fixed overlay code so togl doesn't crash if can't get overlay
- *
- * Revision 1.18  1997/02/27 19:56:18  brianp
- * replaced _R, _G, and _B symbols with RLEVELS, GLEVELS, and BLEVELS
- *
- * Revision 1.17  1997/02/19 10:10:02  brianp
- * if compiling as C++ test visual->c_class instead of visual->class
- *
- * Revision 1.16  1997/02/16 01:26:00  brianp
- * added new overlay and EPS functions from Miguel A. De Riera Pasenau
- *
- * Revision 1.15  1997/02/16 00:24:29  brianp
- * don't call Tcl_PkgProvide() if version less than 7.4
- *
- * Revision 1.14  1997/01/06 21:00:22  brianp
- * use NO_TK_CURSOR to omit cursor code when using Tk 4.0
- *
- * Revision 1.13  1996/12/13 21:24:41  brianp
- * added Togl_DestroyFunc() contributed by scotter@iname.com
- *
- * Revision 1.12  1996/11/14 00:49:38  brianp
- * added Togl_Get/SetClientData() functions
- *
- * Revision 1.11  1996/11/05 02:38:52  brianp
- * added Togl_UnloadBitmapFont()
- * added Ramon Ramsan's Nov 4 patches for overlay plane support
-*
- * Revision 1.10  1996/10/25 03:44:23  brianp
- * more code cleanup
- *
- * Revision 1.9  1996/10/25 00:50:45  brianp
- * added XSetWMColormapWindows() call
- *
- * Revision 1.8  1996/10/25 00:46:49  brianp
- * added call to Tcl_PkgProvide() in Togl_Init() per Karel Zuiderveld
- *
- * Revision 1.7  1996/10/25 00:35:26  brianp
- * fixed a bug in Togl_LoadBitmapFont()
- *
- * Revision 1.6  1996/10/24 01:20:42  brianp
- * added overlay functions, not all implemented yet
- *
- * Revision 1.5  1996/10/24 00:13:50  brianp
- * added const qualifier to many function parameters
- * renamed Togl struct members
- *
- * Revision 1.4  1996/10/23 23:59:21  brianp
- * general code cleanup
- *
- * Revision 1.3  1996/10/23 23:48:53  brianp
- * fixed wrong depth argument given to Tk_SetWindowVisual()
- * fixed potential bug in noFaultXAllocColor()
- *
- * Revision 1.2  1996/10/23 23:29:48  brianp
- * added Togl_LoadBitmapFont()
- * added swapbuffers and makecurrent commands
- * added -cursor config option
- *
- * Revision 1.1  1996/10/23 23:15:16  brianp
- * Initial revision
- *
  */
 
 
 /*
- * Currently support X11 and WIN32:
+ * Currently support X11 and WIN32
  */
 #ifndef WIN32
 #define X11
@@ -165,8 +116,10 @@
 #  include "tkInt4.1.h"
 #elif TK_MAJOR_VERSION==4 && TK_MINOR_VERSION==2
 #  include "tkInt4.2.h"
-#elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==0
+#elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==0 && TK_RELEASE_SERIAL==0
 #  include "tkInt8.0.h"
+#elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==0 && TK_RELEASE_SERIAL==2
+#  include "tkInt8.0p2.h"
 #else
    Sorry, you will have to edit togl.c to include the right tkInt.h file
 #endif
@@ -208,6 +161,8 @@
 
 struct Togl
 {
+   struct Togl *Next;           /* next in linked list */
+
 #if defined(WIN32)
    HDC tglGLHdc;                /* Device context of device that OpenGL calls will be drawn on */
    HGLRC tglGLHglrc;            /* OpenGL rendering context to be made current */
@@ -215,14 +170,20 @@ struct Togl
 #elif defined(X11)
    GLXContext GlCtx;		/* Normal planes GLX context */
 #endif /* WIN32 */
+   Display *display;		/* X's token for the window's display. */
    Tk_Window  TkWin;		/* Tk window structure */
    Tcl_Interp *Interp;		/* Tcl interpreter */
+   Tcl_Command widgetCmd;       /* Token for togl's widget command */
 #ifndef NO_TK_CURSOR
    Tk_Cursor Cursor;		/* The widget's cursor */
 #endif
    int Width, Height;		/* Dimensions of window */
    int Time;			/* Time value for timer */
-
+#if (TCL_MAJOR_VERSION * 100 + TCL_MINOR_VERSION) >= 705
+   Tcl_TimerToken timerHandler; /* Token for togl's timer handler */
+#else
+   Tk_TimerToken timerHandler;  /* Token for togl's timer handler */
+#endif
    int RgbaFlag;		/* configuration flags (ala GLX parameters) */
    int RgbaRed;
    int RgbaGreen;
@@ -243,6 +204,9 @@ struct Togl
    int OverlayFlag;
    int StereoFlag;
    int AuxNumber;
+   int Indirect;
+   char *ShareList;             /* name (ident) of Togl to share dlists with */
+   char *ShareContext;          /* name (ident) to share OpenGL context with */
 
    char *Ident;				/* User's identification string */
    ClientData Client_Data;		/* Pointer to user data */
@@ -269,14 +233,13 @@ struct Togl
    int OverlayIsMapped;
 
    /* for DumpToEpsFile: Added by Miguel A. de Riera Pasenau 10.01.1997 */
-   XVisualInfo *EpsVisual;		/* Visual info of the current */
+   XVisualInfo *VisInfo;		/* Visual info of the current */
 					/* context needed for DumpToEpsFile */
    GLfloat *EpsRedMap;		/* Index2RGB Maps for Color index modes */
    GLfloat *EpsGreenMap;
    GLfloat *EpsBlueMap;
    GLint EpsMapSize;            	/* = Number of indices in our Togl */
 };
-
 
 
 /* NTNTNT need to change to handle Windows Data Types */
@@ -292,6 +255,15 @@ static int get_free_color_cells( Display *display, int screen,
                                  Colormap colormap);
 static void free_default_color_cells( Display *display, Colormap colormap);
 #endif
+static void ToglCmdDeletedProc( ClientData );
+
+
+
+#if defined(__sgi) && defined(STEREO)
+/* SGI-only stereo */
+static void stereoMakeCurrent( Display *dpy, Window win, GLXContext ctx );
+static void stereoInit( struct Togl *togl,int stereoEnabled );
+#endif
 
 
 
@@ -305,9 +277,6 @@ static Tk_ConfigSpec configSpecs[] = {
 
     {TK_CONFIG_PIXELS, "-width", "width", "Width",
      DEFAULT_WIDTH, Tk_Offset(struct Togl, Width), 0, NULL},
-
-    {TK_CONFIG_STRING, "-ident", "ident", "Ident",
-     DEFAULT_IDENT, Tk_Offset(struct Togl, Ident), 0, NULL},
 
     {TK_CONFIG_BOOLEAN, "-rgba", "rgba", "Rgba",
      "true", Tk_Offset(struct Togl, RgbaFlag), 0, NULL},
@@ -377,6 +346,18 @@ static Tk_ConfigSpec configSpecs[] = {
     {TK_CONFIG_INT, "-time", "time", "Time",
      DEFAULT_TIME, Tk_Offset(struct Togl, Time), 0, NULL},
 
+    {TK_CONFIG_STRING, "-sharelist", "sharelist", "ShareList",
+     NULL, Tk_Offset(struct Togl, ShareList), 0, NULL},
+
+    {TK_CONFIG_STRING, "-sharecontext", "sharecontext", "ShareContext",
+     NULL, Tk_Offset(struct Togl, ShareContext), 0, NULL},
+
+    {TK_CONFIG_STRING, "-ident", "ident", "Ident",
+     DEFAULT_IDENT, Tk_Offset(struct Togl, Ident), 0, NULL},
+
+    {TK_CONFIG_BOOLEAN, "-indirect", "indirect", "Indirect",
+     "false", Tk_Offset(struct Togl, Indirect), 0, NULL},
+
     {TK_CONFIG_END, (char *) NULL, (char *) NULL, (char *) NULL,
      (char *) NULL, 0, 0, NULL}
 };
@@ -391,6 +372,55 @@ static Togl_Callback *TimerProc = NULL;
 static ClientData DefaultClientData = NULL;
 static Tcl_HashTable CommandTable;
 
+static struct Togl *ToglHead = NULL;  /* head of linked list */
+
+
+/*
+ * Add given togl widget to linked list.
+ */
+static void AddToList(struct Togl *t)
+{
+   t->Next = ToglHead;
+   ToglHead = t;
+}
+
+/*
+ * Remove given togl widget from linked list.
+ */
+static void RemoveFromList(struct Togl *t)
+{
+   struct Togl *prev = NULL;
+   struct Togl *pos = ToglHead;
+   while (pos) {
+      if (pos == t) {
+         if (prev) {
+            prev->Next = pos->Next;
+         }
+         else {
+            ToglHead = pos->Next;
+         }
+         return;
+      }
+      prev = pos;
+      pos = pos->Next;
+   }
+}
+
+/*
+ * Return pointer to togl widget given a user identifier string.
+ */
+static struct Togl *FindTogl(const char *ident)
+{
+   struct Togl *t = ToglHead;
+   while (t) {
+      if (strcmp(t->Ident, ident) == 0)
+         return t;
+      t = t->Next;
+   }
+   return NULL;
+}
+
+
 
 
 #if defined(X11)
@@ -402,7 +432,7 @@ static Tcl_HashTable CommandTable;
  * Return:  an X Colormap or 0 if there's a _serious_ error.
  */
 static Colormap
-get_rgb_colormap( Display *dpy, int scrnum, XVisualInfo *visinfo )
+get_rgb_colormap( Display *dpy, int scrnum, const XVisualInfo *visinfo )
 {
    Atom hp_cr_maps;
    Status status;
@@ -769,7 +799,13 @@ static void Togl_Timer( ClientData clientData )
 {
    struct Togl *togl = (struct Togl *) clientData;
    togl->TimerProc(togl);
-   Tk_CreateTimerHandler( togl->Time, Togl_Timer, (ClientData)togl );
+#if (TK_MAJOR_VERSION * 100 + TK_MINOR_VERSION) >= 401
+   togl->timerHandler =
+       Tcl_CreateTimerHandler( togl->Time, Togl_Timer, (ClientData)togl );
+#else
+   togl->timerHandler =
+       Tk_CreateTimerHandler( togl->Time, Togl_Timer, (ClientData)togl );
+#endif
 }
 
 
@@ -798,12 +834,17 @@ void Togl_CreateCommand( char *cmd_name, Togl_CmdProc *cmd_proc)
 void Togl_MakeCurrent( const struct Togl *togl )
 {
 #if defined(WIN32)
-	int res = wglMakeCurrent(togl->tglGLHdc, togl->tglGLHglrc);
-	assert(res == TRUE);
+   int res = wglMakeCurrent(togl->tglGLHdc, togl->tglGLHglrc);
+   assert(res == TRUE);
 #elif defined(X11)
    glXMakeCurrent( Tk_Display(togl->TkWin),
                    Tk_WindowId(togl->TkWin),
                    togl->GlCtx );
+#if defined(__sgi) && defined(STEREO)
+   stereoMakeCurrent( Tk_Display(togl->TkWin),
+                      Tk_WindowId(togl->TkWin),
+                      togl->GlCtx );
+#endif /*__sgi STEREO */
 #endif /* WIN32 */
 }
 
@@ -837,8 +878,13 @@ static void RenderOverlay( ClientData clientData )
       assert(res == TRUE);
 #elif defined(X11)
       glXMakeCurrent( Tk_Display(togl->TkWin),
-                      togl->OverlayWindow,
-                      togl->OverlayCtx );
+		      togl->OverlayWindow,
+		      togl->OverlayCtx );
+#if defined(__sgi) && defined(STEREO)
+      stereoMakeCurrent( Tk_Display(togl->TkWin),
+                         togl->OverlayWindow,
+                         togl->OverlayCtx );	
+#endif /*__sgi STEREO */	
 #endif /* WIN32 */
       togl->OverlayDisplayProc(togl);
    }
@@ -904,6 +950,10 @@ int Togl_Configure(Tcl_Interp *interp, struct Togl *togl,
          return TCL_ERROR;
       }
    }
+
+#if defined(__sgi) && defined(STEREO)
+   stereoInit(togl,togl->StereoFlag);
+#endif
 
    return TCL_OK;
 }
@@ -1030,12 +1080,15 @@ static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
       return TCL_ERROR;
    }
 
+   togl->Next = NULL;
 #if defined(WIN32)
    togl->tglGLHdc = NULL;
    togl->tglGLHglrc = NULL;
 #elif defined(X11)
    togl->GlCtx = NULL;
+   togl->OverlayCtx = NULL;
 #endif /* WIN32 */
+   togl->display = Tk_Display( tkwin );
    togl->TkWin = tkwin;
    togl->Interp = interp;
 #ifndef NO_TK_CURSOR
@@ -1063,14 +1116,18 @@ static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
    togl->OverlayFlag = 0;
    togl->StereoFlag = 0;
    togl->AuxNumber = 0;
+   togl->Indirect = GL_FALSE;
    togl->UpdatePending = GL_FALSE;
+   togl->OverlayUpdatePending = GL_FALSE;
    togl->CreateProc = CreateProc;
    togl->DisplayProc = DisplayProc;
    togl->ReshapeProc = ReshapeProc;
    togl->DestroyProc = DestroyProc;
    togl->TimerProc = TimerProc;
    togl->OverlayDisplayProc = OverlayDisplayProc;
-   togl->Ident = NULL;  /* Per Benjamin on March 6, 1996 */
+   togl->ShareList = NULL;
+   togl->ShareContext = NULL;
+   togl->Ident = NULL;
    togl->Client_Data = DefaultClientData;
 
    /* for EPS Output */
@@ -1078,8 +1135,9 @@ static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
    togl->EpsMapSize = 0;
 
    /* Create command event handler */
-   Tcl_CreateCommand(interp, Tk_PathName(tkwin), Togl_Widget,
-                     (ClientData)togl, (void (*)(ClientData)) NULL);
+   togl->widgetCmd = Tcl_CreateCommand(interp, Tk_PathName(tkwin),
+				       Togl_Widget, (ClientData)togl,
+				       (Tcl_CmdDeleteProc*) ToglCmdDeletedProc);
    Tk_CreateEventHandler(tkwin,
                          ExposureMask | StructureNotifyMask,
                          Togl_EventProc,
@@ -1122,6 +1180,10 @@ static int Togl_Cmd(ClientData clientData, Tcl_Interp *interp,
    }
 
    Tcl_AppendResult(interp, Tk_PathName(tkwin), NULL);
+
+   /* Add to linked list */
+   AddToList(togl);
+
    return TCL_OK;
 
 error:
@@ -1158,6 +1220,7 @@ static int SetupOverlay( struct Togl *togl )
    Display *dpy;
    XVisualInfo *visinfo;
    TkWindow *winPtr = (TkWindow *) togl->TkWin;
+
    XSetWindowAttributes swa;
    Tcl_HashEntry *hPtr;
    int new_flag;
@@ -1186,7 +1249,13 @@ static int SetupOverlay( struct Togl *togl )
    togl->OverlayTransparentPixel=0; /* maybe, maybe ... */
 #endif
 
+   /*
    togl->OverlayCtx = glXCreateContext( dpy, visinfo, None, GL_TRUE );
+   */
+   /* NEW in Togl 1.5 beta 3 */
+   /* share display lists with normal layer context */
+   togl->OverlayCtx = glXCreateContext( dpy, visinfo,
+                                        togl->GlCtx, !togl->Indirect );
 
    swa.colormap = XCreateColormap( dpy, RootWindow(dpy, visinfo->screen),
                                    visinfo->visual, AllocNone );
@@ -1266,7 +1335,7 @@ static LRESULT CALLBACK Win32WinProc( HWND hwnd, UINT message,
  */
 static int Togl_MakeWindowExist(struct Togl *togl)
 {
-   XVisualInfo *visinfo;
+   XVisualInfo *visinfo = NULL;
    Display *dpy;
    int dummy;
    int attrib_list[1000];
@@ -1280,6 +1349,7 @@ static int Togl_MakeWindowExist(struct Togl *togl)
    int new_flag;
    int scrnum;
    int attempt;
+   int directCtx = GL_TRUE;
 
 #if defined(X11)
 #define MAX_ATTEMPTS 12
@@ -1303,6 +1373,7 @@ static int Togl_MakeWindowExist(struct Togl *togl)
 
    if (winPtr->window != None) {
       XDestroyWindow(dpy, winPtr->window);
+      winPtr->window = 0;
    }
 
 #if defined(X11)
@@ -1311,89 +1382,126 @@ static int Togl_MakeWindowExist(struct Togl *togl)
       TCL_ERR(togl->Interp, "Togl: X server has no OpenGL GLX extension");
    }
 
-   /* It may take a few tries to get a visual */
-   for (attempt=0; attempt<MAX_ATTEMPTS; attempt++) {
-      attrib_count = 0;
-      attrib_list[attrib_count++] = GLX_USE_GL;
-      if (togl->RgbaFlag) {
-         /* RGB[A] mode */
-         attrib_list[attrib_count++] = GLX_RGBA;
-         attrib_list[attrib_count++] = GLX_RED_SIZE;
-         attrib_list[attrib_count++] = togl->RgbaRed;
-         attrib_list[attrib_count++] = GLX_GREEN_SIZE;
-         attrib_list[attrib_count++] = togl->RgbaGreen;
-         attrib_list[attrib_count++] = GLX_BLUE_SIZE;
-         attrib_list[attrib_count++] = togl->RgbaBlue;
-         if (togl->AlphaFlag) {
-            attrib_list[attrib_count++] = GLX_ALPHA_SIZE;
-            attrib_list[attrib_count++] = togl->AlphaSize;
+   if (togl->ShareContext && FindTogl(togl->ShareContext)) {
+      /* share OpenGL context with existing Togl widget */
+      struct Togl *shareWith = FindTogl(togl->ShareContext);
+      assert(shareWith);
+      assert(shareWith->GlCtx);
+      togl->GlCtx = shareWith->GlCtx;
+      togl->VisInfo = shareWith->VisInfo;
+      visinfo = togl->VisInfo;
+      printf("SHARE CTX\n");
+   }
+   else {
+      /* It may take a few tries to get a visual */
+      for (attempt=0; attempt<MAX_ATTEMPTS; attempt++) {
+         attrib_count = 0;
+         attrib_list[attrib_count++] = GLX_USE_GL;
+         if (togl->RgbaFlag) {
+            /* RGB[A] mode */
+            attrib_list[attrib_count++] = GLX_RGBA;
+            attrib_list[attrib_count++] = GLX_RED_SIZE;
+            attrib_list[attrib_count++] = togl->RgbaRed;
+            attrib_list[attrib_count++] = GLX_GREEN_SIZE;
+            attrib_list[attrib_count++] = togl->RgbaGreen;
+            attrib_list[attrib_count++] = GLX_BLUE_SIZE;
+            attrib_list[attrib_count++] = togl->RgbaBlue;
+            if (togl->AlphaFlag) {
+               attrib_list[attrib_count++] = GLX_ALPHA_SIZE;
+               attrib_list[attrib_count++] = togl->AlphaSize;
+            }
+
+            /* for EPS Output */
+            if ( togl->EpsRedMap) free( ( char *)togl->EpsRedMap);
+            if ( togl->EpsGreenMap) free( ( char *)togl->EpsGreenMap);
+            if ( togl->EpsBlueMap) free( ( char *)togl->EpsBlueMap);
+            togl->EpsRedMap = togl->EpsGreenMap = togl->EpsBlueMap = NULL;
+            togl->EpsMapSize = 0;
+         }
+         else {
+            /* Color index mode */
+            int depth;
+            attrib_list[attrib_count++] = GLX_BUFFER_SIZE;
+            depth = ci_depths[attempt];
+            attrib_list[attrib_count++] = depth;
+         }
+         if (togl->DepthFlag) {
+            attrib_list[attrib_count++] = GLX_DEPTH_SIZE;
+            attrib_list[attrib_count++] = togl->DepthSize;
+         }
+         if (togl->DoubleFlag || dbl_flags[attempt]) {
+            attrib_list[attrib_count++] = GLX_DOUBLEBUFFER;
+         }
+         if (togl->StencilFlag) {
+            attrib_list[attrib_count++] = GLX_STENCIL_SIZE;
+            attrib_list[attrib_count++] = togl->StencilSize;
+         }
+         if (togl->AccumFlag) {
+            attrib_list[attrib_count++] = GLX_ACCUM_RED_SIZE;
+            attrib_list[attrib_count++] = togl->AccumRed;
+            attrib_list[attrib_count++] = GLX_ACCUM_GREEN_SIZE;
+            attrib_list[attrib_count++] = togl->AccumGreen;
+            attrib_list[attrib_count++] = GLX_ACCUM_BLUE_SIZE;
+            attrib_list[attrib_count++] = togl->AccumBlue;
+            if (togl->AlphaFlag) {
+               attrib_list[attrib_count++] = GLX_ACCUM_ALPHA_SIZE;
+               attrib_list[attrib_count++] = togl->AccumAlpha;
+            }
+         }
+         if (togl->AuxNumber != 0) {
+            attrib_list[attrib_count++] = GLX_AUX_BUFFERS;
+            attrib_list[attrib_count++] = togl->AuxNumber;
+         }
+         if (togl->Indirect) {
+            directCtx = GL_FALSE;
          }
 
-	 /* for EPS Output */
-	 if ( togl->EpsRedMap) free( ( char *)togl->EpsRedMap);
-	 if ( togl->EpsGreenMap) free( ( char *)togl->EpsGreenMap);
-	 if ( togl->EpsBlueMap) free( ( char *)togl->EpsBlueMap);
-	 togl->EpsRedMap = togl->EpsGreenMap = togl->EpsBlueMap = NULL;
-	 togl->EpsMapSize = 0;
+         /* stereo hack */
+         /*
+           if (togl->StereoFlag) {
+           attrib_list[attrib_count++] = GLX_STEREO;
+           }
+         */
+         attrib_list[attrib_count++] = None;
+
+         visinfo = glXChooseVisual( dpy, DefaultScreen(dpy), attrib_list );
+         if (visinfo) {
+            /* found a GLX visual! */
+            break;
+         }
+      }
+
+      togl->VisInfo = visinfo;
+
+      if (visinfo==NULL) {
+         TCL_ERR(togl->Interp, "Togl: couldn't get visual");
+      }
+
+      /*
+       * Create a new OpenGL rendering context.
+       */
+      if (togl->ShareList) {
+         /* share display lists with existing togl widget */
+         struct Togl *shareWith = FindTogl(togl->ShareList);
+         GLXContext shareCtx;
+         if (shareWith)
+            shareCtx = shareWith->GlCtx;
+         else
+            shareCtx = None;
+         togl->GlCtx = glXCreateContext(dpy, visinfo, shareCtx, directCtx);
       }
       else {
-         /* Color index mode */
-         int depth;
-         attrib_list[attrib_count++] = GLX_BUFFER_SIZE;
-         depth = ci_depths[attempt];
-         attrib_list[attrib_count++] = depth;
-      }
-      if (togl->DepthFlag) {
-         attrib_list[attrib_count++] = GLX_DEPTH_SIZE;
-         attrib_list[attrib_count++] = togl->DepthSize;
-      }
-      if (togl->DoubleFlag || dbl_flags[attempt]) {
-         attrib_list[attrib_count++] = GLX_DOUBLEBUFFER;
-      }
-      if (togl->StencilFlag) {
-         attrib_list[attrib_count++] = GLX_STENCIL_SIZE;
-         attrib_list[attrib_count++] = togl->StencilSize;
-      }
-      if (togl->AccumFlag) {
-         attrib_list[attrib_count++] = GLX_ACCUM_RED_SIZE;
-         attrib_list[attrib_count++] = togl->AccumRed;
-         attrib_list[attrib_count++] = GLX_ACCUM_GREEN_SIZE;
-         attrib_list[attrib_count++] = togl->AccumGreen;
-         attrib_list[attrib_count++] = GLX_ACCUM_BLUE_SIZE;
-         attrib_list[attrib_count++] = togl->AccumBlue;
-         if (togl->AlphaFlag) {
-            attrib_list[attrib_count++] = GLX_ACCUM_ALPHA_SIZE;
-            attrib_list[attrib_count++] = togl->AccumAlpha;
-         }
-      }
-      if (togl->AuxNumber != 0) {
-         attrib_list[attrib_count++] = GLX_AUX_BUFFERS;
-         attrib_list[attrib_count++] = togl->AuxNumber;
-      }
-      if (togl->StereoFlag) {
-         attrib_list[attrib_count++] = GLX_STEREO;
+         /* don't share display lists */
+         togl->GlCtx = glXCreateContext(dpy, visinfo, None, directCtx);
       }
 
-      attrib_list[attrib_count++] = None;
-
-      visinfo = glXChooseVisual( dpy, DefaultScreen(dpy), attrib_list );
-      if (visinfo) {
-         /* found a GLX visual! */
-         break;
+      if (togl->GlCtx == NULL) {
+         TCL_ERR(togl->Interp, "could not create rendering context");
       }
-   }
-   if (visinfo==NULL) {
-      TCL_ERR(togl->Interp, "Togl: couldn't get visual");
+
    }
 
 
-   /* Create an OpenGL rendering context */
-   /* No sharing of display lists */
-   /* Direct rendering if possible */
-   togl->GlCtx = glXCreateContext(dpy, visinfo, None, GL_TRUE);
-   if (togl->GlCtx == NULL) {
-      TCL_ERR(togl->Interp, "could not create rendering context");
-   }
 #endif /* X11 */
 
    /* Find parent of window */
@@ -1443,23 +1551,26 @@ static int Togl_MakeWindowExist(struct Togl *togl)
    if (togl->DoubleFlag) {
         pfd.dwFlags |= PFD_DOUBLEBUFFER;
    }
-/* The stereo flag is not supported in the current generic OpenGL implementation,
-   but may be supported by specific hardware devices */
+   /* The stereo flag is not supported in the current generic OpenGL
+    * implementation, but may be supported by specific hardware devices.
+    */
    if (togl->StereoFlag) {
         pfd.dwFlags |= PFD_STEREO;
    }
 
    pfd.cColorBits = togl->RgbaRed + togl->RgbaGreen + togl->RgbaBlue;
    pfd.iPixelType = togl->RgbaFlag ? PFD_TYPE_RGBA : PFD_TYPE_COLORINDEX;
-/* Alpha bitplanes are not supported in the current generic OpenGL implementation,
-   but may be supported by specific hardware devices */
+   /* Alpha bitplanes are not supported in the current generic OpenGL
+    * implementation, but may be supported by specific hardware devices.
+    */
    pfd.cAlphaBits = togl->AlphaFlag ? togl->AlphaSize : 0;
    pfd.cAccumBits = togl->AccumFlag ? (togl->AccumRed + togl->AccumGreen +
                                        togl->AccumBlue +togl->AccumAlpha) : 0;
    pfd.cDepthBits = togl->DepthFlag ? togl->DepthSize : 0;
    pfd.cStencilBits = togl->StencilFlag ? togl->StencilSize : 0;
-/* Auxiliary buffers are not supported in the current generic OpenGL implementation,
-   but may be supported by specific hardware devices */
+   /* Auxiliary buffers are not supported in the current generic OpenGL
+    * implementation, but may be supported by specific hardware devices.
+    */
    pfd.cAuxBuffers = togl->AuxNumber;
    pfd.iLayerType = PFD_MAIN_PLANE;
 
@@ -1470,16 +1581,16 @@ static int Togl_MakeWindowExist(struct Togl *togl)
         TCL_ERR(togl->Interp, "Togl: couldn't choose pixel format");
    }
 
-/* Get the actual pixel format */
+   /* Get the actual pixel format */
    DescribePixelFormat(togl->tglGLHdc, pixelformat, sizeof(pfd), &pfd);
 
-/* Create an OpenGL rendering context */
+   /* Create an OpenGL rendering context */
    togl->tglGLHglrc = wglCreateContext(togl->tglGLHdc);
    if (!togl->tglGLHglrc) {
         TCL_ERR(togl->Interp, "could not create rendering context");
    }
 
-/* Just for portability, define the simplest visinfo */
+   /* Just for portability, define the simplest visinfo */
    visinfo = &VisInf;
    visinfo->visual = DefaultVisual(dpy, DefaultScreen(dpy));
    visinfo->depth = visinfo->visual->bits_per_rgb;
@@ -1495,19 +1606,19 @@ static int Togl_MakeWindowExist(struct Togl *togl)
 #if defined(X11)
       cmap = get_rgb_colormap( dpy, scrnum, visinfo );
 #elif defined(WIN32)
-   if (pfd.dwFlags & PFD_NEED_PALETTE) {
-          cmap = Win32CreateRgbColormap(pfd);
+      if (pfd.dwFlags & PFD_NEED_PALETTE) {
+         cmap = Win32CreateRgbColormap(pfd);
       }
       else {
-          cmap = DefaultColormap(dpy,scrnum);
+         cmap = DefaultColormap(dpy,scrnum);
       }
 
-	  /* for EPS Output */
-	  if ( togl->EpsRedMap) free( ( char *)togl->EpsRedMap);
-	  if ( togl->EpsGreenMap) free( ( char *)togl->EpsGreenMap);
-	  if ( togl->EpsBlueMap) free( ( char *)togl->EpsBlueMap);
-	  togl->EpsRedMap = togl->EpsGreenMap = togl->EpsBlueMap = NULL;
-	  togl->EpsMapSize = 0;
+      /* for EPS Output */
+      if ( togl->EpsRedMap) free( ( char *)togl->EpsRedMap);
+      if ( togl->EpsGreenMap) free( ( char *)togl->EpsGreenMap);
+      if ( togl->EpsBlueMap) free( ( char *)togl->EpsBlueMap);
+      togl->EpsRedMap = togl->EpsGreenMap = togl->EpsBlueMap = NULL;
+      togl->EpsMapSize = 0;
 #endif /* X11 */
    }
    else {
@@ -1545,13 +1656,10 @@ static int Togl_MakeWindowExist(struct Togl *togl)
     */
    Tk_SetWindowVisual(togl->TkWin, visinfo->visual, visinfo->depth, cmap);
 #ifdef WIN32
-    /* Install the colormap */
-    SelectPalette(togl->tglGLHdc, ((TkWinColormap *)cmap)->palette, TRUE);
-	RealizePalette(togl->tglGLHdc);
+   /* Install the colormap */
+   SelectPalette(togl->tglGLHdc, ((TkWinColormap *)cmap)->palette, TRUE);
+   RealizePalette(togl->tglGLHdc);
 #endif /* WIN32 */
-
-   /* for DumpToEpsFile */
-   togl->EpsVisual = visinfo;
 
 #if defined(X11)
    swa.colormap = cmap;
@@ -1678,10 +1786,11 @@ static int Togl_MakeWindowExist(struct Togl *togl)
 
    /* for EPS Output */
    if ( !togl->RgbaFlag) {
-      int index_bits, index_size;
+      GLint index_bits;
+      int index_size;
 #if defined(X11)
-      glGetIntegerv( GL_INDEX_BITS, &index_bits);
-      index_size = 1<<index_bits;
+      glGetIntegerv( GL_INDEX_BITS, &index_bits );
+      index_size = 1 << index_bits;
 #elif defined(WIN32)
       index_size = togl->CiColormapSize;
 #endif /* X11 */
@@ -1699,6 +1808,66 @@ static int Togl_MakeWindowExist(struct Togl *togl)
    return TCL_OK;
 }
 
+/*
+ * ToglCmdDeletedProc
+ *
+ *      This procedure is invoked when a widget command is deleted.  If
+ *      the widget isn't already in the process of being destroyed,
+ *      this command destroys it.
+ *
+ * Results:
+ *      None.
+ *
+ * Side effects:
+ *      The widget is destroyed.
+ *
+ *----------------------------------------------------------------------
+ */ 
+static void ToglCmdDeletedProc( ClientData clientData )
+{
+   struct Togl *togl = (struct Togl *)clientData;
+   Tk_Window tkwin = togl->TkWin;
+
+   /*
+    * This procedure could be invoked either because the window was
+    * destroyed and the command was then deleted (in which case tkwin
+    * is NULL) or because the command was deleted, and then this procedure
+    * destroys the widget.
+    */
+
+   /* NEW in togl 1.5 beta 3 */
+   if (togl && tkwin) {
+      Tk_DeleteEventHandler(tkwin,
+                         ExposureMask | StructureNotifyMask,
+                         Togl_EventProc,
+                         (ClientData)togl);
+   }
+
+   /* NEW in togl 1.5 beta 3 */
+#if defined(X11)
+   if (togl->GlCtx) {
+      /* XXX this might be bad if two or more Togl widgets share a context */
+      glXDestroyContext( togl->display, togl->GlCtx );
+      togl->GlCtx = NULL;
+   }
+   if (togl->OverlayCtx) {
+      Tcl_HashEntry *entryPtr;
+      TkWindow *winPtr = (TkWindow *) togl->TkWin;
+      if (winPtr) {
+         entryPtr = Tcl_FindHashEntry(&winPtr->dispPtr->winTable,
+                                      (char *) togl->OverlayWindow );
+         Tcl_DeleteHashEntry(entryPtr);
+      }
+      glXDestroyContext( togl->display, togl->OverlayCtx );
+      togl->OverlayCtx = NULL;
+   }
+#endif
+
+   if (tkwin != NULL) {
+      togl->TkWin = NULL;
+      Tk_DestroyWindow(tkwin);
+   }
+}
 
 
 /*
@@ -1714,16 +1883,19 @@ static void Togl_Destroy( ClientData clientData )
 {
    struct Togl *togl = (struct Togl *)clientData;
 
-   Tk_FreeOptions(configSpecs, (char *)togl, Tk_Display(togl->TkWin), 0);
+   Tk_FreeOptions(configSpecs, (char *)togl, togl->display, 0);
 
 #ifndef NO_TK_CURSOR
    if (togl->Cursor != None) {
-      Tk_FreeCursor(Tk_Display(togl->TkWin), togl->Cursor);
+      Tk_FreeCursor(togl->display, togl->Cursor);
    }
 #endif
    if (togl->DestroyProc) {
       togl->DestroyProc(togl);
    }
+
+   /* remove from linked list */
+   RemoveFromList(togl);
 
    free(togl);
 }
@@ -1739,17 +1911,16 @@ static void Togl_EventProc(ClientData clientData, XEvent *eventPtr)
 
    switch (eventPtr->type) {
       case Expose:
-         if ((eventPtr->xexpose.count == 0) && !togl->UpdatePending) {
-            if(eventPtr->xexpose.window==Tk_WindowId(togl->TkWin)) {
-               Tk_DoWhenIdle( Togl_Render, (ClientData) togl );
+         if (eventPtr->xexpose.count == 0) {
+            if (!togl->UpdatePending &&
+                eventPtr->xexpose.window==Tk_WindowId(togl->TkWin)) {
+               Togl_PostRedisplay(togl);
             }
 #if defined(X11)
-            else if (togl->OverlayFlag && togl->OverlayIsMapped &&
-                     eventPtr->xexpose.window==togl->OverlayWindow){
-               /* XInstallColormap(Tk_Display(togl->TkWin),togl->OverlayCmap);
-                  RenderOverlay((ClientData) togl );
-                */
-               Tk_DoWhenIdle( RenderOverlay, (ClientData) togl );
+            if (!togl->OverlayUpdatePending && togl->OverlayFlag
+                && togl->OverlayIsMapped
+                && eventPtr->xexpose.window==togl->OverlayWindow){
+               Togl_PostOverlayRedisplay(togl);
             }
 #endif /*X11*/
          }
@@ -1790,11 +1961,35 @@ static void Togl_EventProc(ClientData clientData, XEvent *eventPtr)
       case MapNotify:
          break;
       case DestroyNotify:
+	 if (togl->TkWin != NULL) {
+	    togl->TkWin = NULL;
+#if (TCL_MAJOR_VERSION * 100 + TCL_MINOR_VERSION) >= 800
+            /* This function new in Tcl/Tk 8.0 */
+            Tcl_DeleteCommandFromToken( togl->Interp, togl->widgetCmd );
+#endif
+	 }
+	 if (togl->TimerProc != NULL) {
+#if (TK_MAJOR_VERSION * 100 + TK_MINOR_VERSION) >= 401
+	    Tcl_DeleteTimerHandler(togl->timerHandler);
+#else
+	    Tk_DeleteTimerHandler(togl->timerHandler);
+#endif
+	    
+	 }
+	 if (togl->UpdatePending) {
+#if (TCL_MAJOR_VERSION * 100 + TCL_MINOR_VERSION) >= 705
+            Tcl_CancelIdleCall(Togl_Render, (ClientData) togl);
+#else
+            Tk_CancelIdleCall(Togl_Render, (ClientData) togl);
+#endif
+	 }
+
 #if (TK_MAJOR_VERSION * 100 + TK_MINOR_VERSION) >= 401
          Tcl_EventuallyFree( (ClientData) togl, Togl_Destroy );
 #else
          Tk_EventuallyFree((ClientData)togl, Togl_Destroy);
 #endif
+
          break;
       default:
          /*nothing*/
@@ -1852,6 +2047,12 @@ int Togl_Height( const struct Togl *togl )
 Tcl_Interp *Togl_Interp( const struct Togl *togl )
 {
    return togl->Interp;
+}
+
+
+Tk_Window Togl_TkWin( const struct Togl *togl )
+{
+   return togl->TkWin;
 }
 
 
@@ -2312,9 +2513,14 @@ void Togl_UseLayer( struct Togl *togl, int layer )
          int res = wglMakeCurrent(togl->tglGLHdc, togl->tglGLOverlayHglrc);
          assert(res == TRUE);
 #elif defined(X11)
-         glXMakeCurrent( Tk_Display(togl->TkWin),
-                         togl->OverlayWindow,
-                         togl->OverlayCtx );
+	 glXMakeCurrent( Tk_Display(togl->TkWin),
+			 togl->OverlayWindow,
+			 togl->OverlayCtx );
+#if defined(__sgi) && defined(STEREO)
+	stereoMakeCurrent( Tk_Display(togl->TkWin),
+			   togl->OverlayWindow,
+			   togl->OverlayCtx );
+#endif /* __sgi STEREO */
 #endif /*WIN32 */
       }
       else if (layer==TOGL_NORMAL) {
@@ -2322,9 +2528,14 @@ void Togl_UseLayer( struct Togl *togl, int layer )
 	int res = wglMakeCurrent(togl->tglGLHdc, togl->tglGLHglrc);
 	assert(res == TRUE);
 #elif defined(X11)
-         glXMakeCurrent( Tk_Display(togl->TkWin),
-                         Tk_WindowId(togl->TkWin),
-                         togl->GlCtx );
+	glXMakeCurrent( Tk_Display(togl->TkWin),
+			Tk_WindowId(togl->TkWin),
+			togl->GlCtx );
+#if defined(__sgi) && defined(STEREO)
+	stereoMakeCurrent( Tk_Display(togl->TkWin),
+			Tk_WindowId(togl->TkWin),
+			togl->GlCtx );
+#endif /* __sgi STEREO */
 #endif /* WIN32 */
       }
       else {
@@ -2360,7 +2571,8 @@ void Togl_HideOverlay( struct Togl *togl )
 
 void Togl_PostOverlayRedisplay( struct Togl *togl )
 {
-   if (togl->OverlayWindow && togl->OverlayDisplayProc) {
+   if (!togl->OverlayUpdatePending
+       && togl->OverlayWindow && togl->OverlayDisplayProc) {
       Tk_DoWhenIdle( RenderOverlay, (ClientData) togl );
       togl->OverlayUpdatePending = 1;
    }
@@ -2452,22 +2664,22 @@ void Togl_SetClientData( struct Togl *togl, ClientData clientData )
 
 Display* Togl_Display( const struct Togl *togl)
 {
-  return Tk_Display(togl->TkWin);
+   return Tk_Display(togl->TkWin);
 }
 
 Screen* Togl_Screen( const struct Togl *togl)
 {
-  return Tk_Screen(togl->TkWin);
+   return Tk_Screen(togl->TkWin);
 }
 
 int Togl_ScreenNumber( const struct Togl *togl)
 {
-  return Tk_ScreenNumber(togl->TkWin);
+   return Tk_ScreenNumber(togl->TkWin);
 }
 
 Colormap Togl_Colormap( const struct Togl *togl)
 {
-  return Tk_Colormap(togl->TkWin);
+   return Tk_Colormap(togl->TkWin);
 }
 
 
@@ -2572,7 +2784,8 @@ static GLvoid *grabPixels(int inColor, unsigned int width, unsigned int height)
    if (inColor) {
       format = GL_RGB;
       size = width * height * 3;
-   } else {
+   }
+   else {
       format = GL_LUMINANCE;
       size = width * height * 1;
    }
@@ -2744,7 +2957,7 @@ int Togl_DumpToEpsFile( const struct Togl *togl, const char *filename,
 #if 0
    Pixmap eps_pixmap;
    GLXPixmap eps_glxpixmap;
-   XVisualInfo *vi = togl->EpsVisual;
+   XVisualInfo *vi = togl->VisInfo;
    Window win = Tk_WindowId( togl->TkWin);
 #endif
    Display *dpy = Tk_Display( togl->TkWin);
@@ -2801,7 +3014,7 @@ int Togl_DumpToEpsFile( const struct Togl *togl, const char *filename,
       glPixelMapfv( GL_PIXEL_MAP_I_TO_G, togl->EpsMapSize, togl->EpsGreenMap);
       glPixelMapfv( GL_PIXEL_MAP_I_TO_B, togl->EpsMapSize, togl->EpsBlueMap);
    }
- /*  user_redraw(); */
+   /*  user_redraw(); */
    user_redraw(togl);  /* changed by GG */
    /* glReadBuffer( GL_FRONT); */
    /* by default it read GL_BACK in double buffer mode*/
@@ -2814,3 +3027,158 @@ int Togl_DumpToEpsFile( const struct Togl *togl, const char *filename,
 #endif
    return retval;
 }
+
+/*
+ * Full screen stereo for SGI graphics
+ * Contributed by Ben Evans (Ben.Evans@anusf.anu.edu.au)
+ * This code was based on SGI's /usr/share/src/OpenGL/teach/stereo
+ */
+
+#if defined(__sgi) && defined(STEREO)
+
+static struct stereoStateRec {
+    Bool        useSGIStereo;
+    Display     *currentDisplay;
+    Window      currentWindow;
+    GLXContext  currentContext;
+    GLenum      currentDrawBuffer;
+    int         currentStereoBuffer;
+    Bool        enabled;
+    char        *stereoCommand;
+    char        *restoreCommand;
+} stereo;
+
+/* call instead of glDrawBuffer */
+void
+Togl_StereoDrawBuffer(GLenum mode)
+{
+  if (stereo.useSGIStereo) {
+    stereo.currentDrawBuffer = mode;
+    switch (mode) {
+    case GL_FRONT:
+    case GL_BACK:
+    case GL_FRONT_AND_BACK:
+      /*
+      ** Simultaneous drawing to both left and right buffers isn't
+      ** really possible if we don't have a stereo capable visual.
+      ** For now just fall through and use the left buffer.
+      */
+    case GL_LEFT:
+    case GL_FRONT_LEFT:
+    case GL_BACK_LEFT:
+      stereo.currentStereoBuffer = STEREO_BUFFER_LEFT;
+      break;
+    case GL_RIGHT:
+    case GL_FRONT_RIGHT: 
+      stereo.currentStereoBuffer = STEREO_BUFFER_RIGHT;
+      mode = GL_FRONT;
+      break;
+    case GL_BACK_RIGHT:
+      stereo.currentStereoBuffer = STEREO_BUFFER_RIGHT;
+      mode = GL_BACK;
+      break;
+    default:
+      break;
+    }
+    if (stereo.currentDisplay && stereo.currentWindow) {
+      glXWaitGL();  /* sync with GL command stream before calling X */
+      XSGISetStereoBuffer(stereo.currentDisplay,
+			  stereo.currentWindow,
+			  stereo.currentStereoBuffer);
+      glXWaitX();   /* sync with X command stream before calling GL */
+    }
+  }
+  glDrawBuffer(mode);
+}
+
+/* call instead of glClear */
+void
+Togl_StereoClear(GLbitfield mask)
+{
+  GLenum drawBuffer;
+  if (stereo.useSGIStereo) {
+    drawBuffer = stereo.currentDrawBuffer;
+    switch (drawBuffer) {
+    case GL_FRONT:
+      stereoDrawBuffer(GL_FRONT_RIGHT);
+      glClear(mask);
+      stereoDrawBuffer(drawBuffer);
+      break;
+    case GL_BACK:
+      stereoDrawBuffer(GL_BACK_RIGHT);
+      glClear(mask);
+      stereoDrawBuffer(drawBuffer);
+      break;
+    case GL_FRONT_AND_BACK:
+      stereoDrawBuffer(GL_RIGHT);
+      glClear(mask);
+      stereoDrawBuffer(drawBuffer);
+      break;
+    case GL_LEFT:
+    case GL_FRONT_LEFT:
+    case GL_BACK_LEFT:
+    case GL_RIGHT:
+    case GL_FRONT_RIGHT:
+    case GL_BACK_RIGHT:
+    default:
+      break;
+    }
+  }
+  glClear(mask);
+}
+
+static void
+stereoMakeCurrent(Display *dpy, Window win, GLXContext ctx)
+{
+  
+  if (stereo.useSGIStereo) {
+    if (dpy && (dpy != stereo.currentDisplay)) {
+      int event, error;
+      /* Make sure new Display supports SGIStereo */
+      if (XSGIStereoQueryExtension(dpy, &event, &error) == False) {
+	dpy = NULL;
+      }
+    }
+    if (dpy && win && (win != stereo.currentWindow)) {
+      /* Make sure new Window supports SGIStereo */
+      if (XSGIQueryStereoMode(dpy, win) == X_STEREO_UNSUPPORTED) {
+	win = None;
+      }
+    }
+    if (ctx && (ctx != stereo.currentContext)) {
+      GLint drawBuffer;
+      glGetIntegerv(GL_DRAW_BUFFER, &drawBuffer);
+      stereoDrawBuffer((GLenum) drawBuffer);
+    }
+    stereo.currentDisplay = dpy;
+    stereo.currentWindow = win;
+    stereo.currentContext = ctx;
+  }
+}
+
+
+/* call before using stereo */
+static void
+stereoInit(struct Togl *togl,int stereoEnabled)
+{
+  stereo.useSGIStereo = stereoEnabled;
+  stereo.currentDisplay = NULL;
+  stereo.currentWindow = None;
+  stereo.currentContext = NULL;
+  stereo.currentDrawBuffer = GL_NONE;
+  stereo.currentStereoBuffer = STEREO_BUFFER_NONE;
+  stereo.enabled = False;
+}
+
+
+void
+Togl_StereoFrustum(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top,
+               GLfloat near, GLfloat far, GLfloat eyeDist, GLfloat eyeOffset)
+{
+  GLfloat eyeShift = (eyeDist - near) * (eyeOffset / eyeDist);
+  
+  glFrustum(left+eyeShift, right+eyeShift, bottom, top, near, far);
+  glTranslatef(-eyeShift, 0.0, 0.0);
+}
+
+#endif /* __sgi STEREO */

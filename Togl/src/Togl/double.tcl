@@ -1,4 +1,4 @@
-# $Id: double.tcl,v 1.2 1998-09-16 10:17:28 garrigue Exp $
+# $Id: double.tcl,v 1.3 1998-12-11 08:44:05 garrigue Exp $
 
 # Togl - a Tk OpenGL widget
 # Copyright (C) 1996  Brian Paul and Ben Bederson
@@ -6,8 +6,11 @@
 
 
 # $Log: double.tcl,v $
-# Revision 1.2  1998-09-16 10:17:28  garrigue
-# patched for use with LablGL
+# Revision 1.3  1998-12-11 08:44:05  garrigue
+# Togl 1.5
+#
+# Revision 1.3  1998/03/12 03:52:31  brianp
+# now sharing display lists between the widgets
 #
 # Revision 1.2  1996/10/23 23:31:56  brianp
 # added -ident options to togl calls
@@ -26,8 +29,12 @@ proc setup {} {
     wm title . "Single vs Double Buffering"
 
     frame .f1
+
+    # create first Togl widget
     togl .f1.o1 -width 200 -height 200  -rgba true  -double false -depth true -ident Single
-    togl .f1.o2 -width 200 -height 200  -rgba true  -double true -depth true -ident Double
+
+    # create second Togl widget, share display lists with first widget
+    togl .f1.o2 -width 200 -height 200  -rgba true  -double true -depth true -ident Double -sharelist Single
 
     scale  .sx   -label {X Axis} -from 0 -to 360 -command {setAngle x} -orient horizontal
     scale  .sy   -label {Y Axis} -from 0 -to 360 -command {setAngle y} -orient horizontal
