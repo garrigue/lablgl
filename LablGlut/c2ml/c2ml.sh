@@ -20,6 +20,6 @@ let _ = main ()" >> $bname.ml
 if test "x$EDITOR" = x ; then vi $bname.ml ; else $EDITOR $bname.ml ; fi
 tmpml=`tempfile --suffix .ml`
 if camlp4 pa_o.cmo pr_o.cmo $bname.ml > $tmpml; then 
-    mv $tmpml bname.ml
+    mv $tmpml $bname.ml
 fi
 
