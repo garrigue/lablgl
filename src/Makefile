@@ -1,17 +1,17 @@
-# OLabl commands
+#Adjust this directory for installation
+LIBDIR=/usr/local/lib/olabl
 COMPILER=olablc -c
 LIBRARIAN=olablc -a
 LINKER=olablc
+CINCLUDES=-ccopt "-I/usr/local/include"
+#GLLIBS=	-ccopt "-L/usr/local/lib" -cclib -lMesaaux -cclib -lMesatk \
+#	-cclib -lMesaGL -cclib -lMesaGLU
+GLLIBS=-ccopt -L. -cclib -lglaux -cclib -lGL -cclib -lGLU
+XLIBS= -ccopt "-L/usr/X11R6/lib" -cclib -lX11 -cclib -lXext
 
-include Makefile.config
+MLOBJS =	gl.cmo		gltk.cmo	aux.cmo		glm.cmo
+COBJS =		ml_gl.o		ml_tk.o		ml_aux.o
 
-# Files
-MLOBJS =	raw.cmo 	gl.cmo		glu.cmo		glm.cmo \
-		togl.cmo
-#gltk.cmo	aux.cmo
-COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	togl.o \
-		ml_raw.o
-#ml_tk.o	ml_aux.o
 # Default rules
 
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h
@@ -41,15 +41,10 @@ lablgl.cma: $(MLOBJS)
 
 liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
-#	$(RANLIB) liblablgl.a
 
 lablgl: lablgl.cma liblablgl.a
-	olablmktop $(INCLUDES) -custom -o lablgl \
-		unix.cma tk41.cma lablgl.cma -ccopt -L. \
-		-cclib -llablgl -cclib -lunix \
-		$(GLLIBS) $(XLIBS) $(TKLIBS)
-
-labltogl: 
+	olablmktop -custom -o lablgl unix.cma lablgl.cma -ccopt -L. \
+		-cclib -llablgl -cclib -lunix $(GLLIBS) $(XLIBS)
 
 gl_tags.c: gl_tags.var
 	./var2switch GL_ < gl_tags.var > $@
@@ -57,26 +52,11 @@ gl_tags.c: gl_tags.var
 tk_tags.c: tk_tags.var
 	./var2switch TK_ < tk_tags.var > $@
 
-togl_tags.c: togl_tags.var
-	./var2switch TOGL_ < togl_tags.var > $@
-
-glu_tags.c: glu_tags.var
-	./var2switch GLU_ < glu_tags.var > $@
-
 clean:
-	rm -f *.cm? ml_*.o gl_tags.[ch] tk_tags.[ch] *~ #*
+	rm -f *.cm? *.o gl_tags.[ch] tk_tags.[ch] *~ #*
 
-ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h
+ml_gl.o: ml_gl.h gl_tags.h gl_tags.c
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
-ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
-ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
-ml_raw.o: raw_tags.h ml_raw.h
-raw.cmo: raw.cmi
-gl.cmi: raw.cmi
-gl.cmo: gl.cmi
-glu.cmo: gl.cmi raw.cmi
 glm.cmo: gl.cmi
 aux.cmo: gltk.cmi
-togl.cmi: gl.cmi
-togl.cmo: togl.cmi
