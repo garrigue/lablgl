@@ -1,4 +1,4 @@
-(* $Id: gears_a.ml,v 1.1 2003-10-01 09:28:02 garrigue Exp $ *)
+(* $Id: gears_a.ml,v 1.2 2003-10-01 10:11:41 raffalli Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -39,7 +39,7 @@ let gear ~inner ~outer ~width ~teeth ~tooth_depth =
   in
 
   let raw = Raw.create `float (12 * (teeth+1)) in
-  GlArray.vertex ~size:3 raw;
+  GlArray.vertex `three raw;
   let count = ref 0 in
 
   let vertexa ~r ~z ?(s=0) i =
