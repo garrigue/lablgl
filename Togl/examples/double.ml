@@ -1,10 +1,10 @@
-(* $Id: double.ml,v 1.8 1999-12-16 08:38:00 garrigue Exp $ *)
+(* $Id: double.ml,v 1.9 2000-04-03 02:57:44 garrigue Exp $ *)
 
 class view togl :title = object (self)
   val mutable corner_x = 0.
   val mutable corner_y = 0.
   val mutable corner_z = 0.
-  val font_base = Togl.load_bitmap_font togl font:`fixed_8x13
+  val font_base = Togl.load_bitmap_font togl font:`Fixed_8x13
   val mutable x_angle = 0.
   val mutable y_angle = 0.
   val mutable z_angle = 0.
@@ -98,7 +98,7 @@ let main () =
     Button.create text:"Quit" command:(fun () -> destroy top) top
   in
 
-  List.iter fun:
+  List.iter f:
     (fun o ->
       Togl.display_func o#togl cb:(fun () -> o#display);
       Togl.reshape_func o#togl cb:(fun () -> o#reshape);

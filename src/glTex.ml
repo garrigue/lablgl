@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.4 1999-12-08 08:24:30 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.5 2000-04-03 02:57:42 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -20,13 +20,13 @@ let coord :s ?:t ?:r ?:q () =
 let coord2 (s,t) = coord2 s t
 let coord3 (s,t,r) = coord3 s t r
 let coord4 (s,t,r,q) = coord4 s t r q
-type env_param = [`mode [`modulate|`decal|`blend|`replace] | `color rgba]
+type env_param = [`mode of [`modulate|`decal|`blend|`replace] | `color of rgba]
 external env : env_param -> unit = "ml_glTexEnv"
 type coord = [`s|`t|`r|`q]
 type gen_param = [
-    `mode [`object_linear|`eye_linear|`sphere_map]
-  | `object_plane point4
-  | `eye_plane point4
+    `mode of [`object_linear|`eye_linear|`sphere_map]
+  | `object_plane of point4
+  | `eye_plane of point4
 ]
 external gen : coord:coord -> gen_param -> unit = "ml_glTexGen"
 type format =
@@ -57,12 +57,12 @@ type filter =
     |`nearest_mipmap_linear|`linear_mipmap_linear]
 type wrap = [`clamp|`repeat]
 type parameter = [
-    `min_filter filter
-  | `mag_filter [`nearest|`linear]
-  | `wrap_s wrap
-  | `wrap_t wrap
-  | `border_color rgba
-  | `priority clampf
+    `min_filter of filter
+  | `mag_filter of [`nearest|`linear]
+  | `wrap_s of wrap
+  | `wrap_t of wrap
+  | `border_color of rgba
+  | `priority of clampf
 ] 
 external parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
     = "ml_glTexParameter"

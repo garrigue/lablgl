@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.12 1999-12-16 08:38:01 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.13 2000-04-03 02:57:46 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -62,7 +62,7 @@ let lw = 0.015
 let wlw = 0.02
 
 let square (x1, y1) (x2, y2) =
-  List.iter fun:GlDraw.vertex2
+  List.iter f:GlDraw.vertex2
     [ x1, y1;
       x2, y1;
       x2, y2;
@@ -120,7 +120,7 @@ class ball () = object (self)
     GlMat.push ();
     Gl.enable `texture_2d;
     GlTex.image2d image;
-    List.iter fun:(GlTex.parameter target:`texture_2d)
+    List.iter f:(GlTex.parameter target:`texture_2d)
       [ `wrap_s `repeat;
       	`wrap_t `repeat;
       	`mag_filter `nearest;
@@ -261,7 +261,7 @@ class net :togl = object
     make_image () 
 (*    let image = make_image () in
     GlTex.image2d image;
-    List.iter fun:(GlTex.parameter target:`texture_2d)
+    List.iter f:(GlTex.parameter target:`texture_2d)
       [ `wrap_s `repeat;
       	`wrap_t `repeat;
       	`mag_filter `nearest;
@@ -274,7 +274,7 @@ class net :togl = object
     GlTex.env (`mode `replace);
     Gl.enable `texture_2d;
     GlTex.image2d texture;
-    List.iter fun:(GlTex.parameter target:`texture_2d)
+    List.iter f:(GlTex.parameter target:`texture_2d)
       [ `wrap_s `repeat;
       	`wrap_t `repeat;
       	`mag_filter `nearest;
@@ -295,7 +295,7 @@ class net :togl = object
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlDraw.begins `quad_strip;
-    List.iter fun:(fun (y,z) -> GlDraw.vertex x:0. :y :z ())
+    List.iter f:(fun (y,z) -> GlDraw.vertex x:0. :y :z ())
       [ cw +. 0.05, 0.11;
 	cw +. 0.05, 0.115;
 	0.0, 0.085;
@@ -440,9 +440,9 @@ let main () =
     Button.create f1 text:"Start"
   in
   let viewseltv = Textvariable.create () in
-    Textvariable.set viewseltv to: "Top View";
+    Textvariable.set viewseltv "Top View";
     let viewself = Frame.create  f1 in
-    let viewsel = List.map ["Top View"; "Center"; "Ball"] fun:
+    let viewsel = List.map ["Top View"; "Center"; "Ball"] f:
 	begin fun t ->
 	  Radiobutton.create viewself text: t value: t
 	    variable: viewseltv

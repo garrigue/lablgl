@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.2 1999-11-15 09:55:11 garrigue Exp $ *)
+(* $Id: glTex.mli,v 1.3 2000-04-03 02:57:42 garrigue Exp $ *)
 
 open Gl
 
@@ -7,14 +7,14 @@ val coord2 : float * float -> unit
 val coord3 : float * float * float -> unit
 val coord4 : float * float * float * float -> unit
 
-type env_param = [`mode [`modulate|`decal|`blend|`replace] | `color rgba]
+type env_param = [`mode of [`modulate|`decal|`blend|`replace] | `color of rgba]
 val env : env_param -> unit
 
 type coord = [`s|`t|`r|`q]
 type gen_param = [
-    `mode [`object_linear|`eye_linear|`sphere_map]
-  | `object_plane point4
-  | `eye_plane point4
+    `mode of [`object_linear|`eye_linear|`sphere_map]
+  | `object_plane of point4
+  | `eye_plane of point4
 ]
 val gen : coord:coord -> gen_param -> unit
 
@@ -33,11 +33,11 @@ type filter =
     |`nearest_mipmap_linear|`linear_mipmap_linear]
 type wrap = [`clamp|`repeat]
 type parameter = [
-    `min_filter filter
-  | `mag_filter [`nearest|`linear]
-  | `wrap_s wrap
-  | `wrap_t wrap
-  | `border_color rgba
-  | `priority clampf
+    `min_filter of filter
+  | `mag_filter of [`nearest|`linear]
+  | `wrap_s of wrap
+  | `wrap_t of wrap
+  | `border_color of rgba
+  | `priority of clampf
 ] 
 val parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit

@@ -1,4 +1,4 @@
-(* $Id: gluNurbs.ml,v 1.2 1999-11-15 14:32:13 garrigue Exp $ *)
+(* $Id: gluNurbs.ml,v 1.3 2000-04-03 02:57:42 garrigue Exp $ *)
 
 open Gl
 
@@ -32,14 +32,14 @@ let curve nurb :knots :control :order type:t =
   curve nurb :knots :control :order type:t
 
 type property = [
-    `sampling_method [`path_length|`parametric_error|`domain_distance]
-  | `sampling_tolerance int
-  | `parametric_tolerance float
-  | `u_step int
-  | `v_step int
-  | `display_mode [`fill|`polygon|`patch]
-  | `culling bool
-  | `auto_load_matrix bool
+    `sampling_method of [`path_length|`parametric_error|`domain_distance]
+  | `sampling_tolerance of int
+  | `parametric_tolerance of float
+  | `u_step of int
+  | `v_step of int
+  | `display_mode of [`fill|`polygon|`patch]
+  | `culling of bool
+  | `auto_load_matrix of bool
 ]
 external property : t -> property -> unit
     = "ml_gluNurbsProperty"

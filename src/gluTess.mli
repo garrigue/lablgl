@@ -1,4 +1,4 @@
-(* $Id: gluTess.mli,v 1.3 1999-11-15 14:32:15 garrigue Exp $ *)
+(* $Id: gluTess.mli,v 1.4 2000-04-03 02:57:43 garrigue Exp $ *)
 
 type t
 
@@ -22,9 +22,9 @@ val end_polygon : t -> unit
 val normal : t -> Gl.vect3 -> unit
 
 type property = [
-    `winding_rule [`odd|`nonzero|`positive|`negative|`abs_geq_two]
-  | `boundary_only bool
-  | `tolerance float
+  | `winding_rule of [`odd|`nonzero|`positive|`negative|`abs_geq_two]
+  | `boundary_only of bool
+  | `tolerance of float
 ]
 val property : t -> property -> unit
 

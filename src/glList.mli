@@ -1,4 +1,4 @@
-(* $Id: glList.mli,v 1.3 1999-11-15 09:55:06 garrigue Exp $ *)
+(* $Id: glList.mli,v 1.4 2000-04-03 02:57:41 garrigue Exp $ *)
 
 type t
 
@@ -24,7 +24,7 @@ val begins : t -> mode:[`compile|`compile_and_execute] -> unit
     (* glNewList: start the definition of a display list in given mode *)
 val delete_lists : base -> len:int -> unit
     (* Delete len lists starting at base *)
-val call_lists : ?base:base -> [`byte string|`int(int array)] -> unit
+val call_lists : ?base:base -> [ `byte of string | `int of int array] -> unit
     (* Call the lists whose indexes are given either by a string
        (code of each character) or an array.
        If the base is omited, the base given in a previous call is assumed *)

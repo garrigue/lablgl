@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.11 1999-12-08 08:24:32 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.12 2000-04-03 02:57:44 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -193,7 +193,7 @@ let init () =
   and blue = 0.2, 0.2, 1.0, 1.0 in
 
   GlLight.light num:0 (`position pos);
-  List.iter fun:Gl.enable
+  List.iter f:Gl.enable
     [`cull_face;`lighting;`light0;`depth_test;`normalize];
 
   (* make the gears *)

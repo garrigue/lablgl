@@ -1,4 +1,4 @@
-(* $Id: glFunc.ml,v 1.5 1999-12-08 08:24:28 garrigue Exp $ *)
+(* $Id: glFunc.ml,v 1.6 2000-04-03 02:57:40 garrigue Exp $ *)
 
 open Gl
 
@@ -40,7 +40,7 @@ external depth_range : near:float -> far:float -> unit = "ml_glDepthRange"
 
 type draw_buffer =
     [`none|`front_left|`front_right|`back_left|`back_right
-    |`front|`back|`left|`right|`front_and_back|`aux int]
+    |`front|`back|`left|`right|`front_and_back|`aux of int]
 external draw_buffer : draw_buffer -> unit = "ml_glDrawBuffer"
 
 external index_mask : int -> unit = "ml_glIndexMask"
@@ -52,7 +52,7 @@ external logic_op : logic_op -> unit = "ml_glLogicOp"
 
 type read_buffer =
     [`front_left|`front_right|`back_left|`back_right|`front|`back
-    |`left|`right|`aux int]
+    |`left|`right|`aux of int]
 external read_buffer : read_buffer -> unit = "ml_glReadBuffer"
 
 external stencil_func : cmp_func -> ref:int -> mask:int -> unit

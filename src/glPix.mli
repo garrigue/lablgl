@@ -1,4 +1,4 @@
-(* $Id: glPix.mli,v 1.3 1999-11-15 14:32:12 garrigue Exp $ *)
+(* $Id: glPix.mli,v 1.4 2000-04-03 02:57:42 garrigue Exp $ *)
 
 (* An abstract type for pixmaps *)
 
@@ -39,36 +39,36 @@ type map =
 val map : map -> float array -> unit
 
 type store_param = [
-    `pack_swap_bytes bool
-  | `pack_lsb_first bool
-  | `pack_row_length int
-  | `pack_skip_pixels int
-  | `pack_skip_rows int
-  | `pack_alignment int
-  | `unpack_swap_bytes bool
-  | `unpack_lsb_first bool
-  | `unpack_row_length int
-  | `unpack_skip_pixels int
-  | `unpack_skip_rows int
-  | `unpack_alignment int
+    `pack_swap_bytes of bool
+  | `pack_lsb_first of bool
+  | `pack_row_length of int
+  | `pack_skip_pixels of int
+  | `pack_skip_rows of int
+  | `pack_alignment of int
+  | `unpack_swap_bytes of bool
+  | `unpack_lsb_first of bool
+  | `unpack_row_length of int
+  | `unpack_skip_pixels of int
+  | `unpack_skip_rows of int
+  | `unpack_alignment of int
 ]
 val store : store_param -> unit
 
 type transfer_param = [
-    `map_color bool
-  | `map_stencil bool
-  | `index_shift int
-  | `index_offset int
-  | `red_scale float
-  | `red_bias float
-  | `green_scale float
-  | `green_bias float
-  | `blue_scale float
-  | `blue_bias float
-  | `alpha_scale float
-  | `alpha_bias float
-  | `depth_scale float
-  | `depth_bias float
+    `map_color of bool
+  | `map_stencil of bool
+  | `index_shift of int
+  | `index_offset of int
+  | `red_scale of float
+  | `red_bias of float
+  | `green_scale of float
+  | `green_bias of float
+  | `blue_scale of float
+  | `blue_bias of float
+  | `alpha_scale of float
+  | `alpha_bias of float
+  | `depth_scale of float
+  | `depth_bias of float
 ]
 val transfer : transfer_param -> unit
 

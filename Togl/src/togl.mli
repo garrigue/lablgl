@@ -1,4 +1,4 @@
-(* $Id: togl.mli,v 1.5 1999-11-17 13:23:27 garrigue Exp $ *)
+(* $Id: togl.mli,v 1.6 2000-04-03 02:57:44 garrigue Exp $ *)
 
 type w
 type widget = w Widget.widget
@@ -8,14 +8,14 @@ val swap_buffers : widget -> unit
 val height : widget -> int
 val width : widget -> int
 type font = [
-    `fixed_8x13
-  | `fixed_9x15
-  | `times_10
-  | `times_24
-  | `helvetica_10
-  | `helvetica_12
-  | `helvetica_18
-  | `Xfont string
+    `Fixed_8x13
+  | `Fixed_9x15
+  | `Times_10
+  | `Times_24
+  | `Helvetica_10
+  | `Helvetica_12
+  | `Helvetica_18
+  | `Xfont of string
 ]
 val load_bitmap_font : widget -> font:font -> GlList.base
 val unload_bitmap_font : widget -> base:GlList.base -> unit

@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.9 1999-12-16 08:38:02 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.10 2000-04-03 02:57:46 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -32,7 +32,7 @@ let make_image () =
     for j = 0 to image_height - 1 do
       let tj = 2.0 *. pi *. float j /. float image_height in
       Raw.sets raw pos:(pos x:j y:i)
-	(Array.map fun:(fun x -> truncate (127.0 *. (1.0 +. x)))
+	(Array.map f:(fun x -> truncate (127.0 *. (1.0 +. x)))
 	   [|sin ti; cos (2.0 *. ti); cos (ti +. tj)|]);
       done;
   done;
@@ -50,13 +50,13 @@ let myinit () =
   GlMap.grid2 n:20 range:(0.0,1.0) n:20 range:(0.0,1.0);
   let image = make_image () in
   GlTex.env (`mode `decal);
-  List.iter fun:(GlTex.parameter target:`texture_2d)
+  List.iter f:(GlTex.parameter target:`texture_2d)
     [ `wrap_s `repeat;
       `wrap_t `repeat;
       `mag_filter `nearest;
       `min_filter `nearest ];
   GlTex.image2d image;
-  List.iter fun:Gl.enable [`texture_2d;`depth_test;`normalize];
+  List.iter f:Gl.enable [`texture_2d;`depth_test;`normalize];
   GlDraw.shade_model `flat
 
 let my_reshape togl =

@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.18 2000-03-29 22:48:10 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.19 2000-04-03 02:57:43 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -84,14 +84,14 @@ external _height : t -> int = "ml_Togl_Height"
 external _width : t -> int = "ml_Togl_Width"
 
 type font = [
-    `fixed_8x13
-  | `fixed_9x15
-  | `times_10
-  | `times_24
-  | `helvetica_10
-  | `helvetica_12
-  | `helvetica_18
-  | `Xfont string
+    `Fixed_8x13
+  | `Fixed_9x15
+  | `Times_10
+  | `Times_24
+  | `Helvetica_10
+  | `Helvetica_12
+  | `Helvetica_18
+  | `Xfont of string
 ]
 
 external _load_bitmap_font : t -> font:font -> GlList.base

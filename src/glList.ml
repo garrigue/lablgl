@@ -1,4 +1,4 @@
-(* $Id: glList.ml,v 1.2 1999-11-15 09:55:06 garrigue Exp $ *)
+(* $Id: glList.ml,v 1.3 2000-04-03 02:57:41 garrigue Exp $ *)
 
 type t = int
 type base = int
@@ -10,7 +10,7 @@ external begins : t -> mode:[`compile|`compile_and_execute] -> unit
     = "ml_glNewList"
 external ends : unit -> unit = "ml_glEndList"
 external call : t -> unit = "ml_glCallList"
-external call_lists : [`byte string|`int (int array)] -> unit
+external call_lists : [ `byte of string | `int of int array] -> unit
     = "ml_glCallLists"
 external list_base : base -> unit = "ml_glListBase"
 

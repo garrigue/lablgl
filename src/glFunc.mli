@@ -1,4 +1,4 @@
-(* $Id: glFunc.mli,v 1.3 1999-11-15 14:32:10 garrigue Exp $ *)
+(* $Id: glFunc.mli,v 1.4 2000-04-03 02:57:41 garrigue Exp $ *)
 
 val accum : op:[`accum|`add|`load|`mult|`return] -> float -> unit
 
@@ -33,11 +33,11 @@ type logic_op =
 val logic_op : logic_op -> unit
 
 type draw_buffer =
-  [`aux int|`back|`back_left|`back_right|`front|`front_and_back|`front_left
+  [`aux of int|`back|`back_left|`back_right|`front|`front_and_back|`front_left
   |`front_right|`left|`none|`right]
 val draw_buffer : draw_buffer -> unit
 
 type read_buffer =
-  [`aux int|`back|`back_left|`back_right|`front|`front_left|`front_right
+  [`aux of int|`back|`back_left|`back_right|`front|`front_left|`front_right
   |`left|`right]
 val read_buffer : read_buffer -> unit
