@@ -275,26 +275,15 @@ void glInterleavedArrays( unsigned int format, int stride, [in,bigarray] void *p
 void glShadeModel( unsigned int mode );
 void glLightf( unsigned int light, unsigned int pname, float param );
 void glLighti( unsigned int light, unsigned int pname, int param );
-void glLightfv( unsigned int light, unsigned int pname, [in, size_is(nparams)]
-    float params[], int nparams ) 
-    quote(call, "glLightfv(light,pname,params);");
-void glLightiv( unsigned int light, unsigned int pname, [in,size_is(dummy)]
-    int params[], int dummy) 
-    quote(call, "glLightiv(light,pname,params);");
-void glGetLightfv( unsigned int light, unsigned int pname, [in,size_is(dummy)]
-    float params[], int dummy ) 
-    quote(call, "glLightfv(light,pname,params);");
-void glGetLightiv( unsigned int light, unsigned int pname, [in,size_is(dummy)]
-    int params[], int dummy) 
-    quote(call, "glLightiv(light,pname,params);");
+void glLightfv( unsigned int light, unsigned int pname, [in] float params[]);
+void glLightiv( unsigned int light, unsigned int pname, [in] int params[]);
+void glGetLightfv( unsigned int light, unsigned int pname, [in] float
+    params[]);
+void glGetLightiv( unsigned int light, unsigned int pname, [in] int params[]);
 void glLightModelf( unsigned int pname, float param );
 void glLightModeli( unsigned int pname, int param );
-void glLightModelfv( unsigned int pname, [in,size_is(dummy)] float params[],
-    int dummy) 
-    quote(call, "glLightModelfv(pname,params);");
-void glLightModeliv( unsigned int pname, [in,size_is(dummy)] int params[], int
-    dummy)
-    quote(call, "glLightModeliv(pname,params);");
+void glLightModelfv( unsigned int pname, [in] float params[]);
+void glLightModeliv( unsigned int pname, [in] int params[]);
 void glMaterialf( unsigned int face, unsigned int pname, float param );
 void glMateriali( unsigned int face, unsigned int pname, int param );
 void glMaterialfv( unsigned int face, unsigned int pname, [in] float params[] );
