@@ -1,0 +1,14 @@
+include $(OCAML)/camlimages/Makefile.config
+
+all: dc
+
+RESULT=ciglut
+SOURCES=main.ml
+LIBS=lablgl lablglut
+INCDIRS=+camlimages +lablGL +lablglut
+OCAMLFLAGS=$(COMPFLAGS_CAMLIMAGES)
+#OCAMLLDFLAGS=$(COMPFLAGS_CAMLIMAGES) $(LINKFLAGS_CAMLIMAGES)
+OCAMLLDFLAGS=$(COMPFLAGS_CAMLIMAGES) $(LINKFLAGS_CAMLIMAGES)
+
+include ./OCamlMakefile
+

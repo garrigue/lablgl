@@ -1,0 +1,21 @@
+#!/usr/bin/env perl
+
+# compile a single-file lablglut demo
+
+sub sys { 
+  $cmd = @_[0];
+  print "$cmd\n";
+  system $cmd;
+}
+
+$bname = shift @ARGV;
+$bname =~ s/\.ml$//;
+
+$OCAML = $ENV{OCAML};
+
+sys("ocamlc -I $OCAML/lablglut -I $OCAML/lablGL -g -c $bname.ml") or
+sys("ocamlc -I $OCAML/lablglut -I $OCAML/lablGL -g -o $bname " .
+    "$OCAML/lablglut/lablglut.cma $OCAML/lablGL/lablgl.cma $bname.cmo") or
+sys("rm $bname.{cmi,cmo}") or
+# sys("ocamldebug $bname");
+

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+`ocamlc -where`/lablglut/lablgluttop \
+    -I `ocamlc -where`/lablGL  \
+    -I `ocamlc -where`/lablglut  \
+    $*
+

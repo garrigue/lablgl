@@ -1,0 +1,47 @@
+#!/usr/bin/env perl
+
+$install_bin_dir = "/usr/local/bin";
+
+sub sys {
+  $cmd = @_[0];
+  print $cmd . "\n";
+  system $cmd;
+}
+
+sub foreach_subdir {
+    $cmd = shift;
+    @subdirs = ("lablGL-0.98", "src_lablglut", "toplevel_lablglut");
+    foreach $dir (@subdirs) {
+        $syscmd = "cd $dir; make $arg";
+        if(not ($dir eq "toplevel_lablglut" and $arg eq "opt")) {
+            print "==== $syscmd ====\n";
+            if (system $syscmd) {
+                exit -1;
+            }
+        }
+    }
+}
+
+if($#ARGV == -1) {
+    foreach_subdir("");
+}
+else {
+    while($arg = shift(@ARGV)) { # one of "", "opt", "install", or "clean"
+        if($arg eq "test") {
+          sys('for i in examples/lablGL/*.ml ; do echo $i; lablglut $i ; done');
+          sys('for i in examples/nehe/*.ml ; do echo $i; lablglut $i ; done');
+          sys('for i in examples/glut3.7/test/*.ml ; ' . 
+              'do echo $i; lablglut $i ; done');
+        }
+        else {
+          if($arg eq "install") { 
+            foreach $script ("lgport.py", "lgdebug") {
+              sys("install -m 755 $script $install_bin_dir");
+            }
+          }
+          foreach_subdir($arg); 
+        }
+    }
+}
+
+    

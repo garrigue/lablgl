@@ -1,0 +1,73 @@
+==== 1.1.4 ====
+-- Sep 11 --
+* changed idleFunc to take a function option since passing (fun () -> ()) 
+  actually results in continually calling this no-op dummy function,
+  eating up all the CPU time.
+
+==== 1.1.3 ====
+-- Aug 11 -- 
+* added glutReportErrors
+* added video resize sub-api
+* ported tests 18, 21, 17
+
+-- Aug 10 -- 
+* broke layerGet down into multiple functions to work more cleanly with 
+  OCaml's type system
+* ported menu_test, shape_test, tests 14, 20, 8
+(archived)
+* fixed bug with createSubWindow not returning a value in wrap_glut.c
+* ported tests 9, 24, 25, 12, 22
+(archived)
+* ported test26.ml, fixed a minor bug in windowStatusFunc
+* ported cursor_test.ml
+* added lgdebug script to make debugging demos easier
+* ported test6.ml
+
+-- Aug 9 -- 
+* added Jeffrey Palmer's nehe demo ports
+* added "test" target to build script
+
+-- Aug 8 2002 --
+* added postWindowOverlayRedisplay()
+
+==== 1.1.2 ====
+
+-- Aug 6 2002 --
+* removed another segv resulting from mistakenly assigning unique menu
+  callback names according to the current window.   GLUT menu
+  callbacks are only per-menu.
+* removed segv in menu callback
+* fixed a problem with specialUpFunc
+* cleaned up the specialFunc code
+* wrapped all GLUT version 4 functions from the GLUT 3.7 distribution
+* changed bitmap character routines to use ints instead of strings when
+  passing to the C layer.  should be much faster.
+* fixed layerGet and useLayer to handle their variant arguments properly
+
+* fixed a bug in the handling of modifiers
+* fixed a bug with attachMenu and detachMenu
+* ported tests 7, 11, 19, timer_test, 27,
+* wrote semiport.py script to partially automate porting of demos 
+
+==== 1.1.1 ====
+
+-- Aug 5 2002 --
+* bundled non-Tcl/Tk-dependent version of lablGL-0.98
+* fixed a segmentation fault from having incorrect callback in mouseFunc
+* removed ezgl, converted draw2d.ml to use lablGL
+
+==== 1.1.0 ====
+
+* added all remaining functions from GLUT 3.7
+* added support for callbacks from multiple windows
+* changed Glut.init() to take Sys.argv (or any string array)
+  instead of a single string for the program name (which GLUT ignores anyway).
+* updated all the demos to reflect the changes 
+* ported GLUT tests 1 through 5
+
+==== 1.0.1 ====
+
+* added bundled version of LablGL 0.96 with Tcl/Tk dependency removed
+* converted some more demos from Tk-style to GLUT-style
+* simplified the installation procedure
+

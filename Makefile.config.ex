@@ -24,11 +24,12 @@ TKINCLUDES = -I/usr/local/include
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
 #TKLIBS = -L/usr/local/lib -ltk83 -ltcl83
 
-# Where to find OpenGL/Mesa headers and libraries
+# Where to find OpenGL/Mesa/Glut headers and libraries
 GLINCLUDES =
 GLLIBS = -lGL -lGLU
+GLUTLIBS = -lglut
 # The following libraries may be required (try to add them one at a time)
-#GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
+#GLLIBS = -lGL -lGLU -lXmu -lXext -lXi -lcipher -lpthread
 
 # How to index a library after installing (ranlib required on MacOSX)
 RANLIB = :

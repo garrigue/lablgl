@@ -1,0 +1,348 @@
+
+cursor_test.ml,443
+let c2i c = match c with c2i13,333
+let i2c i = match i withi2c39,1098
+let cursors = [|cursors66,1926
+let name = [|name92,2552
+let win = ref (-1);;win118,2945
+let futureSetCursor ~value = Glut.setCursor(Glut.CURSOR_HELP) ;;futureSetCursor120,2967
+let willret = ref true ;;willret122,3033
+let menu ~value = menu124,3060
+let display () = display153,3817
+let keyboard ~key ~x ~y = keyboard158,3881
+let main () = main161,3945
+
+joy_test.ml,220
+let joystick ~buttonMask ~x ~y ~z = joystick13,346
+let joyPoll () = joyPoll17,449
+let menu ~value = menu22,537
+let display () = display39,917
+let keyboard ~key ~x ~y = keyboard44,981
+let main() = main48,1044
+
+keyup_test.ml,259
+let keyboard ~key ~x ~y = keyboard13,352
+let keyup ~key ~x ~y = keyup17,453
+let special ~key ~x ~y = special21,553
+let specialup ~key ~x ~y = specialup25,669
+let menu ~value = menu29,787
+let display () = display45,1341
+let main () = main50,1405
+
+menu_test.ml,572
+let win = ref(-1)win13,346
+let subwin = ref(-1)subwin14,364
+let mainmenu = ref(-1)mainmenu15,385
+let submenu = ref(-1)submenu16,408
+let item = ref 666item17,430
+let fail where = failwith ("menu_test failed in "^where)fail19,450
+let display () = display21,508
+let gokey ~key ~x ~y = gokey26,572
+let keyboard ~key ~x ~y = keyboard107,2739
+let keyboard2 ~key ~x ~y = keyboard2112,2815
+let menu ~value = printf "menu: entry = %d\n" value ;;menu117,2891
+let menu2 ~value = printf "menu2: entry = %d\n" value ;;menu2119,2947
+let main () = main121,3005
+
+shape_test.ml,387
+let w = ref 0 and h = ref 0w13,346
+let light_diffuse = (1.0, 1.0, 1.0, 1.0)light_diffuse15,375
+let light_position = (1.0, 1.0, 1.0, 1.0)light_position16,416
+let qobj = ref Noneqobj18,459
+let workaround w' h' = workaround23,682
+let reshape ~w ~h = workaround w h;;reshape28,731
+let render shape = render30,769
+let display () = display147,3498
+let main () = main159,3780
+
+test1.ml,24
+let main = main14,357
+
+test10.ml,342
+let ch = ref (-2);;ch26,725
+let fonts = [|fonts28,746
+let names = [|names41,1023
+let num_fonts = (Array.length fonts);;num_fonts54,1253
+let font = ref 0;;font55,1292
+let limit = ref 270;; limit57,1312
+let tick () = tick58,1335
+let output ~x ~y ~msg = output76,1657
+let display () =display83,1836
+let main() = main108,2741
+
+test11.ml,27
+let main () = main13,331
+
+test12.ml,27
+let main () = main15,364
+
+test13.ml,613
+let window1 = ref (-1);;window115,364
+let window2 = ref (-1);;window216,389
+let win1reshaped = ref false;;win1reshaped17,414
+let win2reshaped = ref false;;win2reshaped18,445
+let win1displayed = ref false;;win1displayed19,476
+let win2displayed = ref false;;win2displayed20,508
+let checkifdone () =checkifdone22,541
+let window1reshape ~w ~h =window1reshape31,733
+let window1display () =window1display37,898
+let window2reshape ~w ~h = window2reshape46,1115
+let window2display () =window2display52,1281
+let timefunc ~value = failwith(" test13\n") ;;timefunc61,1498
+let main () = main63,1546
+
+test14.ml,177
+let displayFunc () = displayFunc15,392
+let menuFunc ~value = printf "choice = %d\n" value ;;menuFunc20,460
+let timefunc ~value = timefunc22,515
+let main () = main28,627
+
+test15.ml,287
+let light_position = [|1.0, 1.0, 1.0, 0.0|];;light_position20,701
+let qobj = GluQuadric.create ();;qobj21,747
+let tesselation = ref 3;;tesselation23,782
+let displayFunc () = displayFunc25,809
+let timefunc ~value = failwith "test15";;timefunc41,1224
+let main () = main43,1267
+
+test16.ml,161
+let shape = ref 1;;shape16,400
+let displayFunc () = displayFunc17,420
+let timefunc ~value = failwith "test16";;timefunc49,1362
+let main () = main51,1405
+
+test18.ml,769
+let transP = ref 0 and opaqueP = ref 0transP14,395
+let main_win = ref 0 and  sub_win = ref 0main_win15,434
+let overlaySupported = ref falseoverlaySupported16,476
+let subHidden = ref false and overlayHidden = ref falsesubHidden17,509
+let warnIfNormalDisplay = ref falsewarnIfNormalDisplay18,565
+let firstTime = ref truefirstTime19,601
+let fail18() = failwith "test18"fail1821,627
+let time5_cb ~value = time5_cb23,661
+let time4_cb ~value = time4_cb29,759
+let time3_cb ~value = time3_cb39,1025
+let time2_cb ~value = time2_cb48,1229
+let time_cb ~value = time_cb61,1513
+let display () =display69,1678
+let subDisplay () = subDisplay84,2094
+let overDisplay () = overDisplay94,2340
+let subVis ~state = subVis104,2589
+let main () =main116,2970
+
+test19.ml,253
+let width = ref (-1);;width14,353
+let height = ref (-1);;height15,376
+let displayCount = ref 0;;displayCount16,400
+let onDone ~value = onDone18,428
+let reshape ~w ~h = reshape24,574
+let display () = display30,681
+let main () = main44,1079
+
+test2.ml,490
+let count = ref 0;;count17,329
+let save_count = ref 0;;save_count19,350
+let head = ref 0;;head20,375
+let tail = ref 0;;tail21,394
+let diff = ref 0;;diff22,413
+let timer2 ~value = timer224,433
+let timer ~value = timer31,649
+let menuSelect ~value = () ;; (* do nothing *)menuSelect50,1377
+let never_void () =never_void52,1425
+let never_value ~state = never_value58,1603
+let the_win = ref (-1);;the_win64,1785
+let display () = display66,1811
+let main () =main72,1902
+
+test20.ml,95
+let wrangleExtensionName ~extension = wrangleExtensionName15,376
+let main () = main46,1464
+
+test22.ml,711
+let win = ref(-1)win15,402
+let subwin = ref(-1)subwin16,420
+let cover = ref(-1)cover17,441
+let fail x = failwith ("test22 " ^ x)fail19,462
+let display () = display21,501
+let time_end ~value = time_end26,581
+let time5 ~value = time531,647
+let time4 ~value = time436,728
+let time3 ~value = time341,801
+let sub_state = ref 0sub_state46,874
+let cover_state = ref 0cover_state47,896
+let super_state = ref 0super_state48,920
+let coverstat ~state = coverstat50,945
+let time2 ~value = time263,1329
+let substat ~state = substat70,1501
+let time1 ~value = time197,2290
+let winstat ~state = winstat107,2611
+let visbad ~state = fail "visbad" ;;visbad121,3055
+let main () = main123,3093
+
+test23.ml,164
+let modes = [|modes16,448
+let strings = [|strings23,587
+let ostrings = [| ostrings34,839
+let verbose = ref false;;verbose43,993
+let main () = main45,1020
+
+test24.ml,140
+let display () = display17,536
+let timer ~value = timer22,602
+let menuSelect ~value = ();;menuSelect28,722
+let main () = main30,752
+
+test25.ml,644
+let abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"abc15,392
+let null = ""null17,458
+let space = "      "space18,472
+let bitmap_fonts = [|bitmap_fonts20,494
+let bitmap_names = [| bitmap_names29,715
+let bitmap_lens = [|bitmap_lens38,867
+let bitmap_abc_lens = [|bitmap_abc_lens47,953
+let stroke_fonts = [|stroke_fonts56,1036
+let stroke_names = [|stroke_names60,1109
+let stroke_lens = [| stroke_lens64,1168
+let stroke_abc_lens = [|stroke_abc_lens68,1210
+let array_do a f = for i = 0 to ((Array.length a)-1) do f i donearray_do74,1362
+let (+=) x y = x := !x + y;; (* :) *)x76,1428
+let main () = main78,1467
+
+test26.ml,815
+let window1 = ref(-1);;window116,454
+let window2 = ref(-1);;window217,478
+let win1displayed = ref 0;;win1displayed18,502
+let win2displayed = ref 0;;win2displayed19,530
+let win1vis = ref Glut.NOT_VISIBLE;;win1vis20,558
+let win2vis = ref Glut.NOT_VISIBLE;;win2vis21,595
+let overlaySupported = ref false;;overlaySupported26,690
+let over1displayed = ref 0;;over1displayed27,725
+let checkifdone () = checkifdone29,755
+let window1display () = window1display37,960
+let overDisplay () =overDisplay46,1177
+let window2display () = window2display54,1324
+let timefunc ~value = failwith(" test26\n") ;;timefunc63,1547
+let count = ref 0;;count65,1595
+let idle () = idle66,1615
+let window1vis ~state = window1vis78,1943
+let window2status ~state = window2status85,2174
+let main () = main93,2442
+
+test27.ml,468
+let parent = ref 0;;parent17,509
+let child = ref 0;;child18,530
+let parentDrawn = ref false;;parentDrawn20,551
+let childDrawn = ref false;;childDrawn21,581
+let failTest ~value = failwith(" test27\n") ;;failTest23,611
+let passTest ~value = passTest25,659
+let installFinish () = installFinish30,730
+let output ~x ~y ~str = output35,839
+let displayParent () = displayParent43,1041
+let displayChild () = displayChild50,1153
+let main () = main61,1399
+
+test28.ml,201
+let fake_argv = [| "program" ; "-iconic"; |];;fake_argv13,331
+let displayed = ref false;;displayed15,379
+let display () = display17,408
+let timer ~value = timer24,540
+let main () =main31,691
+
+test3.ml,402
+let n = 6;;n16,331
+let m = 6;;m17,343
+let exposed = Array.create (m*n) false;;exposed19,356
+let ecount = ref 0;;ecount20,397
+let viewable = Array.create (m*n) false;;viewable22,419
+let vcount = ref 0;;vcount23,461
+let display () = display25,483
+let view ~state = view39,781
+let timer ~value = if (value <> 23) then failwith "bad timer value";;timer51,1044
+let main () = main53,1115
+
+test4.ml,196
+let ch = ref(-2);;ch16,331
+let font = ref Glut.STROKE_ROMAN;;font18,351
+let tick () = tick20,387
+let mytick () = ();;mytick33,639
+let display () =display35,661
+let main() = main44,829
+
+test6.ml,1070
+let mouseButtons = ref(-1);;mouseButtons17,501
+let display () =display19,531
+let time7 ~value = time724,594
+let int_of_menu_state s = int_of_menu_state30,716
+let mstatus ~status = printf "state : %d\n" (int_of_menu_state status);;mstatus33,811
+let mstatus2 ~status ~x ~y = mstatus235,885
+let menu2 ~value = menu238,986
+let time6 ~value = time646,1227
+let estate = ref 0;;estate58,1623
+let entry ~state =entry60,1645
+let time5 ~value = time572,2007
+let motion ~x ~y = motion78,2174
+let time4 ~value = time484,2308
+let passive ~x ~y =passive90,2491
+let time3 ~value = time396,2630
+let mode = ref 0;;mode102,2827
+let mouse ~button ~state ~x ~y =mouse104,2847
+let menu ~value = failwith(" menu callback should never be called\n") ;;menu209,6811
+let time2 ~value = time2211,6885
+let smode = ref 0;;smode242,8029
+let special ~key ~x ~y = special248,8215
+let time1 ~value = time1284,9407
+let kmode = ref 0;;kmode296,9820
+let keyboard ~key ~x ~y = keyboard298,9841
+let time0 ~value = time0334,11049
+let main() = main341,11256
+
+test7.ml,447
+let w1 = ref 0;;w113,331
+let w2 = ref 0;;w214,348
+let display () = GlClear.clear [`color] ;;display16,366
+let time9 ~value = time918,410
+let time8 ~value = time824,533
+let time7 ~value = time736,889
+let time6 ~value = time651,1400
+let time5 ~value = time561,1671
+let time4 ~value = time489,2775
+let time3 ~value = time3101,3110
+let time2 ~value = time2111,3353
+let time1 ~value = time1121,3597
+let main () = main131,3883
+
+test8.ml,352
+let main_w = ref(-1)main_w13,352
+let w = [| 0; 0; 0; 0 |]w14,373
+let win = ref(-1)win15,398
+let num = ref(-1)num16,416
+let fail_childnum () = fail_childnum18,435
+let fail_bad_parent () = fail_bad_parent21,529
+let time2 ~value =time224,619
+let time1 ~value = time129,680
+let display () = ();;display45,1143
+let main () = main47,1166
+
+test9.ml,472
+let main_w = ref 0;;main_w13,358
+let w1 = ref 0;;w114,379
+let w2 = ref 0;;w215,396
+let w3 = ref 0;;w316,413
+let w4 = ref 0;;w417,430
+let display () = display19,448
+let time8 ~value = time824,520
+let time7 ~value = time729,587
+let time6 ~value = time634,675
+let time5 ~value = time554,1351
+let time4 ~value =time468,1806
+let time3 ~value = time373,1888
+let time2 ~value = time278,1971
+let time1 ~value = time183,2054
+let main () = main88,2137
+
+timer_test.ml,184
+let display () = display24,852
+let rec timer ~value = timer29,916
+let num_times = ref 0;;num_times34,1024
+let keyboard ~key ~x ~y = keyboard36,1049
+let main () = main45,1290

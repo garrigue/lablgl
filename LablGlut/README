@@ -1,0 +1,33 @@
+*lablglut*              A GLUT Binding for OCaml   Last change: 2002 Sep 19
+
+                        lablglut, release 1.1.6
+
+                             by Issac Trotts,
+                including a slightly modified version of the lablGL
+                      OpenGL binding by Jacques Garrigue,
+                    with nehe demo ports by Jeffrey Palmer
+
+INTRODUCTION
+The lablglut library is an OCaml binding for GLUT version 3.7.  GLUT 
+(GL Utility Toolkit) is a portable windowing library for OpenGL, 
+written by Mark Kilgard.  GLUT tends to be easier to install and use than
+other OpenGL windowing alternatives.  It is very portable, depending
+only on libraries for OpenGL and the underlying window system.  
+
+The names "lablglut" and 'lablGL' come from the variable labeling they use.
+
+INSTALLATION
+
+  The easy way is to become root and say:
+
+    ./build all opt install clean test
+
+  Otherwise it's necessary to modify installation targets in the 
+  Makefiles.  
+
+LICENSE 
+Both lablglut and lablGL are under BSD-style licenses.
+
+FEEDBACK
+Please send any feedback to mazer@issactrotts.net
+

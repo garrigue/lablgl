@@ -1,0 +1,18 @@
+
+bigtest.ml,0
+
+over_test.ml,0
+
+test17.ml,0
+
+test21.ml,461
+let light_diffuse = (1.0,0.0,0.0)light_diffuse16,440
+let light_position = (1.0,1.0,1.0)light_position17,474
+let x=ref 0 and y=ref 0 and w=ref 0 and h=ref 0x18,509
+let dx=ref 0 and dy=ref 0 and dw=ref 0 and dh=ref 0dx19,557
+let (-=) x y = x := !x - yx21,610
+let (+=) x y = x := !x + yx22,637
+let display () = display24,665
+let show_video_size() =show_video_size30,766
+let keyboard ~key ~x ~y = keyboard41,1156
+let time2 ~value = time259,1760

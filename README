@@ -52,7 +52,17 @@ necessary packages. Otherwise, compile from source.
   d) Install LablGL
 	% make install
 
-If you don't need Tcl/Tk support (using lablglut or lablgtk for instance),
+If you don't need Tcl/Tk then (b,c,d) can be replaced by:
+	% make allglut
+	% make optglut
+	% make libinstall
+
+If you don't need Glut then (b,c,d) can be replaced by:
+	% make alltk
+	% make opttk
+	% make install
+
+If you don't need Tcl/Tk nor Glut support (using lablgtk for instance),
 then (b,c,d) can be replaced by:
         % make lib
         % make libopt
@@ -303,4 +313,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.25 2003-07-24 21:14:24 erickt Exp $
+$Id: README,v 1.26 2003-09-25 13:54:01 raffalli Exp $

@@ -1,0 +1,6 @@
+$Id: README,v 1.1 2003-09-25 13:54:01 raffalli Exp $
+
+Here are a few examples for LablGL.
+
+Most only compile with the -labels option,
+but checker.ml, double.ml and simple.ml also work in default mode.

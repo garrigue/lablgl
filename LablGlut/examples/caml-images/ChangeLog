@@ -1,0 +1,26 @@
+2002-09-20  Issac Trotts  <ijtrotts@ucdavis.edu>
+
+	* main.ml:
+	Added a check so we don't do the expensive rescale unless we have to.
+
+	* main.ml: Fixed up the aspect ratio.
+
+	* main.ml:
+	Added rescaling to next highest power of two along each axis.
+	Changed texture coordinates so the image no longer appears rotated by 90 deg.
+
+	* main.ml:
+	Added conversion from camlimages to lablGL's preferred raw format.
+	In order to make the image a power of two, I truncate the image.
+	This needs to be replaced with scaling up to the next largest power of
+	two and rescaling the square to have the proper aspect ratio.
+
+	* .Makefile.swp: .
+
+	* .Makefile.swp, Makefile, OCamlMakefile, main.ml:
+	Just displays a checkerboard at the moment.
+
+
+
+
+	

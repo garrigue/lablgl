@@ -71,11 +71,19 @@ TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 	$(OPTLINK) -o $@ $(OCAMLINC) -ccopt -L. \
 	    unix.cmxa labltk.cmxa lablgl.cmxa togl.cmxa $<
 
-all: 	lib lablgltop$(XE) lablgl$(XB)
+all: 	lib lablgltop$(XE) lablgl$(XB) glut
+
+alltk:  lib lablgltop$(XE) lablgl$(XB)
+
+allglut: lib lablgl$(XB) glut
 
 lib:	var2def$(XE) var2switch$(XE) lablgl.cma
 
-opt:	lablgl.cmxa togl.cmxa
+opt:	lablgl.cmxa togl.cmxa glutopt
+
+opttk:	lablgl.cmxa togl.cmxa
+
+optglut: lablgl.cmxa glutopt
 
 libopt: lablgl.cmxa
 
@@ -84,6 +92,12 @@ var2def$(XE): var2def.ml
 
 var2switch$(XE): var2switch.ml
 	$(LINKER) -pp camlp4o var2switch.ml -o $@
+
+glut:
+	cd LablGlut/src_lablglut; $(MAKE)
+
+glutopt:
+	cd LablGlut/src_lablglut; $(MAKE) opt
 
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
@@ -161,6 +175,7 @@ glu_tags.c: glu_tags.var
 
 install libinstall:
 	@$(MAKE) real-$@ LIBDIR="$(LIBDIR)"
+	@if test -f LablGlut/src_lablglut/lablglut.cma; then $(MAKE) installglut; fi
 
 real-libinstall:
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
@@ -184,6 +199,9 @@ real-install:
 installdll:
 	cp dlllablgl$(XS) dlltogl$(XS) "$(DLLDIR)"
 
+installglut:
+	cd LablGlut/src_lablglut; $(MAKE) install
+
 libinstallopt:
 	cp lablgl.cmxa lablgl$(XA) $(LIBOBJS:.cmo=.cmx) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) lablgl$(XA)
@@ -197,6 +215,7 @@ clean:
 	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
 		var2def var2switch lablgltop lablgl lablgllink lablglopt
 	rm -f $(TOGLDIR)/togl$(XO)
+	cd LablGlut/src_lablglut; $(MAKE) clean
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend
