@@ -102,7 +102,7 @@ install:
 
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
-		var2def var2switch lablgl lablglopt
+		var2def var2switch lablgltop lablgl lablglopt
 
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c ml_raw.h
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c

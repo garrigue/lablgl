@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.3 1998-01-27 08:02:00 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.4 1998-01-28 11:13:08 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -186,7 +186,7 @@ let materialGray    =   0.2, 0.2, 0.2, 1.0
 let all_gray = Array.create len:20 fill:materialGray
 
 let vertex :xf :yf :zf :ampvr2 =
-  let xa = xf +. 0.001 and yb = yf +. 0.001 in
+  let xa = xf +. 0.01 and yb = yf +. 0.01 in
   let xf2 = sqr xf and yf2 = sqr yf in
   let factor = 1. -. (xf2 +. yf2) *. ampvr2
   and factor1 = 1. -. (sqr xa +. yf2) *. ampvr2
