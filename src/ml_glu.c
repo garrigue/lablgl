@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.25 2003-10-03 22:52:19 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.26 2003-10-30 08:53:55 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -306,7 +306,7 @@ ML_4 (gluSphere, Quad_val, Double_val, Int_val, Int_val)
 #ifdef GLU_VERSION_1_2
 ML_1 (gluTessBeginContour, Tess_val)
 ML_1 (gluTessEndContour, Tess_val)
-ML_2 (gluTessBeginPolygon, Tess_val, Opt_val)
+ML_2 (gluTessBeginPolygon, Tess_val, Int_val)
 ML_1 (gluTessEndPolygon, Tess_val)
 ML_4 (gluTessNormal, Tess_val, Double_val, Double_val, Double_val)
 
@@ -335,7 +335,7 @@ ML_fail (gluTessNormal)
 ML_fail (gluTessProperty)
 #endif
 
-ML_3 (gluTessVertex, Tess_val, Double_raw, Opt_val)
+ML_3 (gluTessVertex, Tess_val, Double_raw, Int_val)
 
 CAMLprim value ml_gluUnProject (value win)
 {

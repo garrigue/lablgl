@@ -1,4 +1,4 @@
-(* $Id: gluTess.ml,v 1.5 2000-04-12 07:40:26 garrigue Exp $ *)
+(* $Id: gluTess.ml,v 1.6 2003-10-30 08:53:54 garrigue Exp $ *)
 
 type t
 
@@ -14,8 +14,9 @@ external next_contour :
 external begin_contour : t -> unit = "ml_gluTessBeginContour"
 external end_contour : t -> unit = "ml_gluTessEndContour"
 
-external begin_polygon : ?data:'a -> t -> unit
+external begin_polygon : t -> data:int -> unit
     = "ml_gluTessBeginPolygon"
+let begin_polygon = begin_polygon ~data:0
 external end_polygon : t -> unit = "ml_gluTessEndPolygon"
 
 external normal : t -> float -> float -> float -> unit
@@ -30,5 +31,6 @@ type property = [
 external property : t -> property -> unit
     = "ml_gluTessProperty"
 
-external vertex : t -> ?data:'a -> [`double] Raw.t -> unit
+external vertex : t -> [`double] Raw.t -> data:int -> unit
     = "ml_gluTessVertex"
+let vertex = vertex ~data:0

@@ -1,4 +1,4 @@
-(* $Id: gluTess.mli,v 1.5 2000-04-12 07:40:26 garrigue Exp $ *)
+(* $Id: gluTess.mli,v 1.6 2003-10-30 08:53:55 garrigue Exp $ *)
 
 type t
 
@@ -7,7 +7,7 @@ val create : unit -> t
 val begins : t -> unit
 val ends : t -> unit
 
-val vertex : t -> ?data:'a -> [`double] Raw.t -> unit
+val vertex : t -> [`double] Raw.t -> unit
 
 val next_contour : t -> kind:[`ccw|`cw|`exterior|`interior|`unknown] -> unit
 
@@ -16,7 +16,7 @@ val next_contour : t -> kind:[`ccw|`cw|`exterior|`interior|`unknown] -> unit
 val begin_contour : t -> unit
 val end_contour : t -> unit
 
-val begin_polygon : ?data:'a -> t -> unit
+val begin_polygon :  t -> unit
 val end_polygon : t -> unit
 
 val normal : t -> Gl.vect3 -> unit
