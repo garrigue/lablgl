@@ -12,6 +12,10 @@ tmpml=`tempfile --suffix .ml`
 if camlp4 pa_o.cmo pr_o.cmo $bname.ml > $tmpml; then 
     # Get the header comments from the original source file and add them to 
     # the new .ml file.
-    (c2glo -topcomments $bname.c; cat $tmpml) >  $bname.ml
+    (c2ml -topcomments $bname.c; \
+     echo "open Lablglut"; \
+     echo "open Printf"; \
+     echo "open Bigarray"; \
+     cat $tmpml) >  $bname.ml
 fi
 
