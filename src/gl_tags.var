@@ -198,6 +198,7 @@ modulate decal
 (* glTexGen *)
 s t r q
 object_plane eye_plane
+eye_linear object_linear sphere_map
 
 (* glTexParameter *)
 min_filter -> GL_TEXTURE_MIN_FILTER
