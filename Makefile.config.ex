@@ -35,8 +35,10 @@ RANLIB = :
 #RANLIB = ranlib
 
 ##### Uncomment these for windows
-#TKLIBS = tk83.lib tcl83.lib gdi32.lib user32.lib
-#GLLIBS = opengl32.lib glu32.lib
+#XINCLUDES = -Ic:\Progra~1\Micros~1.NET\Vc7\PlatformSDK\Include # Where wtypes.h is
+#TKINCLUDES = -Ic:\Progra~1\tcl\include 
+#TKLIBS = /LIBPATH:"c:\Progra~1\tcl\lib" tk83.lib tcl83.lib gdi32.lib user32.lib # Where tcl is installed
+#GLLIBS = /LIBPATH:"c:\Progra~1\Micros~1.NET\Vc7\PlatformSDK\lib" opengl32.lib glu32.lib # Where the libs are
 #TOOLCHAIN = msvc
 #XA = .lib
 #XB = .bat
