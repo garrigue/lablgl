@@ -111,8 +111,7 @@ install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp lablgl.cma togl.cmo $(INSTALLDIR)
-	cp liblablgl.a $(LIBDIR)
+	cp liblablgl.a lablgl.cma togl.cmo $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
 	if test -f lablgl.cmxa; then $(MAKE) installopt; fi
