@@ -118,6 +118,7 @@ install:
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
 		var2def var2switch lablgltop lablgl lablgllink lablglopt
+	cd $(TOGLDIR) && $(MAKE) clean
 
 depend:
 	olabldep *.ml *.mli > .depend
