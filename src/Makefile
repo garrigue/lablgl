@@ -6,9 +6,11 @@ LINKER=olablc
 include Makefile.config
 
 # Files
-MLOBJS =	gl.cmo		glu.cmo		glm.cmo 	togl.cmo
+MLOBJS =	raw.cmo 	gl.cmo		glu.cmo		glm.cmo \
+		togl.cmo
 #gltk.cmo	aux.cmo
-COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	togl.o
+COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	togl.o \
+		ml_raw.o
 #ml_tk.o	ml_aux.o
 # Default rules
 
@@ -69,6 +71,8 @@ ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
 ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
 ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
+ml_raw.o: raw_tags.h ml_raw.h
+raw.cmo: raw.cmi
 gl.cmo: gl.cmi
 glm.cmo: gl.cmi
 aux.cmo: gltk.cmi
