@@ -24,8 +24,8 @@ TKINCLUDES =
 TKLIBS =
 
 # Where to find OpenGL/Mesa headers and libraries
-GLINCLUDES = -I/System/Library/Frameworks/OpenGL.framework/Headers -I/System/Library/Frameworks/GLUT.framework/Headers
-GLLIBS = -lobjc -framework openGL
+GLINCLUDES =
+GLLIBS = -framework openGL
 GLUTLIBS = -framework GLUT
 # The following libraries may be required (try to add them one at a time)
 

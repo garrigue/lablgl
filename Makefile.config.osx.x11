@@ -7,8 +7,8 @@
 ##### Adjust these always
 
 # Uncomment if you have the fast ".opt" compilers
-#CAMLC = ocamlc.opt
-#CAMLOPT = ocamlopt.opt
+CAMLC = ocamlc.opt
+CAMLOPT = ocamlopt.opt
 
 # Where to put the lablgl script
 BINDIR = /usr/local/bin
@@ -25,13 +25,25 @@ TKINCLUDES = -I/opt/local/include
 #TKLIBS = -L/usr/local/lib -ltk83 -ltcl83
 
 # Where to find OpenGL/Mesa headers and libraries
-GLINCLUDES = -I/usr/X11R6/include/GL
+#GLINCLUDES = -I/usr/X11R6/include/GL
 GLLIBS = -lGL -lGLU
+GLUTLIBS = -framework GLUT
 # The following libraries may be required (try to add them one at a time)
 #GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
 
 # How to index a library after installing (ranlib required on MacOSX)
+#RANLIB = :
 RANLIB = ranlib
+
+##### Uncomment these for windows
+#TKLIBS = tk83.lib tcl83.lib gdi32.lib user32.lib
+#GLLIBS = opengl32.lib glu32.lib
+#TOOLCHAIN = msvc
+#XA = .lib
+#XB = .bat
+#XE = .exe
+#XO = .obj
+#XS = .dll
 
 ##### Adjust these if non standard
 

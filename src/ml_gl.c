@@ -1,11 +1,11 @@
-/* $Id: ml_gl.c,v 1.40 2003-10-02 12:47:02 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.41 2003-10-03 22:52:19 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
 #include <string.h>
 #ifdef __APPLE__
-#include <gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif

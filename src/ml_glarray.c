@@ -9,7 +9,7 @@
 #include <caml/alloc.h>
 #include <caml/config.h>
 #ifdef __APPLE__
-#include <gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
