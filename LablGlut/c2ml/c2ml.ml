@@ -122,7 +122,7 @@ let print str =
 		if !follow = 0 then follow := !tab
 	end 
 
-let fixme () = print "/* FIXME */";;
+let fixme () = print "(* FIXME *)";;
 
 (*
 ** Useful primitives
@@ -243,7 +243,7 @@ and print_enum id items =
 					end)
 				items;
 			unindent ();
-			print ";;";
+			print ";;\n";
 		end
 
 
@@ -500,6 +500,7 @@ and print_expression (exp : expression) (lvl : int) =
 					| CONST_CHAR c -> print ("'" ^ (escape_string c) ^ "'")
 					| CONST_STRING s -> print ("\"" ^ (escape_string s) ^ "\"")
 					| CONST_COMPOUND exps ->
+                                                (* This is a guess. *)
 						print "[| ";
 						print_comma_exps exps;
 						print " |]")
@@ -509,10 +510,11 @@ and print_expression (exp : expression) (lvl : int) =
                         in
                         print (
                             if mysub name 0 3 = "GL_" ||
-                               mysub name 0 4 = "GLU_" ||
-                               mysub name 0 5 = "GLUT_" 
+                               mysub name 0 4 = "GLU_" 
                             then
                                 String.lowercase name
+                            else if mysub name 0 5 = "GLUT_" then
+                                String.uppercase name
                             else if name = "NULL" then 
                                 "None"
                             else
@@ -563,7 +565,7 @@ and print_statement stat =
 		print_defs defs;
 		if stat <> NOP then print_statement stat else ();
 		unindent ();
-		print ");";
+		print ")";
 		new_line ();
 	| SEQUENCE (s1, s2) ->
 		print_statement s1;
@@ -578,7 +580,9 @@ and print_statement stat =
 			else begin
 				print " else ";
 				print_substatement s2;
-			end
+			end;
+                print ";";
+                new_line()
 	| WHILE (exp, stat) ->
 		print "while ";
 		print_expression exp 0;
@@ -730,7 +734,7 @@ and print_def def =
                 | _ -> failwith "Bad function type.");
                 print " = ";
 		let (decs, stat) = body in print_statement (BLOCK (decs, stat));
-                print ";;";
+                print ";;\n";
 		force_new_line ();
 		
 	| OLDFUNDEF (proto, decs, body) ->
@@ -795,7 +799,7 @@ let set_width w = width := w
 (* Useful Data *)
 (* let version = "Rewrite V2.0 3.22.99 Hugues Cassé" *)
 let version = "C2ml V1.0 10.20.03, adapted by Issac Trotts from 
-    Hugues Casse's original program Rewrite."
+Hugues Casse's original program Rewrite."
 let help = version ^ "\n"
 	^ "rewrite [-V] [-P] [-t tab] [-w width] [-p preprocessor] <file list> [-o <output file>]"
 
