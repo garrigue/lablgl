@@ -1,4 +1,4 @@
-(* $Id: planet.ml,v 1.15 2000-04-16 12:35:34 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.16 2001-05-08 01:58:26 garrigue Exp $ *)
 
 class planet togl = object (self)
   val togl = togl
@@ -55,11 +55,11 @@ let myinit () =
   (*  light_position is NOT default value	*)
   and light_position = 1.0, 1.0, 1.0, 0.0
   in
-  List.iter ~f:(GlLight.light ~num:0)
+  List.iter (GlLight.light ~num:0)
     [ `ambient light_ambient; `diffuse light_diffuse;
       `specular light_specular; `position light_position ];
   GlFunc.depth_func `less;
-  List.iter ~f:Gl.enable [`lighting; `light0; `depth_test];
+  List.iter Gl.enable [`lighting; `light0; `depth_test];
   GlDraw.shade_model `smooth
 
 

@@ -1,8 +1,8 @@
 # Ocaml commands
 CAMLC=ocamlc
 CAMLOPT=ocamlopt
-COMPILER=$(CAMLC) -c -labels
-OPTCOMP=$(CAMLOPT) -c -labels
+COMPILER=$(CAMLC) -c
+OPTCOMP=$(CAMLOPT) -c
 LIBRARIAN=$(CAMLC) -a
 OPTLIB=$(CAMLOPT) -a
 LINKER=$(CAMLC)

@@ -1,4 +1,4 @@
-(* $Id: checker.ml,v 1.7 2000-04-12 09:49:05 garrigue Exp $ *)
+(* $Id: checker.ml,v 1.8 2001-05-08 01:58:25 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -24,7 +24,7 @@ let myinit () =
   let image = make_image () in
   GlPix.store (`unpack_alignment 1);
   GlTex.image2d image;
-  List.iter ~f:(GlTex.parameter ~target:`texture_2d)
+  List.iter (GlTex.parameter ~target:`texture_2d)
     [ `wrap_s `clamp;
       `wrap_t `clamp;
       `mag_filter `nearest;
