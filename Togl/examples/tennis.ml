@@ -1,5 +1,7 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.16 2000-04-18 00:24:07 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.17 2001-05-08 01:58:26 garrigue Exp $ *)
+
+open StdLabels
 
 let image_height = 64
 and image_width = 64

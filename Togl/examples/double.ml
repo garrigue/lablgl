@@ -1,4 +1,4 @@
-(* $Id: double.ml,v 1.10 2000-04-12 09:49:06 garrigue Exp $ *)
+(* $Id: double.ml,v 1.11 2001-05-08 01:58:25 garrigue Exp $ *)
 
 class view togl ~title = object (self)
   val mutable corner_x = 0.
@@ -98,7 +98,7 @@ let main () =
     Button.create ~text:"Quit" ~command:(fun () -> destroy top) top
   in
 
-  List.iter ~f:
+  List.iter
     (fun o ->
       Togl.display_func o#togl ~cb:(fun () -> o#display);
       Togl.reshape_func o#togl ~cb:(fun () -> o#reshape);
