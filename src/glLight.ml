@@ -1,4 +1,4 @@
-(* $Id: glLight.ml,v 1.5 2000-04-03 02:57:41 garrigue Exp $ *)
+(* $Id: glLight.ml,v 1.6 2003-03-13 10:15:48 erickt Exp $ *)
 
 open Gl
 
@@ -31,8 +31,13 @@ type light_param = [
 ]
 external light : num:int -> light_param -> unit
     = "ml_glLight"
-type light_model_param =
-    [ `ambient of rgba | `local_viewer of float | `two_side of bool ]
+    
+type light_model_param = [
+    `ambient of rgba 
+  | `local_viewer of float 
+  | `two_side of bool 
+  | `color_control of [`separate_specular_color | `single_color]
+]
 external light_model : light_model_param -> unit = "ml_glLightModel"
 
 type material_param = [

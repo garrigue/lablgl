@@ -1,5 +1,3 @@
-gl.cmo: gl.cmi 
-gl.cmx: gl.cmi 
 glClear.cmo: gl.cmi glClear.cmi 
 glClear.cmx: gl.cmx glClear.cmi 
 glDraw.cmo: gl.cmi glPix.cmi raw.cmi glDraw.cmi 
@@ -16,6 +14,8 @@ glMat.cmo: raw.cmi glMat.cmi
 glMat.cmx: raw.cmx glMat.cmi 
 glMisc.cmo: raw.cmi glMisc.cmi 
 glMisc.cmx: raw.cmx glMisc.cmi 
+gl.cmo: gl.cmi 
+gl.cmx: gl.cmi 
 glPix.cmo: gl.cmi raw.cmi glPix.cmi 
 glPix.cmx: gl.cmx raw.cmx glPix.cmi 
 glTex.cmo: gl.cmi glPix.cmi raw.cmi glTex.cmi 

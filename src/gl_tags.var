@@ -233,6 +233,7 @@ vendor renderer version extensions
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End
+color_control separate_specular_color single_color
 
 (* glHint *)
 perspective_correction

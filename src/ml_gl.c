@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.32 2002-11-12 03:40:12 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.33 2003-03-13 10:15:48 erickt Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -264,6 +264,26 @@ CAMLprim value ml_glLightModel (value param)  /* ML */
 	glLightModeli (GL_LIGHT_MODEL_TWO_SIDE,
 		       Int_val(Field(param,1)));
 	break;
+#ifdef GL_VERSION_1_2
+    case MLTAG_color_control:
+	switch (Field(param,1))
+        {
+          case MLTAG_separate_specular_color:
+        	glLightModeli (GL_LIGHT_MODEL_COLOR_CONTROL,
+		               GL_SEPARATE_SPECULAR_COLOR);
+                break;
+           case MLTAG_single_color:
+        	glLightModeli (GL_LIGHT_MODEL_COLOR_CONTROL,
+		               GL_SINGLE_COLOR);
+                break;
+        }
+	break;
+#else
+#define ML_fail(cname) \
+CAMLprim value ml_##cname (value any) \
+{ ml_raise_gl ("Function not available"); }
+ML_fail
+#endif
     }
     return Val_unit;
 }

@@ -1,11 +1,9 @@
 var2def
 var2switch
-*_tags.h
-*_tags.c
-*.opt
-*.lib
-*.dll
-*.exp
-lablgltop
-lablgl
 Makefile.config
+gl_tags.c
+gl_tags.h
+glu_tags.c
+glu_tags.h
+raw_tags.c
+raw_tags.h

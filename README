@@ -175,7 +175,7 @@ GlLight: Lighting functions.
    glColorMaterial
    glFog
    glLight
-   glLightModel
+   glLightModel (1.2 with `color_control)
    glMaterial
 
 GlList: Call list functions. (*)
@@ -297,4 +297,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.19 2003-01-09 10:23:30 garrigue Exp $
+$Id: README,v 1.20 2003-03-13 10:15:48 erickt Exp $
