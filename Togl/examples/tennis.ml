@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.7 1998-09-04 08:16:22 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.8 1998-12-13 23:58:48 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -307,6 +307,8 @@ end
 
 
 class view3d :togl :ball :player :viewtype = object
+  val ball : ball = ball
+  val player : player = player
   val court =  new court :togl
   val net = new net :togl
   val poll = new poll
@@ -378,6 +380,8 @@ class view3d :togl :ball :player :viewtype = object
 end
 
 class view2d :togl :ball :player = object
+  val ball : ball = ball
+  val player : player = player
   val court = new court togl:togl
 
   method draw =

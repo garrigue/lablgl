@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.9 1998-09-01 09:28:50 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.10 1998-12-13 23:58:48 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -446,7 +446,6 @@ let draw_ico :amp :divisions :color =
 
 class view togl = object (self)
   val togl = togl
-  val mutable mono = false
   val mutable smooth = true
   val mutable step = 0.
   val mutable obj = 1
@@ -488,7 +487,6 @@ class view togl = object (self)
     | "3" -> obj <- 3
     | "4" -> obj <- 4
     | "5" -> obj <- 5
-    | "Space" -> mono <- not mono
     | "Return" -> smooth <- not smooth
     | "Escape" -> Tk.destroy (Winfo.toplevel togl)
     | _ -> ()
@@ -537,12 +535,6 @@ class view togl = object (self)
 	magnitude <- 3.5
     | _ -> ()
     end;
-(*
-  if (mono) {
-    int loop;
-    for (loop=0; loop<20; loop++) MaterialColor[loop]=MaterialGray;
-  }
-*)
     GlDraw.shade_model (if smooth then `smooth else `flat)
 end
 
@@ -551,13 +543,13 @@ open Tk
 let main () =
   List.iter fun:print_string
     [ "Morph 3D - Shows morphing platonic polyhedra\n";
-      "Author: Marcelo Fernandes Vianna (vianna@cat.cbpf.br)\n\n";
+      "Author: Marcelo Fernandes Vianna (vianna@cat.cbpf.br)\n";
+      "Ported to LablGL by Jacques Garrigue\n\n";
       "  [1]    - Tetrahedron\n";
       "  [2]    - Hexahedron (Cube)\n";
       "  [3]    - Octahedron\n";
       "  [4]    - Dodecahedron\n";
       "  [5]    - Icosahedron\n";
-     (* "[SPACE]  - Toggle colored faces\n"; *)
       "[RETURN] - Toggle smooth/flat shading\n";
       " [ESC]   - Quit\n" ];
   flush stdout;
