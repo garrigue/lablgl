@@ -118,7 +118,7 @@ $(TOGLDIR)/togl.d.obj:
 		togl.c
 
 lablgltop$(XE): lablgl.cma togl.cma
-	ocamlmktop -verbose -custom -I . $(OCAMLINC) -o $@ \
+	ocamlmktop -verbose -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
 lablgl: lablgl.in Makefile.config
