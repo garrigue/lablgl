@@ -8,7 +8,7 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Caml 3.03-beta
+  * Objective Caml 3.03-alpha
   * LablTk (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
@@ -273,4 +273,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.12 2001-09-06 08:27:02 garrigue Exp $
+$Id: README,v 1.13 2001-10-12 14:19:58 garrigue Exp $
