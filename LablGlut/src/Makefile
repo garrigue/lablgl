@@ -2,7 +2,7 @@
 #TOPDIR = ../..
 #include $(TOPDIR)/Makefile.common
 
-all: byte-code-library native-code-library top
+default: byte-code-library native-code-library top
 RESULT=lablglut
 CAMLIDL=../camlidl/compiler/camlidl
 IDLFLAGS=-no-include -prepro "cpp -traditional-cpp"
@@ -14,15 +14,14 @@ IDLFLAGS=-no-include -prepro "cpp -traditional-cpp"
 
 #OCAMLINC=
 
-all: debug-code-library native-code-library top
 BIN_DIR=/usr/local/bin
 SOURCES=\
     bA.ml \
     gL.idl\
     gLU.idl\
     gLUT.mli gLUT.ml\
-    wrap_glut.c \
-    aLL_GL.ml
+    aLL_GL.ml \
+    wrap_glut.c
 LIBS=bigarray
 LIBDIRS=$(OCAML)
 CLIBS=camlidl glut GLU GL
@@ -34,10 +33,16 @@ glcaml.idl: gl_constants.idl
 gl_constants.idl: ./config.sh
 	./config.sh
 
-install: dcl ncl
+# The script we use to run the toplevel.
+lablglut:
+	echo "lablglut.top -I +lablGL -I +lablgl -I +labltk -I +lablglut $*\n" > lablglut
+	chmod +x lablglut
+
+install: default lablglut
 	install -d $(OCAML)/lablglut
 	install *.{mli,cmi} *.cma *.a *.so $(OCAML)/lablglut
-	install lablglut{,.top} $(BIN_DIR)
+	install lablglut.top $(BIN_DIR)
+	install lablglut $(BIN_DIR)
 
 #ifeq ($(TOOLCHAIN), msvc)
 #liblablglut$(XA): $(COBJS)
