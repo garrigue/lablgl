@@ -1,7 +1,7 @@
 <HTML>
 
 <HEAD>
-<LINK REV="made" HREF="brianp@ssec.wisc.edu">
+<LINK REV="made" HREF="brianp@elastic.avid.com">
 <TITLE>Togl</TITLE>
 </HEAD>
 
@@ -9,8 +9,8 @@
 
 <CENTER>
 <H1>Togl - a Tk OpenGL widget</H1>
-<H3>Version 1.4</H3>
-<H3>Copyright (C) 1996-1997 Brian Paul and Ben Bederson</H3>
+<H3>Version 1.5</H3>
+<H3>Copyright (C) 1996-1998 Brian Paul and Ben Bederson</H3>
 </CENTER>
 
 
@@ -27,6 +27,7 @@
 <LI><A HREF="#Cfuncs">C Togl Functions</A>
 <LI><A HREF="#TclFuncs">Tcl Togl Functions</A>
 <LI><A HREF="#Demo">Demo Programs</A>
+<LI><A HREF="#Stereo">Stereo Rendering</A>
 <LI><A HREF="#Problems">Common Questions and Problems</A>
 <LI><A HREF="#Bugs">Reporting Bugs</A>
 <LI><A HREF="#Version">Version History</A>
@@ -110,16 +111,16 @@ effectively.
 <H2>Getting Togl</H2>
 
 <P>
-The current version of Togl is 1.4.  You may download it from either:
+The current version of Togl is 1.5.  You may download it from either:
 </P>
 
 <UL>
 <LI>Wisconsin at
-<A HREF="ftp://iris.ssec.wisc.edu/pub/misc/Togl-1.4.tar.gz">
-ftp://iris.ssec.wisc.edu/pub/misc/Togl-1.4.tar.gz</A>
+<A HREF="ftp://iris.ssec.wisc.edu/pub/misc/Togl-1.5.tar.gz">
+ftp://iris.ssec.wisc.edu/pub/misc/Togl-1.5.tar.gz</A>
 <LI>New Mexico at
-<A HREF="ftp://ftp.cs.unm.edu/pub/bederson/Togl-1.4.tar.gz">
-ftp://ftp.cs.unm.edu/pub/bederson/Togl-1.4.tar.gz</A>
+<A HREF="ftp://ftp.cs.unm.edu/pub/bederson/Togl-1.5.tar.gz">
+ftp://ftp.cs.unm.edu/pub/bederson/Togl-1.5.tar.gz</A>
 </UL>
 
 Togl may also be obtained manually with ftp:
@@ -128,7 +129,7 @@ Togl may also be obtained manually with ftp:
 <LI>Login:  anonymous
 <LI>Password:  your email address
 <LI>Directory:  pub/misc
-<LI>File:  Togl-1.4.tar.gz
+<LI>File:  Togl-1.5.tar.gz
 </UL>
 
 <P>
@@ -161,10 +162,15 @@ You may elect to compile the Togl code into a library file but that's not
 necessary.
 </P>
 
+<H3>Unix/X11 usage</H3>
+
 <P>
 Unix/X systems only need the <CODE>togl.c</CODE>, <CODE>togl.h</CODE>
 and one of of the <CODE>tkInt*.h</CODE> files.
 </P>
+
+
+<H3>Windows 95/NT usage</H3>
 
 <P>
 Windows 95/NT systems also need the other <CODE>tk*.h</CODE>,
@@ -172,6 +178,10 @@ Windows 95/NT systems also need the other <CODE>tk*.h</CODE>,
 files distributed with Togl.
 </P>
 
+<P>
+Also, you'll have to copy the <CODE>tkInt.8.0.h</CODE> file to
+<CODE>tkInt.h</CODE>.
+</P>
 
 <P>
 Togl defines an API of C-callable functions and an API of Tcl-callable
@@ -630,6 +640,21 @@ Option		Default	Comments
 -time           1       Specifies the interval, in milliseconds, for
                         calling the C timer callback function which
                         was registered with Togl_TimerFunc.
+
+-sharelist      ""      Name of an existing Togl widget with which to
+                        share display lists.
+                        NOT YET IMPLEMENTED FOR WINDOWS 95/NT.
+
+-sharecontext   ""      Name of an existing Togl widget with which to
+                        share the OpenGL context.  NOTE:  most other
+                        attributes such as double buffering, RGBA vs CI,
+                        ancillary buffer specs, etc are then ignored.
+                        NOT YET IMPLEMENTED FOR WINDOWS 95/NT.
+
+-indirect       false   If present, request an indirect rendering context.
+                        A direct rendering context is normally requested.
+                        NOT SIGNIFICANT FOR WINDOWS 95/NT.
+
 </PRE>
 </DL>
 
@@ -714,7 +739,7 @@ Option		Default	Comments
 <H2>Demo Programs</H2>
 
 <P>
-There are four demo programs:
+There are five demo programs:
 </P>
 
 <UL>
@@ -722,6 +747,8 @@ There are four demo programs:
 <LI>texture - lets you play with texture mapping options
 <LI>index - demo of using color index mode
 <LI>overlay - example of using overlay planes (requires overlay hardware)
+<LI>stereo - SGI-only stereo example
+<LI>gears - spinning gears demo
 </UL>
 
 <P>
@@ -731,6 +758,21 @@ The stock Makefile is setup for Linux.
 To run a demo just type "double" or "texture" or "index" or "overlay".
 </P>
 
+
+
+<BR>
+<BR>
+<A NAME="Stereo">
+<H2>Stereo Rendering</H2>
+
+<P>
+Togl on SGI systems supports full-screen stereo.
+Quad-buffered stereo-in-a-window is not supported at this time.
+To enable stereo support you must add -DSTEREO to the cc compiler flags.
+Reportedly, SGI O2's need patches 1979 and 2447 in order to use stereo.
+Also, the frame buffer must be set to the 32+32 pixel format and the
+monitor set to 1024x768_96s mode.
+</P>
 
 
 <BR>
@@ -819,10 +861,25 @@ author of the Windows 95/NT support for Togl.
 <LI>Added Togl_ResetDefaultCallbacks() and Togl_ClientData() functions (Greg Couch)
 </UL>
 
+<H3>Version 1.5 - September 18, 1998</H3>
+<UL>
+<LI>Fixed a few Unix and Windows compilation bugs
+<LI>Added Ben Evan's SGI stereo functions
+<LI>Multiple expose events now reduced to one redraw
+<LI>Destroying Togl widgets caused problems, patched by Adrian J. Chung
+<LI>Added Togl_TkWin() function
+<LI>Updated for Tcl/Tk 8.0p2
+<LI>Added gears demo from Philip Quaife
+<LI>Added <CODE>-sharelist</CODE> and <CODE>-sharecontext</CODE> config flags
+<LI>Fixed a few overlay update bugs
+<LI>Added <CODE>-indirect</CODE> config flag
+</UL>
+
+
 
 <H3>Future plans</H3>
 <UL>
-<LI>Port to Windows '95 and Macintosh (any volunteers?)
+<LI>Port to the Macintosh (any volunteers?)
 </UL>
 
 
@@ -841,6 +898,7 @@ Several people have contributed new features to Togl.  Among them are:
 <LI>Peter Dern and Elmar Gerwalin - Togl_TimerFunc and related code
 <LI>Robert Casto - Windows NT port
 <LI>Geza Groma - Windows 95/NT patches
+<LI>Ben Evans - SGI stereo support
 </UL>
 
 Many others have contributed bug fixes.  Thanks for your contributions!
@@ -848,6 +906,6 @@ Many others have contributed bug fixes.  Thanks for your contributions!
 <BR>
 <BR>
 <HR>
-Last edited on September 16, 1997 by Brian Paul.
+Last edited on September 17, 1998 by Brian Paul.
 
 </BODY>

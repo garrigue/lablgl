@@ -1,8 +1,8 @@
                           Togl - a Tk OpenGL widget
 
-                                 Version 1.4
+                                 Version 1.5
 
-             Copyright (C) 1996-1997 Brian Paul and Ben Bederson
+             Copyright (C) 1996-1998 Brian Paul and Ben Bederson
 
 Contents
 
@@ -14,6 +14,7 @@ Contents
    * C Togl Functions
    * Tcl Togl Functions
    * Demo Programs
+   * Stereo Rendering
    * Common Questions and Problems
    * Reporting Bugs
    * Version History
@@ -59,10 +60,10 @@ effectively.
 
 Getting Togl
 
-The current version of Togl is 1.4. You may download it from either:
+The current version of Togl is 1.5. You may download it from either:
 
-   * Wisconsin at ftp://iris.ssec.wisc.edu/pub/misc/Togl-1.4.tar.gz
-   * New Mexico at ftp://ftp.cs.unm.edu/pub/bederson/Togl-1.4.tar.gz
+   * Wisconsin at ftp://iris.ssec.wisc.edu/pub/misc/Togl-1.5.tar.gz
+   * New Mexico at ftp://ftp.cs.unm.edu/pub/bederson/Togl-1.5.tar.gz
 
 Togl may also be obtained manually with ftp:
 
@@ -70,7 +71,7 @@ Togl may also be obtained manually with ftp:
    * Login: anonymous
    * Password: your email address
    * Directory: pub/misc
-   * File: Togl-1.4.tar.gz
+   * File: Togl-1.5.tar.gz
 
 The Makefile included with Togl is configured for SGI systems. It shouldn't
 be hard to adapt it for others. In practice, you'll just add togl.c to your
@@ -88,11 +89,17 @@ The Togl source code is intended to be included with your application. You
 may elect to compile the Togl code into a library file but that's not
 necessary.
 
+Unix/X11 usage
+
 Unix/X systems only need the togl.c, togl.h and one of of the tkInt*.h
 files.
 
+Windows 95/NT usage
+
 Windows 95/NT systems also need the other tk*.h, WinMain.c, winMain.c, and
 tkConsole.c files distributed with Togl.
+
+Also, you'll have to copy the tkInt.8.0.h file to tkInt.h.
 
 Togl defines an API of C-callable functions and an API of Tcl-callable
 functions. The functions are documented here. See the demo programs for
@@ -391,6 +398,20 @@ togl pathName [options]
                              calling the C timer callback function which
                              was registered with Togl_TimerFunc.
 
+     -sharelist      ""      Name of an existing Togl widget with which to
+                             share display lists.
+                             NOT YET IMPLEMENTED FOR WINDOWS 95/NT.
+
+     -sharecontext   ""      Name of an existing Togl widget with which to
+                             share the OpenGL context.  NOTE:  most other
+                             attributes such as double buffering, RGBA vs CI,
+                             ancillary buffer specs, etc are then ignored.
+                             NOT YET IMPLEMENTED FOR WINDOWS 95/NT.
+
+     -indirect       false   If present, request an indirect rendering context.
+                             A direct rendering context is normally requested.
+                             NOT SIGNIFICANT FOR WINDOWS 95/NT.
+
 pathName configure
      Returns all configuration records for the named togl widget.
 
@@ -429,16 +450,26 @@ pathName makecurrent
 
 Demo Programs
 
-There are four demo programs:
+There are five demo programs:
 
    * double - compares single vs double buffering with two Togl widgets
    * texture - lets you play with texture mapping options
    * index - demo of using color index mode
    * overlay - example of using overlay planes (requires overlay hardware)
+   * stereo - SGI-only stereo example
+   * gears - spinning gears demo
 
 To compile the demos, edit the Makefile to suit your system, then type
 "make". The stock Makefile is setup for Linux. To run a demo just type
 "double" or "texture" or "index" or "overlay".
+
+Stereo Rendering
+
+Togl on SGI systems supports full-screen stereo. Quad-buffered
+stereo-in-a-window is not supported at this time. To enable stereo support
+you must add -DSTEREO to the cc compiler flags. Reportedly, SGI O2's need
+patches 1979 and 2447 in order to use stereo. Also, the frame buffer must be
+set to the 32+32 pixel format and the monitor set to 1024x768_96s mode.
 
 Common Questions and Problems
 
@@ -504,9 +535,22 @@ Version 1.4 - September 17, 1997
    * Added Togl_ResetDefaultCallbacks() and Togl_ClientData() functions
      (Greg Couch)
 
+Version 1.5 - September 18, 1998
+
+   * Fixed a few Unix and Windows compilation bugs
+   * Added Ben Evan's SGI stereo functions
+   * Multiple expose events now reduced to one redraw
+   * Destroying Togl widgets caused problems, patched by Adrian J. Chung
+   * Added Togl_TkWin() function
+   * Updated for Tcl/Tk 8.0p2
+   * Added gears demo from Philip Quaife
+   * Added -sharelist and -sharecontext config flags
+   * Fixed a few overlay update bugs
+   * Added -indirect config flag
+
 Future plans
 
-   * Port to Windows '95 and Macintosh (any volunteers?)
+   * Port to the Macintosh (any volunteers?)
 
 Contributors
 
@@ -518,8 +562,9 @@ Several people have contributed new features to Togl. Among them are:
    * Peter Dern and Elmar Gerwalin - Togl_TimerFunc and related code
    * Robert Casto - Windows NT port
    * Geza Groma - Windows 95/NT patches
+   * Ben Evans - SGI stereo support
 
 Many others have contributed bug fixes. Thanks for your contributions!
 
 ----------------------------------------------------------------------------
-Last edited on September 16, 1997 by Brian Paul.
+Last edited on September 17, 1998 by Brian Paul.
