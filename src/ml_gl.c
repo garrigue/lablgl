@@ -1,6 +1,9 @@
-/* $Id: ml_gl.c,v 1.27 2002-05-01 03:35:00 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.28 2002-07-12 03:41:45 garrigue Exp $ */
 
-#include <strings.h>
+#ifdef _WIN32
+#include <wtypes.h>
+#endif
+#include <string.h>
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
@@ -46,7 +49,7 @@ value ml_gl_make_table (value unit)
     unsigned int hash;
 
     tag_table = stat_alloc (TABLE_SIZE * sizeof(struct record));
-    bzero ((char *) tag_table, TABLE_SIZE * sizeof(struct record));
+    memset ((char *) tag_table, TABLE_SIZE * sizeof(struct record), 0);
     for (i = 0; i < TAG_NUMBER; i++) {
 	hash = (unsigned long) input_table[i].key % TABLE_SIZE;
 	while (tag_table[hash].key != 0) {

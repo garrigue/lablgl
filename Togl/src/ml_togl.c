@@ -1,5 +1,8 @@
-/* $Id: ml_togl.c,v 1.8 2002-06-19 14:26:36 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.9 2002-07-12 03:41:45 garrigue Exp $ */
 
+#ifdef _WIN32
+#include <wtypes.h>
+#endif
 #include <stdlib.h>
 #include <GL/gl.h>
 #include <tcl.h>
@@ -107,7 +110,12 @@ value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 
 ML_2 (Togl_UnloadBitmapFont, Addr_val, Int_val)
 ML_2 (Togl_UseLayer, Addr_val, TOGLenum_val)
+#ifdef _WIN32
+value ml_Togl_ShowOverlay(value v)
+{ invalid_argument("Togl_ShowOverlay: not implemented"); return Val_unit; }
+#else
 ML_1 (Togl_ShowOverlay, Addr_val)
+#endif
 ML_1 (Togl_HideOverlay, Addr_val)
 ML_1 (Togl_PostOverlayRedisplay, Addr_val)
 ML_1_ (Togl_ExistsOverlay, Addr_val, Val_int)

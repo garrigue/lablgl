@@ -3,6 +3,7 @@ var2switch
 *_tags.h
 *_tags.c
 *.opt
+*.lib
 lablgltop
 lablgl
 lablgllink

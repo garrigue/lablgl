@@ -24,11 +24,20 @@ TKINCLUDES = -I/usr/local/include
 GLINCLUDES =
 GLLIBS = -lGL -lGLU
 # The following libraries may be required (try to add them one at a time)
-# GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
+#GLLIBS = -lGL -lGLU -lXmu -lXext -lpthread
+# For windows
 
 # How to index a library after installing (required on MacOSX)
 RANLIB = :
 #RANLIB = ranlib
+
+##### Uncomment these for windows
+#TKLIBS = tk83.lib tcl83.lib gdi32.lib user32.lib
+#GLLIBS = opengl32.lib glu32.lib
+#TOOLCHAIN = msvc
+#XA = .lib
+#XO = .obj
+#XE = .exe
 
 ##### Adjust these if non standard
 

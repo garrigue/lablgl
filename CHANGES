@@ -1,6 +1,8 @@
 LablGL 0.98:
 ------------
 
+* add windows port
+
 * add lablGL.spec (Ben Martin)
 
 * add GLU_VERSION and GLU_EXTENSIONS tags

@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.10 2000-07-03 04:59:06 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.11 2002-07-12 03:41:45 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -161,7 +161,7 @@ value ml_raw_read_string (value raw, value pos, value len)  /* ML */
     if (l<0 || s<0 || s+l > Int_val(Size_raw(raw)))
 	invalid_argument("Raw.read_string");
     ret = alloc_string (l);
-    bcopy (Bp_val(Addr_raw(raw))+s, String_val(ret), l);
+    memcpy (String_val(ret), Bp_val(Addr_raw(raw))+s, l);
     return ret;
 }
 
@@ -173,7 +173,7 @@ value ml_raw_write_string (value raw, value pos, value data)  /* ML */
 
     if (s<0 || s+l > Int_val(Size_raw(raw)))
 	invalid_argument("Raw.write_string");
-    bcopy (String_val(data), Bp_val(Addr_raw(raw))+s, l);
+    memcpy (Bp_val(Addr_raw(raw))+s, String_val(data), l);
     return Val_unit;
 }
 

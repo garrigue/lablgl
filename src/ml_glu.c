@@ -1,5 +1,8 @@
-/* $Id: ml_glu.c,v 1.19 2002-06-19 14:29:18 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.20 2002-07-12 03:41:45 garrigue Exp $ */
 
+#ifdef _WIN32
+#include <wtypes.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <caml/mlvalues.h>
