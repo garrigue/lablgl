@@ -27,7 +27,6 @@
 
 #define VoidPtr_val(x) ((void*) Int_val(x))
 
-ML_1(glutInitDisplayMode, Int_val) /* corresponds to glutInitDisplayMode2. */
 ML_0(glutSwapBuffers) /* makes a function called ml_glutSwapBuffers() */
 ML_0(glutPostRedisplay)
 ML_2(glutInitWindowSize, Int_val, Int_val)

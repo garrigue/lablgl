@@ -1,395 +1,390 @@
-(* glutcaml.mli is the OCaml interface for Mark Kilgard's simple, 
-   cross-platform OpenGL windowing library GLUT.
+(* 
 
-   Copyright (c) Issac Trotts 2003.
-   Released under a BSD-style license. *)
+   glut.mli: interface for the lablglut GLUT binding. 
 
-(* Display mode bit masks. *)
-val glut_rgb:int
-val glut_rgba:int
-val glut_index:int
-val glut_single:int
-val glut_double:int
-val glut_accum:int
-val glut_alpha:int
-val glut_depth:int
-val glut_stencil:int
-val glut_multisample:int
-val glut_stereo:int
-val glut_luminance:int
+*)
 
-type glut_button_t =
-    GLUT_LEFT_BUTTON
-  | GLUT_MIDDLE_BUTTON
-  | GLUT_RIGHT_BUTTON
-  | GLUT_OTHER_BUTTON of int
+type button_t = 
+  | LEFT_BUTTON 
+  | MIDDLE_BUTTON 
+  | RIGHT_BUTTON
+  | OTHER_BUTTON of int
 
-type glut_mouse_button_state_t =
-    GLUT_DOWN
-  | GLUT_UP 
+type mouse_button_state_t = 
+  | DOWN 
+  | UP 
 
-type glut_special_key_t =
-    GLUT_KEY_F1
-  | GLUT_KEY_F2
-  | GLUT_KEY_F3
-  | GLUT_KEY_F4
-  | GLUT_KEY_F5
-  | GLUT_KEY_F6
-  | GLUT_KEY_F7
-  | GLUT_KEY_F8
-  | GLUT_KEY_F9
-  | GLUT_KEY_F10
-  | GLUT_KEY_F11
-  | GLUT_KEY_F12
-  | GLUT_KEY_LEFT
-  | GLUT_KEY_UP
-  | GLUT_KEY_RIGHT
-  | GLUT_KEY_DOWN
-  | GLUT_KEY_PAGE_UP
-  | GLUT_KEY_PAGE_DOWN
-  | GLUT_KEY_HOME
-  | GLUT_KEY_END
-  | GLUT_KEY_INSERT                  
+type special_key_t = 
+  | KEY_F1
+  | KEY_F2                      
+  | KEY_F3              
+  | KEY_F4      
+  | KEY_F5
+  | KEY_F6                      
+  | KEY_F7                      
+  | KEY_F8                      
+  | KEY_F9                      
+  | KEY_F10                     
+  | KEY_F11                     
+  | KEY_F12                     
+      (* directional keys *)
+  | KEY_LEFT                    
+  | KEY_UP                      
+  | KEY_RIGHT                   
+  | KEY_DOWN                    
+  | KEY_PAGE_UP         
+  | KEY_PAGE_DOWN               
+  | KEY_HOME                    
+  | KEY_END                     
+  | KEY_INSERT                  
 
-type glut_entry_exit_state_t =
-    GLUT_LEFT
-  | GLUT_ENTERED
+type entry_exit_state_t =
+  | LEFT                        
+  | ENTERED
 
-type glut_menu_state_t =
-    GLUT_MENU_NOT_IN_USE
-  | GLUT_MENU_IN_USE         
+type menu_state_t = 
+  | MENU_NOT_IN_USE     
+  | MENU_IN_USE         
 
-type glut_visibility_state_t =
-    GLUT_NOT_VISIBLE
-  | GLUT_VISIBLE                     
+type visibility_state_t =
+  | NOT_VISIBLE         
+  | VISIBLE                     
 
-type glut_window_status_t =
-    GLUT_HIDDEN
-  | GLUT_FULLY_RETAINED
-  | GLUT_PARTIALLY_RETAINED
-  | GLUT_FULLY_COVERED               
+type window_status_t = 
+  | HIDDEN                      
+  | FULLY_RETAINED              
+  | PARTIALLY_RETAINED          
+  | FULLY_COVERED               
 
-type glut_color_index_component_t =
-    GLUT_RED
-  | GLUT_GREEN
-  | GLUT_BLUE                        
+type color_index_component_t =
+  | RED                 
+  | GREEN                       
+  | BLUE                        
 
-type glut_layer_t =
-    GLUT_NORMAL
-  | GLUT_OVERLAY                     
+type layer_t =
+  | NORMAL                      
+  | OVERLAY                     
 
-type glut_font_t =
-    GLUT_STROKE_ROMAN
-  | GLUT_STROKE_MONO_ROMAN
-  | GLUT_BITMAP_9_BY_15
-  | GLUT_BITMAP_8_BY_13
-  | GLUT_BITMAP_TIMES_ROMAN_10
-  | GLUT_BITMAP_TIMES_ROMAN_24
-  | GLUT_BITMAP_HELVETICA_10
-  | GLUT_BITMAP_HELVETICA_12
-  | GLUT_BITMAP_HELVETICA_18 
+type font_t =
+  | STROKE_ROMAN                
+  | STROKE_MONO_ROMAN           
+  | BITMAP_9_BY_15              
+  | BITMAP_8_BY_13              
+  | BITMAP_TIMES_ROMAN_10       
+  | BITMAP_TIMES_ROMAN_24       
+  | BITMAP_HELVETICA_10 
+  | BITMAP_HELVETICA_12 
+  | BITMAP_HELVETICA_18 
 
 type glut_get_t =
-    GLUT_WINDOW_X
-  | GLUT_WINDOW_Y
-  | GLUT_WINDOW_WIDTH
-  | GLUT_WINDOW_HEIGHT
-  | GLUT_WINDOW_BUFFER_SIZE
-  | GLUT_WINDOW_STENCIL_SIZE
-  | GLUT_WINDOW_DEPTH_SIZE
-  | GLUT_WINDOW_RED_SIZE
-  | GLUT_WINDOW_GREEN_SIZE
-  | GLUT_WINDOW_BLUE_SIZE
-  | GLUT_WINDOW_ALPHA_SIZE
-  | GLUT_WINDOW_ACCUM_RED_SIZE
-  | GLUT_WINDOW_ACCUM_GREEN_SIZE
-  | GLUT_WINDOW_ACCUM_BLUE_SIZE
-  | GLUT_WINDOW_ACCUM_ALPHA_SIZE
-  | GLUT_WINDOW_DOUBLEBUFFER
-  | GLUT_WINDOW_RGBA
-  | GLUT_WINDOW_PARENT
-  | GLUT_WINDOW_NUM_CHILDREN
-  | GLUT_WINDOW_COLORMAP_SIZE
-  | GLUT_WINDOW_NUM_SAMPLES
-  | GLUT_WINDOW_STEREO
-  | GLUT_WINDOW_CURSOR
-  | GLUT_SCREEN_WIDTH
-  | GLUT_SCREEN_HEIGHT
-  | GLUT_SCREEN_WIDTH_MM
-  | GLUT_SCREEN_HEIGHT_MM
-  | GLUT_MENU_NUM_ITEMS
-  | GLUT_INIT_WINDOW_X
-  | GLUT_INIT_WINDOW_Y
-  | GLUT_INIT_WINDOW_WIDTH
-  | GLUT_INIT_WINDOW_HEIGHT
-  | GLUT_INIT_DISPLAY_MODE
-  | GLUT_ELAPSED_TIME
-  | GLUT_WINDOW_FORMAT_ID 
+  | WINDOW_X                    
+  | WINDOW_Y                    
+  | WINDOW_WIDTH                
+  | WINDOW_HEIGHT               
+  | WINDOW_BUFFER_SIZE          
+  | WINDOW_STENCIL_SIZE 
+  | WINDOW_DEPTH_SIZE           
+  | WINDOW_RED_SIZE             
+  | WINDOW_GREEN_SIZE           
+  | WINDOW_BLUE_SIZE            
+  | WINDOW_ALPHA_SIZE           
+  | WINDOW_ACCUM_RED_SIZE       
+  | WINDOW_ACCUM_GREEN_SIZE     
+  | WINDOW_ACCUM_BLUE_SIZE      
+  | WINDOW_ACCUM_ALPHA_SIZE     
+  | WINDOW_DOUBLEBUFFER 
+  | WINDOW_RGBA         
+  | WINDOW_PARENT               
+  | WINDOW_NUM_CHILDREN 
+  | WINDOW_COLORMAP_SIZE        
+  | WINDOW_NUM_SAMPLES          
+  | WINDOW_STEREO               
+  | WINDOW_CURSOR               
+  | SCREEN_WIDTH                
+  | SCREEN_HEIGHT               
+  | SCREEN_WIDTH_MM             
+  | SCREEN_HEIGHT_MM            
+  | MENU_NUM_ITEMS              
+      (* | DISPLAY_MODE_POSSIBLE : use getBool *)
+  | INIT_WINDOW_X               
+  | INIT_WINDOW_Y               
+  | INIT_WINDOW_WIDTH           
+  | INIT_WINDOW_HEIGHT          
+  | INIT_DISPLAY_MODE           
+  | ELAPSED_TIME                
+  | WINDOW_FORMAT_ID 
 
-type glut_get_bool_t =
-    GLUT_DISPLAY_MODE_POSSIBLE
+type glut_get_bool_t = 
+  | DISPLAY_MODE_POSSIBLE
 
 (* display mode bit masks *)
-val glut_rgb : int
-val glut_rgba : int
-val glut_index : int
-val glut_single : int
-val glut_double : int
-val glut_accum : int
-val glut_alpha : int
-val glut_depth : int
-val glut_stencil : int
-val glut_multisample : int
-val glut_stereo : int
-val glut_luminance : int
+val rgb:int
+val rgba:int
+val index:int
+val single:int
+val double:int
+val accum:int
+val alpha:int
+val depth:int
+val stencil:int
+val multisample:int
+val stereo:int
+val luminance:int
 
-type glut_device_get_t =
-    GLUT_HAS_KEYBOARD
-  | GLUT_HAS_MOUSE
-  | GLUT_HAS_SPACEBALL
-  | GLUT_HAS_DIAL_AND_BUTTON_BOX
-  | GLUT_HAS_TABLET
-  | GLUT_NUM_MOUSE_BUTTONS
-  | GLUT_NUM_SPACEBALL_BUTTONS
-  | GLUT_NUM_BUTTON_BOX_BUTTONS
-  | GLUT_NUM_DIALS
-  | GLUT_NUM_TABLET_BUTTONS
-  | GLUT_DEVICE_IGNORE_KEY_REPEAT
-  | GLUT_DEVICE_KEY_REPEAT
-  | GLUT_HAS_JOYSTICK
-  | GLUT_OWNS_JOYSTICK
-  | GLUT_JOYSTICK_BUTTONS
-  | GLUT_JOYSTICK_AXES
-  | GLUT_JOYSTICK_POLL_RATE          
+type device_get_t =
+  | HAS_KEYBOARD                
+  | HAS_MOUSE                   
+  | HAS_SPACEBALL               
+  | HAS_DIAL_AND_BUTTON_BOX     
+  | HAS_TABLET                  
+  | NUM_MOUSE_BUTTONS           
+  | NUM_SPACEBALL_BUTTONS       
+  | NUM_BUTTON_BOX_BUTTONS      
+  | NUM_DIALS                   
+  | NUM_TABLET_BUTTONS          
+  | DEVICE_IGNORE_KEY_REPEAT   
+  | DEVICE_KEY_REPEAT          
+  | HAS_JOYSTICK                
+  | OWNS_JOYSTICK               
+  | JOYSTICK_BUTTONS            
+  | JOYSTICK_AXES               
+  | JOYSTICK_POLL_RATE          
 
-type glut_layerget_t =
-    GLUT_OVERLAY_POSSIBLE
-  | GLUT_HAS_OVERLAY
-  | GLUT_NORMAL_DAMAGED
-  | GLUT_OVERLAY_DAMAGED             
+type layerget_t = 
+  | OVERLAY_POSSIBLE           
+      (* | LAYER_IN_USE : use layerGetInUse *)
+  | HAS_OVERLAY         
+      (* | TRANSPARENT_INDEX : use layerGetTransparentIndex *)
+  | NORMAL_DAMAGED              
+  | OVERLAY_DAMAGED             
 
-type glut_video_resize_t =
-    GLUT_VIDEO_RESIZE_POSSIBLE
-  | GLUT_VIDEO_RESIZE_IN_USE
-  | GLUT_VIDEO_RESIZE_X_DELTA
-  | GLUT_VIDEO_RESIZE_Y_DELTA
-  | GLUT_VIDEO_RESIZE_WIDTH_DELTA
-  | GLUT_VIDEO_RESIZE_HEIGHT_DELTA
-  | GLUT_VIDEO_RESIZE_X
-  | GLUT_VIDEO_RESIZE_Y
-  | GLUT_VIDEO_RESIZE_WIDTH
-  | GLUT_VIDEO_RESIZE_HEIGHT 
+type video_resize_t = 
+  | VIDEO_RESIZE_POSSIBLE       
+  | VIDEO_RESIZE_IN_USE 
+  | VIDEO_RESIZE_X_DELTA        
+  | VIDEO_RESIZE_Y_DELTA        
+  | VIDEO_RESIZE_WIDTH_DELTA    
+  | VIDEO_RESIZE_HEIGHT_DELTA   
+  | VIDEO_RESIZE_X              
+  | VIDEO_RESIZE_Y              
+  | VIDEO_RESIZE_WIDTH          
+  | VIDEO_RESIZE_HEIGHT 
 
 (* key modifier bit masks *)
-val glut_active_shift : int
-val glut_active_ctrl : int
-val glut_active_alt : int
+val active_shift:int
+val active_ctrl:int
+val active_alt:int
 
-type glut_cursor_t =
-    GLUT_CURSOR_RIGHT_ARROW
-  | GLUT_CURSOR_LEFT_ARROW
-  | GLUT_CURSOR_INFO
-  | GLUT_CURSOR_DESTROY
-  | GLUT_CURSOR_HELP
-  | GLUT_CURSOR_CYCLE
-  | GLUT_CURSOR_SPRAY
-  | GLUT_CURSOR_WAIT
-  | GLUT_CURSOR_TEXT
-  | GLUT_CURSOR_CROSSHAIR
-  | GLUT_CURSOR_UP_DOWN
-  | GLUT_CURSOR_LEFT_RIGHT
-  | GLUT_CURSOR_TOP_SIDE
-  | GLUT_CURSOR_BOTTOM_SIDE
-  | GLUT_CURSOR_LEFT_SIDE
-  | GLUT_CURSOR_RIGHT_SIDE
-  | GLUT_CURSOR_TOP_LEFT_CORNER
-  | GLUT_CURSOR_TOP_RIGHT_CORNER
-  | GLUT_CURSOR_BOTTOM_RIGHT_CORNER
-  | GLUT_CURSOR_BOTTOM_LEFT_CORNER
-  | GLUT_CURSOR_INHERIT
-  | GLUT_CURSOR_NONE
-  | GLUT_CURSOR_FULL_CROSSHAIR(* full-screen crosshair (if available) *)
+type cursor_t = 
+    (* Basic arrows. *)
+  | CURSOR_RIGHT_ARROW          
+  | CURSOR_LEFT_ARROW           
+      (* Symbolic cursor shapes. *)
+  | CURSOR_INFO         
+  | CURSOR_DESTROY              
+  | CURSOR_HELP         
+  | CURSOR_CYCLE                
+  | CURSOR_SPRAY                
+  | CURSOR_WAIT         
+  | CURSOR_TEXT         
+  | CURSOR_CROSSHAIR            
+      (* Directional cursors. *)
+  | CURSOR_UP_DOWN              
+  | CURSOR_LEFT_RIGHT           
+      (* Sizing cursors. *)
+  | CURSOR_TOP_SIDE             
+  | CURSOR_BOTTOM_SIDE          
+  | CURSOR_LEFT_SIDE            
+  | CURSOR_RIGHT_SIDE           
+  | CURSOR_TOP_LEFT_CORNER      
+  | CURSOR_TOP_RIGHT_CORNER     
+  | CURSOR_BOTTOM_RIGHT_CORNER  
+  | CURSOR_BOTTOM_LEFT_CORNER   
+  | CURSOR_INHERIT                (* inherit cursor from parent window *)
+  | CURSOR_NONE               (* blank cursor *)
+  | CURSOR_FULL_CROSSHAIR   (* full-screen crosshair (if available) *)
 
-type glut_game_mode_t =
-    GLUT_GAME_MODE_ACTIVE
-  | GLUT_GAME_MODE_POSSIBLE
-  | GLUT_GAME_MODE_WIDTH
-  | GLUT_GAME_MODE_HEIGHT
-  | GLUT_GAME_MODE_PIXEL_DEPTH
-  | GLUT_GAME_MODE_REFRESH_RATE
-  | GLUT_GAME_MODE_DISPLAY_CHANGED
+type game_mode_t = 
+  | GAME_MODE_ACTIVE
+  | GAME_MODE_POSSIBLE
+  | GAME_MODE_WIDTH
+  | GAME_MODE_HEIGHT
+  | GAME_MODE_PIXEL_DEPTH
+  | GAME_MODE_REFRESH_RATE
+  | GAME_MODE_DISPLAY_CHANGED
 
-type glut_key_repeat_t =
-    GLUT_KEY_REPEAT_OFF
-  | GLUT_KEY_REPEAT_ON
-  | GLUT_KEY_REPEAT_DEFAULT
+type key_repeat_t = 
+  | KEY_REPEAT_OFF
+  | KEY_REPEAT_ON
+  | KEY_REPEAT_DEFAULT
 
 exception BadEnum of string
 exception InvalidState of string 
 
-(* GLUT initialization sub-API. *)
-val glutInit : argv:string array -> string array(* returns new argv *)
-val glutInit2 : unit -> unit (* simpler version that sends off Sys.argv *)
-val glutInitDisplayMode :
-  ?double_buffer: bool -> ?index: bool -> ?accum: bool -> ?alpha: bool ->
-    ?depth: bool -> ?stencil: bool -> ?multisample: bool -> ?stereo: bool ->
-    ?luminance: bool -> unit -> unit
-val glutInitDisplayMode2 : int -> unit (* alternative: display mode bitmasks *)
-val glutInitWindowPosition : x:int -> y:int -> unit
-val glutInitWindowSize : w:int -> h:int -> unit
-val glutMainLoop : unit -> unit
+    (* GLUT initialization sub-API. *)
+val init: argv:(string array)->string array (* returns new argv *)
+val initDisplayMode: (* The last argument must be () *)
+    ?double_buffer:bool->
+    ?index:bool->
+    ?accum:bool->
+    ?alpha:bool->
+    ?depth:bool->
+    ?stencil:bool->
+    ?multisample:bool->
+    ?stereo:bool->
+    ?luminance:bool->
+    unit->
+    unit
+val initWindowPosition: x:int->y:int->unit
+val initWindowSize: w:int->h:int->unit
+val mainLoop: unit->unit
 
-(* GLUT window sub-API. *)
-val glutCreateWindow : title:string -> int(* returns window id *)
-val glutCreateWindow2 : title:string -> unit 
-val glutPostRedisplay : unit -> unit
-val glutSwapBuffers : unit -> unit
-val glutCreateSubWindow : win:int -> x:int -> y:int -> w:int -> h:int -> int
-val glutDestroyWindow : win:int -> unit
-val glutGetWindow : unit -> int
-val glutSetWindow : win:int -> unit  
-val glutSetWindowTitle : title:string -> unit
-val glutSetIconTitle : title:string -> unit
-val glutPositionWindow : x:int -> y:int -> unit
-val glutReshapeWindow : w:int -> h:int -> unit
-val glutPopWindow : unit -> unit
-val glutPushWindow : unit -> unit
-val glutIconifyWindow : unit -> unit
-val glutShowWindow : unit -> unit
-val glutHideWindow : unit -> unit
-val glutFullScreen : unit -> unit
-val glutSetCursor : glut_cursor_t -> unit
+    (* GLUT window sub-API. *)
+val createWindow: title:string->int (* returns window id *)
+val postRedisplay: unit->unit
+val swapBuffers: unit->unit
+val createSubWindow: win:int->x:int->y:int->w:int->h:int->int
+val destroyWindow: win:int->unit
+val getWindow: unit->int
+val setWindow: win:int->unit  
+val setWindowTitle: title:string->unit
+val setIconTitle: title:string->unit
+val positionWindow: x:int->y:int->unit
+val reshapeWindow: w:int->h:int->unit
+val popWindow: unit->unit
+val pushWindow: unit->unit
+val iconifyWindow: unit->unit
+val showWindow: unit->unit
+val hideWindow: unit->unit
+val fullScreen: unit->unit
+val setCursor: cursor_t->unit
 
-(* GLUT overlay sub-API. *)
-val glutEstablishOverlay : unit -> unit
-val glutRemoveOverlay : unit -> unit
-val glutUseLayer : glut_layer_t -> unit
-val glutPostOverlayRedisplay : unit -> unit
-val glutShowOverlay : unit -> unit
-val glutHideOverlay : unit -> unit
+    (* GLUT overlay sub-API. *)
+val establishOverlay: unit->unit
+val removeOverlay: unit->unit
+val useLayer: layer_t->unit
+val postOverlayRedisplay: unit->unit
+val showOverlay: unit->unit
+val hideOverlay: unit->unit
 
-(* GLUT menu sub-API. *)
-val glutCreateMenu : cb:(int -> unit) -> int
-val glutDestroyMenu : menu:int -> unit
-val glutGetMenu : unit -> int
-val glutSetMenu : menu:int -> unit
-val glutAddMenuEntry : label:string -> value:int -> unit
-val glutAddSubMenu : label:string -> submenu:int -> unit
-val glutChangeToMenuEntry : item:int -> label:string -> value:int -> unit
-val glutChangeToSubMenu : item:int -> label:string -> submenu:int -> unit
-val glutRemoveMenuItem : item:int -> unit
-val glutAttachMenu : button:glut_button_t -> unit
-val glutDetachMenu : button:glut_button_t -> unit
+    (* GLUT menu sub-API. *)
+val createMenu: cb:(value:int->unit)->int
+val destroyMenu: menu:int->unit
+val getMenu: unit->int
+val setMenu: menu:int->unit
+val addMenuEntry: label:string->value:int->unit
+val addSubMenu: label:string->submenu:int->unit
+val changeToMenuEntry: item:int->label:string->value:int->unit
+val changeToSubMenu: item:int->label:string->submenu:int->unit
+val removeMenuItem: item:int->unit
+val attachMenu: button:button_t->unit
+val detachMenu: button:button_t->unit
 
-(* GLUT window callback sub-API. *)
-val glutDisplayFunc : cb:(unit -> unit) -> unit
-val glutReshapeFunc : cb:(int -> int -> unit) -> unit
-val glutKeyboardFunc : cb:(int -> int -> int -> unit) -> unit
-val glutMouseFunc :
-  cb:(glut_button_t -> glut_mouse_button_state_t -> int -> int -> unit) -> unit
-val glutMotionFunc : cb:(int -> int -> unit) -> unit 
-val glutPassiveMotionFunc : cb:(int -> int -> unit) -> unit 
-val glutEntryFunc : cb:(glut_entry_exit_state_t -> unit) -> unit 
-val glutVisibilityFunc : cb:(glut_visibility_state_t -> unit) -> unit
-val glutIdleFunc : cb:(unit -> unit) option -> unit
-val glutTimerFunc : ms:int -> cb:(int -> unit) -> value:int -> unit
-val glutMenuStateFunc : cb:(glut_menu_state_t -> unit) -> unit
-val glutSpecialFunc : cb:(glut_special_key_t -> int -> int -> unit) -> unit
-val glutSpaceballMotionFunc : cb:(int -> int -> int -> unit) -> unit
-val glutSpaceballRotateFunc : cb:(int -> int -> int -> unit) -> unit
-val glutSpaceballButtonFunc : cb:(int -> int -> unit) -> unit
-val glutButtonBoxFunc : cb:(int -> int -> unit) -> unit
-val glutDialsFunc : cb:(int -> int -> unit) -> unit
-val glutTabletMotionFunc : cb:(int -> int -> unit) -> unit
-val glutTabletButtonFunc : cb:(int -> int -> int -> int -> unit) -> unit
-val glutMenuStatusFunc : cb:(glut_menu_state_t -> int -> int -> unit) -> unit
-val glutOverlayDisplayFunc : cb:(unit -> unit) -> unit
+    (* GLUT window callback sub-API. *)
+val displayFunc: cb:(unit->unit)->unit
+val reshapeFunc: cb:(w:int->h:int->unit)->unit
+val keyboardFunc: cb:(key:int->x:int->y:int->unit)->unit
+val mouseFunc: cb:(button:button_t->state:mouse_button_state_t->
+  x:int->y:int->unit)->unit
+val motionFunc: cb:(x:int->y:int->unit)->unit 
+val passiveMotionFunc: cb:(x:int->y:int->unit)->unit 
+val entryFunc: cb:(state:entry_exit_state_t->unit)->unit 
+val visibilityFunc: cb:(state:visibility_state_t->unit)->unit
+val idleFunc: cb:((unit->unit) option)->unit
+val timerFunc: ms:int->cb:(value:int->unit)->value:int->unit
+val menuStateFunc: cb:(status:menu_state_t->unit)->unit
+val specialFunc: cb:(key:special_key_t->x:int->y:int->unit)->unit
+val spaceballMotionFunc: cb:(x:int->y:int->z:int->unit)->unit
+val spaceballRotateFunc: cb:(x:int->y:int->z:int->unit)->unit
+val spaceballButtonFunc: cb:(button:int->state:int->unit)->unit
+val buttonBoxFunc: cb:(button:int->state:int->unit)->unit
+val dialsFunc: cb:(dial:int->value:int->unit)->unit
+val tabletMotionFunc: cb:(x:int->y:int->unit)->unit
+val tabletButtonFunc: cb:(button:int->state:int->x:int->y:int->unit)->unit
+val menuStatusFunc: cb:(status:menu_state_t->x:int->y:int->unit)->unit
+val overlayDisplayFunc: cb:(unit->unit)->unit
 
-(* GLUT color index sub-API. *)
-val glutSetColor : cell:int -> red:float -> green:float -> blue:float -> unit
-val glutGetColor : index:int -> component:int -> float
-val glutCopyColormap : win:int -> unit
+    (* GLUT color index sub-API. *)
+val setColor: cell:int->red:float->green:float->blue:float->unit
+val getColor: index:int->component:int->float
+val copyColormap: win:int->unit
 
-(* GLUT state retrieval sub-API. *)
-val glutGet : gtype:glut_get_t -> int
-val glutGetBool : gtype:glut_get_bool_t -> bool 
-val glutDeviceGet : dgtype:glut_device_get_t -> int
+    (* GLUT state retrieval sub-API. *)
+val get: gtype:glut_get_t->int
+val getBool: gtype:glut_get_bool_t->bool 
+val deviceGet: dgtype:device_get_t->int
 
-(* GLUT extension support sub-API *)
-val glutExtensionSupported : name:string -> bool
-val glutGetModifiers : unit -> int 
-val glutLayerGetTransparentIndex : unit -> int 
-val glutLayerGetInUse : unit -> glut_layer_t
-val glutLayerGet : lgtype:glut_layerget_t -> bool 
+    (* GLUT extension support sub-API *)
+val extensionSupported: name:string->bool
+val getModifiers: unit->int 
+val layerGetTransparentIndex: unit->int 
+val layerGetInUse: unit->layer_t
+val layerGet: lgtype:layerget_t->bool 
 
-(* GLUT font sub-API *)
-val glutBitmapCharacter : font:glut_font_t -> c:int -> unit
-val glutBitmapWidth : font:glut_font_t -> c:int -> int
-val glutStrokeCharacter : font:glut_font_t -> c:int -> unit
-val glutStrokeWidth : font:glut_font_t -> c:int -> int
+    (* GLUT font sub-API *)
+val bitmapCharacter: font:font_t->c:int->unit
+val bitmapWidth: font:font_t->c:int->int
+val strokeCharacter: font:font_t->c:int->unit
+val strokeWidth: font:font_t->c:int->int
 
-(* GLUT pre-built models sub-API *)
-val glutWireSphere : radius:float -> slices:int -> stacks:int -> unit
-val glutSolidSphere : radius:float -> slices:int -> stacks:int -> unit
-val glutWireCone :
-  base:float -> height:float -> slices:int -> stacks:int -> unit
-val glutSolidCone :
-  base:float -> height:float -> slices:int -> stacks:int -> unit
-val glutWireCube : size:float -> unit
-val glutSolidCube : size:float -> unit
-val glutWireTorus :
-  innerRadius:float -> outerRadius:float -> sides:int -> rings:int -> unit
-val glutSolidTorus :
-  innerRadius:float -> outerRadius:float -> sides:int -> rings:int -> unit
-val glutWireDodecahedron : unit -> unit
-val glutSolidDodecahedron : unit -> unit
-val glutWireTeapot : size:float -> unit
-val glutSolidTeapot : size:float -> unit
-val glutWireOctahedron : unit -> unit
-val glutSolidOctahedron : unit -> unit
-val glutWireTetrahedron : unit -> unit
-val glutSolidTetrahedron : unit -> unit
-val glutWireIcosahedron : unit -> unit
-val glutSolidIcosahedron : unit -> unit
+    (* GLUT pre-built models sub-API *)
+val wireSphere: radius:float->slices:int->stacks:int->unit
+val solidSphere: radius:float->slices:int->stacks:int->unit
+val wireCone: base:float->height:float->slices:int->stacks:int->unit
+val solidCone: base:float->height:float->slices:int->stacks:int->unit
+val wireCube: size:float->unit
+val solidCube: size:float->unit
+val wireTorus: innerRadius:float->outerRadius:float->sides:int->rings:int->unit
+val solidTorus: innerRadius:float->outerRadius:float->sides:int->rings:int->unit
+val wireDodecahedron: unit->unit
+val solidDodecahedron: unit->unit
+val wireTeapot: size:float->unit
+val solidTeapot: size:float->unit
+val wireOctahedron: unit->unit
+val solidOctahedron: unit->unit
+val wireTetrahedron: unit->unit
+val solidTetrahedron: unit->unit
+val wireIcosahedron: unit->unit
+val solidIcosahedron: unit->unit
 
-(* GLUT game mode sub-API *)
-val glutGameModeString : str:string -> unit
-val glutEnterGameMode : unit -> unit
-val glutLeaveGameMode : unit -> unit
-val glutGameModeGet : mode:glut_game_mode_t -> int
+    (* GLUT game mode sub-API *)
+val gameModeString: str:string->unit
+val enterGameMode: unit->unit
+val leaveGameMode: unit->unit
+val gameModeGet: mode:game_mode_t->int
 
-(* GLUT version 4 functions included in the GLUT 3.7 distribution *)
-val glutInitDisplayString : str:string -> unit
-val glutWarpPointer : x:int -> y:int -> unit
-val glutBitmapLength : font:glut_font_t -> str:string -> int
-val glutStrokeLength : font:glut_font_t -> str:string -> int
-val glutWindowStatusFunc : cb:(glut_window_status_t -> unit) -> unit
-val glutPostWindowRedisplay : win:int -> unit
-val glutPostWindowOverlayRedisplay : win:int -> unit 
-val glutKeyboardUpFunc : cb:(int -> int -> int -> unit) -> unit
-val glutSpecialUpFunc : cb:(glut_special_key_t -> int -> int -> unit) -> unit
-val glutIgnoreKeyRepeat : ignore:bool -> unit
-val glutSetKeyRepeat : mode:glut_key_repeat_t -> unit
-val glutJoystickFunc :
-  cb:(int -> int -> int -> int -> unit) -> pollInterval:int -> unit
-val glutForceJoystickFunc : unit -> unit
+    (* GLUT version 4 functions included in the GLUT 3.7 distribution *)
+val initDisplayString: str:string->unit
+val warpPointer: x:int->y:int->unit
+val bitmapLength: font:font_t->str:string->int
+val strokeLength: font:font_t->str:string->int
+val windowStatusFunc: cb:(state:window_status_t->unit)->unit
+val postWindowRedisplay: win:int->unit
+val postWindowOverlayRedisplay: win:int->unit 
+val keyboardUpFunc: cb:(key:int->x:int->y:int->unit)->unit
+val specialUpFunc: cb:(key:special_key_t->x:int->y:int->unit)->unit
+val ignoreKeyRepeat: ignore:bool->unit
+val setKeyRepeat: mode:key_repeat_t->unit
+val joystickFunc: cb:(buttonMask:int->x:int->y:int->z:int->unit)->
+  pollInterval:int->unit
+val forceJoystickFunc: unit->unit
 
-(* GLUT video resize sub-API. *)
-val glutVideoResizeGet : glut_video_resize_t -> int
-val glutSetupVideoResizing : unit -> unit
-val glutStopVideoResizing : unit -> unit
-val glutVideoResize : x:int -> y:int -> width:int -> height:int -> unit
-val glutVideoPan : x:int -> y:int -> width:int -> height:int -> unit
+  (* GLUT video resize sub-API. *)
+val videoResizeGet: video_resize_t->int
+val setupVideoResizing: unit->unit
+val stopVideoResizing: unit->unit
+val videoResize: x:int->y:int->width:int->height:int->unit
+val videoPan: x:int->y:int->width:int->height:int->unit
 
-(* GLUT debugging sub-API. *)
-val glutReportErrors : unit -> unit
+  (* GLUT debugging sub-API. *)
+val reportErrors: unit->unit
 
-(* ocaml-specific *)
-val glut_string_of_button : glut_button_t -> string
-val glut_string_of_button_state : glut_mouse_button_state_t -> string
-val glut_string_of_special : glut_special_key_t -> string
-val glut_string_of_window_status : glut_window_status_t -> string
-val glut_string_of_vis_state : glut_visibility_state_t -> string
-val glut_string_of_cursor : glut_cursor_t -> string
-val glut_int_of_cursor : glut_cursor_t -> int
+  (* ocaml-specific *)
+val string_of_button: button_t->string
+val string_of_button_state: mouse_button_state_t->string
+val string_of_special: special_key_t->string
+val string_of_window_status: window_status_t->string
+val string_of_vis_state: visibility_state_t->string
+val string_of_cursor: cursor_t->string
+val int_of_cursor: cursor_t->int
 
