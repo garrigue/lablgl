@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.18 1998-01-21 23:25:17 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.19 1998-01-23 13:30:17 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -19,6 +19,26 @@ type clampf = float
 type glist = int
 
 type gltype = [bitmap byte ubyte short ushort int uint float]
+type pixels_format =
+    [ color_index stencil_index depth_component rgba
+      red green blue alpha rgb luminance luminance_alpha ]
+type ('a,'b) image = { format: 'a ; width: int ; height:int ; raw: 'b Raw.t }
+let format_size (format : #pixels_format) =
+  match format with
+    `rgba -> 4
+  | `rgb -> 3
+  | `luminance_alpha -> 2
+  | _ -> 1
+
+type curve_type =
+    [vertex_3 vertex_4 index color_4 normal texture_coord_1 texture_coord_2
+     texture_coord_3 texture_coord_4 trim_2 trim_3]
+let target_size (target : #curve_type) =
+    match target with
+      `index|`normal|`texture_coord_1 -> 1
+    | `texture_coord_2|`trim_2 -> 2
+    | `vertex_3|`texture_coord_3|`trim_3 -> 3
+    | `vertex_4|`color_4|`texture_coord_4 -> 4
 
 type cmp_func = [ never less equal lequal greater notequal gequal always ]
 type face = [front back both]
@@ -98,6 +118,10 @@ external bitmap :
     width:int -> height:int -> orig:point2 -> move:point2 ->
     [bitmap] Raw.t -> unit
     = "ml_glBitmap"
+type bitmap = ([color_index],[bitmap]) image
+let bitmap (img : bitmap) =
+  bitmap width:img.width height:img.height img.raw
+
 type sfactor = [
       zero
       one
@@ -180,12 +204,11 @@ type draw_buffer_mode =
     [ none front_left front_right back_left back_right
       front back left right front_and_back aux(int) ] 
 external draw_buffer : draw_buffer_mode -> unit = "ml_glDrawBuffer"
-type pixels_format =
-    [ color_index stencil_index depth_component rgba
-      red green blue alpha rgb luminance luminance_alpha ]
 external draw_pixels :
-    width:int -> height:int -> format:pixels_format -> #gltype Raw.t -> unit
+    width:int -> height:int -> format:#pixels_format -> #gltype Raw.t -> unit
     = "ml_glDrawPixels"
+let draw_pixels img =
+  draw_pixels img.raw width:img.width height:img.height format:img.format
 
 external edge_flag : bool -> unit = "ml_glEdgeFlag"
 external enable : cap -> unit = "ml_glEnable"
@@ -250,13 +273,9 @@ external line_width : float -> unit = "ml_glLineWidth"
 external line_stipple : factor:int -> pattern:int -> unit = "ml_glLineStipple"
 external load_name : int -> unit = "ml_glLoadName"
 external load_identity : unit -> unit = "ml_glLoadIdentity"
-external load_matrix : float array array -> unit = "ml_glLoadMatrix"
+external load_matrix : [double] Raw.t -> unit = "ml_glLoadMatrixd"
 let load_matrix m =
-  if Array.length m <> 4 then invalid_arg "Gl.load_matrix";
-  Array.iter m fun:
-    begin fun v ->
-      if Array.length v <> 4 then invalid_arg "Gl.load_matrix"
-    end;
+  if Raw.length m <> 16 then invalid_arg "Gl.load_matrix";
   load_matrix m
 type logic_op =
     [ clear set copy copy_inverted noop invert And nand Or nor
@@ -267,12 +286,12 @@ type map_target =
     [ vertex_3 vertex_4 index color_4 normal texture_coord_1 texture_coord_2
       texture_coord_3 texture_coord_4 ]
 external map1 :
-    target:map_target -> (float*float) -> float array -> unit
+    target:map_target -> (float*float) -> order:int -> [double] Raw.t -> unit
     = "ml_glMap1d"
 external map2 :
-    target:map_target ->
-    (float*float) -> (float*float) -> float array array -> unit
-    = "ml_glMap2d"
+    target:map_target -> (float*float) -> order:int ->
+    (float*float) -> order:int -> [double] Raw.t -> unit
+    = "ml_glMap2d_bc" "ml_glMap2d"
 external map_grid1 : n:int -> range:(float * float) -> unit
     = "ml_glMapGrid1d"
 external map_grid2 :
@@ -291,13 +310,9 @@ external material : face:face -> material_param -> unit
     = "ml_glMaterial"
 external matrix_mode : [modelview projection texture] -> unit
     = "ml_glMatrixMode"
-external mult_matrix : float array array -> unit = "ml_glMultMatrix"
+external mult_matrix : [double] Raw.t -> unit = "ml_glMultMatrixd"
 let mult_matrix m =
-  if Array.length m <> 4 then invalid_arg "Gl.mult_matrix";
-  Array.iter m fun:
-    begin fun v ->
-      if Array.length v <> 4 then invalid_arg "Gl.mult_matrix"
-    end;
+  if Raw.length m <> 16 then invalid_arg "Gl.mult_matrix";
   mult_matrix m
 
 external normal : x:float -> y:float -> z:float -> unit
@@ -330,7 +345,7 @@ type pixel_store = [
       unpack_skip_rows (int)
       unpack_alignment (int)
   ]
-external pixel_store : pixel_store -> unit = "ml_glPixelStore"
+external pixel_store : pixel_store -> unit = "ml_glPixelStorei"
 
 type pixel_transfer = [
       map_color (bool)
@@ -374,9 +389,13 @@ type read_buffer =
 external read_buffer : read_buffer -> unit = "ml_glReadBuffer"
 external read_pixels :
     x:int -> y:int -> width:int -> height:int ->
-    format:pixels_format -> type:(#gltype as 'a) -> 'a Raw.t
+    format:#pixels_format -> #gltype Raw.t -> unit
     = "ml_glReadPixels_bc" "ml_glReadPixels"
-external rect : point2 -> point2 -> unit = "ml_glRect"
+let read_pixels :x :y :width :height :format type:t =
+  let raw = Raw.create t len:(width * height * format_size format) in
+  read_pixels :x :y :width :height :format raw;
+  { raw = raw; width = width; height = height; format = format }
+external rect : point2 -> point2 -> unit = "ml_glRectd"
 external render_mode : [render select feedback] -> int = "ml_glRenderMode"
 external rotate : angle:float -> x:float -> y:float -> z:float -> unit
     = "ml_glRotated"
@@ -428,19 +447,24 @@ type tex_format =
     [ color_index red green blue alpha rgb rgba luminance luminance_alpha ]
 external tex_image1d :
     proxy:bool -> level:int -> internal:int ->
-    width:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
+    width:int -> border:bool -> format:#tex_format -> #gltype Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
-let tex_image1d :proxy :level :internal :width :border :format data =
-  if width mod 2 <> 0 then raise (GLerror "Gl.tex_image1d : bad width");
-  tex_image1d :proxy :level :internal :width :border :format data
+let tex_image1d img ?:proxy [< false >] ?:level [< 0 >]
+    ?:internal [< format_size img.format >] ?:border [< false >] =
+  if img.width mod 2 <> 0 then raise (GLerror "Gl.tex_image1d : bad width");
+  if img.height < 1 then raise (GLerror "Gl.tex_image1d : bad height");
+  tex_image1d :proxy :level :internal width:img.width :border
+    format:img.format img.raw
 external tex_image2d :
     proxy:bool -> level:int -> internal:int -> width:int ->
-    height:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
+    height:int -> border:bool -> format:#tex_format -> #gltype Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
-let tex_image2d :proxy :level :internal :width :height :border :format data =
-  if width mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad width");
-  if height mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad height");
-  tex_image2d :proxy :level :internal :width :height :border :format data
+let tex_image2d img ?:proxy [< false >] ?:level [< 0 >]
+    ?:internal [< format_size img.format >] ?:border [< false >] =
+  if img.width mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad width");
+  if img.height mod 2 <> 0 then raise (GLerror "Gl.tex_image2d : bad height");
+  tex_image2d :proxy :level :internal :border
+    width:img.width height:img.height format:img.format img.raw
 type tex_filter =
     [ nearest linear nearest_mipmap_nearest linear_mipmap_nearest
       nearest_mipmap_linear linear_mipmap_linear ]

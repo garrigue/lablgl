@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.3 1998-01-21 23:25:20 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.4 1998-01-23 13:30:22 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -271,7 +271,7 @@ value ml_raw_write_float (value raw, value pos, value data)  /* ML */
     if (Kind_raw(raw) == MLTAG_float)
 	for (i = 0; i < l; i++)
 	    Float_raw(raw)[s+i] = (float) Double_val(Field(data,i));
-    else
+    else 
 	for (i = 0; i < l; i++)
 	    Double_raw(raw)[s+i] = Double_val(Field(data,i));
     return Val_unit;
@@ -375,11 +375,11 @@ value ml_raw_alloc (value kind, value len)  /* ML */
 
     Begin_roots2 (raw,data);
     data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
-    raw = alloc_tuple (4);
-    Kind_raw(raw) = kind;
-    Size_raw(raw) = Val_int(size);
-    Addr_raw(raw) = data;
-    Static_raw(raw) = Val_false;
+    raw = alloc_shr (4,0);
+    initialize(&Kind_raw(raw),kind);
+    initialize(&Size_raw(raw),Val_int(size));
+    initialize(&Addr_raw(raw),data);
+    initialize(&Static_raw(raw),Val_false);
     End_roots ();
     return raw;
 }

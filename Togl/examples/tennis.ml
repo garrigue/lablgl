@@ -1,4 +1,4 @@
-(* $Id: tennis.ml,v 1.3 1998-01-21 09:12:38 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.4 1998-01-23 13:30:24 garrigue Exp $ *)
 
 let ft x = x *. 0.03
 
@@ -121,7 +121,7 @@ let setup3d () =
   Gl.clear [`color;`depth];
   Gl.matrix_mode `projection;
   Gl.load_identity ();
-  Glu.perspective fovy:40.0 aspect:1.0 znear:0.1 zfar:20.0;
+  Glu.perspective fovy:40.0 aspect:1.0 z:(0.1,20.0);
   Gl.matrix_mode `modelview;
   Gl.load_identity ();
   Glu.look_at eye:(-1.0, 0.0, 0.2) center:(0.0, 0.0, 0.09) up:(1.0, 0.0, 0.0)
@@ -129,7 +129,7 @@ let setup3d () =
 let setup2d () =
   Gl.matrix_mode `projection;
   Gl.load_identity ();
-  Glu.perspective fovy:45.0 aspect:1.0 znear:0.1 zfar:20.0;
+  Glu.perspective fovy:45.0 aspect:1.0 z:(0.1,20.0);
   Gl.matrix_mode `modelview;
   Gl.load_identity ();
   Glu.look_at eye:(0.0, 0.0, 3.0) center:(0.0, 0.0, 0.0) up:(1.0, 0.0, 0.0)

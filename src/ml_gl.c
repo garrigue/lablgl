@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.17 1998-01-23 03:23:17 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.18 1998-01-23 13:30:20 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -32,43 +32,15 @@ GLenum GLenum_val(value tag)
 
 extern mlsize_t string_length (value);
 
-/* return the size in BITS of the described type */
-int glSizeof (GLenum type)
-{
-    switch (type) {
-    default:
-	ml_raise_gl ("Unknown datatype");
-    case GL_BITMAP: return 1;
-    case GL_BYTE:
-    case GL_UNSIGNED_BYTE: return sizeof(GLbyte) << 3;
-    case GL_SHORT:
-    case GL_UNSIGNED_SHORT: return sizeof(GLshort) << 3;
-    case GL_INT:
-    case GL_UNSIGNED_INT: return sizeof(GLint) << 3;
-    case GL_FLOAT: return sizeof(GLfloat) << 3;
-    case GL_DOUBLE: return sizeof(GLdouble) << 3;
-    }
-}
+ML_2 (glAccum, GLenum_val, Float_val)
+ML_2 (glAlphaFunc, GLenum_val, Float_val)
 
-ML_GLenum_float_ (glAccum)
-ML_GLenum_float_ (glAlphaFunc)
+ML_1 (glBegin, GLenum_val)
 
-ML_GLenum (glBegin)
+ML_5 (glBitmap, Int_val, Int_val, Pair(arg3,Float_val,Float_val),
+      Pair(arg4,Float_val,Float_val), Void_raw)
 
-value ml_glBitmap (value width, value height, value orig, value move,
-		   value data)  /* ML */
-{
-    if (Int_val(width) * Int_val(height) >
-	Int_val(Size_raw(data)) * 8 * sizeof(value))
-	ml_raise_gl ("GL.bitmap : unsufficient data");
-    glBitmap (Int_val(width), Int_val(height),
-	      Float_val(Field(orig,0)), Float_val(Field(orig,1)),
-	      Float_val(Field(move,0)), Float_val(Field(move,1)),
-	      Void_raw(data));
-    return Val_unit;
-}
-
-ML_GLenum2(glBlendFunc)
+ML_2 (glBlendFunc, GLenum_val, GLenum_val)
 
 value ml_glClipPlane(value plane, value equation)  /* ML */
 {
@@ -101,47 +73,33 @@ value ml_glClear(value bit_list)  /* ML */
     glClear (accu);
     return Val_unit;
 }
-ML_float4 (glClearAccum)
-ML_double4 (glClearColor)
-ML_double (glClearDepth)
-ML_float (glClearIndex)
-ML_int (glClearStencil)
-ML_double4 (glColor4d)
-ML_int4 (glColorMask)
-ML_GLenum2 (glColorMaterial)
+ML_4 (glClearAccum, Float_val, Float_val, Float_val, Float_val)
+ML_4 (glClearColor, Double_val, Double_val, Double_val, Double_val)
+ML_1 (glClearDepth, Double_val)
+ML_1 (glClearIndex, Float_val)
+ML_1 (glClearStencil, Int_val)
+ML_4 (glColor4d, Double_val, Double_val, Double_val, Double_val)
+ML_4 (glColorMask, Int_val, Int_val, Int_val, Int_val)
+ML_2 (glColorMaterial, GLenum_val, GLenum_val)
+ML_5 (glCopyPixels, Int_val, Int_val, Int_val, Int_val, GLenum_val)
+ML_1 (glCullFace, GLenum_val)
 
-value ml_glCopyPixels (value x, value y, value width, value height,
-		       value type)
-{
-    glCopyPixels (Int_val(x), Int_val(y), Int_val(width), Int_val(height),
-		  GLenum_val(type));
-    return Val_unit;
-}
+ML_1 (glDisable, GLenum_val)
+ML_1 (glDepthFunc, GLenum_val)
+ML_1 (glDepthMask, Int_val)
+ML_2 (glDepthRange, Double_val, Double_val)
+ML_1 (glDrawBuffer, GLenum_val)
+ML_4 (glDrawPixels, Int_val, Int_val, GLenum_val, Type_void_raw)
 
-ML_GLenum(glCullFace)
-
-ML_GLenum (glDisable)
-ML_GLenum (glDepthFunc)
-ML_int (glDepthMask)
-ML_double2 (glDepthRange)
-ML_GLenum (glDrawBuffer)
-
-value ml_glDrawPixels (value width, value height, value format, value data)
-{
-    glDrawPixels (Int_val(width), Int_val(height), GLenum_val(format),
-		  Type_raw(data), Void_raw(data));
-    return Val_unit;
-}
-
-ML_int(glEdgeFlag)
-ML_GLenum (glEnable)
-ML_void (glEnd)
-ML_double (glEvalCoord1d)
-ML_double2 (glEvalCoord2d)
-ML_GLenum_int2_ (glEvalMesh1)
-ML_GLenum_int4_ (glEvalMesh2)
-ML_int (glEvalPoint1)
-ML_int2 (glEvalPoint2)
+ML_1 (glEdgeFlag, Int_val)
+ML_1 (glEnable, GLenum_val)
+ML_0 (glEnd)
+ML_1 (glEvalCoord1d, Double_val)
+ML_2 (glEvalCoord2d, Double_val, Double_val)
+ML_3 (glEvalMesh1, GLenum_val, Int_val, Int_val)
+ML_5 (glEvalMesh2, GLenum_val, Int_val, Int_val, Int_val, Int_val)
+ML_1 (glEvalPoint1, Int_val)
+ML_2 (glEvalPoint2, Int_val, Int_val)
 
 value ml_glFog (value param) /* ML */
 {
@@ -173,12 +131,13 @@ value ml_glFog (value param) /* ML */
     return Val_unit;
 }
 
-ML_void (glFlush)
-ML_void (glFinish)
-ML_GLenum (glFrontFace)
-ML_double3x2 (glFrustum)
+ML_0 (glFlush)
+ML_0 (glFinish)
+ML_1 (glFrontFace, GLenum_val)
+ML_3 (glFrustum, Pair(arg1,Double_val,Double_val),
+      Pair(arg2,Double_val,Double_val), Pair(arg3,Double_val,Double_val))
 
-ML_GLenum_string (glGetString)
+ML_1_ (glGetString, GLenum_val, copy_string)
 
 value ml_glHint (value target, value hint)
 {
@@ -196,10 +155,10 @@ value ml_glHint (value target, value hint)
     return Val_unit;
 }
 
-ML_int (glIndexMask)
-ML_double (glIndexd)
-ML_void (glInitNames)
-ML_GLenum_int (glIsEnabled)
+ML_1 (glIndexMask, Int_val)
+ML_1 (glIndexd, Double_val)
+ML_0 (glInitNames)
+ML_1_ (glIsEnabled, GLenum_val, Val_int)
 
 value ml_glLight (value n, value param)  /* ML */
 {
@@ -248,29 +207,16 @@ value ml_glLightModel (value param)  /* ML */
     return Val_unit;
 }
 
-ML_float (glLineWidth)
-ML_int2 (glLineStipple)
-ML_int (glLoadName)
-ML_void (glLoadIdentity)
+ML_1 (glLineWidth, Float_val)
+ML_2 (glLineStipple, Int_val, Int_val)
+ML_1 (glLoadName, Int_val)
+ML_0 (glLoadIdentity)
+ML_1 (glLoadMatrixd, Double_raw)
+ML_1 (glLogicOp, GLenum_val)
 
-value ml_glLoadMatrix(value m)  /* ML */
+value ml_glMap1d (value target, value *u, value order, value raw)
 {
-    GLdouble matrix[16];
-    int i, j;
-
-    for (i = 0; i < 4; i++)
-	for (j = 0; j < 4; j++)
-	    matrix[i*4+j] = Double_val (Field (Field (m, i), j));
-    glLoadMatrixd (matrix);
-    return Val_unit;
-}
-
-ML_GLenum (glLogicOp)
-
-value ml_glMap1d (value target, value *u, value points)
-{
-    int uorder, ustride, i;
-    double *dpoints;
+    int ustride, i;
     GLenum targ;
 
     switch (target) {
@@ -293,25 +239,17 @@ value ml_glMap1d (value target, value *u, value points)
     case MLTAG_texture_coord_4:
 	targ = GL_MAP1_TEXTURE_COORD_4; ustride = 4; break;
     }
-    uorder = Wosize_val(points) / ustride;
-    dpoints = calloc (uorder*ustride, sizeof(GLdouble));
-    for (i = 0; i < uorder*ustride; i++)
-	dpoints[i] = Double_val(Field(points,i));
     glMap1d (targ, Double_val(u[0]), Double_val(u[1]),
-	     ustride, uorder, dpoints);
-    free (dpoints);
+	     ustride, Int_val(order), Double_raw(raw));
     return Val_unit;
 }
 
-value ml_glMap2d (value target, value *u, value *v, value points)
+value ml_glMap2d (value target, value u, value uorder,
+		  value v, value vorder, value raw)
 {
-    int vorder = Wosize_val(points);
-    int i, j, k, uorder, ustride, vstride;
-    double *dpoints;
-    value row;
+    int ustride;
     GLenum targ;
 
-    if (vorder == 0) invalid_argument("Gl.map2");
     switch (target) {
     case MLTAG_vertex_3:
 	targ = GL_MAP2_VERTEX_3; ustride = 3; break;
@@ -332,37 +270,17 @@ value ml_glMap2d (value target, value *u, value *v, value points)
     case MLTAG_texture_coord_4:
 	targ = GL_MAP2_TEXTURE_COORD_4; ustride = 4; break;
     }
-    vstride = Wosize_val(Field(points,0));
-    uorder = vstride / ustride;
-    dpoints = calloc (vstride*vorder, sizeof(GLdouble));
-    for (i = 0; i < vorder; i++) {
-	row = Field(points,i);
-	if (Wosize_val(row) != ustride * uorder) {
-	    free (dpoints);
-	    invalid_argument("Gl.map2");
-	}
-	for (j = 0; j < uorder*ustride; j++)
-	    dpoints[i*vstride+j] = Double_val(Field(row,j));
-    }
-    glMap2d (targ, Double_val(u[0]), Double_val(u[1]), ustride, uorder,
-	     Double_val(v[0]), Double_val(v[1]), vstride, vorder,
-	     dpoints);
-    free (dpoints);
+    glMap2d (targ, Double_val(Field(u,0)), Double_val(Field(u,1)), ustride,
+	     Int_val(uorder), Double_val(Field(v,0)), Double_val(Field(v,1)),
+	     Int_val(uorder)*ustride, Int_val(vorder), Double_raw(raw));
     return Val_unit;
 }
 
-value ml_glMapGrid1d (value n, value *u)
-{
-    glMapGrid1d (Int_val(n), Double_val(u[0]), Double_val(u[1]));
-    return Val_unit;
-}
+ML_bc6 (ml_glMap2d)
 
-value ml_glMapGrid2d (value un, value *u, value vn, value *v)
-{
-    glMapGrid2d (Int_val(un), Double_val(u[0]), Double_val(u[1]),
-		 Int_val(vn), Double_val(v[0]), Double_val(v[1]));
-    return Val_unit;
-}
+ML_2 (glMapGrid1d, Int_val, Pair(arg2,Double_val,Double_val))
+ML_4 (glMapGrid2d, Int_val, Pair(arg2,Double_val,Double_val),
+      Int_val, Pair(arg4,Double_val,Double_val))
 
 value ml_glMaterial (value face, value param)  /* ML */
 {
@@ -387,42 +305,24 @@ value ml_glMaterial (value face, value param)  /* ML */
     return Val_unit;
 }
 
-ML_GLenum (glMatrixMode)
+ML_1 (glMatrixMode, GLenum_val)
+ML_1 (glMultMatrixd, Double_raw)
 
-value ml_glMultMatrix(value m)  /* ML */
+ML_3 (glNormal3d, Double_val, Double_val, Double_val)
+
+ML_1 (glPassThrough, Float_val)
+
+value ml_glPixelMapfv (value map, value raw)
 {
-    GLdouble matrix[16];
-    int i, j;
-
-    for (i = 0; i < 4; i++)
-	for (j = 0; j < 4; j++)
-	    matrix[i*4+j] = Double_val (Field (Field (m, i), j));
-    glMultMatrixd (matrix);
+    glPixelMapfv (GLenum_val(map), Int_val(Size_raw(raw))/sizeof(GLfloat),
+		  Float_raw(raw));
     return Val_unit;
 }
 
-ML_double3 (glNormal3d)
+ML_3 (glOrtho, Pair(arg1,Double_val,Double_val),
+      Pair(arg2,Double_val,Double_val), Pair(arg3,Double_val,Double_val))
 
-ML_float (glPassThrough)
-
-value ml_glPixelMapfv (value map, value array)
-{
-    int mapsize = Wosize_val(array);
-    GLfloat *values = calloc (mapsize, sizeof(GLfloat));
-    int i;
-    
-    for (i = 0; i < mapsize; i++) values[i] = Float_val(Field(array,i));
-    glPixelMapfv (GLenum_val(map), mapsize, values);
-    return Val_unit;
-}
-
-ML_double3x2 (glOrtho)
-
-value ml_glPixelStore (value param)
-{
-    glPixelStorei (GLenum_val (Field(param,0)), Int_val (Field(param,1)));
-    return Val_unit;
-}
+ML_1 (glPixelStorei, Pair(arg1,GLenum_val,Int_val))
 
 value ml_glPixelTransfer (value param)
 {
@@ -441,13 +341,13 @@ value ml_glPixelTransfer (value param)
     return Val_unit;
 }
 
-ML_float2 (glPixelZoom)
-ML_float (glPointSize)
-ML_GLenum2 (glPolygonMode)
-ML_string (glPolygonStipple)
-ML_void (glPopAttrib)
-ML_void (glPopMatrix)
-ML_void (glPopName)
+ML_2 (glPixelZoom, Float_val, Float_val)
+ML_1 (glPointSize, Float_val)
+ML_2 (glPolygonMode, GLenum_val, GLenum_val)
+ML_1 (glPolygonStipple, String_val)
+ML_0 (glPopAttrib)
+ML_0 (glPopMatrix)
+ML_0 (glPopName)
 
 value ml_glPushAttrib (value list)
 {
@@ -482,8 +382,8 @@ value ml_glPushAttrib (value list)
     return Val_unit;
 }
 
-ML_void (glPushMatrix)
-ML_int (glPushName)
+ML_0 (glPushMatrix)
+ML_1 (glPushName, Int_val)
 
 value ml_glRasterPos(value x, value y, value z, value w)  /* ML */
 {
@@ -508,71 +408,26 @@ value ml_glReadBuffer (value buffer)
     return Val_unit;
 }
 
-value ml_glReadPixels (value x, value y, value w, value h,
-		       value f, value t)
-{
-    value pixels = Val_unit, data = Val_unit;
-    int width = Int_val(w), height = Int_val(h);
-    GLenum format = GLenum_val(f);
-    GLenum type = GLenum_val(t);
-    int formatsize, size;
-
-    switch (format) {
-    default:
-	formatsize = 1; break;
-    case GL_LUMINANCE_ALPHA:
-	formatsize = 2; break;
-    case GL_RGB:
-	formatsize = 3; break;
-    case GL_RGBA:
-	formatsize = 4; break;
-    }
-    Begin_roots2 (pixels,data);
-    size = (formatsize*glSizeof(type)-1)/8/sizeof(value) + 1;
-    pixels = alloc_shr (size, Abstract_tag);
-    data = alloc(3,0);
-    Field(data,0) = t;
-    Field(data,1) = size;
-    Field(data,2) = pixels;
-    glReadPixels (Int_val(x), Int_val(y), width, height, format, type,
-		  (GLvoid *) pixels);
-    End_roots ();
-    return data;
-}
-
+ML_6 (glReadPixels, Int_val, Int_val, Int_val, Int_val, GLenum_val,
+      Type_void_raw)
 ML_bc6 (ml_glReadPixels)
+ML_2 (glRectd, Pair(arg1,Double_val,Double_val),
+      Pair(arg2,Double_val,Double_val))
+ML_1_ (glRenderMode, GLenum_val, Val_int)
+ML_4 (glRotated, Double_val, Double_val, Double_val, Double_val)
+ML_3 (glScaled, Double_val, Double_val, Double_val)
 
-value ml_glRect(value p1, value p2)  /* ML */
-{
-    glRectd (Double_val (Field (p1, 0)),
-	     Double_val (Field (p1, 1)),
-	     Double_val (Field (p2, 0)),
-	     Double_val (Field (p2, 1)));
-    return Val_unit;
-}
+ML_4 (glScissor, Int_val, Int_val, Int_val, Int_val)
+ML_1 (glSelectBuffer, Type_void_raw)
+ML_1 (glShadeModel, GLenum_val)
+ML_3 (glStencilFunc, GLenum_val, Int_val, Int_val)
+ML_1 (glStencilMask, Int_val)
+ML_3 (glStencilOp, GLenum_val, GLenum_val, GLenum_val)
 
-ML_GLenum_int (glRenderMode)
-ML_double4 (glRotated)
-
-ML_double3 (glScaled)
-ML_int4 (glScissor)
-
-value ml_glSelectBuffer (value raw)
-{
-    glSelectBuffer (Int_val (Field(raw,1)) / sizeof(GLuint),
-		    (GLuint *) Field(raw,2));
-    return Val_unit;
-}
-
-ML_GLenum (glShadeModel)
-ML_GLenum_int2_ (glStencilFunc)
-ML_int (glStencilMask)
-ML_GLenum3 (glStencilOp)
-
-ML_double (glTexCoord1d)
-ML_double2 (glTexCoord2d)
-ML_double3 (glTexCoord3d)
-ML_double4 (glTexCoord4d)
+ML_1 (glTexCoord1d, Double_val)
+ML_2 (glTexCoord2d, Double_val, Double_val)
+ML_3 (glTexCoord3d, Double_val, Double_val, Double_val)
+ML_4 (glTexCoord4d, Double_val, Double_val, Double_val, Double_val)
 
 value ml_glTexEnv (value param)
 {
@@ -659,7 +514,7 @@ value ml_glTexParameter (value target, value param)
     return Val_unit;
 }
     
-ML_double3 (glTranslated)
+ML_3 (glTranslated, Double_val, Double_val, Double_val)
 
 value ml_glVertex(value x, value y, value z, value w)  /* ML */
 {
@@ -672,24 +527,18 @@ value ml_glVertex(value x, value y, value z, value w)  /* ML */
     return Val_unit;
 }
 
-ML_int4 (glViewport)
+ML_4 (glViewport, Int_val, Int_val, Int_val, Int_val)
 
 
 /* List functions */
 
-ML_int_int (glIsList)
-ML_int2 (glDeleteLists)
-ML_int_int (glGenLists)
-
-value ml_glNewList (value glist, value mode)  /* ML */
-{
-    glNewList (Int_val (glist), GLenum_val (mode));
-    return Val_unit;
-}
-
-ML_void (glEndList)
-ML_int (glCallList)
-ML_int (glListBase)
+ML_1_ (glIsList, Int_val, Val_int)
+ML_2 (glDeleteLists, Int_val, Int_val)
+ML_1_ (glGenLists, Int_val, Val_int)
+ML_2 (glNewList, Int_val, GLenum_val)
+ML_0 (glEndList)
+ML_1 (glCallList, Int_val)
+ML_1 (glListBase, Int_val)
 
 value ml_glCallLists (value indexes)  /* ML */
 {

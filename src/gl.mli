@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.12 1998-01-21 23:25:18 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.13 1998-01-23 13:30:18 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -13,6 +13,16 @@ type clampf = float
 type glist = int
 
 type gltype = [bitmap byte float int short ubyte uint ushort]
+type pixels_format =
+  [alpha blue color_index depth_component green luminance luminance_alpha 
+   red rgb rgba stencil_index]
+type ('a,'b) image = { format: 'a ; width: int ; height:int ; raw: 'b Raw.t }
+val format_size : #pixels_format -> int
+
+type curve_type =
+  [vertex_3 vertex_4 index color_4 normal texture_coord_1 texture_coord_2
+   texture_coord_3 texture_coord_4 trim_2 trim_3]
+val target_size : #curve_type -> int
 
 type cmp_func = [always equal gequal greater lequal less never notequal]
 type face = [back both front]
@@ -36,10 +46,8 @@ type begin_enum =
   [line_loop line_strip lines points polygon quad_strip quads triangle_fan
    triangle_strip triangles]
 external begin_block : begin_enum -> unit = "ml_glBegin"
-external bitmap :
-  width:int ->
-  height:int -> orig:point2 -> move:point2 -> [bitmap] Raw.t -> unit
-  = "ml_glBitmap"
+type bitmap = ([color_index],[bitmap]) image
+val bitmap : bitmap -> orig:point2 -> move:point2 -> unit
 type sfactor =
   [constant_alpha_ext constant_color_ext dst_alpha dst_color one
    one_minus_constant_alpha_ext one_minus_constant_color_ext
@@ -80,12 +88,7 @@ type draw_buffer_mode =
   [aux(int) back back_left back_right front front_and_back front_left
    front_right left none right]
 external draw_buffer : draw_buffer_mode -> unit = "ml_glDrawBuffer"
-type pixels_format =
-  [alpha blue color_index depth_component green luminance luminance_alpha 
-   red rgb rgba stencil_index]
-external draw_pixels :
-  width:int -> height:int -> format:pixels_format -> #gltype Raw.t -> unit
-  = "ml_glDrawPixels"
+val draw_pixels : (#pixels_format, #gltype) image -> unit
 
 external edge_flag : bool -> unit = "ml_glEdgeFlag"
 external enable : cap -> unit = "ml_glEnable"
@@ -134,7 +137,7 @@ external line_stipple : factor:int -> pattern:int -> unit
   = "ml_glLineStipple"
 external load_name : int -> unit = "ml_glLoadName"
 external load_identity : unit -> unit = "ml_glLoadIdentity"
-val load_matrix : float array array -> unit
+val load_matrix : [double] Raw.t -> unit
 type logic_op =
   [And Or and_inverted and_reverse clear copy copy_inverted equiv invert 
    nand noop nor or_inverted or_reverse set xor]
@@ -143,15 +146,14 @@ external logic_op : logic_op -> unit = "ml_glLogicOp"
 type map_target =
   [color_4 index normal texture_coord_1 texture_coord_2 texture_coord_3
    texture_coord_4 vertex_3 vertex_4]
-external map1 : target:map_target -> float * float -> float array -> unit
-  = "ml_glMap1d"
-external map2 :
-  target:map_target ->
-  float * float -> float * float -> float array array -> unit = "ml_glMap2d"
-external map_grid1 : n:int -> range:float * float -> unit = "ml_glMapGrid1d"
-external map_grid2 :
+val map1 :
+  target:map_target -> (float*float) -> order:int -> [double] Raw.t -> unit
+val map2 :
+  target:map_target -> (float*float) -> order:int ->
+  (float*float) -> order:int -> [double] Raw.t -> unit
+val map_grid1 : n:int -> range:float * float -> unit
+val map_grid2 :
   n:int -> range:float * float -> n:int -> range:float * float -> unit
-  = "ml_glMapGrid2d"
 type material_param =
   [ambient(rgba) ambient_and_diffuse(rgba)
    color_indexes(float * float * float) diffuse(rgba) emission(rgba)
@@ -159,7 +161,7 @@ type material_param =
 external material : face:face -> material_param -> unit = "ml_glMaterial"
 external matrix_mode : [modelview projection texture] -> unit
   = "ml_glMatrixMode"
-val mult_matrix : float array array -> unit
+val mult_matrix : [double] Raw.t -> unit
 
 val normal : ?x:float -> ?y:float -> ?z:float -> unit
 val normal3 : float * float * float -> unit
@@ -177,7 +179,7 @@ type pixel_store =
    pack_skip_pixels(int) pack_skip_rows(int) pack_swap_bytes(bool)
    unpack_alignment(int) unpack_lsb_first(bool) unpack_row_length(int)
    unpack_skip_pixels(int) unpack_skip_rows(int) unpack_swap_bytes(bool)]
-external pixel_store : pixel_store -> unit = "ml_glPixelStore"
+val pixel_store : pixel_store -> unit
 type pixel_transfer =
   [alpha_bias(float) alpha_scale(float) blue_bias(float) blue_scale(float)
    depth_bias(float) depth_scale(float) green_bias(float) green_scale(float)
@@ -206,13 +208,10 @@ type read_buffer =
   [aux(int) back back_left back_right front front_left front_right left
    right]
 external read_buffer : read_buffer -> unit = "ml_glReadBuffer"
-external read_pixels :
-  x:int ->
-  y:int ->
-  width:int ->
-  height:int -> format:pixels_format -> type:(#gltype as 'a) -> 'a Raw.t
-  = "ml_glReadPixels_bc" "ml_glReadPixels"
-external rect : point2 -> point2 -> unit = "ml_glRect"
+val read_pixels :
+  x:int -> y:int -> width:int -> height:int ->
+  format:(#pixels_format as 'a) -> type:(#gltype as 'b) -> ('a, 'b) image
+val rect : point2 -> point2 -> unit
 external render_mode : [feedback render select] -> int = "ml_glRenderMode"
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit
 
@@ -241,16 +240,11 @@ external tex_gen : coord:tex_coord -> tex_gen_param -> unit = "ml_glTexGen"
 type tex_format =
   [alpha blue color_index green luminance luminance_alpha red rgb rgba]
 val tex_image1d :
-  proxy:bool ->
-  level:int ->
-  internal:int ->
-  width:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
+    (#tex_format, #gltype) image ->
+    ?proxy:bool -> ?level:int -> ?internal:int -> ?border:bool -> unit
 val tex_image2d :
-  proxy:bool ->
-  level:int ->
-  internal:int ->
-  width:int ->
-  height:int -> border:bool -> format:tex_format -> #gltype Raw.t -> unit
+    (#tex_format, #gltype) image ->
+    ?proxy:bool -> ?level:int -> ?internal:int -> ?border:bool -> unit
 type tex_filter =
   [linear linear_mipmap_linear linear_mipmap_nearest nearest
    nearest_mipmap_linear nearest_mipmap_nearest]

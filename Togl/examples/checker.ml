@@ -1,4 +1,4 @@
-(* $Id: checker.ml,v 1.1 1998-01-22 06:08:49 garrigue Exp $ *)
+(* $Id: checker.ml,v 1.2 1998-01-23 13:30:16 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -13,7 +13,10 @@ let make_image () =
 	 else [|0;0;0|])
     done
   done;
-  image
+  { Gl.width = image_width;
+    Gl.height = image_height;
+    Gl.format = `rgb;
+    Gl.raw = image }
 
 let myinit () =
   Gl.clear_color (0.0, 0.0, 0.0);
@@ -22,8 +25,7 @@ let myinit () =
 
   let image = make_image () in
   Gl.pixel_store (`unpack_alignment 1);
-  Gl.tex_image2d image proxy:false level:0 internal:3 width:image_width
-    height:image_height border:false format:`rgb;
+  Gl.tex_image2d image;
   List.iter fun:(Gl.tex_parameter target:`texture_2d)
     [ `wrap_s `clamp;
       `wrap_t `clamp;
@@ -53,8 +55,7 @@ let reshape togl =
   Gl.viewport x:0 y:0 :w :h;
   Gl.matrix_mode `projection;
   Gl.load_identity ();
-  Glu.perspective fovy:60.0 aspect:(1.0 *. float w /. float h)
-    znear:1.0 zfar:30.0;
+  Glu.perspective fovy:60.0 aspect:(1.0 *. float w /. float h) z:(1.0,30.0);
   Gl.matrix_mode `modelview;
   Gl.load_identity ();
   Gl.translate z:(-3.6)

@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.7 1998-01-23 03:23:19 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.8 1998-01-23 13:30:21 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -44,13 +44,6 @@ static value Val_addr (void *addr)
 #endif /* GLU_VERSION_1_1 */
 
 
-#define ML_nurb(cname) \
-value ml_##cname (value nurb) \
-{ cname (Nurb_val(nurb)); return Val_unit; }
-#define ML_tess(cname) \
-value ml_##cname (value tess) \
-{ cname (Tess_val(tess)); return Val_unit; }
-
 #define ML_final(cname) \
 static void ml_##cname (value struc) \
 { cname ((GLvoid *) Field(struc,1)); }
@@ -61,10 +54,10 @@ ML_final (gluDeleteTess)
 
 /* Called from ML */
 
-ML_nurb (gluBeginCurve)
-ML_tess (gluBeginPolygon)
-ML_nurb (gluBeginSurface)
-ML_nurb (gluBeginTrim)
+ML_1 (gluBeginCurve, Nurb_val)
+ML_1 (gluBeginPolygon, Tess_val)
+ML_1 (gluBeginSurface, Nurb_val)
+ML_1 (gluBeginTrim, Nurb_val)
 
 value ml_gluBuild1DMipmaps (value internal, value width,
 			    value format, value data)
@@ -91,79 +84,46 @@ value ml_gluBuild2DMipmaps (value internal, value width, value height,
     return Val_unit;
 }
 
-value ml_gluCylinder (value quad, value base, value top, value height,
-		    value slices, value stacks)
-{
-    gluCylinder (Quad_val(quad), Double_val(base), Double_val(top),
-		 Double_val(height), Int_val(slices), Int_val(stacks));
-    return Val_unit;
-}
-
+ML_6 (gluCylinder, Quad_val, Double_val, Double_val, Double_val,
+      Int_val, Int_val)
 ML_bc6 (ml_gluCylinder)
 
-value ml_gluDisk (value quad, value inner, value outer,
-		  value slices, value loops)
-{
-    gluDisk (Quad_val(quad), Double_val(inner), Double_val(outer),
-	     Int_val(slices), Int_val(loops));
-    return Val_unit;
-}
+ML_5 (gluDisk, Quad_val, Double_val, Double_val, Int_val, Int_val)
 
+ML_1 (gluEndCurve, Nurb_val)
+ML_1 (gluEndPolygon, Tess_val)
+ML_1 (gluEndSurface, Nurb_val)
+ML_1 (gluEndTrim, Nurb_val)
 
-ML_nurb (gluEndCurve)
-ML_tess (gluEndPolygon)
-ML_nurb (gluEndSurface)
-ML_nurb (gluEndTrim)
+ML_1_ (gluGetString, GLUenum_val, copy_string)
 
-ML_GLenum_string (gluGetString)
-
-value ml_gluLoadSamplingMatrices (value nurb, value model, value perspective,
-				 value view)
-{
-    gluLoadSamplingMatrices (Nurb_val(nurb), Float_raw(model),
-			     Float_raw(perspective), Int_raw(view));
-    return Val_unit;
-}
-
-value ml_gluLookAt(value eye, value center, value up)  /* ML */
-{
-    gluLookAt (Double_val(Field(eye,0)), Double_val(Field(eye,1)),
-	       Double_val(Field(eye,2)), Double_val(Field(center,0)),
-	       Double_val(Field(center,1)), Double_val(Field(center,2)),
-	       Double_val(Field(up,0)), Double_val(Field(up,1)),
-	       Double_val(Field(up,2)));
-    return Val_unit;
-}
+ML_4 (gluLoadSamplingMatrices, Nurb_val, Float_raw, Float_raw, Int_raw)
+ML_3 (gluLookAt, Triple(arg1,Double_val,Double_val,Double_val),
+      Triple(arg2,Double_val,Double_val,Double_val),
+      Triple(arg3,Double_val,Double_val,Double_val))
 
 value ml_gluNewNurbsRenderer (void)
 {
-    value struc = alloc(2, Final_tag);
-    Final_fun(struc) = ml_gluDeleteNurbsRenderer;
+    value struc = alloc_final (2, ml_gluDeleteNurbsRenderer, 1, 32);
     Nurb_val(struc) = gluNewNurbsRenderer();
     return struc;
 }
 
 value ml_gluNewQuadric (void)
 {
-    value struc = alloc(2, Final_tag);
-    Final_fun(struc) = ml_gluDeleteQuadric;
+    value struc = alloc_final (2, ml_gluDeleteQuadric, 1, 32);
     Quad_val(struc) = gluNewQuadric();
     return struc;
 }
 
 value ml_gluNewTess (void)
 {
-    value struc = alloc(2, Final_tag);
-    Final_fun(struc) = ml_gluDeleteTess;
+    value struc = alloc_final (2, ml_gluDeleteTess, 1, 32);
     Tess_val(struc) = gluNewTess();
     return struc;
 }
 
-value ml_gluNextContour (value tess, value type)
-{
-    gluNextContour (Tess_val(tess), GLUenum_val(type));
-    return Val_unit;
-}
+ML_2 (gluNextContour, Tess_val, GLUenum_val)
 
 #define Fsize_raw(raw) (Int_val(Size_raw(raw))/sizeof(GLfloat))
 
@@ -261,18 +221,10 @@ ML_bc8 (ml_gluNurbsSurface)
 
 ML_double4(gluOrtho2D)
 
-value ml_gluPartialDisk (value quad, value inner, value outer, value slices,
-			 value loops, value start, value sweep)
-{
-    gluPartialDisk (Quad_val(quad), Double_val(inner), Double_val(outer),
-		    Int_val(slices), Int_val(loops), Double_val(start),
-		    Double_val(sweep));
-    return Val_unit;
-}
-
+ML_7 (gluPartialDisk, Quad_val, Double_val, Double_val, Int_val, Int_val,
+      Double_val, Double_val)
 ML_bc7 (ml_gluPartialDisk)
-
-ML_double4 (gluPerspective)
+ML_4 (gluPerspective, Double_val, Double_val, Double_val, Double_val)
 
 value ml_gluPickMatrix (value x, value y, value delX, value delY)
 {
@@ -309,9 +261,79 @@ value ml_gluProject (value object)
     return win;
 }
 
-value ml_gluSphere (value quad, value radius, value slices, value stacks)
+value ml_gluPwlCurve (value nurbs, value count, value data, value tag)
 {
-    gluSphere (Quad_val(quad), Double_val(radius),
-	       Int_val(slices), Int_val(stacks));
+    GLenum type;
+    GLint stride;
+
+    switch (tag) {
+    case MLTAG_trim_2:
+	type = GLU_MAP1_TRIM_2; stride = 2; break;
+    case MLTAG_trim_3:
+	type = GLU_MAP1_TRIM_3; stride = 3; break;
+    }
+    gluPwlCurve (Nurb_val(nurbs), Int_val(count), Float_raw(data),
+		 stride, type);
     return Val_unit;
+}
+
+ML_2 (gluQuadricDrawStyle, Quad_val, GLUenum_val)
+ML_2 (gluQuadricNormals, Quad_val, GLUenum_val)
+ML_2 (gluQuadricOrientation, Quad_val, GLUenum_val)
+ML_2 (gluQuadricTexture, Quad_val, Int_val)
+
+ML_7 (gluScaleImage, GLenum_val, Int_val, Int_val,
+      Split(arg4,Type_raw,Void_raw), Int_val, Int_val,
+      Split(arg7,Type_raw,Void_raw))
+ML_bc7 (ml_gluScaleImage)
+ML_4 (gluSphere, Quad_val, Double_val, Int_val, Int_val)
+
+ML_1 (gluTessBeginContour, Tess_val)
+ML_1 (gluTessEndContour, Tess_val)
+#define Opt_val(opt) (opt == Val_int(0) ? NULL : (void *) Field(opt,0)) 
+ML_2 (gluTessBeginPolygon, Tess_val, Opt_val)
+ML_1 (gluTessEndPolygon, Tess_val)
+ML_4 (gluTessNormal, Tess_val, Double_val, Double_val, Double_val)
+
+value ml_gluTessProperty (value tess, value prop)
+{
+    GLenum which = GLUenum_val (Field(prop,0));
+    GLdouble data;
+
+    switch (which) {
+    case GLU_TESS_WINDING_RULE: data = GLUenum_val (Field(prop,1)); break;
+    case GLU_TESS_BOUNDARY_ONLY: data = Int_val (Field(prop,1)); break;
+    case GLU_TESS_TOLERANCE: data = Double_val (Field(prop,1)); break;
+    }
+    gluTessProperty (Tess_val(tess), which, data);
+    return Val_unit;
+}
+
+ML_3 (gluTessVertex, Tess_val, Double_raw, Opt_val)
+
+value ml_gluUnProject (value win)
+{
+    GLdouble model[16];
+    GLdouble proj[16];
+    GLint viewport[4];
+    value obj = Val_unit, objX = Val_unit, objY = Val_unit, objZ = Val_unit;
+    GLint ok;
+
+    glGetDoublev (GL_MODELVIEW_MATRIX, model);
+    glGetDoublev (GL_PROJECTION_MATRIX, proj);
+    glGetIntegerv (GL_VIEWPORT, viewport);
+    Begin_roots4 (obj,objX,objY,objZ);
+    objX = alloc (Double_wosize, Double_tag);
+    objY = alloc (Double_wosize, Double_tag);
+    objZ = alloc (Double_wosize, Double_tag);
+    obj = alloc_tuple (3);
+    Field(obj,0) = objX;
+    Field(obj,1) = objY;
+    Field(obj,2) = objZ;
+    ok = gluProject (Double_val(Field(win,0)), Double_val(Field(win,1)),
+		     Double_val(Field(win,2)), model, proj, viewport,
+		     (double *) objX, (double *) objY, (double *) objZ);
+    End_roots ();
+    if (!ok) ml_raise_gl ("Glu.unproject : point out of window");
+    return obj;
 }

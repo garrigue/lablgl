@@ -1,4 +1,4 @@
-(* $Id: raw.mli,v 1.2 1998-01-21 23:25:22 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.3 1998-01-23 13:30:23 garrigue Exp $ *)
 
 (* This module provides a direct way to access C arrays of basic types.
    This is particularly useful when one wants to avoid costly
@@ -13,15 +13,14 @@ type fkind = [double float]
 type ikind = [bitmap byte int long short ubyte uint ulong ushort]
 type lkind = [int long uint ulong]
 
-external create : (#kind as 'a) -> len:int -> 'a t = "ml_raw_alloc"
+val create : (#kind as 'a) -> len:int -> 'a t
     (* [create t :len] returns a new raw array of C type t
        and length len. This array is managed by the GC *)
-external create_static : (#kind as 'a) -> len:int -> 'a t
-  = "ml_raw_alloc_static"
+val create_static : (#kind as 'a) -> len:int -> 'a t
     (* [create_static t :len] returns a new raw array of C type t
        and length len. This array is created through malloc.
        You must free it explicitely *)
-external free_static : 'a t -> unit = "ml_raw_free_static"
+val free_static : 'a t -> unit
     (* Free a raw array created through create_static *)
 
 val kind : 'a t -> 'a
@@ -58,17 +57,20 @@ external set_lo : #lkind t -> pos:int -> int -> unit = "ml_raw_set_lo"
 (* Simultaneous access versions are much more efficient than individual
    access, the overhead being paid only once *)
 
-external gets : #ikind t -> pos:int -> len:int -> int array = "ml_raw_read"
-external sets : #ikind t -> pos:int -> int array -> unit = "ml_raw_write"
-external gets_float : #fkind t -> pos:int -> len:int -> float array
-  = "ml_raw_read_float"
-external sets_float : #fkind t -> pos:int -> float array -> unit
-  = "ml_raw_write_float"
+val gets : #ikind t -> ?pos:int -> ?len:int -> int array
+val sets : #ikind t -> pos:int -> int array -> unit
+val gets_float : #fkind t -> ?pos:int -> ?len:int -> float array
+val sets_float : #fkind t -> pos:int -> float array -> unit
 
 (* Fastest version: simply copy the contents of the array to and from
    a string *)
 
-external gets_string : 'a t -> pos:int -> len:int -> string
-  = "ml_raw_read_string"
-external sets_string : 'a t -> pos:int -> string -> unit
-  = "ml_raw_write_string"
+val gets_string : 'a t -> ?pos:int -> ?len:int -> string
+val sets_string : 'a t -> pos:int -> string -> unit
+
+(* Abbreviations to create raw arrays from ML arrays and strings *)
+
+val of_array : int array -> kind:(#ikind as 'a) -> 'a t
+val of_float_array : float array -> kind:(#fkind as 'a) -> 'a t
+val of_string : string -> kind:(#kind as 'a) -> 'a t
+val of_matrix : float array array -> kind:(#fkind as 'a) -> 'a t

@@ -1,4 +1,4 @@
-(* $Id: glu_tags.var,v 1.2 1998-01-22 10:32:54 garrigue Exp $: tags for GLU library *)
+(* $Id: glu_tags.var,v 1.3 1998-01-23 13:30:19 garrigue Exp $: tags for GLU library *)
 
 (* gluNextContour *)
 exterior interior unknown ccw cw
@@ -12,6 +12,13 @@ display_mode fill
 culling auto_load_matrix
 polygon -> GLU_OUTLINE_POLYGON
 patch -> GLU_OUTLINE_PATCH
+
+(* gluQuadricDrawStyle *)
+line silhouette point
+(* gluQuadricNormals *)
+none flat smooth
+(* gluQuadricOrientation *)
+inside outside
 
 $$
 (* gluNurbsCurve *)
