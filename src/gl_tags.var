@@ -225,6 +225,7 @@ border_color -> GL_TEXTURE_BORDER_COLOR
 priority -> GL_TEXTURE_PRIORITY
 nearest nearest_mipmap_nearest linear_mipmap_nearest
 nearest_mipmap_linear linear_mipmap_linear
+generate_mipmap
 clamp repeat
 
 (* glGetString *)

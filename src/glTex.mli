@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.5 2002-11-12 03:40:12 garrigue Exp $ *)
+(* $Id: glTex.mli,v 1.6 2003-03-15 08:33:36 erickt Exp $ *)
 
 open Gl
 
@@ -7,7 +7,9 @@ val coord2 : float * float -> unit
 val coord3 : float * float * float -> unit
 val coord4 : float * float * float * float -> unit
 
-type env_param = [`mode of [`modulate|`decal|`blend|`replace] | `color of rgba]
+type env_param = [
+    `mode of [`modulate|`decal|`blend|`replace] 
+  | `color of rgba]
 val env : env_param -> unit
 
 type coord = [`s|`t|`r|`q]
@@ -39,6 +41,7 @@ type parameter = [
   | `wrap_t of wrap
   | `border_color of rgba
   | `priority of clampf
+  | `generate_mipmap of bool
 ] 
 val parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
 

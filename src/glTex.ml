@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.9 2003-02-03 03:39:30 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.10 2003-03-15 08:33:36 erickt Exp $ *)
 
 open Gl
 open GlPix
@@ -8,6 +8,9 @@ external coord2 : float -> float -> unit = "ml_glTexCoord2d"
 external coord3 : float -> float -> float -> unit = "ml_glTexCoord3d"
 external coord4 : float -> float -> float -> float -> unit
     = "ml_glTexCoord4d"
+
+(*external multi_coord2 : *)
+    
 let default x = function Some x -> x | None -> x
 let coord ~s ?t ?r ?q () =
   match q with
@@ -20,7 +23,10 @@ let coord ~s ?t ?r ?q () =
 let coord2 (s,t) = coord2 s t
 let coord3 (s,t,r) = coord3 s t r
 let coord4 (s,t,r,q) = coord4 s t r q
-type env_param = [`mode of [`modulate|`decal|`blend|`replace] | `color of rgba]
+type env_param = [
+    `mode of [`modulate|`decal|`blend|`replace] 
+  | `color of rgba
+]
 external env : env_param -> unit = "ml_glTexEnv"
 type coord = [`s|`t|`r|`q]
 type gen_param = [
@@ -32,9 +38,19 @@ external gen : coord:coord -> gen_param -> unit = "ml_glTexGen"
 
 let rec is_pow2 n =
   n = 1 || n land 1 = 0 && is_pow2 (n asr 1)
-type format =
-    [`color_index|`red|`green|`blue|`alpha|`rgb|`rgba
-    |`luminance|`luminance_alpha]
+
+type format = [
+    `color_index
+  | `red
+  | `green
+  | `blue
+  | `alpha
+  | `rgb
+  | `rgba
+  | `luminance
+  | `luminance_alpha
+]
+
 external image1d :
     proxy:bool -> level:int -> internal:int ->
     width:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
@@ -60,9 +76,14 @@ let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
     raise (GLerror "Gl.image2d : bad height");
   image2d ~proxy ~level ~internal ~border
     ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)
-type filter =
-    [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest
-    |`nearest_mipmap_linear|`linear_mipmap_linear]
+type filter = [
+    `nearest
+  | `linear
+  | `nearest_mipmap_nearest
+  | `linear_mipmap_nearest
+  | `nearest_mipmap_linear
+  | `linear_mipmap_linear
+]
 type wrap = [`clamp|`repeat]
 type parameter = [
     `min_filter of filter
@@ -71,6 +92,7 @@ type parameter = [
   | `wrap_t of wrap
   | `border_color of rgba
   | `priority of clampf
+  | `generate_mipmap of bool
 ] 
 external parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
     = "ml_glTexParameter"

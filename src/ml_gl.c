@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.33 2003-03-13 10:15:48 erickt Exp $ */
+/* $Id: ml_gl.c,v 1.34 2003-03-15 08:33:36 erickt Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -14,6 +14,10 @@
 #include "ml_raw.h"
 #include "gl_tags.h"
 #include "ml_gl.h"
+
+#if !defined(GL_VERSION_1_4)
+#define GL_GENERATE_MIPMAP
+#endif
 
 /* #include <stdio.h> */
 
@@ -589,6 +593,10 @@ CAMLprim value ml_glTexParameter (value target, value param)
     case GL_TEXTURE_PRIORITY:
 	glTexParameterf (targ, pname, Float_val(params));
 	break;
+#ifdef GL_VERSION_1_4
+    case GL_GENERATE_MIPMAP:
+        glTexParameteri (targ, pname, Bool_val(params));
+#endif
     default:
 	glTexParameteri (targ, pname, GLenum_val(params));
 	break;

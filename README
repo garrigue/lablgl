@@ -175,7 +175,7 @@ GlLight: Lighting functions.
    glColorMaterial
    glFog
    glLight
-   glLightModel (1.2 with `color_control)
+   glLightModel (gl 1.2 with `color_control)
    glMaterial
 
 GlList: Call list functions. (*)
@@ -243,7 +243,7 @@ GlTex: Texturing functions.
    glTexGen		-> gen
    glTexImage1D		-> image1d
    glTexImage2D		-> image2d
-   glTexParameter	-> parameter
+   glTexParameter	-> parameter (gl 1.4 with generate_mipmap)
 
 GluMat: GLU matrix functions.
    gluLookAt
@@ -297,4 +297,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.20 2003-03-13 10:15:48 erickt Exp $
+$Id: README,v 1.21 2003-03-15 08:33:36 erickt Exp $
