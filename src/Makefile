@@ -43,6 +43,8 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 
 all: 	var2def	var2switch lablgl
 
+opt:	var2def var2switch lablgl.cmxa
+
 var2def: var2def.cmo
 	$(LINKER) var2def.cmo -o $@
 
