@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.9 2000-04-18 00:24:06 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.10 2000-07-03 04:59:06 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -421,29 +421,28 @@ value ml_raw_set_lo (value raw, value pos, value data)  /* ML */
 
 value ml_raw_alloc (value kind, value len)  /* ML */
 {
-    value raw = Val_unit;
-    value data = Val_unit;
+    CAMLparam0();
+    CAMLlocal1(data);
+    value raw;
     int size = raw_sizeof(kind) * Int_val(len);
     int offset = 0;
 
-    Begin_roots2 (raw,data);
-    raw = alloc_shr (SIZE_RAW,0);
     if (kind == MLTAG_double && sizeof(double) > sizeof(value)) {
 	data = alloc_shr ((size-1)/sizeof(value)+2, Abstract_tag);
 	offset = (data % sizeof(double) ? sizeof(value) : 0);
     } else data = alloc_shr ((size-1)/sizeof(value)+1, Abstract_tag);
+    raw = alloc_small (SIZE_RAW,0);
     Kind_raw(raw) = kind;
     Size_raw(raw) = Val_int(size);
-    initialize(&Base_raw(raw),data);
+    Base_raw(raw) = data;
     Offset_raw(raw) = Val_int(offset);
     Static_raw(raw) = Val_false;
-    End_roots ();
-    return raw;
+    CAMLreturn(raw);
 }
 
 value ml_raw_alloc_static (value kind, value len)  /* ML */
 {
-    value raw = Val_unit;
+    value raw;
     void  *data;
     int size = raw_sizeof(kind) * Int_val(len);
     int offset = 0;
@@ -452,7 +451,7 @@ value ml_raw_alloc_static (value kind, value len)  /* ML */
 	data = stat_alloc (size+sizeof(long));
 	offset = ((long)data % sizeof(double) ? sizeof(value) : 0);
     } else data = stat_alloc (size);
-    raw = alloc_tuple (SIZE_RAW);
+    raw = alloc_small (SIZE_RAW, 0);
     Kind_raw(raw) = kind;
     Size_raw(raw) = Val_int(size);
     Base_raw(raw) = (value) data;

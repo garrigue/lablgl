@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.15 2000-04-18 00:24:06 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.16 2000-07-03 04:59:05 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -241,11 +241,13 @@ value ml_gluPickMatrix (value x, value y, value delX, value delY)
 
 value ml_gluProject (value object)
 {
+    CAMLparam0();
     GLdouble model[16];
     GLdouble proj[16];
     GLint viewport[4];
     GLdouble winX, winY, winZ;
-    value win = Val_unit;
+    CAMLlocal3(win0, win1, win2);
+    value win;
 
     glGetDoublev (GL_MODELVIEW_MATRIX, model);
     glGetDoublev (GL_PROJECTION_MATRIX, proj);
@@ -253,13 +255,14 @@ value ml_gluProject (value object)
     gluProject (Double_val(Field(object,0)), Double_val(Field(object,1)),
 		Double_val(Field(object,2)), model, proj, viewport,
 		&winX, &winY, &winZ);
-    Begin_root (win);
-    win = alloc (3, 0);
-    Field(win,0) = copy_double(winX);
-    Field(win,1) = copy_double(winY);
-    Field(win,2) = copy_double(winZ);
-    End_roots ();
-    return win;
+    win0 = copy_double(winX);
+    win1 = copy_double(winY);
+    win2 = copy_double(winZ);
+    win = alloc_small(3, 0);
+    Field(win,0) = win0;
+    Field(win,1) = win1;
+    Field(win,2) = win2;
+    CAMLreturn(win);
 }
 
 value ml_gluPwlCurve (value nurbs, value count, value data, value tag)
@@ -327,12 +330,14 @@ ML_3 (gluTessVertex, Tess_val, Double_raw, Opt_val)
 
 value ml_gluUnProject (value win)
 {
+    CAMLparam0();
     GLdouble model[16];
     GLdouble proj[16];
     GLint viewport[4];
-    value obj = Val_unit;
     GLdouble objX, objY, objZ;
     GLint ok;
+    CAMLlocal3(obj0,obj1,obj2);
+    value obj;
 
     glGetDoublev (GL_MODELVIEW_MATRIX, model);
     glGetDoublev (GL_PROJECTION_MATRIX, proj);
@@ -341,11 +346,12 @@ value ml_gluUnProject (value win)
 		       Double_val(Field(win,2)), model, proj, viewport,
 		       &objX, &objY, &objZ);
     if (!ok) ml_raise_gl ("Glu.unproject : point out of window");
-    Begin_root (obj);
-    obj = alloc_tuple (3);
-    Field(obj,0) = copy_double(objX);
-    Field(obj,1) = copy_double(objY);
-    Field(obj,2) = copy_double(objZ);
-    End_roots ();
+    obj0 = copy_double(objX);
+    obj1 = copy_double(objY);
+    obj2 = copy_double(objZ);
+    obj = alloc_small (3, 0);
+    Field(obj,0) = obj0;
+    Field(obj,1) = obj1;
+    Field(obj,2) = obj2;
     return obj;
 }
