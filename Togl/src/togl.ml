@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.17 2000-02-28 07:43:55 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.18 2000-03-29 22:48:10 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -114,11 +114,11 @@ external _dump_to_eps_file : t -> string -> bool -> unit
 type w
 type widget = w Widget.widget
 
-let togl_table = Hashtbl.create size:7
+let togl_table = Hashtbl.create 7
 
 let wrap f (w : widget) =
   let togl =
-    try Hashtbl.find togl_table key:w
+    try Hashtbl.find togl_table w
     with Not_found -> raise (TkError "Unreferenced togl widget")
   in f togl
 
@@ -139,14 +139,14 @@ let make_current togl =
   ignore (tkEval [|TkToken (Widget.name togl); TkToken "makecurrent"|])
 
 let null_func _ = ()
-let display_table = Hashtbl.create size:7
-and reshape_table = Hashtbl.create size:7
-and overlay_table = Hashtbl.create size:7
+let display_table = Hashtbl.create 7
+and reshape_table = Hashtbl.create 7
+and overlay_table = Hashtbl.create 7
 
 let cb_of_togl table togl =
   try 
     let key = _ident togl in
-    let cb = Hashtbl.find :key table in
+    let cb = Hashtbl.find table key in
     ignore (tkEval [|TkToken key; TkToken "makecurrent"|]);
     cb ()
   with Not_found -> ()
@@ -171,7 +171,7 @@ let _ = Callback.register "togl_callbacks" callback_table
 
 let callback_func table (w : widget) :cb =
   let key = Widget.name w in
-  (try Hashtbl.remove :key table with Not_found -> ());
+  (try Hashtbl.remove table key with Not_found -> ());
   Hashtbl.add :key data:cb table
 
 let display_func = callback_func display_table
@@ -184,7 +184,7 @@ let dump_to_eps_file :filename ?(:rgba=false) ?:render togl =
   let render =
     match render with Some f -> f
     | None ->
-	try Hashtbl.find key:(_ident togl) display_table
+	try Hashtbl.find  display_table (_ident togl)
 	with Not_found ->
 	  raise (TkError "Togl.dump_to_eps_file : no render function")
   in
@@ -249,10 +249,10 @@ let create ?:name =
 	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);
       callback_table.(destroy_id) <-
         (fun t ->
-	  begin try Hashtbl.remove key:w togl_table with Not_found -> () end;
-	  List.iter [display_table; reshape_table; overlay_table] fun:
+	  begin try Hashtbl.remove togl_table w with Not_found -> () end;
+	  List.iter [display_table; reshape_table; overlay_table] f:
 	    begin fun tbl ->
-	      try Hashtbl.remove tbl key:(Widget.name w) with Not_found -> ()
+	      try Hashtbl.remove tbl (Widget.name w) with Not_found -> ()
 	    end);
       let command =
 	[|TkToken "togl"; TkToken (Widget.name w);

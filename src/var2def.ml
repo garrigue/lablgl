@@ -1,4 +1,4 @@
-(* $Id: var2def.ml,v 1.5 2000-02-28 07:43:56 garrigue Exp $ *)
+(* $Id: var2def.ml,v 1.6 2000-03-29 22:48:10 garrigue Exp $ *)
 
 (* Compile a list of variant tags into CPP defines *) 
 
@@ -20,7 +20,7 @@ let lexer = make_lexer ["->"; "$$"]
 
 let main () =
   let s = lexer (Stream.of_channel stdin) in
-  let tags = Hashtbl.create size:57 in
+  let tags = Hashtbl.create 57 in
   try while true do match s with parser
       [< ' Ident tag >] ->
 	print_string "#define MLTAG_";
@@ -30,7 +30,7 @@ let main () =
 	begin try
 	  failwith
 	    (String.concat sep:" "
-	       ["Doublon tag:";tag;"and";Hashtbl.find key:hash tags])
+	       ["Doublon tag:";tag;"and";Hashtbl.find tags hash])
 	with Not_found -> Hashtbl.add key:hash data:tag tags
 	end;
 	print_int hash;
