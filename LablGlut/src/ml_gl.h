@@ -1,9 +1,8 @@
-/* $Id: ml_gl.h,v 1.1 2003-10-22 23:34:54 ijtrotts Exp $ */
+/* $Id: ml_gl.h,v 1.2 2003-10-28 05:16:37 ijtrotts Exp $ */
+/* This file was copied (gratefully) from J. Garrigue's LablGL */
 
 #ifndef _ml_gl_
 #define _ml_gl_
-
-#include "ml_raw.h"
 
 void ml_raise_gl (const char *errmsg) Noreturn;
 #define copy_string_check lablgl_copy_string_check
