@@ -37,7 +37,7 @@ LABLTKDIR = $(LIBDIR)/labltk41
 INSTALLDIR = $(LIBDIR)/lablGL
 
 # Where is Togl (default)
-TOGLDIR = Togl-1.4
+TOGLDIR = Togl
 
 # The C compiler (Togl only)
 CC = cc
