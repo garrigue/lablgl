@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.5 1998-01-23 13:39:21 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.6 2000-04-18 00:24:07 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -54,6 +54,9 @@ static value *callbacks = NULL;
 #define CALLBACK(func) \
 static void callback_##func (struct Togl *togl) \
 { callback (Field(*callbacks, func), Val_addr(togl)); }
+#define CALLBACK_const(func) \
+static void callback_##func (const struct Togl *togl) \
+{ callback (Field(*callbacks, func), Val_addr(togl)); }
 
 #define ENABLER(func) \
 value ml_Togl_##func (value unit) \
@@ -67,7 +70,7 @@ CALLBACK (ReshapeFunc)
 CALLBACK (DestroyFunc)
 CALLBACK (TimerFunc)
 CALLBACK (OverlayDisplayFunc)
-CALLBACK (RenderFunc)
+CALLBACK_const (RenderFunc)
 
 ENABLER (CreateFunc)
 ENABLER (DisplayFunc)

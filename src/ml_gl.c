@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.23 1998-04-22 04:08:20 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.24 2000-04-18 00:24:06 garrigue Exp $ */
 
 #include <strings.h>
 #include <GL/gl.h>
@@ -51,6 +51,7 @@ value ml_gl_make_table (value unit)
 	tag_table[hash].key = input_table[i].key;
 	tag_table[hash].data = input_table[i].data;
     }
+    return Val_unit;
 }
 
 GLenum GLenum_val(value tag)
@@ -394,7 +395,7 @@ value ml_glPixelTransfer (value param)
 ML_2 (glPixelZoom, Float_val, Float_val)
 ML_1 (glPointSize, Float_val)
 ML_2 (glPolygonMode, GLenum_val, GLenum_val)
-ML_1 (glPolygonStipple, Byte_raw)
+ML_1 (glPolygonStipple, (unsigned char *)Byte_raw)
 ML_0 (glPopAttrib)
 ML_0 (glPopMatrix)
 ML_0 (glPopName)

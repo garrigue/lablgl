@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.15 2000-04-16 12:35:34 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.16 2000-04-18 00:24:07 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -502,7 +502,7 @@ let main () =
 	  view3d#draw);
   let rec viewselfn () =  
     begin
-      Textvariable.handle viewseltv viewselfn;
+      Textvariable.handle viewseltv ~callback:viewselfn;
       view3d#draw
     end in
   viewselfn ();

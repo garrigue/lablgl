@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.14 2000-02-29 05:30:38 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.15 2000-04-18 00:24:06 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -70,7 +70,7 @@ value ml_gluBuild1DMipmaps (value internal, value width,
     error = gluBuild1DMipmaps (GL_TEXTURE_1D, GLenum_val(internal),
 			       Int_val(width), GLenum_val(format),
 			       Type_raw(data), Void_raw(data));
-    if (error) ml_raise_gl(gluErrorString(error));
+    if (error) ml_raise_gl((char*)gluErrorString(error));
     return Val_unit;
 }
 
@@ -83,7 +83,7 @@ value ml_gluBuild2DMipmaps (value internal, value width, value height,
 			       Int_val(width), Int_val(height),
 			       GLenum_val(format),
 			       Type_raw(data), Void_raw(data));
-    if (error) ml_raise_gl(gluErrorString(error));
+    if (error) ml_raise_gl((char*)gluErrorString(error));
     return Val_unit;
 }
 

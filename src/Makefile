@@ -37,7 +37,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 	$(COMPILER) $(OCAMLINC) $<
 
 .c.o:
-	$(COMPILER) -ccopt "-g -I$(TOGLDIR) $(INCLUDES)" $<
+	$(CC) $(COPTS) -I$(LIBDIR) -I$(TOGLDIR) $(INCLUDES) $<
 
 .var.h:
 	var2def < $< > $@

@@ -37,7 +37,7 @@ INSTALLDIR = $(LIBDIR)/lablGL
 # Where is Togl (default)
 TOGLDIR = Togl
 
-# The C compiler (Togl only)
+# The C compiler
 CC = cc
 
 # Compiler options:

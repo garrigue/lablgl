@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.8 1999-04-14 14:05:51 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.9 2000-04-18 00:24:06 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -94,7 +94,7 @@ value ml_raw_read (value raw, value pos, value len)  /* ML */
     case MLTAG_bitmap:
     case MLTAG_ubyte:
     {
-	unsigned char *byte_raw = Byte_raw(raw)+s;
+	unsigned char *byte_raw = (unsigned char *)Byte_raw(raw)+s;
 	for (i = 0; i < l; i++)
 	    Field(ret,i) = Val_long (*byte_raw++);
 	break;
@@ -115,7 +115,7 @@ value ml_raw_read (value raw, value pos, value len)  /* ML */
     }
     case MLTAG_ushort:
     {
-	unsigned short *short_raw = Short_raw(raw)+s;
+	unsigned short *short_raw = (unsigned short *)Short_raw(raw)+s;
 	for (i = 0; i < l; i++)
 	    Field(ret,i) = Val_long (*short_raw++);
 	break;
@@ -129,7 +129,7 @@ value ml_raw_read (value raw, value pos, value len)  /* ML */
     }
     case MLTAG_uint:
     {
-	unsigned int *int_raw = Int_raw(raw)+s;
+	unsigned int *int_raw = (unsigned int *)Int_raw(raw)+s;
 	for (i = 0; i < l; i++)
 	    Field(ret,i) = Val_long (*int_raw++);
 	break;
@@ -143,7 +143,7 @@ value ml_raw_read (value raw, value pos, value len)  /* ML */
     }
     case MLTAG_ulong:
     {
-	unsigned long *long_raw = Long_raw(raw)+s;
+	unsigned long *long_raw = (unsigned long *)Long_raw(raw)+s;
 	for (i = 0; i < l; i++)
 	    Field(ret,i) = Val_long (*long_raw++);
 	break;
