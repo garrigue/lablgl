@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.25 2000-06-12 08:39:47 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.26 2000-07-03 04:51:46 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -24,8 +24,8 @@ type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance
   |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
-let format_size format =
-  match (format :> format) with
+let format_size (#format as f) =
+  match f with
     `rgba -> 4
   | `rgb -> 3
   | `luminance_alpha -> 2
