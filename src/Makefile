@@ -22,7 +22,7 @@ XO = .o
 XS = .so
 # Windows specific
 MKLIB=lib /nologo /debugtype:CV /out:
-MKDLL=link /nologo /dll `ocamlc -where`/ocamlrun.lib /out:
+MKDLL=link /nologo /dll "$(LIBDIR)/ocamlrun.lib" /out:
 
 include Makefile.config
 
@@ -155,25 +155,25 @@ glu_tags.c: glu_tags.var
 	./var2switch GLU_ < glu_tags.var > $@
 
 install:
-	@$(MAKE) real-install LIBDIR=$(LIBDIR)
+	@$(MAKE) real-install LIBDIR="$(LIBDIR)"
 
 real-install:
-	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
-	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp liblablgl$(XA) lablgl.cma libtogl$(XA) togl.cma $(INSTTOP) $(INSTALLDIR)
-	cd $(INSTALLDIR) && $(RANLIB) liblablgl$(XA) libtogl$(XA)
-	cp lablgl$(XB) $(BINDIR)
+	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
+	cp $(MLOBJS:.cmo=.cmi) "$(INSTALLDIR)"
+	cp $(MLOBJS:.cmo=.mli) "$(INSTALLDIR)"
+	cp liblablgl$(XA) lablgl.cma libtogl$(XA) togl.cma $(INSTTOP) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) liblablgl$(XA) libtogl$(XA)
+	cp lablgl$(XB) "$(BINDIR)"
 	@if test -f dlllablgl$(XS); then $(MAKE) installdll; fi
-	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
+	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR="$(LIBDIR)"; fi
 
 installdll:
-	cp dlllablgl$(XS) dlltogl$(XS) $(DLLDIR)
+	cp dlllablgl$(XS) dlltogl$(XS) "$(DLLDIR)"
 
 installopt:
 	cp lablgl.cmxa lablgl$(XA) togl.cmxa togl$(XA) \
-	   $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
-	cd $(INSTALLDIR) && $(RANLIB) lablgl$(XA) togl$(XA)
+	   $(MLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) lablgl$(XA) togl$(XA)
 
 clean:
 	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
