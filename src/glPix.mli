@@ -1,4 +1,4 @@
-(* $Id: glPix.mli,v 1.8 2001-10-01 02:59:13 garrigue Exp $ *)
+(* $Id: glPix.mli,v 1.9 2004-12-02 02:01:16 garrigue Exp $ *)
 
 (* An abstract type for pixmaps *)
 
@@ -36,7 +36,7 @@ val draw : ([< Gl.format], [< Gl.kind]) t -> unit
 type map =
   [`a_to_a|`b_to_b|`g_to_g|`i_to_a|`i_to_b
   |`i_to_g|`i_to_i|`i_to_r|`r_to_r|`s_to_s]
-val map : map -> float array -> unit
+val map : map -> [`float] Raw.t -> unit
 
 type store_param = [
     `pack_swap_bytes of bool

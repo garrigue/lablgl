@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.13 2004-11-02 07:03:34 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.14 2004-12-02 02:01:16 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/misc.h>
@@ -155,6 +155,7 @@ CAMLprim value ml_raw_read (value raw, value pos, value len)  /* ML */
 
 CAMLprim value ml_raw_read_string (value raw, value pos, value len)  /* ML */
 {
+    CAMLparam1(raw);
     int s = Int_val(pos);
     int l = Int_val(len);
     value ret;
@@ -163,7 +164,7 @@ CAMLprim value ml_raw_read_string (value raw, value pos, value len)  /* ML */
 	invalid_argument("Raw.read_string");
     ret = alloc_string (l);
     memcpy (String_val(ret), Bp_val(Addr_raw(raw))+s, l);
-    return ret;
+    CAMLreturn(ret);
 }
 
 CAMLprim value ml_raw_write_string (value raw, value pos, value data)  /* ML */
