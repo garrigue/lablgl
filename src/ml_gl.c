@@ -1,25 +1,30 @@
-/* $Id: ml_gl.c,v 1.26 2001-02-22 05:01:35 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.27 2002-05-01 03:35:00 garrigue Exp $ */
 
 #include <strings.h>
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
+#include <caml/alloc.h>
+#include <caml/fail.h>
 #include "ml_raw.h"
 #include "gl_tags.h"
 #include "ml_gl.h"
 
 /* #include <stdio.h> */
 
-extern void invalid_argument (char *) Noreturn;
-extern void raise_with_string (value tag, const char * msg) Noreturn;
-
 void ml_raise_gl(const char *errmsg)
 {
   static value * gl_exn = NULL;
   if (gl_exn == NULL)
       gl_exn = caml_named_value("glerror");
-  raise_with_string(*gl_exn, errmsg);
+  raise_with_string(*gl_exn, (char*)errmsg);
+}
+
+value copy_string_check (const char *str)
+{
+    if (!str) ml_raise_gl("Null string");
+    return copy_string ((char*) str);
 }
 
 struct record {
@@ -77,8 +82,6 @@ GLenum GLenum_val(value tag)
     ml_raise_gl("Unknown tag");
 }
 */
-
-extern mlsize_t string_length (value);
 
 ML_2 (glAccum, GLenum_val, Float_val)
 ML_2 (glAlphaFunc, GLenum_val, Float_val)
@@ -185,7 +188,7 @@ ML_1 (glFrontFace, GLenum_val)
 ML_3 (glFrustum, Pair(arg1,Double_val,Double_val),
       Pair(arg2,Double_val,Double_val), Pair(arg3,Double_val,Double_val))
 
-ML_1_ (glGetString, GLenum_val, copy_string)
+ML_1_ (glGetString, GLenum_val, copy_string_check)
 
 value ml_glHint (value target, value hint)
 {

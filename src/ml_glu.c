@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.17 2000-12-20 03:56:21 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.18 2002-05-01 03:35:00 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -98,7 +98,7 @@ ML_1 (gluEndPolygon, Tess_val)
 ML_1 (gluEndSurface, Nurb_val)
 ML_1 (gluEndTrim, Nurb_val)
 
-ML_1_ (gluGetString, GLUenum_val, copy_string)
+ML_1_ (gluGetString, GLUenum_val, copy_string_check)
 
 ML_4 (gluLoadSamplingMatrices, Nurb_val, Float_raw, Float_raw, Int_raw)
 ML_3 (gluLookAt, Triple(arg1,Double_val,Double_val,Double_val),

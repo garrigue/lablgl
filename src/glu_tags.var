@@ -1,4 +1,7 @@
-(* $Id: glu_tags.var,v 1.4 1998-01-23 13:45:50 garrigue Exp $: tags for GLU library *)
+(* $Id: glu_tags.var,v 1.5 2002-05-01 03:35:00 garrigue Exp $: tags for GLU library *)
+
+(* gluGetString *)
+version extensions
 
 (* gluNextContour *)
 exterior interior unknown ccw cw
