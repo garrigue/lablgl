@@ -1,9 +1,12 @@
-/* $Id: ml_gl.h,v 1.8 1998-01-12 14:08:53 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.9 1998-01-13 11:07:15 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
 
+void ml_raise_gl (char *errmsg) Noreturn;
+
 #define Float_val(dbl) ((float) Double_val(dbl))
+#define Addr_val(addr) ((void *) Field(addr,0))
 
 #define ML_void(cname) \
 value ml_##cname (value unit) \
@@ -100,28 +103,32 @@ value ml_##cname (value s) \
 value ml_##cname (value unit) \
 { return Val_int (cname ()); }
 
+#define ML_void_addr(cname) \
+value ml_##cname (value unit) \
+{ return Val_addr (cname ()); }
+
 #define ML_int_int(cname) \
 value ml_##cname (value i) \
 { return Val_int (cname (Int_val (i))); }
 
-#define ML_togl(cname) \
-value ml_##cname (struct Togl *togl) \
-{ cname (Togl_val(togl)); return Val_unit; }
+#define ML_addr(cname) \
+value ml_##cname (void *addr) \
+{ cname (Addr_val(addr)); return Val_unit; }
 
-#define ML_togl_string(cname) \
-value ml_##cname (struct Togl *togl) \
-{ return copy_string (cname (Togl_val(togl))); }
+#define ML_addr_string(cname) \
+value ml_##cname (void *addr) \
+{ return copy_string (cname (Addr_val(addr))); }
 
-#define ML_togl_int(cname) \
-value ml_##cname (struct Togl *togl) \
-{ return Val_int (cname (Togl_val(togl))); }
+#define ML_addr_int(cname) \
+value ml_##cname (void *addr) \
+{ return Val_int (cname (Addr_val(addr))); }
 
-#define ML_togl_int_(cname) \
-value ml_##cname (value togl, value n) \
-{ cname (Togl_val(togl), Int_val(n)); return Val_unit; }
+#define ML_addr_int_(cname) \
+value ml_##cname (value addr, value n) \
+{ cname (Addr_val(addr), Int_val(n)); return Val_unit; }
 
-#define ML_togl_TOGLenum_(cname) \
-value ml_##cname (value togl, value tag) \
-{ cname (Togl_val(togl), TOGLenum_val(tag)); return Val_unit; }
+#define ML_addr_TOGLenum_(cname) \
+value ml_##cname (value addr, value tag) \
+{ cname (Addr_val(addr), TOGLenum_val(tag)); return Val_unit; }
 
 #endif

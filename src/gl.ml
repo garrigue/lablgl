@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.8 1998-01-12 02:44:58 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.9 1998-01-13 11:07:11 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -119,29 +119,15 @@ and rotate :angle ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
 and scale ?:x [< 0. >] ?:y [< 0. >] ?:z [< 0. >] =
   _scale :x :y :z
 
-external look_at :
-    eye:(float * float * float) ->
-    center:(float * float * float) ->
-    up:(float * float * float) -> unit
-    = "ml_gluLookAt"
-
 external frustum :
     left:float -> right:float -> bottom:float ->
     top:float -> near:float -> far:float -> unit
     = "ml_glFrustum"
 
-external perspective :
-    fovy:float -> aspect:float -> znear:float -> zfar:float -> unit
-    = "ml_gluPerspective"
-
 external ortho :
     left:float -> right:float -> bottom:float ->
     top:float -> near:float -> far:float -> unit
     = "ml_glOrtho"
-
-external ortho2d :
-    left:float -> right:float -> bottom:float -> top:float -> unit
-    = "ml_gluOrtho2D"
 
 external viewport : x:int -> y:int -> w:int -> h:int -> unit
     = "ml_glViewport"
@@ -336,7 +322,7 @@ external fog : fog_param -> unit = "ml_glFog"
 
 type glist = int
 
-let next_list : glist -> glist = succ
+let shift_list : glist -> by:int -> glist = fun l :by -> l+by
 
 external is_list : glist -> bool = "ml_glIsList"
 external gen_lists : int -> glist = "ml_glGenLists"
@@ -347,7 +333,58 @@ external new_list :
 external end_list : unit -> unit = "ml_glEndList"
 external call_list : glist -> unit = "ml_glCallList"
 
+external call_lists : [byte(string) int(int array)] -> unit
+    = "ml_glCallLists"
+external list_base : glist -> unit = "ml_glListBase"
+
 (*
-external call_lists
-external list_base
+type component = [
+      alpha
+      luminance
+      luminance_alpha
+      rgb
+      rgba
+      depth_component
+  ]
+
+type format = [
+      color_index
+      red
+      green
+      blue
+      alpha
+      rgb
+      rgba
+      luminance
+      luminance_alpha
+      depth_component
+  ]
+
+type bitmap
+
+type data = [
+      byte (string)
+      bitmap (bitmap)
+      int (int array)
+      float (float array)
+  ]
+
+external _tex_image_2D :
+      level:int -> components:component -> width:int -> height:int ->
+      border:int -> format:format -> data -> unit
+    = "ml_glTexImage2D"
+
+let rec is_power n =
+  if n <= 1 then n = 1 else n land 1 = 0 & is_power (n lsr 1)
+
+let tex_image_2D :level :components :width :height :border :format data =
+  if not (is_power (width-border)) or not (is_power (height-border))
+  then invalid_arg "Gl.tex_image_2D";
+  let size =
+    match format with
+      `color_index|`red|`green|`blue|`alpha|`luminance|`depth_component -> 1
+    | `luminance_alpha -> 2
+    | `rgb -> 3
+    | `rgba -> 4
+    
 *)

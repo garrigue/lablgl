@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.2 1998-01-12 14:08:54 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.3 1998-01-13 11:07:17 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -63,8 +63,8 @@ let togl_options_optionals f =
 	 @ may time "-time" cint
 	 @ may width "-width" cint)
 
-type w = Widget.any
-type t = Togl
+type w
+type t
 
 let togl_table = Hashtbl.create size:3
 let callback_table : (t -> unit) array =
@@ -144,6 +144,7 @@ class widget w t =
   method bind = bind w
   method redisplay = post_redisplay t
   method swap_buffers = swap_buffers t
+    (* tkEval [|TkToken (Widget.name w); TkToken "swapbuffers"|]; () *)
   method ident = ident t
   method width = width t
   method height = height t
@@ -157,7 +158,7 @@ class widget w t =
   method overlay_transparent_value = get_overlay_transparent_value t
   method dump_to_eps_file = dump_to_eps_file t
   method make_current =
-    tkEval [|TkToken (Widget.name w); TkToken "makecurrent"|]
+    tkEval [|TkToken (Widget.name w); TkToken "makecurrent"|]; ()
 end
 
 let ready = ref false

@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.2 1998-01-12 14:08:53 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.3 1998-01-13 11:07:16 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -36,8 +36,6 @@ static value Val_togl (struct Togl *togl)
     Field(wrapper,0) = (value) togl;
     return wrapper;
 }
-
-#define Togl_val(togl) ((struct Togl *) Field(togl,0))
 
 enum {
      CreateFunc = 0,
@@ -78,11 +76,11 @@ ENABLER (TimerFunc)
 ENABLER (OverlayDisplayFunc)
 
 ML_void (Togl_ResetDefaultCallbacks)
-ML_togl (Togl_PostRedisplay)
-ML_togl (Togl_SwapBuffers)
-ML_togl_string (Togl_Ident)
-ML_togl_int (Togl_Width)
-ML_togl_int (Togl_Height)
+ML_addr (Togl_PostRedisplay)
+ML_addr (Togl_SwapBuffers)
+ML_addr_string (Togl_Ident)
+ML_addr_int (Togl_Width)
+ML_addr_int (Togl_Height)
 
 value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 {
@@ -98,21 +96,21 @@ value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
     case MLTAG_helvetica_12:	fontname = TOGL_BITMAP_HELVETICA_12; break;
     case MLTAG_helvetica_18:	fontname = TOGL_BITMAP_HELVETICA_18; break;
     }
-    return Val_int (Togl_LoadBitmapFont (Togl_val(togl), fontname));
+    return Val_int (Togl_LoadBitmapFont (Addr_val(togl), fontname));
 }
 
-ML_togl_int_ (Togl_UnloadBitmapFont)
-ML_togl_TOGLenum_ (Togl_UseLayer)
-ML_togl (Togl_ShowOverlay)
-ML_togl (Togl_HideOverlay)
-ML_togl (Togl_PostOverlayRedisplay)
-ML_togl_int (Togl_ExistsOverlay)
-ML_togl_int (Togl_GetOverlayTransparentValue)
+ML_addr_int_ (Togl_UnloadBitmapFont)
+ML_addr_TOGLenum_ (Togl_UseLayer)
+ML_addr (Togl_ShowOverlay)
+ML_addr (Togl_HideOverlay)
+ML_addr (Togl_PostOverlayRedisplay)
+ML_addr_int (Togl_ExistsOverlay)
+ML_addr_int (Togl_GetOverlayTransparentValue)
 
 value ml_Togl_DumpToEpsFile (value togl, value filename, value rgbFlag)
 {
     if (callbacks == NULL) callbacks = caml_named_value ("togl_callbacks");
-    if (Togl_DumpToEpsFile(Togl_val(togl), String_val(filename),
+    if (Togl_DumpToEpsFile(Addr_val(togl), String_val(filename),
 			   Int_val(rgbFlag), callback_RenderFunc)
 	== TCL_ERROR)
 	tk_error ("Dump to EPS file failed");

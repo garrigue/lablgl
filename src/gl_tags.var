@@ -154,6 +154,13 @@ exp2
 compile
 compile_and_execute
 
+(* data types *)
+byte
+short
+int
+float
+double
+
 $$
 (* glLightModel *)
 (* ambient *)

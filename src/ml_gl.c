@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.8 1998-01-12 02:44:59 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.9 1998-01-13 11:07:14 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -9,8 +9,7 @@
 extern void invalid_argument (char *) Noreturn;
 extern void raise_with_string (value tag, char * msg) Noreturn;
 
-static void raise_gl (char *errmsg) Noreturn;
-static void raise_gl(char *errmsg)
+void ml_raise_gl(char *errmsg)
 {
   static value * gl_exn = NULL;
   if (gl_exn == NULL)
@@ -71,7 +70,7 @@ GLenum GLenum_val(value tag)
     {
 #include "gl_tags.c"
     }
-    raise_gl("Unknown tag");
+    ml_raise_gl("Unknown tag");
 }
 
 ML_GLenum(glBegin)
@@ -132,23 +131,9 @@ ML_double3(glTranslated)
 ML_double4(glRotated)
 ML_double3(glScaled)
 
-#include <GL/glu.h>
-
-value ml_gluLookAt(value eye, value center, value up)  /* ML */
-{
-    gluLookAt (Double_val(Field(eye,0)), Double_val(Field(eye,1)),
-	       Double_val(Field(eye,2)), Double_val(Field(center,0)),
-	       Double_val(Field(center,1)), Double_val(Field(center,2)),
-	       Double_val(Field(up,0)), Double_val(Field(up,1)),
-	       Double_val(Field(up,2)));
-    return Val_unit;
-}
-
 ML_double6(glFrustum)
-ML_double4(gluPerspective)
 
 ML_double6(glOrtho)
-ML_double4(gluOrtho2D)
 
 ML_int4(glViewport)
 ML_double2(glDepthRange)
@@ -290,3 +275,27 @@ value ml_glNewList (value glist, value mode)  /* ML */
 
 ML_void (glEndList)
 ML_int (glCallList)
+ML_int (glListBase)
+
+extern mlsize_t string_length (value);
+
+value ml_glCallLists (value indexes)  /* ML */
+{
+    int len,i;
+    int * table;
+
+    switch (Field(indexes,0)) {
+    case MLTAG_byte:
+	glCallLists (string_length(Field(indexes,1)),
+		     GL_UNSIGNED_BYTE,
+		     String_val(Field(indexes,1)));
+	break;
+    case MLTAG_int:
+	len = Wosize_val (indexes);
+	table = calloc (len, sizeof (GLint));
+	for (i = 0; i < len; i++) table[i] = Int_val (Field(indexes,i));
+	glCallLists (len, GL_INT, table);
+	break;
+    }
+    return Val_unit;
+}

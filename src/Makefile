@@ -6,11 +6,10 @@ LINKER=olablc
 include Makefile.config
 
 # Files
-MLOBJS =	gl.cmo		gltk.cmo	aux.cmo		glm.cmo \
-		togl.cmo
-COBJS =		ml_gl.o		ml_tk.o		ml_aux.o \
-		ml_togl.o	togl.o
-
+MLOBJS =	gl.cmo		glu.cmo		glm.cmo 	togl.cmo
+#gltk.cmo	aux.cmo
+COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	togl.o
+#ml_tk.o	ml_aux.o
 # Default rules
 
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h
@@ -46,7 +45,7 @@ lablgl: lablgl.cma liblablgl.a
 	olablmktop $(INCLUDES) -custom -o lablgl \
 		unix.cma tk41.cma lablgl.cma -ccopt -L. \
 		-cclib -llablgl -cclib -lunix \
-		$(AUXLIB) $(GLLIBS) $(XLIBS) $(TKLIBS)
+		$(GLLIBS) $(XLIBS) $(TKLIBS)
 
 labltogl: 
 
@@ -59,12 +58,17 @@ tk_tags.c: tk_tags.var
 togl_tags.c: togl_tags.var
 	./var2switch TOGL_ < togl_tags.var > $@
 
+glu_tags.c: glu_tags.var
+	./var2switch GLU_ < glu_tags.var > $@
+
 clean:
-	rm -f *.cm? *.o gl_tags.[ch] tk_tags.[ch] *~ #*
+	rm -f *.cm? ml_*.o gl_tags.[ch] tk_tags.[ch] *~ #*
 
 ml_gl.o: ml_gl.h gl_tags.h gl_tags.c
 ml_tk.o: ml_gl.h tk_tags.h tk_tags.c
 ml_aux.o: ml_gl.h
 ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
+ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
 glm.cmo: gl.cmi
 aux.cmo: gltk.cmi
+togl.cmo: gl.cmi
