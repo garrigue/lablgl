@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.10 1998-01-26 00:54:27 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.11 1998-04-16 07:10:45 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -265,8 +265,8 @@ value ml_gluProject (value object)
     Field(win,0) = winX;
     Field(win,1) = winY;
     Field(win,2) = winZ;
-    gluProject (Field(object,0), Field(object,1), Field(object,2),
-		model, proj, viewport,
+    gluProject (Double_val(Field(object,0)), Double_val(Field(object,1)),
+		Double_val(Field(object,2)), model, proj, viewport,
 		(double *) winX, (double *) winY, (double *) winZ);
     End_roots ();
     return win;
@@ -354,9 +354,9 @@ value ml_gluUnProject (value win)
     Field(obj,0) = objX;
     Field(obj,1) = objY;
     Field(obj,2) = objZ;
-    ok = gluProject (Double_val(Field(win,0)), Double_val(Field(win,1)),
-		     Double_val(Field(win,2)), model, proj, viewport,
-		     (double *) objX, (double *) objY, (double *) objZ);
+    ok = gluUnProject (Double_val(Field(win,0)), Double_val(Field(win,1)),
+		       Double_val(Field(win,2)), model, proj, viewport,
+		       (double *) objX, (double *) objY, (double *) objZ);
     End_roots ();
     if (!ok) ml_raise_gl ("Glu.unproject : point out of window");
     return obj;
