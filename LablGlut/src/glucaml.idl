@@ -97,15 +97,21 @@ quote(ml, "        _gluNurbsCallback nurbs which;;");
 
 // void gluNurbsCallbackData (glu_nurbs nurb, gl_void* userData); <- not needed because we have closures.
 // void gluNurbsCallbackDataEXT (glu_nurbs nurb, gl_void* userData); <- not needed
-void gluNurbsCurve (glu_nurbs nurb, int knotCount, [in, size_is(knotCount)] float knots[], int stride, [in] float control[], int order, unsigned int type);
+void gluNurbsCurve (glu_nurbs nurb, int knotCount, 
+    [in,bigarray] float knots[], int stride, 
+    [in,bigarray] float control[], int order, unsigned int type);
 void gluNurbsProperty (glu_nurbs nurb, unsigned int property, float value);
-void gluNurbsSurface (glu_nurbs nurb, int sKnotCount, [in, size_is(sKnotCount)] float sKnots[], int tKnotCount, [in, size_is(tKnotCount)] float tKnots[], int sStride, int tStride, [in] float control[], int sOrder, int tOrder, unsigned int type);
+void gluNurbsSurface (glu_nurbs nurb, int sKnotCount, 
+    [in,bigarray] float sKnots[], int tKnotCount,
+    [in,bigarray] float tKnots[], int sStride, int tStride, 
+    [in,bigarray] float control[], int sOrder, int tOrder, 
+    unsigned int type);
 void gluOrtho2D (double left, double right, double bottom, double top);
 void gluPartialDisk (glu_quadric quad, double inner, double outer, int slices, int loops, double start, double sweep);
 void gluPerspective (double fovy, double aspect, double zNear, double zFar);
 void gluPickMatrix (double x, double y, double delX, double delY, [in] int viewport[4]);
 int gluProject (double objX, double objY, double objZ, [in] double model[16], [in] double proj[16], [in] int view[16], [out, ref] double* winX, [out, ref] double* winY, [out, ref] double* winZ);
-void gluPwlCurve (glu_nurbs nurb, int count, [in] float data[], int stride, unsigned int type);
+void gluPwlCurve (glu_nurbs nurb, int count, [in,bigarray] float data[], int stride, unsigned int type);
 
 quote(C, "static void c_quadric_callback()                                   ");
 quote(C, "{                                                                    ");
@@ -151,7 +157,7 @@ void gluTessEndContour (glu_tesselator tess);
 void gluTessEndPolygon (glu_tesselator tess);
 void gluTessNormal (glu_tesselator tess, double valueX, double valueY, double valueZ);
 void gluTessProperty (glu_tesselator tess, unsigned int which, double data);
-void gluTessVertex (glu_tesselator tess, [in] double location[]) // void* data argument omitted
+void gluTessVertex (glu_tesselator tess, [in,bigarray] double location[]) // void* data argument omitted
     quote(call, "gluTessVertex(tess, location, NULL);");
     
 int gluUnProject (double winX, double winY, double winZ, [in]
