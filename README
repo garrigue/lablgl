@@ -1,5 +1,5 @@
 
-		LablGL 0.97: Installation and Use instructions
+		LablGL 0.98: Installation and Use instructions
 
 1. Description
 
@@ -8,7 +8,7 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Caml 3.04
+  * Objective Caml 3.05
   * LablTk (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
@@ -30,8 +30,15 @@ everything.
 in this distribution (version 1.5). You may obtain more information
 about Togl at:
 	http://www.mesa3d.org/brianp/Togl.html
+Note that Togl is only compatible with vanilla Tcl/Tk: specially
+patched versions may not work. For instance 8.2.3+ included in old
+debian distributions does not work.
 
 3. Installation
+
+Precompiled versions of lablGL are available for windows, and a number
+of Linux distributions. In this case you just have to install
+necessary packages. Otherwise, compile from source.
 
   a) Edit Makefile.config
 
@@ -43,6 +50,10 @@ about Togl at:
 
   d) Install LablGL
 	% make install
+
+With the windows binary distribution, copy bin\lablgl.bat,
+lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
+in the OCaml distribution.
 
 4. Use
 
@@ -279,4 +290,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.15 2002-03-14 06:21:02 garrigue Exp $
+$Id: README,v 1.16 2002-07-23 09:52:35 garrigue Exp $
