@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.6 1998-04-16 07:19:51 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.7 1998-09-03 04:24:39 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -235,17 +235,13 @@ value ml_raw_read_float (value raw, value pos, value len)  /* ML */
 
     check_size (raw,s+l-1,"Raw.read_float");
     if (l<0 || s<0) invalid_argument("Raw.read_float");
-    Begin_roots1(ret);
-    ret = alloc_shr (l, 0);
+    ret = alloc_shr (l*sizeof(double)/sizeof(value), Double_array_tag);
     if (Kind_raw(raw) == MLTAG_float)
 	for (i = 0; i < l; i++)
-	    initialize (&Field(ret,i),
-			copy_double ((double) Float_raw(raw)[s+i]));
+	    Store_double_field(ret, i, (double) Float_raw(raw)[s+i]);
     else
 	for (i = 0; i < l; i++)
-	    initialize (&Field(ret,i),
-			copy_double (Double_raw(raw)[s+i]));
-    End_roots ();
+	    Store_double_field(ret, i, Double_raw(raw)[s+i]);
     return ret;
 }
 
@@ -264,16 +260,16 @@ value ml_raw_set_float (value raw, value pos, value data)  /* ML */
 value ml_raw_write_float (value raw, value pos, value data)  /* ML */
 {
     int s = Int_val(pos);
-    int i, l = Wosize_val(data);
+    int i, l = Wosize_val(data)*sizeof(value)/sizeof(double);
 
     check_size (raw,s+l-1,"Raw.write_float");
     if (s<0) invalid_argument("Raw.write_float");
     if (Kind_raw(raw) == MLTAG_float)
 	for (i = 0; i < l; i++)
-	    Float_raw(raw)[s+i] = (float) Double_val(Field(data,i));
+	    Float_raw(raw)[s+i] = (float) Double_field(data,i);
     else 
 	for (i = 0; i < l; i++)
-	    Double_raw(raw)[s+i] = Double_val(Field(data,i));
+	    Double_raw(raw)[s+i] = Double_field(data,i);
     return Val_unit;
 }
 
