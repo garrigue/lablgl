@@ -1,6 +1,6 @@
                                    LablGLUT
                                  Issac Trotts 
-                            <ijtrotts@ucdavis.edu>
+                             ijtrotts@ucdavis.edu
                                      2003
 
 Introduction
@@ -13,7 +13,7 @@ based on Hugues Casse's FrontC library and Rewrite program.  c2ml partially
 converts GLUT demos written in C to OCaml with the LablGLUT bindings, though 
 some additional modification is usually necessary to get them to work.
 
-The GL and GLU bindings are intended to supplement, but not replace the nice
+The GL and GLU bindings are intended to supplement, but not replace the 
 LablGL binding by Jacques Garrigue.
 
 Comparison of GL wrappers for OCaml
@@ -31,11 +31,13 @@ Includes GLU bindings           | yes    | no          | yes        |
    optional function arguments. 
 *2 camlgl's glut wrapper doesn't appear to support multiple windows.
 
-Installation
-============
+Installation and use
+====================
     ./config.sh
     make
     make install
+    cd ../progs/redbook
+    for i in *.ml; do echo $i; lablglut $i; done
 
 Todo
 ====
