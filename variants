@@ -1,0 +1,14 @@
+color
+depth
+accum
+stencil
+points
+lines
+polygon
+triangles
+quads
+line_strip
+line_loop
+triangle_strip
+triangle_fan
+quad_strip     
