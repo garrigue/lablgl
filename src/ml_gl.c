@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.24 2000-04-18 00:24:06 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.25 2001-02-20 01:05:02 garrigue Exp $ */
 
 #include <strings.h>
 #include <GL/gl.h>
@@ -402,7 +402,7 @@ ML_0 (glPopName)
 
 value ml_glPushAttrib (value list)
 {
-    GLbitfield mask;
+    GLbitfield mask = 0;
 
     while (list != Val_int(0)) {
 	switch (Field(list,0)) {
