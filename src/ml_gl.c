@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.19 1998-01-26 00:54:26 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.20 1998-01-29 08:32:25 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -344,7 +344,7 @@ value ml_glPixelTransfer (value param)
 ML_2 (glPixelZoom, Float_val, Float_val)
 ML_1 (glPointSize, Float_val)
 ML_2 (glPolygonMode, GLenum_val, GLenum_val)
-ML_1 (glPolygonStipple, String_val)
+ML_1 (glPolygonStipple, Byte_raw)
 ML_0 (glPopAttrib)
 ML_0 (glPopMatrix)
 ML_0 (glPopName)

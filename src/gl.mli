@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.14 1998-01-26 00:54:23 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.15 1998-01-29 08:32:24 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -190,7 +190,7 @@ external pixel_zoom : x:float -> y:float -> unit = "ml_glPixelZoom"
 external point_size : float -> unit = "ml_glPointSize"
 external polygon_mode : face:face -> mode:[fill line point] -> unit
   = "ml_glPolygonMode"
-external polygon_stipple : mask:string -> unit = "ml_glPolygonStipple"
+external polygon_stipple : [bitmap] Raw.t -> unit = "ml_glPolygonStipple"
 external pop_attrib : unit -> unit = "ml_glPopAttrib"
 external pop_matrix : unit -> unit = "ml_glPopMatrix"
 external pop_name : unit -> unit = "ml_glPopName"
