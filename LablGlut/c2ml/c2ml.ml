@@ -336,19 +336,13 @@ and print_name_group (typ, sto, names) =
 	print_commas false print_name names
 
 and print_single_name (typ, sto, name) =
-        (* print "{SINGLE_NAME{"; *)
 	if sto <> NO_STORAGE then begin
 		print (get_storage sto);
 		space ()
 	end;
-        (* print "{BASETYPE{"; *)
 	print_base_type typ;
-        (* print "}BASETYPE}"; *)
 	space ();
-        (* print "{NAME{"; *)
 	print_name name
-        (* print "}NAME}"; *)
-        (* print "}SINGLE_NAME}" *)
 
 and print_params (pars : single_name list) (ell : bool) =
 	print_with_seps " " false print_single_name pars;
@@ -506,9 +500,9 @@ and print_expression (exp : expression) (lvl : int) =
 					| CONST_CHAR c -> print ("'" ^ (escape_string c) ^ "'")
 					| CONST_STRING s -> print ("\"" ^ (escape_string s) ^ "\"")
 					| CONST_COMPOUND exps ->
-						print "{";
+						print "[| ";
 						print_comma_exps exps;
-						print "}")
+						print " |]")
 		| VARIABLE name ->
                         let mysub str a b = 
                             try String.sub str a b with _ -> ""
@@ -878,6 +872,12 @@ let print_top_comments filename =
             () (* stop *)
     in
     (try eat_comments() with _ -> ());
+    (* spit out some other helpful stuff *)
+    print_string "
+open Lablglut
+open Printf
+open Bigarray
+    ";
     close_in file;;
 
 (*
