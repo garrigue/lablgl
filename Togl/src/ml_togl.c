@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.6 2000-04-18 00:24:07 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.7 2000-11-13 01:12:28 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -92,13 +92,13 @@ value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 
     if (Is_block(font)) fontname = String_val (Field(font,0));
     else switch (font) {
-    case MLTAG_fixed_8x13:	fontname = TOGL_BITMAP_8_BY_13; break;
-    case MLTAG_fixed_9x15:	fontname = TOGL_BITMAP_9_BY_15; break;
-    case MLTAG_times_10:	fontname = TOGL_BITMAP_TIMES_ROMAN_10; break;
-    case MLTAG_times_24:	fontname = TOGL_BITMAP_TIMES_ROMAN_24; break;
-    case MLTAG_helvetica_10:	fontname = TOGL_BITMAP_HELVETICA_10; break;
-    case MLTAG_helvetica_12:	fontname = TOGL_BITMAP_HELVETICA_12; break;
-    case MLTAG_helvetica_18:	fontname = TOGL_BITMAP_HELVETICA_18; break;
+    case MLTAG_Fixed_8x13:	fontname = TOGL_BITMAP_8_BY_13; break;
+    case MLTAG_Fixed_9x15:	fontname = TOGL_BITMAP_9_BY_15; break;
+    case MLTAG_Times_10:	fontname = TOGL_BITMAP_TIMES_ROMAN_10; break;
+    case MLTAG_Times_24:	fontname = TOGL_BITMAP_TIMES_ROMAN_24; break;
+    case MLTAG_Helvetica_10:	fontname = TOGL_BITMAP_HELVETICA_10; break;
+    case MLTAG_Helvetica_12:	fontname = TOGL_BITMAP_HELVETICA_12; break;
+    case MLTAG_Helvetica_18:	fontname = TOGL_BITMAP_HELVETICA_18; break;
     }
     return Val_int (Togl_LoadBitmapFont (Addr_val(togl), fontname));
 }
