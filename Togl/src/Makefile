@@ -4,7 +4,7 @@ include $(TOPDIR)/Makefile.common
 
 # Composite options
 INCLUDES = -I$(SRCDIR) -I$(TOGLDIR) \
-	$(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
+	$(TKINCLUDES) -I. $(GLINCLUDES) $(XINCLUDES)
 LIBS = $(TKLIBS) $(GLLIBS) $(XLIBS)
 LIBDIRS =
 
@@ -86,7 +86,7 @@ toglinstallopt:
 
 clean:
 	rm -f *.cm* *.o *.obj *.so *.lib *.a *.dll *.exe *.opt *_tags.c \
-	    *_tags.h *~ lablgltop$(EX) lablgl$(XB)
+	    *_tags.h *~ lablgltop$(EX) lablgl
 	rm -f $(TOGLDIR)/togl$(XO)
 
 depend:

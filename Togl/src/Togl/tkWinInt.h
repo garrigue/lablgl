@@ -36,7 +36,9 @@
 #define WS_EX_TOOLWINDOW	0x00000080L 
 #endif
 
+#ifndef _TKFONT
 typedef struct TkFontAttributes TkFontAttributes;
+#endif
 
 /*
  * The TkWinDCState is used to save the state of a device context

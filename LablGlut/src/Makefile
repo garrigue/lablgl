@@ -75,7 +75,7 @@ installopt:
 
 clean:
 	rm -f *.cm* *.o *.obj *.a *.lib *.so *.dll *.exe *.opt \
-	     *_tags.c *_tags.h *~ lablgluttop$(EX) lablglut$(XB) 
+	     *_tags.c *_tags.h *~ lablgluttop$(EX) lablglut
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

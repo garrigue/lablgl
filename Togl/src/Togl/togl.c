@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.8 2003-01-09 08:25:14 garrigue Exp $ */
+/* $Id: togl.c,v 1.9 2003-10-03 13:41:22 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -10,7 +10,10 @@
 
 /*
  * $Log: togl.c,v $
- * Revision 1.8  2003-01-09 08:25:14  garrigue
+ * Revision 1.9  2003-10-03 13:41:22  garrigue
+ * compile with mingw
+ *
+ * Revision 1.8  2003/01/09 08:25:14  garrigue
  * add Tcl8.4
  *
  * Revision 1.7  2002/07/15 01:07:59  garrigue
@@ -149,6 +152,7 @@
 #if TK_MAJOR_VERSION<8
    Sorry Windows version requires Tcl/Tk ver 8.0 or higher.
 #endif
+#include "tkFont.h"
 #include "tkWinInt.h"
 #endif /* X11 */
 #include "togl.h"
