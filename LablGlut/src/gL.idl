@@ -47,12 +47,12 @@ void glLineStipple( int factor, unsigned short pattern );
 void glPolygonMode( unsigned int face, unsigned int mode );
 void glPolygonOffset( float factor, float units );
 void glPolygonStipple( [in] unsigned char mask[1024] );
-void glGetPolygonStipple( [out] unsigned char mask[1024] );
+void glGetPolygonStipple( [in,out,bigarray] unsigned char mask[1024] );
 void glEdgeFlag( boolean flag );
 void glEdgeFlagv( [in] unsigned char flag[1] );
 void glScissor( int x, int y, int width, int height);
 void glClipPlane( unsigned int plane, [in] double equation[4] );
-void glGetClipPlane( unsigned int plane, [out] double equation[4] );
+void glGetClipPlane( unsigned int plane, [in,out,bigarray] double equation[4] );
 void glDrawBuffer( unsigned int mode );
 void glReadBuffer( unsigned int mode );
 void glEnable( unsigned int cap );
@@ -60,20 +60,11 @@ void glDisable( unsigned int cap );
 boolean glIsEnabled( unsigned int cap );
 void glEnableClientState( unsigned int cap );
 void glDisableClientState( unsigned int cap );
-void _glGetBooleanv( unsigned int pname, [out,size_is(num_params)] unsigned char params[], int num_params )
-    quote(call, "glGetBooleanv(pname, params);");
-void _glGetDoublev( unsigned int pname, [out,size_is(num_params)] double params[], int num_params)
-    quote(call, "glGetDoublev(pname, params);");
-    quote(mli, "val glGetDoublev : int -> int -> float array");
-    quote(ml, "external glGetDoublev : int -> int -> float array = \"camlidl_gL__glGetDoublev\"");
-void _glGetFloatv( unsigned int pname, [out,size_is(num_params)] float params[], int num_params )
-    quote(call, "glGetFloatv(pname, params);");
-    quote(mli, "val glGetFloatv : int -> int -> float array");
-    quote(ml, "external glGetFloatv : int -> int -> float array = \"camlidl_gL__glGetFloatv\"");
-void _glGetIntegerv( unsigned int pname, [out,size_is(num_params)] int params[], int num_params )
-    quote(call, "glGetIntegerv(pname, params);");
-    quote(mli, "val glGetIntegerv : int -> int -> int array");
-    quote(ml, "external glGetIntegerv : int -> int -> int array = \"camlidl_gL__glGetIntegerv\"");
+void glGetBooleanv( unsigned int pname, [in,out,bigarray] unsigned char
+    params[]);
+void glGetDoublev( unsigned int pname, [in,out,bigarray] double params[]);
+void glGetFloatv( unsigned int pname, [in,out,bigarray] float params[]);
+void glGetIntegerv( unsigned int pname, [in,out,*int32,bigarray] int params[]);
 void glPushAttrib( unsigned int mask );
 void glPopAttrib( void );
 void glPushClientAttrib( unsigned int mask );
@@ -356,7 +347,7 @@ void glPrioritizeTextures( int n, [in,size_is(n)] unsigned int textures[],
     [in,size_is(n)] float priorities[] );
 boolean glAreTexturesResident( int n, 
     [in,size_is(n)] unsigned int textures[], 
-    [out,size_is(n)] unsigned char residences[] );
+    [in,out,size_is(n),bigarray] unsigned char residences[] );
 boolean glIsTexture( unsigned int texture );
 void glTexSubImage1D( unsigned int target, int level, int xoffset, int
     width, unsigned int format, unsigned int type, [in,bigarray] void *pixels );
@@ -402,7 +393,8 @@ void glFogfv( unsigned int pname, [in,size_is(nparams)] float params[], int npar
     quote(call, "glFogfv(pname, params);");
 void glFogiv( unsigned int pname, [in,size_is(nparams)] int params[], int nparams )
     quote(call, "glFogiv(pname, params);");
-void glFeedbackBuffer( int size, unsigned int type, [out,size_is(size)] float buffer[] );
+void glFeedbackBuffer( int size, unsigned int type,
+    [in,out,size_is(size),bigarray] float buffer[] );
 void glPassThrough( float token );
 
 void glSelectBuffer( int size, [in,out,length_is(size),*int32,bigarray] int buffer[] );
