@@ -39,17 +39,17 @@ external enable : kind -> unit = "ml_glEnableClientState"
 (* Tell openGL the address of not to use the specified array *)
 external disable : kind -> unit = "ml_glDisableClientState"
 
-(* GlArray.arrayElement i
+(* GlArray.element i
    sends to openGL the element i of all enabled arrays *)
 external element : int -> unit = "ml_glArrayElement"
 
-(* GlArray.drawArrays shape i c
+(* GlArray.draw_arrays shape i c
    sends to openGL a GlDraw.begins shape and all the element from i to i+c-1 
    of all enabled arrays and finally do a GlDraw.ends () *)
 external draw_arrays : GlDraw.shape -> first:int -> count:int -> unit
   = "ml_glDrawArrays"
 
-(* GlArray.drawArrays shape c tbl
+(* GlArray.draw_elements shape c tbl
    sends to openGL a GlDraw.begins shape and all the element from tbl[0] to 
    tbl[c-1] of all enabled arrays and finally do a GlDraw.ends () *)
 external draw_elements :
