@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.6 2000-02-25 03:27:10 garrigue Exp $ */
+/* $Id: togl.c,v 1.7 2002-07-15 01:07:59 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -10,7 +10,10 @@
 
 /*
  * $Log: togl.c,v $
- * Revision 1.6  2000-02-25 03:27:10  garrigue
+ * Revision 1.7  2002-07-15 01:07:59  garrigue
+ * for windows
+ *
+ * Revision 1.6  2000/02/25 03:27:10  garrigue
  * support Tk8.3
  *
  * Revision 1.5  1999/08/05 02:07:28  garrigue
@@ -117,7 +120,6 @@
 #endif
 #include <tcl.h>
 #include <tk.h>
-#if defined(X11)
 #if TK_MAJOR_VERSION==4 && TK_MINOR_VERSION==0
 #  include "tkInt4.0.h"
 #  define NO_TK_CURSOR
@@ -138,11 +140,10 @@
 #else
    Sorry, you will have to edit togl.c to include the right tkInt.h file
 #endif
-#elif defined(WIN32)
+#if defined(WIN32)
 #if TK_MAJOR_VERSION<8
    Sorry Windows version requires Tcl/Tk ver 8.0 or higher.
 #endif
-#include "tkInt.h"
 #include "tkWinInt.h"
 #endif /* X11 */
 #include "togl.h"

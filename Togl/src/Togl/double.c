@@ -1,4 +1,4 @@
-/* $Id: double.c,v 1.3 1998-12-11 08:44:04 garrigue Exp $ */
+/* $Id: double.c,v 1.4 2002-07-15 01:07:59 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -9,7 +9,10 @@
 
 /*
  * $Log: double.c,v $
- * Revision 1.3  1998-12-11 08:44:04  garrigue
+ * Revision 1.4  2002-07-15 01:07:59  garrigue
+ * for windows
+ *
+ * Revision 1.3  1998/12/11 08:44:04  garrigue
  * Togl 1.5
  *
  * Revision 1.7  1998/03/12 03:52:31  brianp
@@ -47,7 +50,11 @@
  * The following variable is a special hack that is needed in order for
  * Sun shared libraries to be used for Tcl.
  */
+#ifdef WIN32
+#include <math.h>
+#else
 extern int matherr();
+#endif
 int *tclDummyMathPtr = (int *) matherr;
 
 
@@ -272,7 +279,7 @@ int my_init( Tcl_Interp *interp )
       return TCL_ERROR;
    }
 
-#ifdef WIN32
+#ifdef WIN32X
     /*
      * Set up a console window. Delete the following statement if you do not need that.
      */
