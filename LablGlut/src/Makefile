@@ -128,7 +128,7 @@ installtop:
 	cp lablglut$(XB) "$(BINDIR)"
 
 clean:
-	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
+	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
 	     lablgluttop$(EX) lablglut$(XB) 
 
 depend:

@@ -212,7 +212,7 @@ installopt:
 	cd "$(INSTALLDIR)" && $(RANLIB) lablgl$(XA) togl$(XA)
 
 clean:
-	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
+	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
 		var2def var2switch lablgltop$(EX) lablgl$(XB) lablgllink lablglopt
 	rm -f $(TOGLDIR)/togl$(XO)
 	cd LablGlut/src_lablglut && $(MAKE) clean
