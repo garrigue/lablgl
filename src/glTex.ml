@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.8 2002-11-12 03:40:12 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.9 2003-02-03 03:39:30 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -29,27 +29,35 @@ type gen_param = [
   | `eye_plane of point4
 ]
 external gen : coord:coord -> gen_param -> unit = "ml_glTexGen"
+
+let rec is_pow2 n =
+  n = 1 || n land 1 = 0 && is_pow2 (n asr 1)
 type format =
     [`color_index|`red|`green|`blue|`alpha|`rgb|`rgba
     |`luminance|`luminance_alpha]
 external image1d :
     proxy:bool -> level:int -> internal:int ->
-    width:int -> border:bool -> format:[< format] -> [< kind] Raw.t -> unit
+    width:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
 let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
-  if width img mod 2 <> 0 then raise (GLerror "Gl.image1d : bad width");
+  let border = if border then 1 else 0 in
+  if not (is_pow2 (width img - 2 * border)) then
+    raise (GLerror "Gl.image1d : bad width");
   if height img < 1 then raise (GLerror "Gl.image1d : bad height");
   image1d ~proxy ~level ~internal ~width:(width img) ~border
     ~format:(format img) (to_raw img)
 external image2d :
     proxy:bool -> level:int -> internal:int -> width:int ->
-    height:int -> border:bool -> format:[< format] -> [< kind] Raw.t -> unit
+    height:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
 let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
-  if width img mod 2 <> 0 then raise (GLerror "Gl.image2d : bad width");
-  if height img mod 2 <> 0 then raise (GLerror "Gl.image2d : bad height");
+  let border = if border then 1 else 0 in
+  if not (is_pow2 (width img - 2 * border)) then
+    raise (GLerror "Gl.image2d : bad width");
+  if not (is_pow2 (height img - border)) then
+    raise (GLerror "Gl.image2d : bad height");
   image2d ~proxy ~level ~internal ~border
     ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)
 type filter =
