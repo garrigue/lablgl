@@ -65,15 +65,15 @@ void _glGetBooleanv( unsigned int pname, [out,size_is(num_params)] unsigned char
 void _glGetDoublev( unsigned int pname, [out,size_is(num_params)] double params[], int num_params)
     quote(call, "glGetDoublev(pname, params);");
     quote(mli, "val glGetDoublev : int -> int -> float array");
-    quote(ml, "external glGetDoublev : int -> int -> float array = \"camlidl_glcaml__glGetDoublev\"");
+    quote(ml, "external glGetDoublev : int -> int -> float array = \"camlidl_gL__glGetDoublev\"");
 void _glGetFloatv( unsigned int pname, [out,size_is(num_params)] float params[], int num_params )
     quote(call, "glGetFloatv(pname, params);");
     quote(mli, "val glGetFloatv : int -> int -> float array");
-    quote(ml, "external glGetFloatv : int -> int -> float array = \"camlidl_glcaml__glGetFloatv\"");
+    quote(ml, "external glGetFloatv : int -> int -> float array = \"camlidl_gL__glGetFloatv\"");
 void _glGetIntegerv( unsigned int pname, [out,size_is(num_params)] int params[], int num_params )
     quote(call, "glGetIntegerv(pname, params);");
     quote(mli, "val glGetIntegerv : int -> int -> int array");
-    quote(ml, "external glGetIntegerv : int -> int -> int array = \"camlidl_glcaml__glGetIntegerv\"");
+    quote(ml, "external glGetIntegerv : int -> int -> int array = \"camlidl_gL__glGetIntegerv\"");
 void glPushAttrib( unsigned int mask );
 void glPopAttrib( void );
 void glPushClientAttrib( unsigned int mask );
