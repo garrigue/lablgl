@@ -1,6 +1,5 @@
 var2def
 var2switch
-Makefile.config
 gl_tags.c
 gl_tags.h
 glu_tags.c
@@ -11,3 +10,8 @@ togl_tags.c
 togl_tags.h
 lablgltop
 lablgl
+*.dll
+*.so
+*.exp
+*.lib
+.depend
