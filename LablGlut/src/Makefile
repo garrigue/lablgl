@@ -17,6 +17,7 @@ IDLFLAGS=-no-include -prepro "cpp -traditional-cpp"
 all: debug-code-library native-code-library top
 BIN_DIR=/usr/local/bin
 SOURCES=\
+    ba_utils.ml \
     glcaml.idl\
     glucaml.idl\
     glutcaml.mli glutcaml.ml\
