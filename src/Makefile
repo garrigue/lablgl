@@ -111,9 +111,11 @@ install:
 	cp lablgl.cma togl.cmo liblablgl.a $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl lablgllink $(BINDIR)
-	if test -f lablgl.cmxa; then : ; \
-		cp lablgl.cmxa lablgl.a $(INSTALLDIR); \
-		cp lablglopt $(BINDIR); fi
+	if test -f lablgl.cmxa; then $(MAKE) installopt; fi
+
+installopt:
+	cp lablgl.cmxa lablgl.a $(INSTALLDIR)
+	cp lablglopt $(BINDIR)
 
 
 clean:

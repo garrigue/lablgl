@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.16 1999-12-08 08:24:31 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.17 2000-02-28 07:43:55 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -114,7 +114,7 @@ external _dump_to_eps_file : t -> string -> bool -> unit
 type w
 type widget = w Widget.widget
 
-let togl_table = Hashtbl.create 7
+let togl_table = Hashtbl.create size:7
 
 let wrap f (w : widget) =
   let togl =
@@ -139,9 +139,9 @@ let make_current togl =
   ignore (tkEval [|TkToken (Widget.name togl); TkToken "makecurrent"|])
 
 let null_func _ = ()
-let display_table = Hashtbl.create 7
-and reshape_table = Hashtbl.create 7
-and overlay_table = Hashtbl.create 7
+let display_table = Hashtbl.create size:7
+and reshape_table = Hashtbl.create size:7
+and overlay_table = Hashtbl.create size:7
 
 let cb_of_togl table togl =
   try 
