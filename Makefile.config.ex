@@ -12,9 +12,8 @@ BINDIR = /usr/local/bin
 # The Objective Label library directory (obtain it by ocamlc -v)
 LIBDIR = /usr/local/lib/ocaml
 
-# Where to find Tcl/Tk headers and libraries
+# Where to find Tcl/Tk headers
 TKINCLUDES=-I/usr/local/include
-TKLIBS=-L/usr/local/lib -ltk4.2 -ltcl7.6
 
 # Where to find OpenGL/Mesa headers and libraries
 GLINCLUDES=
@@ -50,7 +49,7 @@ COPTS = -c -O
 INCLUDES = $(TKINCLUDES) $(GLINCLUDES) $(XINCLUDES)
 
 # Libraries to link with (-ldl for Linux only?):
-LIBS = $(TKLIBS) $(GLLIBS) $(XLIBS)
+LIBS = $(GLLIBS) $(XLIBS)
 
 # Leave this empty
 LIBDIRS =

@@ -9,7 +9,7 @@ OPTLINK=ocamlopt
 include Makefile.config
 
 OCAMLINC=-I $(LABLTKDIR)
-OTHERLIBS=-L$(LABLTKDIR) -llabltk41 $(LIBS)
+OTHERLIBS=$(LIBS)
 
 # Files
 LIBOBJS =	raw.cmo \
@@ -42,7 +42,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 
 .cmx.opt: lablgl.cmxa liblablgl.a
 	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa tk41.cmxa lablgl.cmxa $< \
-		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
+		 -cclib -L. -cclib -L$(LABLTKDIR) -cclib "$(OTHERLIBS)"
 
 all: 	var2def	var2switch lablgltop lablgl lablgllink
 
@@ -54,11 +54,13 @@ var2def: var2def.cmo
 var2switch: var2switch.cmo
 	$(LINKER) var2switch.cmo -o $@
 
-lablgl.cma: $(LIBOBJS)
-	$(LIBRARIAN) -o lablgl.cma $(LIBOBJS)
+lablgl.cma: $(LIBOBJS) Makefile.config
+	$(LIBRARIAN) -o lablgl.cma $(LIBOBJS) \
+		-cclib "-llablgl $(OTHERLIBS)"
 
-lablgl.cmxa: $(OPTOBJS)
-	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS)
+lablgl.cmxa: $(OPTOBJS) Makefile.config
+	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS) \
+		-cclib "-llablgl $(OTHERLIBS)"
 
 liblablgl.a: $(COBJS)
 	ar rc liblablgl.a $(COBJS)
@@ -68,9 +70,9 @@ $(TOGLDIR)/togl.o:
 	cd $(TOGLDIR) && $(MAKE) togl.o
 
 lablgltop: lablgl.cma togl.cmo liblablgl.a
-	ocamlmktop $(OCAMLINC) -custom -o lablgltop \
+	ocamlmktop $(OCAMLINC) -o lablgltop \
 		unix.cma tk41.cma lablgl.cma togl.cmo \
-		-cclib "-L. -llablgl -lunix $(OTHERLIBS)"
+		-cclib -L. -cclib -L$(LABLTKDIR)
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
@@ -81,14 +83,14 @@ lablgl: lablgl.in Makefile.config
 lablgllink: lablgllink.in Makefile.config
 	sed -e 's|@INCLUDES@|$(OCAMLINC)|g'	\
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-	    -e 's|@OTHERLIBS@|$(OTHERLIBS)|g' \
+	    -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
 	    < lablgllink.in > $@
 	chmod 755 $@
 
 lablglopt: lablglopt.in Makefile.config
 	sed -e 's|@INCLUDES@|$(OCAMLINC)|g'	\
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-	    -e 's|@OTHERLIBS@|$(OTHERLIBS)|g' \
+	    -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
 	    < lablglopt.in > $@
 	chmod 755 $@
 
