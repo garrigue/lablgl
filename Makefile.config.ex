@@ -16,7 +16,7 @@ BINDIR = /usr/local/bin
 # Where to find X headers
 XINCLUDES = -I/usr/X11R6/include
 # X libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-#XLIBS = -L/usr/X11R6/lib -lXext -lXmu -lX11
+#XLIBS = -L/usr/X11R6/lib -lXext -lXmu -lX11 -lXi
 
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
