@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.10 2002-07-12 15:48:06 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.11 2002-07-13 14:11:04 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -16,8 +16,8 @@
 #include "ml_gl.h"
 #include "togl_tags.h"
 
-/* extern Tcl_Interp *cltclinterp; /* The Tcl interpretor */
-/* extern void tk_error (char *message); /* Raise TKerror */
+/* extern Tcl_Interp *cltclinterp; */ /* The Tcl interpretor */
+/* extern void tk_error (char *message); */ /* Raise TKerror */
 
 int TOGLenum_val(value tag)
 {

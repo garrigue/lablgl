@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.29 2002-07-12 15:48:06 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.30 2002-07-13 14:11:04 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -50,7 +50,7 @@ CAMLprim value ml_gl_make_table (value unit)
     unsigned int hash;
 
     tag_table = stat_alloc (TABLE_SIZE * sizeof(struct record));
-    memset ((char *) tag_table, TABLE_SIZE * sizeof(struct record), 0);
+    memset ((char *) tag_table, 0, TABLE_SIZE * sizeof(struct record));
     for (i = 0; i < TAG_NUMBER; i++) {
 	hash = (unsigned long) input_table[i].key % TABLE_SIZE;
 	while (tag_table[hash].key != 0) {
