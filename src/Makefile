@@ -35,8 +35,8 @@ var2switch$(XE): var2switch.ml
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
 	$(MKLIB)$@ $(COBJS)
-dlllablgl.dll: $(COBJS:.obj=.d.obj)
-	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GLLIBS)
+dlllablgl.dll: $(COBJS:$(XO)=.d$(XO))
+	$(MKDLL)$@ $(COBJS:$(XO)=.d$(XO)) $(GLLIBS) $(OCAMLDLL)
 lablgl.cma: liblablgl$(XA) dlllablgl.dll $(LIBOBJS) $(CONFIG)
 	$(LINKER) -a -o $@ $(LIBOBJS) \
 	  -cclib -llablgl -dllib -llablgl \
@@ -74,7 +74,7 @@ installopt:
 
 clean:
 	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
-		var2def var2switch lablgltop$(EX) lablgl$(XB)
+		*.dll var2def$(XE) var2switch$(XE) lablgltop$(XE) lablgl$(XB)
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

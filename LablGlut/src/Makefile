@@ -25,8 +25,8 @@ libopt: lablglut.cmxa
 ifeq ($(TOOLCHAIN), msvc)
 liblablglut$(XA): $(COBJS)
 	$(MKLIB)$@ $(COBJS)
-dlllablglut.dll: $(COBJS:.obj=.d.obj)
-	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GLUTLIBS) $(GLLIBS)
+dlllablglut.dll: $(COBJS:$(XO)=.d$(XO))
+	$(MKDLL)$@ $(COBJS:$(XO)=.d$(XO)) $(GLUTLIBS) $(GLLIBS) $(OCAMLDLL)
 lablglut.cma: liblablglut$(XA) dlllablglut.dll $(LIBOBJS) ../../Makefile.config
 	$(LINKER) -a -o $@ $(LIBOBJS) \
 	  -cclib -llablglut -dllib -llablglut \
@@ -44,8 +44,8 @@ lablglut.cmxa: liblablglut.a $(OPTOBJS) ../../Makefile.config
 endif
 
 lablgluttop$(XE): lablglut.cma 
-	ocamlmktop $(CUSTOMTOP) -I . -I ../.. $(OCAMLINC) -o $@ \
-	  lablglut.cma ../../src/lablgl.cma
+	ocamlmktop $(CUSTOMTOP) -I . -I $(SRCDIR) $(OCAMLINC) -o $@ \
+	  lablglut.cma lablgl.cma
 
 lablglut$(XB): lablglut.in ../../Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
@@ -62,7 +62,7 @@ real-install:
 	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
 	cp liblablglut$(XA) lablglut.cma "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) liblablglut$(XA)
-	@if test -f dlllablglut$(XS); then cp dlllablglut$(XS) "$(DLLDIR)"; fi
+	@if test -f dlllablglut$(XS); then $(MAKE) installdll; fi
 	@if test -f lablglut.cmxa; then $(MAKE) installopt; fi
 
 
@@ -78,8 +78,8 @@ installtop:
 	cp lablglut$(XB) "$(BINDIR)"
 
 clean:
-	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
-	     lablgluttop$(EX) lablglut$(XB) 
+	rm -f *.cm* *.o *.obj *.a *.lib *.so *.dll *.exe *.opt \
+	     *_tags.c *_tags.h *~ lablgluttop$(EX) lablglut$(XB) 
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

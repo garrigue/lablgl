@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.39 2003-09-26 11:06:51 raffalli Exp $ */
+/* $Id: ml_gl.c,v 1.40 2003-10-02 12:47:02 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -303,7 +303,7 @@ ML_1 (glLoadMatrixd, Double_raw)
 #ifdef GL_VERSION_1_3
 ML_1 (glLoadTransposeMatrixd, Double_raw)
 #else
-void ml_glLoadTransposeMatrixd (value raw)
+CAMLprim void ml_glLoadTransposeMatrixd (value raw)
 {
     ml_raise_gl ("Function: glLoadTransposeMatrixd not available");
 }
@@ -407,7 +407,7 @@ ML_1 (glMultMatrixd, Double_raw)
 #ifdef GL_VERSION_1_3
 ML_1 (glMultTransposeMatrixd, Double_raw)
 #else
-void ml_glMultTransposeMatrixd (value raw)
+CAMLprim void ml_glMultTransposeMatrixd (value raw)
 {
   ml_raise_gl ("Function: glMultTransposeMatrixd not available");
 }

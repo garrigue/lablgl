@@ -31,12 +31,13 @@ XS = .so
 
 # Windows specific
 MKLIB=lib /nologo /debugtype:CV /out:
-MKDLL=link /nologo /dll "$(LIBDIR)/ocamlrun.lib" /out:
+MKDLL=link /nologo /dll /out:
+OCAMLDLL= "$(LIBDIR)/ocamlrun$(XA)"
 
 include $(CONFIG)
 
 # Default rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE) .d.obj
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE) .d$(XO)
 
 .ml.cmo:
 	$(COMPILER) $(OCAMLINC) $<
@@ -48,10 +49,13 @@ include $(CONFIG)
 	$(COMPILER) $(OCAMLINC) $<
 
 .c$(XO):
-	$(COMPILER) -ccopt "$(COPTS) $(INCLUDES) -I$(TOGLDIR)" $<
+	$(COMPILER) -ccopt "$(COPTS) $(INCLUDES)" $<
 
 .c.d.obj:
-	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(INCLUDES) -I $(TOGLDIR)" $<
+	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(INCLUDES)" $<
+
+.c.d.o:
+	$(COMPILER) -verbose -ccopt "-DCAML_DLL -o$@ $(INCLUDES)" $<
 
 .var.h:
 	$(VAR2DEF) < $< > $@

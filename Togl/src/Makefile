@@ -25,8 +25,8 @@ opt: togl.cmxa
 ifeq ($(TOOLCHAIN), msvc)
 libtogl$(XA): $(TOGLOBJS) $(CONFIG)
 	$(MKLIB)$@ $(TOGLOBJS)
-dlltogl.dll: $(TOGLOBJS:.obj=.d.obj)
-	$(MKDLL)$@ $(TOGLOBJS:.obj=.d.obj) $(GLLIBS) $(TKLIBS)
+dlltogl.dll: $(TOGLOBJS:$(XO)=.d$(XO))
+	$(MKDLL)$@ $(TOGLOBJS:$(XO)=.d$(XO)) $(GLLIBS) $(TKLIBS) $(OCAMLDLL)
 togl.cma: libtogl$(XA) dlltogl.dll togl.cmo $(CONFIG)
 	$(LINKER) -a -o $@ togl.cmo -cclib -ltogl -dllib -ltogl \
 	  -cclib "$(GLLIBS) $(TKLIBS)"
@@ -67,9 +67,6 @@ lablgl$(XB): lablgl.in $(CONFIG)
 	    < lablgl.in > $@
 	chmod 755 $@
 
-tk_tags.c: tk_tags.var
-	$(VAR2SWITCH) TK_ < tk_tags.var > $@
-
 togl_tags.c: togl_tags.var
 	$(VAR2SWITCH) TOGL_ < togl_tags.var > $@
 
@@ -88,8 +85,8 @@ toglinstallopt:
 	cd "$(INSTALLDIR)" && $(RANLIB) togl$(XA)
 
 clean:
-	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
-		 lablgltop$(EX) lablgl$(XB)
+	rm -f *.cm* *.o *.obj *.so *.lib *.a *.dll *.exe *.opt *_tags.c \
+	    *_tags.h *~ lablgltop$(EX) lablgl$(XB)
 	rm -f $(TOGLDIR)/togl$(XO)
 
 depend:
