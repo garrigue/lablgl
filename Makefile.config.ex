@@ -35,9 +35,6 @@ RANLIB = ranlib
 # The Objective Caml library directory
 LIBDIR = `ocamlc -where`
 
-# Where is LablTk (standard)
-LABLTKDIR = $(LIBDIR)/labltk
-
 # Where to put LablGL (standard)
 INSTALLDIR = $(LIBDIR)/lablGL
 

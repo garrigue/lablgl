@@ -10,7 +10,7 @@ OPTLINK=$(CAMLOPT)
 
 include Makefile.config
 
-OCAMLINC=-I $(LABLTKDIR)
+OCAMLINC=-I +labltk
 
 # Files
 LIBOBJS =	raw.cmo \
@@ -78,7 +78,6 @@ $(TOGLDIR)/togl.o:
 
 lablgltop: lablgl.cma togl.cma
 	ocamlmktop -I . $(OCAMLINC) -o lablgltop \
-	    -dllpath $(LABLTKDIR) -dllpath $(INSTALLDIR) \
 	   labltk.cma lablgl.cma togl.cma
 
 lablgl: lablgl.in Makefile.config
