@@ -1,3 +1,5 @@
+LablGL 1.00:
+------------
 2003-10-01: [Jacques]
 * split togl, move examples to Togl/examples
 * add mingw support

@@ -43,8 +43,9 @@ Precompiled versions of lablGL are available for windows, and a number
 of Linux distributions. In this case you just have to install
 necessary packages. Otherwise, compile from source.
 
-  a) Edit Makefile.config
+  a) Create Makefile.config.
      Some tested configurations are provided.
+     If none of them fits your needs, start with Makefile.config.ex.
 
   b) Build LablGL with both Togl(Tcl/Tk) and Glut support.
 	% make
@@ -69,13 +70,12 @@ necessary packages. Otherwise, compile from source.
      This will install all the available parts.   
 
 
-With the windows binary distribution, copy bin\lablgl.bat,
-lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
-in the OCaml distribution. 
+  With the windows binary distribution, copy bin\lablgl.bat,
+  lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
+  in the OCaml distribution. 
 
-To compile for Windows, just remember to add the include and lib directories to
-the corresponding environment variables, or the appropriate switches in the 
-makefile. Also, uncomment the necessary lines in the Makefile.config file. 
+  To compile for Windows, Makefile.config.msvc and
+  Makefile.config.mingw are provided.
 
 4. Use
 
@@ -345,4 +345,4 @@ GluTess: Tessalating functions.
    gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
 
-$Id: README,v 1.31 2003-10-01 09:34:15 garrigue Exp $
+$Id: README,v 1.32 2003-10-03 10:21:17 garrigue Exp $
