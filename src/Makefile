@@ -113,7 +113,7 @@ install:
 
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
-		var2def var2switch lablgltop lablgl lablglopt
+		var2def var2switch lablgltop lablgl lablgllink lablglopt
 
 depend:
 	olabldep *.ml *.mli > .depend
