@@ -4,43 +4,43 @@ open Raw
 
 type kind = [`edge_flag | `texture_coord | `color | `index | `normal | `vertex ]
 
-external edgeFlagPointer : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
+external edge_flag : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
 
-external texCoordPointer
+external tex_coord
     : size:int -> [< `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glTexCoordPointer"
 
-external colorPointer
+external color
     : size:int ->
       [< `byte | `ubyte | `short | `ushort | `int | `uint | `float | `double]
       Raw.t -> unit 
 	= "ml_glColorPointer"
 
-external indexPointer
+external index
     : [< `ubyte | `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glIndexPointer"
 
-external normalPointer
+external normal
     : [< `byte | `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glNormalPointer"
 
-external vertexPointer
+external vertex
     : size:int -> [< `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glVertexPointer"
 
-external enableClientState
+external enable
     : kind -> unit
 	= "ml_glEnableClientState"
 
-external disableClientState
+external disable
     : kind -> unit
 	= "ml_glDisableClientState"
 
-external arrayElement : int -> unit = "ml_glArrayElement"
+external element : int -> unit = "ml_glArrayElement"
 
-external drawArrays : GlDraw.shape -> first:int -> count:int -> unit 
+external draw_arrays : GlDraw.shape -> first:int -> count:int -> unit 
     = "ml_glDrawArrays"
 
-external drawElements 
+external draw_elements 
     :  GlDraw.shape -> count:int -> [< `ubyte | `ushort | `uint] Raw.t -> unit
 	= "ml_glDrawElements"  
