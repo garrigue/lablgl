@@ -1,5 +1,6 @@
-(* $Id: togl.ml,v 1.20 2000-04-12 07:40:27 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.22 2001-09-06 08:27:02 garrigue Exp $ *)
 
+open StdLabels
 open Tk
 open Protocol
 
@@ -172,7 +173,7 @@ let _ = Callback.register "togl_callbacks" callback_table
 let callback_func table (w : widget) ~cb =
   let key = Widget.name w in
   (try Hashtbl.remove table key with Not_found -> ());
-  Hashtbl.add ~key ~data:cb table
+  Hashtbl.add table key cb
 
 let display_func = callback_func display_table
 let reshape_func w ~cb =
@@ -246,7 +247,7 @@ let create ?name =
 	Widget.new_atom "togl" ~parent ?name in
       let togl = ref None in
       callback_table.(create_id) <-
-	 (fun t -> togl := Some t; Hashtbl.add togl_table ~key:w ~data:t);
+	 (fun t -> togl := Some t; Hashtbl.add togl_table w t);
       callback_table.(destroy_id) <-
         (fun t ->
 	  begin try Hashtbl.remove togl_table w with Not_found -> () end;

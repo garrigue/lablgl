@@ -1,4 +1,6 @@
-(* $Id: texturesurf.ml,v 1.12 2000-04-16 12:35:35 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.13 2001-05-08 01:58:26 garrigue Exp $ *)
+
+open StdLabels
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];

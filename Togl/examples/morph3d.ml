@@ -1,4 +1,6 @@
-(* $Id: morph3d.ml,v 1.17 2000-04-16 12:35:33 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.18 2001-05-08 01:58:25 garrigue Exp $ *)
+
+open StdLabels
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)

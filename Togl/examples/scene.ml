@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.11 2000-04-16 12:35:34 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.12 2001-05-08 01:58:26 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -15,7 +15,7 @@ let myinit () =
   GlLight.light ~num:0 (`position light_position);
   
   GlFunc.depth_func `less;
-  List.iter ~f:Gl.enable [`lighting; `light0; `depth_test]
+  List.iter Gl.enable [`lighting; `light0; `depth_test]
 
 let pi = acos (-1.)
 
