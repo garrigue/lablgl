@@ -20,14 +20,7 @@
 
 CAMLprim value ml_glEdgeFlagPointer(value raw)
 {
-  switch (Kind_raw(raw)) {
-
-  case MLTAG_bitmap:
-    glEdgeFlagPointer(0, (void*) Byte_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glEdgeFlagPointer, type unsupported");
-  }
+  glEdgeFlagPointer(0, Addr_raw(raw));
   return Val_unit;
 }
 
@@ -37,23 +30,8 @@ CAMLprim value ml_glTexCoordPointer(value ml_size, value raw)
   if (size < 1 || size > 4) {
     ml_raise_gl("glTexCoordPointer: invalid size");
   }
-  switch (Kind_raw(raw)) {
 
-  case MLTAG_short:
-    glTexCoordPointer(size, GL_SHORT, 0, (void*) Short_raw(raw));
-    break;
-  case MLTAG_int:
-    glTexCoordPointer(size, GL_INT, 0, (void*) Int_raw(raw));
-    break;
-  case MLTAG_float:
-    glTexCoordPointer(size, GL_FLOAT, 0, (void*) Float_raw(raw));
-    break;
-  case MLTAG_double:
-    glTexCoordPointer(size, GL_DOUBLE, 0, (void*) Double_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glTexCoordPointer, type unsupported");
-  }
+  glTexCoordPointer (size, GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
@@ -65,86 +43,19 @@ CAMLprim value ml_glColorPointer(value ml_size, value raw)
     ml_raise_gl("glColorPointer: invalid size");
   }
 
-  switch (Kind_raw(raw)) {
-
-  case MLTAG_byte:
-    glColorPointer(size, GL_BYTE, 0, (void*) Byte_raw(raw));
-    break;
-  case MLTAG_ubyte:
-    glColorPointer(size, GL_UNSIGNED_BYTE, 0, (void*) Byte_raw(raw));
-    break;
-  case MLTAG_short:
-    glColorPointer(size, GL_SHORT, 0, (void*) Short_raw(raw));
-    break;
-  case MLTAG_ushort:
-    glColorPointer(size, GL_UNSIGNED_SHORT, 0, (void*) Short_raw(raw));
-    break;
-  case MLTAG_int:
-    glColorPointer(size, GL_INT, 0, (void*) Int_raw(raw));
-    break;
-  case MLTAG_uint:
-    glColorPointer(size, GL_UNSIGNED_INT, 0, (void*) Int_raw(raw));
-    break;
-  case MLTAG_float:
-    glColorPointer(size, GL_FLOAT, 0, (void*) Float_raw(raw));
-    break;
-  case MLTAG_double:
-    glColorPointer(size, GL_DOUBLE, 0, (void*) Double_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glColorPointer, type unsupported");
-  }
+  glColorPointer (size, GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
 CAMLprim value ml_glIndexPointer(value raw)
 {
-  switch (Kind_raw(raw)) {
-
-  case MLTAG_ubyte:
-    glIndexPointer(GL_UNSIGNED_BYTE, 0, (void*) Byte_raw(raw));
-    break;
-  case MLTAG_short:
-    glIndexPointer(GL_SHORT, 0, (void*) Short_raw(raw));
-    break;
-  case MLTAG_int:
-    glIndexPointer(GL_INT, 0, (void*) Int_raw(raw));
-    break;
-  case MLTAG_float:
-    glIndexPointer(GL_FLOAT, 0, (void*) Float_raw(raw));
-    break;
-  case MLTAG_double:
-    glIndexPointer(GL_DOUBLE, 0, (void*) Double_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glIndexPointer, type unsupported");
-  }
+  glIndexPointer (GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
 CAMLprim value ml_glNormalPointer(value raw)
 {
-  switch (Kind_raw(raw)) {
-
-  case MLTAG_byte:
-    glNormalPointer(GL_BYTE, 0, (void*) Byte_raw(raw));
-    break;
-  case MLTAG_short:
-    glNormalPointer(GL_SHORT, 0, (void*) Short_raw(raw));
-    break;
-  case MLTAG_int:
-    glNormalPointer(GL_INT, 0, (void*) Int_raw(raw));
-    break;
-  case MLTAG_float:
-    glNormalPointer(GL_FLOAT, 0, (void*) Float_raw(raw));
-    break;
-  case MLTAG_double:
-    glNormalPointer(GL_DOUBLE, 0, (void*) Double_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glNormalPointer, type unsupported");
-  }
-
+  glNormalPointer (GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
@@ -155,24 +66,7 @@ CAMLprim value ml_glVertexPointer(value ml_size, value raw)
     ml_raise_gl("glVertexPointer: invalid size");
   }
 
-  switch (Kind_raw(raw)) {
-
-  case MLTAG_short:
-    glVertexPointer(size, GL_SHORT, 0, (void*) Short_raw(raw));
-    break;
-  case MLTAG_int:
-    glVertexPointer(size, GL_INT, 0, (void*) Int_raw(raw));
-    break;
-  case MLTAG_float:
-    glVertexPointer(size, GL_FLOAT, 0, (void*) Float_raw(raw));
-    break;
-  case MLTAG_double:
-    glVertexPointer(size, GL_DOUBLE, 0, (void*) Double_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glVertexPointer, type unsupported");
-  }
-
+  glVertexPointer (size, GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
   return Val_unit;
 }
 
@@ -215,23 +109,7 @@ ML_3 (glDrawArrays, GLenum_val, Int_val, Int_val);
 
 CAMLprim value ml_glDrawElements(value mode, value count, value raw) 
 {
-  switch (Kind_raw(raw)) {
-
-  case MLTAG_ubyte:
-    glDrawElements(GLenum_val(mode), Int_val(count),
-		   GL_UNSIGNED_BYTE, (void*) Byte_raw(raw));
-    break;
-  case MLTAG_ushort:
-    glDrawElements(GLenum_val(mode), Int_val(count),
-		   GL_UNSIGNED_SHORT, (void*) Short_raw(raw));
-    break;
-  case MLTAG_uint:
-    glDrawElements(GLenum_val(mode), Int_val(count),
-		   GL_UNSIGNED_INT, (void*) Int_raw(raw));
-    break;
-  default:
-    ml_raise_gl("glDrawElements, type unsupported");
-  }
-
+  glDrawElements (GLenum_val(mode), Int_val(count),
+                  GLenum_val(Kind_raw(raw)), Void_raw(raw));
   return Val_unit;
 }

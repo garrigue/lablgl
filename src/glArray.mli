@@ -8,18 +8,18 @@ external edgeFlagPointer : [ `bitmap ] Raw.t -> unit = "ml_glEdgeFlagPointer"
 
 (* Tell openGL the address of the texCoor array *)
 external texCoordPointer :
-  int -> [< `double | `float | `int | `short ] Raw.t -> unit
+  size:int -> [< `double | `float | `int | `short ] Raw.t -> unit
   = "ml_glTexCoordPointer"
 
 (* Tell openGL the address of the color array *)
 external colorPointer :
-  int ->
+  size:int ->
   [< `byte | `double | `float | `int | `short | `ubyte | `uint | `ushort ]
   Raw.t -> unit = "ml_glColorPointer"
 
 (* Tell openGL the address of the index array *)
 external indexPointer :
-  int -> [< `double | `float | `int | `short | `ubyte ] Raw.t -> unit
+  [< `double | `float | `int | `short | `ubyte ] Raw.t -> unit
   = "ml_glIndexPointer"
 
 (* Tell openGL the address of the normal array *)
@@ -30,7 +30,7 @@ external normalPointer :
 
 (* Tell openGL the address of the vertex array *)
 external vertexPointer :
-  int -> [< `double | `float | `int | `short ] Raw.t -> unit
+  size:int -> [< `double | `float | `int | `short ] Raw.t -> unit
   = "ml_glVertexPointer"
 
 (* Tell openGL the address of to use the specified array *)
