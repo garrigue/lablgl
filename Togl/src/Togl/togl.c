@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.4 1999-04-13 23:19:53 garrigue Exp $ */
+/* $Id: togl.c,v 1.5 1999-08-05 02:07:28 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -10,7 +10,10 @@
 
 /*
  * $Log: togl.c,v $
- * Revision 1.4  1999-04-13 23:19:53  garrigue
+ * Revision 1.5  1999-08-05 02:07:28  garrigue
+ * More Tcl/Tk versions
+ *
+ * Revision 1.4  1999/04/13 23:19:53  garrigue
  * accept newer patch levels for TK
  *
  * Revision 1.3  1998/12/11 08:44:05  garrigue
@@ -123,6 +126,10 @@
 #  include "tkInt8.0.h"
 #elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==0 && TK_RELEASE_SERIAL>=2
 #  include "tkInt8.0p2.h"
+#elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==1
+#  include "tkInt8.1.h"
+#elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==2
+#  include "tkInt8.1.h"
 #else
    Sorry, you will have to edit togl.c to include the right tkInt.h file
 #endif
