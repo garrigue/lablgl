@@ -8,7 +8,7 @@
 ##### Adjust these always
 
 # Where to put the lablgl and lablglopt scripts
-BINDIR = /usr/local/bin
+BINDIR = /usr/local/bin/lang
 
 # The Objective Label library directory (obtain it by olablc -v)
 LIBDIR = /usr/local/lib/olabl
@@ -22,7 +22,7 @@ GLINCLUDES=
 GLLIBS=-lGL -lGLU
 
 # Where to find X headers and libraries
-XINCLUDES=-I/usr/X11R6/include
+XINCLUDES=-I/usr/X11R6/lib
 XLIBS=-L/usr/X11R6/lib -lX11 -lXext -lXmu
 
 # How to index a library
