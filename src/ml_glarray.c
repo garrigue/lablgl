@@ -8,7 +8,11 @@
 #include <caml/memory.h>
 #include <caml/alloc.h>
 #include <caml/config.h>
+#ifdef __APPLE__
+#include <gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include "ml_gl.h"
 #include "gl_tags.h"
 #include "raw_tags.h"

@@ -1,10 +1,14 @@
-/* $Id: ml_gl.c,v 1.38 2003-04-24 16:42:59 erickt Exp $ */
+/* $Id: ml_gl.c,v 1.39 2003-09-26 11:06:51 raffalli Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
 #include <string.h>
+#ifdef __APPLE__
+#include <gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>

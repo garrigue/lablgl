@@ -7,7 +7,11 @@
  *
  */
 
+#ifdef __APPLE__
+#include <glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

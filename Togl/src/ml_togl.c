@@ -1,10 +1,14 @@
-/* $Id: ml_togl.c,v 1.11 2002-07-13 14:11:04 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.12 2003-09-26 11:06:51 raffalli Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
 #include <stdlib.h>
+#ifdef __APPLE__
+#include <gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include <tcl.h>
 #include <tk.h>
 #include <caml/mlvalues.h>

@@ -1,10 +1,15 @@
-/* $Id: ml_glu.c,v 1.23 2003-02-06 18:19:12 furuse Exp $ */
+/* $Id: ml_glu.c,v 1.24 2003-09-26 11:06:51 raffalli Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
+#ifdef __APPLE__
+#include <gl.h>
+#include <glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
