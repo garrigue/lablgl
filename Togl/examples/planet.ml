@@ -1,4 +1,6 @@
-(* $Id: planet.ml,v 1.16 2001-05-08 01:58:26 garrigue Exp $ *)
+(* $Id: planet.ml,v 1.17 2001-09-07 06:50:01 garrigue Exp $ *)
+
+#load"unix.cma";;
 
 class planet togl = object (self)
   val togl = togl
