@@ -13,7 +13,7 @@ trackball.cmo: trackball.ml
 	ocamlc $(INCLDIRS) -c trackball.ml
 
 clean: 
-	rm *.{cmo,cmi} teaspin
+	rm *.cm* teaspin
 
 
 
