@@ -9,6 +9,16 @@ let int_ba_make n = Array1.create int c_layout n
 let int_ba1_make = int_ba_make
 let int_ba2_make m n = Array2.create int32 c_layout m n
 let int_ba3_make m n p = Array3.create int32 c_layout m n p
+let int_ba_of_int32_ba i32ba =
+    let n = (Array1.dim i32ba) in
+    let iba = int_ba_make n in
+    for i = 0 to n-1 do iba.{i} <- Int32.to_int i32ba.{i} done;
+    iba
+
+let ubyte_ba_make n = Array1.create int8_unsigned c_layout n
+let ubyte_ba1_make = ubyte_ba_make
+let ubyte_ba2_make m n = Array2.create int8_unsigned c_layout m n
+let ubyte_ba3_make m n p = Array3.create int8_unsigned c_layout m n p
 
 let int32_ba_make n = Array1.create int32 c_layout n
 
