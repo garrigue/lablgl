@@ -6,15 +6,20 @@ bname=`echo $1 | sed 's/\.c$//'`
 tmpc=`tempfile --suffix .c`
 cat /usr/include/GL/gl{,u}.h | grep typedef > $tmpc
 cat $bname.c >> $tmpc
+echo "open ALL_GL" > $bname.ml
 c2ml $tmpc | \
     grep -v 'type GL.*$' | \
-    grep -v 'type .*_GLUfuncptr.*$'  > $bname.ml
-if test "x$EDITOR" = x ; then vi $bname.ml; else $EDITOR $bname.ml ; fi
+    grep -v 'type .*_GLUfuncptr.*$' | \
+    perl -pe 's/glutInit\s*\(.*\)\s*;.*$/glutInit2();/' | \
+    perl -pe 's#let main argc argv\s*=$#let main () =#' | \
+    perl -pe 's#(\s*)glutCreateWindow\s*\(\s*argv.\(0\)\s*\)\s*;#\1glutCreateWindow2(Sys.argv.(0));#' | \
+    uniq \
+    >> $bname.ml
+echo "
+let _ = main ()" >> $bname.ml
+if test "x$EDITOR" = x ; then vi $bname.ml ; else $EDITOR $bname.ml ; fi
 tmpml=`tempfile --suffix .ml`
 if camlp4 pa_o.cmo pr_o.cmo $bname.ml > $tmpml; then 
-    # Get the header comments from the original source file and add them to 
-    # the new .ml file.
-    (c2ml -topcomments $bname.c; \
-     cat $tmpml) >  $bname.ml
+    mv $tmpml bname.ml
 fi
 
