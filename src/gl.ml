@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.11 1998-01-15 08:34:39 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.12 1998-01-16 03:20:20 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -430,12 +430,25 @@ type map_target =
     [ vertex_3 vertex_4 index color_4 normal texture_coord_1 texture_coord_2
       texture_coord_3 texture_coord_4 ]
 external map1 :
-    target:map_target -> u:(float*float) -> float array array -> unit
+    target:map_target -> (float*float) -> float array -> unit
     = "ml_glMap1d"
 external map2 :
     target:map_target ->
-    u:(float*float) -> v:(float*float) -> float array array -> unit
-    = "ml_glMap1d"
+    (float*float) -> (float*float) -> float array array -> unit
+    = "ml_glMap2d"
+
+external map_grid1 : n:int -> range:(float * float) -> unit
+    = "ml_glMapGrid1d"
+external map_grid2 :
+    n:int -> range:(float * float) -> n:int -> range:(float * float) -> unit
+    = "ml_glMapGrid2d"
+
+external pass_through : float -> unit = "ml_glPassThrough"
+
+type pixel_map =
+    [i_to_i i_to_r i_to_g i_to_b i_to_a s_to_s r_to_r g_to_g b_to_b a_to_a]
+external pixel_map : map:pixel_map -> float array -> unit
+    = "ml_glPixelMapfv"
 
 external raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit
     = "ml_glRasterPos"

@@ -158,6 +158,18 @@ red green blue alpha rgb luminance luminance_alpha
 clear set copy copy_inverted noop invert And nand Or nor
 xor equiv and_reverse and_inverted or_reverse or_inverted
 
+(* glPixelMap *)
+i_to_i -> GL_PIXEL_MAP_I_TO_I
+i_to_r -> GL_PIXEL_MAP_I_TO_R
+i_to_g -> GL_PIXEL_MAP_I_TO_G
+i_to_b -> GL_PIXEL_MAP_I_TO_B
+i_to_a -> GL_PIXEL_MAP_I_TO_A
+s_to_s -> GL_PIXEL_MAP_S_TO_S
+r_to_r -> GL_PIXEL_MAP_R_TO_R
+g_to_g -> GL_PIXEL_MAP_G_TO_G
+b_to_b -> GL_PIXEL_MAP_B_TO_B
+a_to_a -> GL_PIXEL_MAP_A_TO_A
+
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End
@@ -165,6 +177,6 @@ local_viewer two_side mode density start index End
 (* glHint *)
 perspective_correction
 
-(* glMap1 *)
+(* glMap1, glMap2 *)
 vertex_3 vertex_4 color_4 normal texture_coord_1 texture_coord_2
 texture_coord_3 texture_coord_4

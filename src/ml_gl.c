@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.11 1998-01-15 08:34:40 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.12 1998-01-16 03:20:23 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -402,23 +402,16 @@ ML_GLenum_int (glIsEnabled)
 ML_int (glLoadName)
 ML_GLenum (glLogicOp)
 
-value ml_glMap1d (value target, value u1, value u2, value points)
+value ml_glMap1d (value target, value u, value points)
 {
-    int i, order;
+    int order = Wosize_val(points);
+    int i;
     double *dpoints;
     GLenum targ;
-    int len = Wosize_val(points);
 
-    if (len == 0) invalid_argument("Gl.map1");
-    order = Wosize_val(Field(points,0));
-    dpoints = calloc (order*len, sizeof(GLdouble));
-    for (i = 0; i < len; i++) {
-	int j;
-	value point = Field(points,i);
-	if (Wosize_val(point) != order) invalid_argument("Gl.map1");
-	for (j = 0; j < order; j++)
-	    *dpoints++ = Double_val(Field(point,j));
-    }
+    dpoints = calloc (order, sizeof(GLdouble));
+    for (i = 0; i < order; i++)
+	*dpoints++ = Double_val(Field(points,i));
     switch (target) {
     case MLTAG_vertex_3:	targ = GL_MAP1_VERTEX_3; break;
     case MLTAG_vertex_4:	targ = GL_MAP1_VERTEX_4; break;
@@ -430,26 +423,27 @@ value ml_glMap1d (value target, value u1, value u2, value points)
     case MLTAG_texture_coord_3:	targ = GL_MAP1_TEXTURE_COORD_3; break;
     case MLTAG_texture_coord_4:	targ = GL_MAP1_TEXTURE_COORD_4; break;
     }
-    glMap1d (targ, Double_val(u1), Double_val(u2), order, order, dpoints);
+    glMap1d (targ, Double_val(Field(u,0)), Double_val(Field(u,1)),
+	     1, order, dpoints);
     free (dpoints);
     return Val_unit;
 }
 
-value ml_glMap2d (value target, value u1, value u2, value v1, value v2, value points)
+value ml_glMap2d (value target, value u, value v, value points)
 {
-    int i, order;
+    int vorder = Wosize_val(points);
+    int i, uorder;
     double *dpoints;
     GLenum targ;
-    int len = Wosize_val(points);
 
-    if (len == 0) invalid_argument("Gl.map1");
-    order = Wosize_val(Field(points,0));
-    dpoints = calloc (order*len, sizeof(GLdouble));
-    for (i = 0; i < len; i++) {
+    if (vorder == 0) invalid_argument("Gl.map2");
+    uorder = Wosize_val(Field(points,0));
+    dpoints = calloc (uorder*vorder, sizeof(GLdouble));
+    for (i = 0; i < vorder; i++) {
 	int j;
 	value point = Field(points,i);
-	if (Wosize_val(point) != order) invalid_argument("Gl.map1");
-	for (j = 0; j < order; j++)
+	if (Wosize_val(point) != uorder) invalid_argument("Gl.map2");
+	for (j = 0; j < uorder; j++)
 	    *dpoints++ = Double_val(Field(point,j));
     }
     switch (target) {
@@ -463,7 +457,35 @@ value ml_glMap2d (value target, value u1, value u2, value v1, value v2, value po
     case MLTAG_texture_coord_3:	targ = GL_MAP1_TEXTURE_COORD_3; break;
     case MLTAG_texture_coord_4:	targ = GL_MAP1_TEXTURE_COORD_4; break;
     }
-    glMap1d (targ, Double_val(u1), Double_val(u2), order, order, dpoints);
+    glMap2d (targ, Double_val(Field(u,0)), Double_val(Field(u,1)), 1, uorder,
+	     Double_val(Field(v,0)), Double_val(Field(v,1)), uorder, vorder,
+	     dpoints);
     free (dpoints);
+    return Val_unit;
+}
+
+value ml_glMapGrid1d (value n, value u)
+{
+    glMapGrid1d (Int_val(n), Double_val(Field(u,0)), Double_val(Field(u,1)));
+    return Val_unit;
+}
+
+value ml_glMapGrid2d (value un, value u, value vn, value v)
+{
+    glMapGrid2d (Int_val(un), Double_val(Field(u,0)), Double_val(Field(u,1)),
+		 Int_val(vn), Double_val(Field(v,0)), Double_val(Field(v,1)));
+    return Val_unit;
+}
+
+ML_float (glPassThrough)
+
+value ml_glPixelMapfv (value map, value array)
+{
+    int mapsize = Wosize_val(array);
+    GLfloat *values = calloc (mapsize, sizeof(GLfloat));
+    int i;
+    
+    for (i = 0; i < mapsize; i++) values[i] = Float_val(Field(array,i));
+    glPixelMapfv (GLenum_val(map), mapsize, values);
     return Val_unit;
 }
