@@ -1,10 +1,11 @@
-/* $Id: ml_glu.c,v 1.18 2002-05-01 03:35:00 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.19 2002-06-19 14:29:18 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
+#include <caml/alloc.h>
 #include "gl_tags.h"
 #include "glu_tags.h"
 #include "ml_gl.h"
