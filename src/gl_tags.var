@@ -160,6 +160,22 @@ dont_care fastest nicest
 clear set copy copy_inverted noop invert And nand Or nor
 xor equiv and_reverse and_inverted or_reverse or_inverted
 
+(* glPixelTransfer *)
+alpha_bias
+alpha_scale
+blue_bias
+blue_scale
+depth_bias
+depth_scale
+green_bias
+green_scale
+index_offset
+index_shift
+map_color
+map_stencil
+red_bias
+red_scale
+
 (* glPixelMap *)
 i_to_i -> GL_PIXEL_MAP_I_TO_I
 i_to_r -> GL_PIXEL_MAP_I_TO_R
