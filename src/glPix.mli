@@ -1,8 +1,8 @@
-(* $Id: glPix.mli,v 1.5 2000-04-12 07:40:25 garrigue Exp $ *)
+(* $Id: glPix.mli,v 1.6 2000-09-07 02:27:47 garrigue Exp $ *)
 
 (* An abstract type for pixmaps *)
 
-type ('a, 'b) t
+type ('a, 'b) t as 'a * 'b
 
 val create :
   (#Gl.kind as 'a) ->
