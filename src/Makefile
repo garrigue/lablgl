@@ -102,9 +102,8 @@ install:
 
 real-install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	if test `grep -s -c '^$(INSTALLDIR)$$' $(LIBDIR)/ld.conf` = 0; then \
-	    echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; \
-	fi
+	if test `grep -s -c '^$(INSTALLDIR)$$' $(LIBDIR)/ld.conf || :` = 0; \
+	then echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
 	cp liblablgl.a lablgl.cma togl.cma $(INSTALLDIR)
