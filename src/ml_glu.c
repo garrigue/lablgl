@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.20 2002-07-12 03:41:45 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.21 2002-07-12 15:48:06 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -66,8 +66,8 @@ ML_1 (gluBeginPolygon, Tess_val)
 ML_1 (gluBeginSurface, Nurb_val)
 ML_1 (gluBeginTrim, Nurb_val)
 
-value ml_gluBuild1DMipmaps (value internal, value width,
-			    value format, value data)
+CAMLprim value ml_gluBuild1DMipmaps (value internal, value width,
+                                     value format, value data)
 {
     GLenum error;
 
@@ -78,8 +78,8 @@ value ml_gluBuild1DMipmaps (value internal, value width,
     return Val_unit;
 }
 
-value ml_gluBuild2DMipmaps (value internal, value width, value height,
-			    value format, value data)
+CAMLprim value ml_gluBuild2DMipmaps (value internal, value width, value height,
+                                     value format, value data)
 {
     GLint error;
 
@@ -109,21 +109,21 @@ ML_3 (gluLookAt, Triple(arg1,Double_val,Double_val,Double_val),
       Triple(arg2,Double_val,Double_val,Double_val),
       Triple(arg3,Double_val,Double_val,Double_val))
 
-value ml_gluNewNurbsRenderer (void)
+CAMLprim value ml_gluNewNurbsRenderer (void)
 {
     value struc = alloc_final (2, ml_gluDeleteNurbsRenderer, 1, 32);
     Store_addr(struc, gluNewNurbsRenderer());
     return struc;
 }
 
-value ml_gluNewQuadric (void)
+CAMLprim value ml_gluNewQuadric (void)
 {
     value struc = alloc_final (2, ml_gluDeleteQuadric, 1, 32);
     Store_addr(struc, gluNewQuadric());
     return struc;
 }
 
-value ml_gluNewTess (void)
+CAMLprim value ml_gluNewTess (void)
 {
     value struc = alloc_final (2, ml_gluDeleteTess, 1, 32);
     Store_addr(struc, gluNewTess());
@@ -134,7 +134,7 @@ ML_2 (gluNextContour, Tess_val, GLUenum_val)
 
 #define Fsize_raw(raw) (Int_val(Size_raw(raw))/sizeof(GLfloat))
 
-value ml_gluNurbsCurve (value nurb, value knots, value control,
+CAMLprim value ml_gluNurbsCurve (value nurb, value knots, value control,
 			value order, value type)
 {
     GLenum targ;
@@ -169,7 +169,7 @@ value ml_gluNurbsCurve (value nurb, value knots, value control,
     return Val_unit;
 }
 
-value ml_gluNurbsProperty (value nurb, value prop)
+CAMLprim value ml_gluNurbsProperty (value nurb, value prop)
 {
     GLfloat val;
     GLenum property = GLUenum_val (Field(prop,0));
@@ -190,9 +190,9 @@ value ml_gluNurbsProperty (value nurb, value prop)
     return Val_unit;
 }
 
-value ml_gluNurbsSurface (value nurb, value sKnots, value tKnots,
-			  value tStride, value control, value sOrder,
-			  value tOrder, value tag)
+CAMLprim value ml_gluNurbsSurface (value nurb, value sKnots, value tKnots,
+                                   value tStride, value control, value sOrder,
+                                   value tOrder, value tag)
 {
     GLenum type;
     GLint sStride;
@@ -233,7 +233,7 @@ ML_7 (gluPartialDisk, Quad_val, Double_val, Double_val, Int_val, Int_val,
 ML_bc7 (ml_gluPartialDisk)
 ML_4 (gluPerspective, Double_val, Double_val, Double_val, Double_val)
 
-value ml_gluPickMatrix (value x, value y, value delX, value delY)
+CAMLprim value ml_gluPickMatrix (value x, value y, value delX, value delY)
 {
     GLint viewport[4];
 
@@ -243,7 +243,7 @@ value ml_gluPickMatrix (value x, value y, value delX, value delY)
     return Val_unit;
 }
 
-value ml_gluProject (value object)
+CAMLprim value ml_gluProject (value object)
 {
     CAMLparam0();
     GLdouble model[16];
@@ -269,7 +269,7 @@ value ml_gluProject (value object)
     CAMLreturn(win);
 }
 
-value ml_gluPwlCurve (value nurbs, value count, value data, value tag)
+CAMLprim value ml_gluPwlCurve (value nurbs, value count, value data, value tag)
 {
     GLenum type;
     GLint stride;
@@ -305,7 +305,7 @@ ML_2 (gluTessBeginPolygon, Tess_val, Opt_val)
 ML_1 (gluTessEndPolygon, Tess_val)
 ML_4 (gluTessNormal, Tess_val, Double_val, Double_val, Double_val)
 
-value ml_gluTessProperty (value tess, value prop)
+CAMLprim value ml_gluTessProperty (value tess, value prop)
 {
     GLenum which = GLUenum_val (Field(prop,0));
     GLdouble data;
@@ -320,7 +320,7 @@ value ml_gluTessProperty (value tess, value prop)
 }
 #else
 #define ML_fail(cname) \
-value ml_##cname (value any) \
+CAMLprim value ml_##cname (value any) \
 { ml_raise_gl ("Function not available"); }
 ML_fail (gluTessBeginContour)
 ML_fail (gluTessEndContour)
@@ -332,7 +332,7 @@ ML_fail (gluTessProperty)
 
 ML_3 (gluTessVertex, Tess_val, Double_raw, Opt_val)
 
-value ml_gluUnProject (value win)
+CAMLprim value ml_gluUnProject (value win)
 {
     CAMLparam0();
     GLdouble model[16];

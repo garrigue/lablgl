@@ -38,6 +38,7 @@ RANLIB = :
 #XA = .lib
 #XO = .obj
 #XE = .exe
+#XS = .dll
 
 ##### Adjust these if non standard
 

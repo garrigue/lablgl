@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.19 2002-06-19 14:29:18 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.20 2002-07-12 15:48:06 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -18,76 +18,78 @@ GLenum GLenum_val (value);
 #define Type_void_raw(raw) Type_raw(raw), Void_raw(raw)
 
 #define ML_0(cname) \
-value ml_##cname (value unit) \
+CAMLprim value ml_##cname (value unit) \
 { cname (); return Val_unit; }
 #define ML_1(cname, conv1) \
-value ml_##cname (value arg1) \
+CAMLprim value ml_##cname (value arg1) \
 { cname (conv1(arg1)); return Val_unit; }
 #define ML_2(cname, conv1, conv2) \
-value ml_##cname (value arg1, value arg2) \
+CAMLprim value ml_##cname (value arg1, value arg2) \
 { cname (conv1(arg1), conv2(arg2)); return Val_unit; }
 #define ML_3(cname, conv1, conv2, conv3) \
-value ml_##cname (value arg1, value arg2, value arg3) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3) \
 { cname (conv1(arg1), conv2(arg2), conv3(arg3)); return Val_unit; }
 #define ML_4(cname, conv1, conv2, conv3, conv4) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4) \
 { cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4)); \
   return Val_unit; }
 #define ML_5(cname, conv1, conv2, conv3, conv4, conv5) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5) \
 { cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), conv5(arg5)); \
   return Val_unit; }
 #define ML_6(cname, conv1, conv2, conv3, conv4, conv5, conv6) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
-		  value arg6) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6) \
 { cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), conv5(arg5), \
-	 conv6(arg6)); \
+         conv6(arg6)); \
   return Val_unit; }
 #define ML_7(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
-		  value arg6, value arg7) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6, value arg7) \
 { cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), conv5(arg5), \
-	 conv6(arg6), conv7(arg7)); \
+         conv6(arg6), conv7(arg7)); \
   return Val_unit; }
 #define ML_8(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
-		  value arg6, value arg7, value arg8) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6, value arg7, value arg8) \
 { cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), conv5(arg5), \
-	 conv6(arg6), conv7(arg7), conv8(arg8)); \
+         conv6(arg6), conv7(arg7), conv8(arg8)); \
   return Val_unit; }
 
 #define ML_1_(cname, conv1, conv) \
-value ml_##cname (value arg1) \
+CAMLprim value ml_##cname (value arg1) \
 { return conv (cname (conv1(arg1))); }
 #define ML_2_(cname, conv1, conv2, conv) \
-value ml_##cname (value arg1, value arg2) \
+CAMLprim value ml_##cname (value arg1, value arg2) \
 { return conv (cname (conv1(arg1), conv2(arg2))); }
 #define ML_3_(cname, conv1, conv2, conv3, conv) \
-value ml_##cname (value arg1, value arg2, value arg3) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3))); }
 #define ML_4_(cname, conv1, conv2, conv3, conv4, conv) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4))); }
 #define ML_5_(cname, conv1, conv2, conv3, conv4, conv5, conv) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
-		      conv5(arg5))); }
+                      conv5(arg5))); }
 #define ML_6_(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
-		  value arg6) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
-		      conv5(arg5), conv6(arg6))); }
+                      conv5(arg5), conv6(arg6))); }
 #define ML_7_(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
-		  value arg6, value arg7) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6, value arg7) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
-		      conv5(arg5), conv6(arg6), conv7(arg7))); }
+                      conv5(arg5), conv6(arg6), conv7(arg7))); }
 #define ML_8_(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
-	     conv) \
-value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
-		  value arg6, value arg7, value arg8) \
+             conv) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6, value arg7, value arg8) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
-		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8))); }
+                      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8))); }
 
 /* Use with care: needs the argument index */
 #define Ignore(x)
@@ -98,17 +100,17 @@ value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 
 /* For more than 5 arguments */
 #define ML_bc6(cname) \
-value cname##_bc (value *argv, int argn) \
+CAMLprim value cname##_bc (value *argv, int argn) \
 { return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5]); }
 
 #define ML_bc7(cname) \
-value cname##_bc (value *argv, int argn) \
+CAMLprim value cname##_bc (value *argv, int argn) \
 { return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6]); }
 
 #define ML_bc8(cname) \
-value cname##_bc (value *argv, int argn) \
+CAMLprim value cname##_bc (value *argv, int argn) \
 { return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
-	       argv[7]); }
+               argv[7]); }
 
 
 /* subtleties of openGL 1.1 vs 1.2 */

@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.9 2002-07-12 03:41:45 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.10 2002-07-12 15:48:06 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -16,8 +16,8 @@
 #include "ml_gl.h"
 #include "togl_tags.h"
 
-extern Tcl_Interp *cltclinterp; /* The Tcl interpretor */
-extern void tk_error (char *message); /* Raise TKerror */
+/* extern Tcl_Interp *cltclinterp; /* The Tcl interpretor */
+/* extern void tk_error (char *message); /* Raise TKerror */
 
 int TOGLenum_val(value tag)
 {
@@ -28,9 +28,13 @@ int TOGLenum_val(value tag)
     invalid_argument ("Unknown Togl tag");
 }
 
-value ml_Togl_Init (value unit)  /* ML */
+CAMLprim value ml_Togl_Init (value unit)  /* ML */
 {
-    if (Togl_Init(cltclinterp) == TCL_ERROR) tk_error ("Togl_Init failed");
+    value *interp = caml_named_value("cltclinterp");
+    Tcl_Interp *cltclinterp = (Tcl_Interp*)
+      (interp ? Nativeint_val(Field(*interp,0)) : NULL);
+    if (cltclinterp == NULL || Togl_Init(cltclinterp) == TCL_ERROR)
+      raise_with_string(*caml_named_value("tkerror"), "Togl_Init failed");
     return Val_unit;
 }
 
@@ -64,7 +68,7 @@ static void callback_##func (const struct Togl *togl) \
 { callback (Field(*callbacks, func), Val_addr(togl)); }
 
 #define ENABLER(func) \
-value ml_Togl_##func (value unit) \
+CAMLprim value ml_Togl_##func (value unit) \
 { if (callbacks == NULL) callbacks = caml_named_value ("togl_callbacks"); \
   Togl_##func (callback_##func); \
   return Val_unit; }
@@ -91,7 +95,7 @@ ML_1_ (Togl_Ident, Addr_val, copy_string)
 ML_1_ (Togl_Width, Addr_val, Val_int)
 ML_1_ (Togl_Height, Addr_val, Val_int)
 
-value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
+CAMLprim value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 {
     char *fontname;
 
@@ -111,7 +115,7 @@ value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
 ML_2 (Togl_UnloadBitmapFont, Addr_val, Int_val)
 ML_2 (Togl_UseLayer, Addr_val, TOGLenum_val)
 #ifdef _WIN32
-value ml_Togl_ShowOverlay(value v)
+CAMLprim value ml_Togl_ShowOverlay(value v)
 { invalid_argument("Togl_ShowOverlay: not implemented"); return Val_unit; }
 #else
 ML_1 (Togl_ShowOverlay, Addr_val)
@@ -121,12 +125,13 @@ ML_1 (Togl_PostOverlayRedisplay, Addr_val)
 ML_1_ (Togl_ExistsOverlay, Addr_val, Val_int)
 ML_1_ (Togl_GetOverlayTransparentValue, Addr_val, Val_int)
 
-value ml_Togl_DumpToEpsFile (value togl, value filename, value rgbFlag)
+CAMLprim value ml_Togl_DumpToEpsFile (value togl, value filename, value rgb)
 {
     if (callbacks == NULL) callbacks = caml_named_value ("togl_callbacks");
     if (Togl_DumpToEpsFile(Addr_val(togl), String_val(filename),
-			   Int_val(rgbFlag), callback_RenderFunc)
+			   Int_val(rgb), callback_RenderFunc)
 	== TCL_ERROR)
-	tk_error ("Dump to EPS file failed");
+        raise_with_string(*caml_named_value("tkerror"),
+                          "Dump to EPS file failed");
     return Val_unit;
 }

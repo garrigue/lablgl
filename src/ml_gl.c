@@ -1,10 +1,11 @@
-/* $Id: ml_gl.c,v 1.28 2002-07-12 03:41:45 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.29 2002-07-12 15:48:06 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
 #include <string.h>
 #include <GL/gl.h>
+#include <caml/misc.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
 #include <caml/memory.h>
@@ -43,7 +44,7 @@ static struct record *tag_table = NULL;
 
 #define TABLE_SIZE (TAG_NUMBER*2+1)
 
-value ml_gl_make_table (value unit)
+CAMLprim value ml_gl_make_table (value unit)
 {
     int i;
     unsigned int hash;
@@ -96,7 +97,7 @@ ML_5 (glBitmap, Int_val, Int_val, Pair(arg3,Float_val,Float_val),
 
 ML_2 (glBlendFunc, GLenum_val, GLenum_val)
 
-value ml_glClipPlane(value plane, value equation)  /* ML */
+CAMLprim value ml_glClipPlane(value plane, value equation)  /* ML */
 {
     double eq[4];
     int i;
@@ -107,7 +108,7 @@ value ml_glClipPlane(value plane, value equation)  /* ML */
     return Val_unit;
 }
 
-value ml_glClear(value bit_list)  /* ML */
+CAMLprim value ml_glClear(value bit_list)  /* ML */
 {
     GLbitfield accu = 0;
 
@@ -155,7 +156,7 @@ ML_5 (glEvalMesh2, GLenum_val, Int_val, Int_val, Int_val, Int_val)
 ML_1 (glEvalPoint1, Int_val)
 ML_2 (glEvalPoint2, Int_val, Int_val)
 
-value ml_glFog (value param) /* ML */
+CAMLprim value ml_glFog (value param) /* ML */
 {
     float params[4];
     int i;
@@ -193,7 +194,7 @@ ML_3 (glFrustum, Pair(arg1,Double_val,Double_val),
 
 ML_1_ (glGetString, GLenum_val, copy_string_check)
 
-value ml_glHint (value target, value hint)
+CAMLprim value ml_glHint (value target, value hint)
 {
     GLenum targ;
 
@@ -214,7 +215,7 @@ ML_1 (glIndexd, Double_val)
 ML_0 (glInitNames)
 ML_1_ (glIsEnabled, GLenum_val, Val_int)
 
-value ml_glLight (value n, value param)  /* ML */
+CAMLprim value ml_glLight (value n, value param)  /* ML */
 {
     float params[4];
     int i;
@@ -240,7 +241,7 @@ value ml_glLight (value n, value param)  /* ML */
     return Val_unit;
 }
 
-value ml_glLightModel (value param)  /* ML */
+CAMLprim value ml_glLightModel (value param)  /* ML */
 {
     float params[4];
     int i;
@@ -271,7 +272,7 @@ ML_0 (glLoadIdentity)
 ML_1 (glLoadMatrixd, Double_raw)
 ML_1 (glLogicOp, GLenum_val)
 
-value ml_glMap1d (value target, value *u, value order, value raw)
+CAMLprim value ml_glMap1d (value target, value *u, value order, value raw)
 {
     int ustride, i;
     GLenum targ;
@@ -301,8 +302,8 @@ value ml_glMap1d (value target, value *u, value order, value raw)
     return Val_unit;
 }
 
-value ml_glMap2d (value target, value u, value uorder,
-		  value v, value vorder, value raw)
+CAMLprim value ml_glMap2d (value target, value u, value uorder,
+                           value v, value vorder, value raw)
 {
     int ustride;
     GLenum targ;
@@ -339,7 +340,7 @@ ML_2 (glMapGrid1d, Int_val, Pair(arg2,Double_val,Double_val))
 ML_4 (glMapGrid2d, Int_val, Pair(arg2,Double_val,Double_val),
       Int_val, Pair(arg4,Double_val,Double_val))
 
-value ml_glMaterial (value face, value param)  /* ML */
+CAMLprim value ml_glMaterial (value face, value param)  /* ML */
 {
     float params[4];
     int i;
@@ -369,7 +370,7 @@ ML_3 (glNormal3d, Double_val, Double_val, Double_val)
 
 ML_1 (glPassThrough, Float_val)
 
-value ml_glPixelMapfv (value map, value raw)
+CAMLprim value ml_glPixelMapfv (value map, value raw)
 {
     glPixelMapfv (GLenum_val(map), Int_val(Size_raw(raw))/sizeof(GLfloat),
 		  Float_raw(raw));
@@ -381,7 +382,7 @@ ML_3 (glOrtho, Pair(arg1,Double_val,Double_val),
 
 ML_1 (glPixelStorei, Pair(arg1,GLenum_val,Int_val))
 
-value ml_glPixelTransfer (value param)
+CAMLprim value ml_glPixelTransfer (value param)
 {
     GLenum pname = GLenum_val (Field(param,0));
 
@@ -406,7 +407,7 @@ ML_0 (glPopAttrib)
 ML_0 (glPopMatrix)
 ML_0 (glPopName)
 
-value ml_glPushAttrib (value list)
+CAMLprim value ml_glPushAttrib (value list)
 {
     GLbitfield mask = 0;
 
@@ -442,7 +443,7 @@ value ml_glPushAttrib (value list)
 ML_0 (glPushMatrix)
 ML_1 (glPushName, Int_val)
 
-value ml_glRasterPos(value x, value y, value z, value w)  /* ML */
+CAMLprim value ml_glRasterPos(value x, value y, value z, value w)  /* ML */
 {
     if (z == Val_int(0)) glRasterPos2d (Double_val(x), Double_val(y));
     else if (w == Val_int(0))
@@ -453,7 +454,7 @@ value ml_glRasterPos(value x, value y, value z, value w)  /* ML */
     return Val_unit;
 }
 
-value ml_glReadBuffer (value buffer)
+CAMLprim value ml_glReadBuffer (value buffer)
 {
     if (Is_block(buffer)) {
 	int n = Int_val (Field(buffer,1));
@@ -486,7 +487,7 @@ ML_2 (glTexCoord2d, Double_val, Double_val)
 ML_3 (glTexCoord3d, Double_val, Double_val, Double_val)
 ML_4 (glTexCoord4d, Double_val, Double_val, Double_val, Double_val)
 
-value ml_glTexEnv (value param)
+CAMLprim value ml_glTexEnv (value param)
 {
     value params = Field(param,1);
     GLfloat color[4];
@@ -504,7 +505,7 @@ value ml_glTexEnv (value param)
     return Val_unit;
 }
 
-value ml_glTexGen (value coord, value param)
+CAMLprim value ml_glTexGen (value coord, value param)
 {
     value params = Field(param,1);
     GLdouble point[4];
@@ -519,8 +520,9 @@ value ml_glTexGen (value coord, value param)
     return Val_unit;
 }
 
-value ml_glTexImage1D (value proxy, value level, value internal,
-		       value width, value border, value format, value data)
+CAMLprim value ml_glTexImage1D (value proxy, value level, value internal,
+                                value width, value border, value format,
+                                value data)
 {
     glTexImage1D (proxy == Val_int(1)
 		  ? GL_PROXY_TEXTURE_1D : GL_TEXTURE_1D,
@@ -532,9 +534,9 @@ value ml_glTexImage1D (value proxy, value level, value internal,
 
 ML_bc7 (ml_glTexImage1D)
 
-value ml_glTexImage2D (value proxy, value level, value internal,
-		       value width, value height, value border,
-		       value format, value data)
+CAMLprim value ml_glTexImage2D (value proxy, value level, value internal,
+                                value width, value height, value border,
+                                value format, value data)
 {
     /* printf("p=%x,l=%d,i=%d,w=%d,h=%d,b=%d,f=%x,t=%x,d=%x\n", */
     glTexImage2D (proxy == Val_int(1)
@@ -548,7 +550,7 @@ value ml_glTexImage2D (value proxy, value level, value internal,
 
 ML_bc8 (ml_glTexImage2D)
 
-value ml_glTexParameter (value target, value param)
+CAMLprim value ml_glTexParameter (value target, value param)
 {
     GLenum targ = GLenum_val(target);
     GLenum pname = GLenum_val(Field(param,0));
@@ -573,7 +575,7 @@ value ml_glTexParameter (value target, value param)
     
 ML_3 (glTranslated, Double_val, Double_val, Double_val)
 
-value ml_glVertex(value x, value y, value z, value w)  /* ML */
+CAMLprim value ml_glVertex(value x, value y, value z, value w)  /* ML */
 {
     if (z == Val_int(0)) glVertex2d (Double_val(x), Double_val(y));
     else if (w == Val_int(0))
@@ -597,7 +599,7 @@ ML_0 (glEndList)
 ML_1 (glCallList, Int_val)
 ML_1 (glListBase, Int_val)
 
-value ml_glCallLists (value indexes)  /* ML */
+CAMLprim value ml_glCallLists (value indexes)  /* ML */
 {
     int len,i;
     int * table;

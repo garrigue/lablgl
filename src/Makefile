@@ -12,8 +12,10 @@ TOOLCHAIN = unix
 XA = .a
 XO = .o
 XE =
+XS = .so
 # Windows specific
 MKLIB=lib /nologo /debugtype:CV /out:
+MKDLL=link /nologo /dll `ocamlc -where`/ocamlrun.lib /implib:tmp.lib /out:
 
 include Makefile.config
 
@@ -31,7 +33,7 @@ COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO)
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 
 # Default rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE)
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE) .d.obj
 
 .ml.cmo:
 	$(COMPILER) $(OCAMLINC) $<
@@ -43,7 +45,10 @@ TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 	$(COMPILER) $(OCAMLINC) $<
 
 .c$(XO):
-	$(COMPILER) -ccopt "$(COPTS) -I$(TOGLDIR) $(INCLUDES)" $<
+	$(COMPILER) -ccopt "$(COPTS) $(INCLUDES) -I$(TOGLDIR)" $<
+
+.c.d.obj:
+	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(INCLUDES) -I $(TOGLDIR)" $<
 
 .var.h:
 	ocamlrun ./var2def < $< > $@
@@ -65,20 +70,25 @@ var2switch$(XE): var2switch.ml
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
 	$(MKLIB)$@ $(COBJS)
-lablgl.cma: liblablgl$(XA) $(LIBOBJS) Makefile.config
-	$(LINKER) -a -custom -o $@ $(LIBOBJS) -cclib -llablgl \
-	  -cclib "$(GLLIBS) $(XLIBS)"
+dlllablgl.dll: $(COBJS:.obj=.d.obj)
+	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GLLIBS)
+lablgl.cma: liblablgl$(XA) dlllablgl.dll $(LIBOBJS) Makefile.config
+	$(LINKER) -a -o $@ $(LIBOBJS) \
+	  -cclib -llablgl -dllib -llablgl \
+	  -cclib "$(GLLIBS)"
 lablgl.cmxa: liblablgl$(XA) $(OPTOBJS) Makefile.config
 	$(OPTLINK) -a -o $@ $(OPTOBJS) -cclib -llablgl \
-	  -cclib "$(GLLIBS) $(XLIBS)"
+	  -cclib "$(GLLIBS)"
 libtogl$(XA): $(TOGLOBJS) Makefile.config
 	$(MKLIB)$@ $(TOGLOBJS)
-togl.cma: libtogl$(XA) togl.cmo Makefile.config
-	$(LINKER) -a -o $@ togl.cmo -cclib -ltogl \
-	  -cclib "$(GLLIBS) $(TKLIBS) $(XLIBS)"
+dlltogl.dll: $(TOGLOBJS:.obj=.d.obj)
+	$(MKDLL)$@ $(TOGLOBJS:.obj=.d.obj) $(GLLIBS) $(TKLIBS)
+togl.cma: libtogl$(XA) dlltogl.dll togl.cmo Makefile.config
+	$(LINKER) -a -o $@ togl.cmo -cclib -ltogl -dllib -ltogl \
+	  -cclib "$(GLLIBS) $(TKLIBS)"
 togl.cmxa: libtogl$(XA) togl.cmx Makefile.config
 	$(OPTLINK) -a -o $@ togl.cmx -cclib -ltogl \
-	  -cclib "$(GLLIBS) $(TKLIBS) $(XLIBS)"
+	  -cclib "$(GLLIBS) $(TKLIBS)"
 else
 liblablgl.a: $(COBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(COBJS) $(GLLIBS) $(XLIBS)
@@ -99,11 +109,16 @@ $(TOGLDIR)/togl.o:
 
 $(TOGLDIR)/togl.obj:
 	cd $(TOGLDIR) && \
-        $(CAMLC) -c -ccopt "-DWIN32 $(COPTS) $(INCLUDES) $(TK_FLAGS) -I." \
-	  togl.c
+        $(CAMLC) -c -ccopt "-DWIN32 $(COPTS) $(INCLUDES) -I." togl.c
+
+$(TOGLDIR)/togl.d.obj:
+	cd $(TOGLDIR) && \
+        $(CAMLC) -c -ccopt "/MD /Fotogl.d.obj -DWIN32" \
+		-ccopt "$(COPTS) $(INCLUDES) -I." \
+		togl.c
 
 lablgltop$(XE): lablgl.cma togl.cma
-	ocamlmktop -verbose -I . $(OCAMLINC) -o $@ \
+	ocamlmktop -verbose -custom -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
 lablgl: lablgl.in Makefile.config
@@ -137,11 +152,11 @@ real-install:
 	cd $(INSTALLDIR) && $(RANLIB) liblablgl$(XA) libtogl$(XA)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
-	@if test -f dlllablgl.so; then $(MAKE) installdll; fi
+	@if test -f dlllablgl$(XS); then $(MAKE) installdll; fi
 	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
 
 installdll:
-	cp dlllablgl.so dlltogl.so $(INSTALLDIR)
+	cp dlllablgl$(XS) dlltogl$(XS) $(INSTALLDIR)
 
 installopt:
 	cp lablgl.cmxa lablgl$(XA) togl.cmxa togl$(XA) \

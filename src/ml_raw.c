@@ -1,6 +1,7 @@
-/* $Id: ml_raw.c,v 1.11 2002-07-12 03:41:45 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.12 2002-07-12 15:48:06 garrigue Exp $ */
 
 #include <string.h>
+#include <caml/misc.h>
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
 #include <caml/alloc.h>
@@ -42,7 +43,7 @@ static int raw_sizeof (value kind)
     return 0;
 }
 
-value ml_raw_sizeof (value kind)  /* ML */
+CAMLprim value ml_raw_sizeof (value kind)  /* ML */
 {
     return Val_int(raw_sizeof(kind));
 }
@@ -54,7 +55,7 @@ static void check_size (value raw, long pos, char *msg)
 	invalid_argument (msg);
 }
 
-value ml_raw_get (value raw, value pos)  /* ML */
+CAMLprim value ml_raw_get (value raw, value pos)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -81,7 +82,7 @@ value ml_raw_get (value raw, value pos)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_read (value raw, value pos, value len)  /* ML */
+CAMLprim value ml_raw_read (value raw, value pos, value len)  /* ML */
 {
     int s = Int_val(pos);
     int i, l = Int_val(len);
@@ -152,7 +153,7 @@ value ml_raw_read (value raw, value pos, value len)  /* ML */
     return ret;
 }
 
-value ml_raw_read_string (value raw, value pos, value len)  /* ML */
+CAMLprim value ml_raw_read_string (value raw, value pos, value len)  /* ML */
 {
     int s = Int_val(pos);
     int l = Int_val(len);
@@ -165,7 +166,7 @@ value ml_raw_read_string (value raw, value pos, value len)  /* ML */
     return ret;
 }
 
-value ml_raw_write_string (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_write_string (value raw, value pos, value data)  /* ML */
 {
     int s = Int_val(pos);
     int l = string_length(data);
@@ -177,7 +178,7 @@ value ml_raw_write_string (value raw, value pos, value data)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_set (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_set (value raw, value pos, value data)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -208,7 +209,7 @@ value ml_raw_set (value raw, value pos, value data)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_write (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_write (value raw, value pos, value data)  /* ML */
 {
     int s = Int_val(pos);
     int i, l = Wosize_val(data);
@@ -266,7 +267,7 @@ value ml_raw_write (value raw, value pos, value data)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_get_float (value raw, value pos)  /* ML */
+CAMLprim value ml_raw_get_float (value raw, value pos)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -277,7 +278,7 @@ value ml_raw_get_float (value raw, value pos)  /* ML */
 	return copy_double (Double_raw(raw)[i]);
 }
 
-value ml_raw_read_float (value raw, value pos, value len)  /* ML */
+CAMLprim value ml_raw_read_float (value raw, value pos, value len)  /* ML */
 {
     int s = Int_val(pos);
     int i, l = Int_val(len);
@@ -298,7 +299,7 @@ value ml_raw_read_float (value raw, value pos, value len)  /* ML */
     return ret;
 }
 
-value ml_raw_set_float (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_set_float (value raw, value pos, value data)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -310,7 +311,7 @@ value ml_raw_set_float (value raw, value pos, value data)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_write_float (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_write_float (value raw, value pos, value data)  /* ML */
 {
     int s = Int_val(pos);
     int i, l = Wosize_val(data)*sizeof(value)/sizeof(double);
@@ -351,7 +352,7 @@ value ml_raw_write_float (value raw, value pos, value data)  /* ML */
 #define Hlong_raw(raw) ((unsigned short *) Short_raw(raw))
 #endif
 
-value ml_raw_get_hi (value raw, value pos)  /* ML */
+CAMLprim value ml_raw_get_hi (value raw, value pos)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -367,7 +368,7 @@ value ml_raw_get_hi (value raw, value pos)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_get_lo (value raw, value pos)  /* ML */
+CAMLprim value ml_raw_get_lo (value raw, value pos)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -383,7 +384,7 @@ value ml_raw_get_lo (value raw, value pos)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_set_hi (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_set_hi (value raw, value pos, value data)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -401,7 +402,7 @@ value ml_raw_set_hi (value raw, value pos, value data)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_set_lo (value raw, value pos, value data)  /* ML */
+CAMLprim value ml_raw_set_lo (value raw, value pos, value data)  /* ML */
 {
     long i = Long_val(pos);
 
@@ -419,7 +420,7 @@ value ml_raw_set_lo (value raw, value pos, value data)  /* ML */
     return Val_unit;
 }
 
-value ml_raw_alloc (value kind, value len)  /* ML */
+CAMLprim value ml_raw_alloc (value kind, value len)  /* ML */
 {
     CAMLparam0();
     CAMLlocal1(data);
@@ -440,7 +441,7 @@ value ml_raw_alloc (value kind, value len)  /* ML */
     CAMLreturn(raw);
 }
 
-value ml_raw_alloc_static (value kind, value len)  /* ML */
+CAMLprim value ml_raw_alloc_static (value kind, value len)  /* ML */
 {
     value raw;
     void  *data;
@@ -460,7 +461,7 @@ value ml_raw_alloc_static (value kind, value len)  /* ML */
     return raw;
 }
 
-value ml_raw_free_static (value raw)  /* ML */
+CAMLprim value ml_raw_free_static (value raw)  /* ML */
 {
     if (Static_raw(raw) != Val_int(1)) invalid_argument ("Raw.free_static");
     stat_free (Void_raw(raw));
