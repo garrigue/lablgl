@@ -1,8 +1,14 @@
 open Bigarray
 
 let float_ba_make n = Array1.create float32 c_layout n
+let float_ba1_make = float_ba_make
+let float_ba2_make m n = Array2.create float32 c_layout m n
+let float_ba3_make m n p = Array3.create float32 c_layout m n p
 
 let int_ba_make n = Array1.create int c_layout n
+let int_ba1_make = int_ba_make
+let int_ba2_make m n = Array2.create int32 c_layout m n
+let int_ba3_make m n p = Array3.create int32 c_layout m n p
 
 let int32_ba_make n = Array1.create int32 c_layout n
 
