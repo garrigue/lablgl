@@ -1,19 +1,15 @@
-(* $Id: glFunc.mli,v 1.1 1998-01-29 11:45:47 garrigue Exp $ *)
+(* $Id: glFunc.mli,v 1.2 1998-04-16 07:19:48 garrigue Exp $ *)
 
 val accum : op:[accum add load mult return] -> float -> unit
 
 val alpha_func : Gl.cmp_func -> ref:Gl.clampf -> unit
 
 type sfactor =
-  [constant_alpha_ext constant_color_ext dst_alpha dst_color one
-   one_minus_constant_alpha_ext one_minus_constant_color_ext
-   one_minus_dst_alpha one_minus_dst_color one_minus_src_alpha src_alpha
-   src_alpha_saturate zero]
+  [dst_alpha dst_color one one_minus_dst_alpha one_minus_dst_color
+   one_minus_src_alpha src_alpha src_alpha_saturate zero]
 type dfactor =
-  [constant_alpha_ext constant_color_ext dst_alpha one
-   one_minus_constant_alpha_ext one_minus_constant_color_ext
-   one_minus_dst_alpha one_minus_src_alpha one_minus_src_color src_alpha
-   src_color zero]
+  [dst_alpha one one_minus_dst_alpha one_minus_src_alpha
+   one_minus_src_color src_alpha src_color zero]
 val blend_func : src:sfactor -> dst:dfactor -> unit
 
 val color_mask :

@@ -1,4 +1,4 @@
-(* $Id: glFunc.ml,v 1.1 1998-01-29 11:45:46 garrigue Exp $ *)
+(* $Id: glFunc.ml,v 1.2 1998-04-16 07:19:47 garrigue Exp $ *)
 
 open Gl
 
@@ -16,10 +16,6 @@ type sfactor = [
       dst_alpha
       one_minus_dst_alpha
       src_alpha_saturate
-      constant_color_ext
-      one_minus_constant_color_ext
-      constant_alpha_ext
-      one_minus_constant_alpha_ext
   ]
 type dfactor = [
       zero
@@ -30,10 +26,6 @@ type dfactor = [
       one_minus_src_alpha
       dst_alpha
       one_minus_dst_alpha
-      constant_color_ext
-      one_minus_constant_color_ext
-      constant_alpha_ext
-      one_minus_constant_alpha_ext
   ]
 external blend_func : src:sfactor -> dst:dfactor -> unit = "ml_glBlendFunc"
 

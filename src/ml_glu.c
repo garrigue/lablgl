@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.11 1998-04-16 07:10:45 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.12 1998-04-16 07:19:50 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -53,6 +53,8 @@ static value Val_addr (void *addr)
 #define Tess_val(struc) ((GLUtriangulatorObj *) Field(struc,1))
 
 #endif /* GLU_VERSION_1_1 */
+
+#define Store_addr(struc, addr) Field(struc,1) = (value) addr
 
 
 #define ML_final(cname) \
@@ -116,21 +118,21 @@ ML_3 (gluLookAt, Triple(arg1,Double_val,Double_val,Double_val),
 value ml_gluNewNurbsRenderer (void)
 {
     value struc = alloc_final (2, ml_gluDeleteNurbsRenderer, 1, 32);
-    Nurb_val(struc) = gluNewNurbsRenderer();
+    Store_addr(struc, gluNewNurbsRenderer());
     return struc;
 }
 
 value ml_gluNewQuadric (void)
 {
     value struc = alloc_final (2, ml_gluDeleteQuadric, 1, 32);
-    Quad_val(struc) = gluNewQuadric();
+    Store_addr(struc, gluNewQuadric());
     return struc;
 }
 
 value ml_gluNewTess (void)
 {
     value struc = alloc_final (2, ml_gluDeleteTess, 1, 32);
-    Tess_val(struc) = gluNewTess();
+    Store_addr(struc, gluNewTess());
     return struc;
 }
 

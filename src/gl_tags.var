@@ -131,10 +131,6 @@ one_minus_src_alpha
 dst_alpha
 one_minus_dst_alpha
 src_alpha_saturate
-constant_color_ext
-one_minus_constant_color_ext
-constant_alpha_ext
-one_minus_constant_alpha_ext
 src_color
 one_minus_src_color
 
