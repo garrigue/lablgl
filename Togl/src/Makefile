@@ -1,7 +1,6 @@
 # Include shared parts
 TOPDIR = ../..
 include $(TOPDIR)/Makefile.common
-include $(CONFIG)
 
 # Composite options
 INCLUDES = -I$(SRCDIR) -I$(TOGLDIR) \
