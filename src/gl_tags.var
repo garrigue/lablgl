@@ -159,7 +159,7 @@ byte
 short
 int
 float
-double
+double -> GL_DOUBLE_EXT
 
 $$
 (* glLightModel *)
