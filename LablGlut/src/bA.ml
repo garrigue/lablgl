@@ -1,7 +1,5 @@
 open Bigarray
 
-let i32toi = Int32.to_int
-
 let ba_make1 kind n = Array1.create kind c_layout n
 let ba_make2 kind m n = Array2.create kind c_layout m n
 let ba_make3 kind m n p = Array3.create kind c_layout m n p
@@ -34,6 +32,10 @@ let ba_init3 m n p f kind =
 
 let ba_init = ba_init1
 
+let fba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) float32
+let i32ba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) int32
+let byteba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) int8_unsigned
+
 let ba1_dim ba = 
     Array1.dim ba
 
@@ -64,13 +66,13 @@ let ba_amap3 f ba =
 
 let ba_amap = ba_amap1
 
-let iter1 f ba =
+let ba_iter1 f ba =
     let m = Array1.dim ba in
     for i = 0 to m-1 do 
         f i 
     done
 
-let iter2 f ba =
+let ba_iter2 f ba =
     let m,n = ba2_dim ba in
     for i = 0 to m-1 do 
         for j = 0 to n-1 do
@@ -78,7 +80,7 @@ let iter2 f ba =
         done
     done
 
-let iter3 f ba =
+let ba_iter3 f ba =
     let m,n,p = ba3_dim ba in
     for i = 0 to m-1 do 
         for j = 0 to n-1 do
@@ -88,7 +90,7 @@ let iter3 f ba =
         done
     done
 
-let iter = iter1
+let ba_iter = ba_iter1
 
 let float_ba_make n = Array1.create float32 c_layout n
 let float_ba1_make = float_ba_make
@@ -106,28 +108,35 @@ let int_ba_of_int32_ba i32ba =
     ba_init1 (Array1.dim i32ba) (fun i -> Int32.to_int i32ba.{i}) int
 let int_ba_of_array a = ba_init1 (Array.length a) (fun i -> a.(i)) int
 
-let ubyte_ba_make n = Array1.create int8_unsigned c_layout n
-let ubyte_ba1_make = ubyte_ba_make
-let ubyte_ba2_make m n = Array2.create int8_unsigned c_layout m n
-let ubyte_ba3_make m n p = Array3.create int8_unsigned c_layout m n p
+let byte_ba_make n = Array1.create int8_unsigned c_layout n
+let byte_ba1_make = byte_ba_make
+let byte_ba2_make m n = Array2.create int8_unsigned c_layout m n
+let byte_ba3_make m n p = Array3.create int8_unsigned c_layout m n p
+let byte_ba_of_int_array a = 
+    ba_init (Array.length a) (fun i -> a.(i)) int8_unsigned
+
+let i32toi i32 = Int32.to_int i32
+let i32tof i32 = Int32.to_float i32 
+let ftoi32 f = Int32.of_float f
+let itoi32 i = Int32.to_int i
 
 let int32_ba_make n = Array1.create int32 c_layout n
-let int32_ba_of_int_array a = ba_init1 (Array.length a) (fun i -> a.(i)) int32
+let int32_ba_of_int_array a = 
+    ba_init1 (Array.length a) (fun i -> Int32.of_int a.(i)) int32
 let int_array_of_int32_ba ba = ba_amap1 i32toi ba
 
-let ubyte_ba_make n = Array1.create int8_unsigned c_layout n
-
-let float_ba_of_array2 m = 
+let float_ba2_of_array m = 
     ba_init2 (Array.length m) (Array.length m.(0)) (fun i j -> m.(i).(j)) float32
                                                                                   
-let int32_ba_of_array2 m =
-    ba_init2 (Array.length m) (Array.length m.(0)) (fun i j -> m.(i).(j)) int32
+let int32_ba2_of_array m =
+    ba_init2 (Array.length m) (Array.length m.(0)) 
+        (fun i j -> Int32.of_int m.(i).(j)) int32
 
-let ubyte_ba_of_array2 m = 
+let byte_ba2_of_array m = 
     ba_init2 (Array.length m) (Array.length m.(0)) (fun i j -> m.(i).(j))
         int8_unsigned
 
-let float_ba_of_array3 a =
+let float_ba3_of_array a =
     ba_init3 (Array.length a) (Array.length a.(0)) (Array.length a.(0).(0))
         (fun i j k -> a.(i).(j).(k)) float32
 
