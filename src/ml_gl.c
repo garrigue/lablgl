@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.16 1998-01-21 23:25:19 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.17 1998-01-23 03:23:17 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -540,11 +540,7 @@ value ml_glReadPixels (value x, value y, value w, value h,
     return data;
 }
 
-value ml_glReadPixels_bc (value *argv, int argn)
-{
-    return ml_glReadPixels (argv[0], argv[1], argv[2],
-			    argv[3], argv[4], argv[5]);
-}
+ML_bc6 (ml_glReadPixels)
 
 value ml_glRect(value p1, value p2)  /* ML */
 {
@@ -622,11 +618,7 @@ value ml_glTexImage1D (value proxy, value level, value internal,
     return Val_unit;
 }
 
-value ml_glTexImage1D_bc (value *argv, int argn)
-{
-    return ml_glTexImage1D (argv[0], argv[1], argv[2],
-			    argv[3], argv[4], argv[5], argv[6]);
-}
+ML_bc7 (ml_glTexImage1D)
 
 value ml_glTexImage2D (value proxy, value level, value internal,
 		       value width, value height, value border,
@@ -642,11 +634,7 @@ value ml_glTexImage2D (value proxy, value level, value internal,
     return Val_unit;
 }
 
-value ml_glTexImage2D_bc (value *argv, int argn)
-{
-    return ml_glTexImage2D (argv[0], argv[1], argv[2], argv[3],
-			    argv[4], argv[5], argv[6], argv[7]);
-}
+ML_bc8 (ml_glTexImage2D)
 
 value ml_glTexParameter (value target, value param)
 {

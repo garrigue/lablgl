@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.13 1998-01-21 09:12:35 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.14 1998-01-23 03:23:18 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -133,12 +133,30 @@ value ml_##cname (value addr, value n) \
 value ml_##cname (value addr, value tag) \
 { cname (Addr_val(addr), TOGLenum_val(tag)); return Val_unit; }
 
+#define ML_bc6(cname) \
+value cname##_bc (value *argv, int argn) \
+{ return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5]); }
+
+#define ML_bc7(cname) \
+value cname##_bc (value *argv, int argn) \
+{ return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6]); }
+
+#define ML_bc8(cname) \
+value cname##_bc (value *argv, int argn) \
+{ return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
+	       argv[7]); }
+
 #if !defined(GL_DOUBLE) && defined(GL_DOUBLE_EXT)
 #define GL_DOUBLE GL_DOUBLE_EXT
 #endif
-
 #if !defined(GL_TEXTURE_PRIORITY) && defined(GL_TEXTURE_PRIORITY_EXT)
 #define GL_TEXTURE_PRIORITY GL_TEXTURE_PRIORITY_EXT
+#endif
+#if !defined(GL_PROXY_TEXTURE_1D) && defined(GL_PROXY_TEXTURE_1D_EXT)
+#define GL_PROXY_TEXTURE_1D GL_PROXY_TEXTURE_1D_EXT
+#endif
+#if !defined(GL_PROXY_TEXTURE_2D) && defined(GL_PROXY_TEXTURE_2D_EXT)
+#define GL_PROXY_TEXTURE_2D GL_PROXY_TEXTURE_2D_EXT
 #endif
 
 #endif

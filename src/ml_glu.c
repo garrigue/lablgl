@@ -1,9 +1,10 @@
-/* $Id: ml_glu.c,v 1.6 1998-01-22 10:32:55 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.7 1998-01-23 03:23:19 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
+#include <caml/memory.h>
 #include "gl_tags.h"
 #include "glu_tags.h"
 #include "ml_gl.h"
@@ -98,11 +99,7 @@ value ml_gluCylinder (value quad, value base, value top, value height,
     return Val_unit;
 }
 
-value ml_gluCylinder_bc (value tup)
-{
-    ml_gluCylinder (Field(tup,0), Field(tup,1), Field(tup,2),
-		    Field(tup,3), Field(tup,4), Field(tup,5));
-}
+ML_bc6 (ml_gluCylinder)
 
 value ml_gluDisk (value quad, value inner, value outer,
 		  value slices, value loops)
@@ -226,12 +223,14 @@ value ml_gluNurbsProperty (value nurb, value prop)
     return Val_unit;
 }
 
-value ml_gluNurbsSurface (value param)
+value ml_gluNurbsSurface (value nurb, value sKnots, value tKnots,
+			  value tStride, value control, value sOrder,
+			  value tOrder, value tag)
 {
     GLenum type;
     GLint sStride;
 
-    switch (Field(param,7)) {
+    switch (tag) {
     case MLTAG_vertex_3:
 	type = GL_MAP2_VERTEX_3; sStride = 3; break;
     case MLTAG_vertex_4:
@@ -251,18 +250,64 @@ value ml_gluNurbsSurface (value param)
     case MLTAG_texture_coord_4:
 	type = GL_MAP2_TEXTURE_COORD_4; sStride = 4; break;
     }
-    gluNurbsSurface (Nurb_val(Field(param,0)), Fsize_raw(Field(param,1)),
-		     Float_raw(Field(param,1)), Fsize_raw(Field(param,2)),
-		     Float_raw(Field(param,2)), sStride,
-		     Int_val(Field(param,3)), Float_raw(Field(param,4)),
-		     Int_val(Field(param,5)), Int_val(Field(param,6)),
-		     type);
+    gluNurbsSurface (Nurb_val(nurb), Fsize_raw(sKnots), Float_raw(sKnots),
+		     Fsize_raw(tKnots), Float_raw(tKnots), sStride,
+		     Int_val(tStride), Float_raw(control),
+		     Int_val(sOrder), Int_val(tOrder), type);
     return Val_unit;
 }
 
+ML_bc8 (ml_gluNurbsSurface)
+
 ML_double4(gluOrtho2D)
 
+value ml_gluPartialDisk (value quad, value inner, value outer, value slices,
+			 value loops, value start, value sweep)
+{
+    gluPartialDisk (Quad_val(quad), Double_val(inner), Double_val(outer),
+		    Int_val(slices), Int_val(loops), Double_val(start),
+		    Double_val(sweep));
+    return Val_unit;
+}
+
+ML_bc7 (ml_gluPartialDisk)
+
 ML_double4 (gluPerspective)
+
+value ml_gluPickMatrix (value x, value y, value delX, value delY)
+{
+    GLint viewport[4];
+
+    glGetIntegerv (GL_VIEWPORT, viewport);
+    gluPickMatrix (Double_val(x), Double_val(y), Double_val(delX),
+		   Double_val(delY), viewport);
+    return Val_unit;
+}
+
+value ml_gluProject (value object)
+{
+    GLdouble model[16];
+    GLdouble proj[16];
+    GLint viewport[4];
+    value win = Val_unit, winX = Val_unit, winY = Val_unit, winZ = Val_unit;
+
+    glGetDoublev (GL_MODELVIEW_MATRIX, model);
+    glGetDoublev (GL_PROJECTION_MATRIX, proj);
+    glGetIntegerv (GL_VIEWPORT, viewport);
+    Begin_roots4 (win,winX,winY,winZ);
+    winX = alloc (Double_wosize, Double_tag);
+    winY = alloc (Double_wosize, Double_tag);
+    winZ = alloc (Double_wosize, Double_tag);
+    win = alloc_tuple (3);
+    Field(win,0) = winX;
+    Field(win,1) = winY;
+    Field(win,2) = winZ;
+    gluProject (Field(object,0), Field(object,1), Field(object,2),
+		model, proj, viewport,
+		(double *) winX, (double *) winY, (double *) winZ);
+    End_roots ();
+    return win;
+}
 
 value ml_gluSphere (value quad, value radius, value slices, value stacks)
 {

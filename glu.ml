@@ -1,4 +1,4 @@
-(* $Id: glu.ml,v 1.4 1998-01-22 10:32:53 garrigue Exp $ *)
+(* $Id: glu.ml,v 1.5 1998-01-23 03:23:16 garrigue Exp $ *)
 
 type nurbs
 type tesselator
@@ -92,7 +92,7 @@ external nurbs_surface :
     nurbs -> sknots:[float] Raw.t -> tknots:[float] Raw.t ->
     tstride:int -> control:[float] Raw.t ->
     sorder:int -> torder:int -> type:Gl.map_target -> unit
-    = "ml_gluNurbsSurface"
+    = "ml_gluNurbsSurface_bc" "ml_gluNurbsSurface"
 let nurbs_surface nurbs :sknots :tknots :control :sorder :torder type:t =
   let cl = Array.length control in
   if cl = 0 then invalid_arg "Glu.nurbs_curve";
@@ -119,13 +119,28 @@ let nurbs_surface nurbs :sknots :tknots :control :sorder :torder type:t =
   nurbs_surface nurbs sknots:sk tknots:tk :tstride control:co
     :sorder :torder type:t
 
-external perspective :
-    fovy:float -> aspect:float -> znear:float -> zfar:float -> unit
-    = "ml_gluPerspective"
-
 external ortho2d :
     left:float -> right:float -> bottom:float -> top:float -> unit
     = "ml_gluOrtho2D"
+let ortho2d x:(left,right) y:(bottom,top) =
+  ortho2d :left :right :bottom :top
+
+external partial_disk :
+    quadric -> inner:float -> outer:float ->
+    slices:int -> loops:int -> start:float -> sweep:float -> unit
+    = "ml_gluPartialDisk_bc" "ml_gluPartialDisk"
+
+external perspective :
+    fovy:float -> aspect:float -> znear:float -> zfar:float -> unit
+    = "ml_gluPerspective"
+let perspective :fovy :aspect z:(znear,zfar) =
+  perspective :fovy :aspect :znear :zfar
+
+external pick_matrix :
+    x:float -> y:float -> width:float -> height:float -> unit
+    = "ml_gluPickMatrix"
+
+external project : Gl.point3 -> Gl.point3 = "ml_gluProject"
 
 external sphere : quadric -> radius:float -> slices:int -> stacks:int -> unit
     = "ml_gluSphere"
