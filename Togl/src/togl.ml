@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.4 1998-01-14 09:32:40 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.5 1998-01-15 08:34:42 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -83,7 +83,18 @@ external _ident : t -> string = "ml_Togl_Ident"
 external _height : t -> int = "ml_Togl_Height"
 external _width : t -> int = "ml_Togl_Width"
 
-external _load_bitmap_font : t -> name:string -> Gl.glist
+type font = [
+      fixed_8x13
+      fixed_9x15
+      times_10
+      times_24
+      helvetica_10
+      helvetica_12
+      helvetica_18
+      Xfont(string)
+  ]
+
+external _load_bitmap_font : t -> font:font -> Gl.glist
     = "ml_Togl_LoadBitmapFont"
 external _unload_bitmap_font : t -> base:Gl.glist -> unit
     = "ml_Togl_UnloadBitmapFont"
@@ -235,8 +246,8 @@ let create :parent ?:name =
       let togl = ref None in
       callback_table.(create_id) <-
 	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);
-      callback_table.(destroy_id) <-
-	 (fun t -> try Hashtbl.remove togl_table key:w with Not_found -> ());
+      (* callback_table.(destroy_id) <-
+        (fun t -> try Hashtbl.remove togl_table key:w with Not_found -> ()); *)
       tkEval [|TkToken "togl"; TkToken (Widget.name w);
 	       TkToken "-ident"; TkToken (Widget.name w);
 	       TkTokenList options|];

@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.10 1998-01-14 09:32:38 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.11 1998-01-15 08:34:41 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -122,7 +122,7 @@ value ml_##cname (value addr, value n) \
 value ml_##cname (value addr, value tag) \
 { cname (Addr_val(addr), TOGLenum_val(tag)); return Val_unit; }
 
-#ifndef GL_DOUBLE
+#ifdef GL_DOUBLE_EXT
 #define GL_DOUBLE GL_DOUBLE_EXT
 #endif
 

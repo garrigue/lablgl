@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.10 1998-01-14 09:32:38 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.11 1998-01-15 08:34:40 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -60,6 +60,17 @@ value ml_glVertex(value x, value y, value z, value w)  /* ML */
 	glVertex3d (Double_val(x), Double_val(y), Double_val(Field(z, 0)));
     else
 	glVertex4d (Double_val(x), Double_val(y), Double_val(Field(z, 0)),
+		    Double_val(Field(w, 0)));
+    return Val_unit;
+}
+
+value ml_glRasterPos(value x, value y, value z, value w)  /* ML */
+{
+    if (z == Val_int(0)) glRasterPos2d (Double_val(x), Double_val(y));
+    else if (w == Val_int(0))
+	glRasterPos3d (Double_val(x), Double_val(y), Double_val(Field(z, 0)));
+    else
+	glRasterPos4d (Double_val(x), Double_val(y), Double_val(Field(z, 0)),
 		    Double_val(Field(w, 0)));
     return Val_unit;
 }

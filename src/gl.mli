@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.4 1998-01-14 09:32:36 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.5 1998-01-15 08:34:40 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -201,3 +201,6 @@ type logic_op =
     [ clear set copy copy_inverted noop invert And nand Or nor
       xor equiv and_reverse and_inverted or_reverse or_inverted ]
 external logic_op : logic_op -> unit = "ml_glLogicOp"
+
+external raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit
+    = "ml_glRasterPos"

@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.10 1998-01-14 09:32:35 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.11 1998-01-15 08:34:39 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -436,6 +436,9 @@ external map2 :
     target:map_target ->
     u:(float*float) -> v:(float*float) -> float array array -> unit
     = "ml_glMap1d"
+
+external raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit
+    = "ml_glRasterPos"
 
 (*
 type component = [
