@@ -79,6 +79,16 @@ togl_tags.c: togl_tags.var
 glu_tags.c: glu_tags.var
 	./var2switch GLU_ < glu_tags.var > $@
 
+install:
+	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
+	cp raw.cmi gl.cmi glu.cmi togl.cmi $(INSTALLDIR)
+	cp raw.mli gl.mli togl.mli $(INSTALLDIR)
+	cp lablgl.cma liblablgl.a $(INSTALLDIR)
+	cp lablgl $(INSTALLDIR)
+	if test -f lablgl.cmxa; then : ; \
+		cp lablgl.cmxa lablgl.cma $(INSTALLDIR); fi
+
+
 clean:
 	rm -f *.cm? ml_*.o gl_tags.[ch] tk_tags.[ch] *~ #*
 

@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.2 1998-01-26 03:18:42 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.3 1998-01-27 08:02:00 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -268,30 +268,30 @@ let pentagon :edge :amp :divisions :z =
     done
   done
 
+let call_list list color =
+  Gl.material face:`both (`diffuse color);
+  Gl.call_list list
+
 let draw_tetra :amp :divisions :color =
   let list = Gl.gen_lists 1 in
   Gl.new_list list mode:`compile;
   triangle edge:2.0 :amp :divisions z:(0.5 /. sqrt6);
   Gl.end_list();
 
-  Gl.material face:`both (`diffuse color.(0));
-  Gl.call_list list;
+  call_list list color.(0);
   Gl.push_matrix();
   Gl.rotate angle:180.0 z:1.0;
   Gl.rotate angle:(-.tetraangle) x:1.0;
-  Gl.material face:`both (`diffuse color.(1));
-  Gl.call_list list;
+  call_list list color.(1);
   Gl.pop_matrix();
   Gl.push_matrix();
   Gl.rotate angle:180.0 y:1.0;
   Gl.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(sqrt3 /. 2.);
-  Gl.material face:`both (`diffuse color.(2));
-  Gl.call_list list;
+  call_list list color.(2);
   Gl.pop_matrix();
   Gl.rotate angle:180.0 y:1.0;
   Gl.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(-.sqrt3 /. 2.);
-  Gl.material face:`both (`diffuse color.(3));
-  Gl.call_list list;
+  call_list list color.(3);
 
   Gl.delete_lists from:list range:1
 
@@ -301,23 +301,15 @@ let draw_cube :amp :divisions :color =
   square edge:2.0 :amp :divisions z:0.5;
   Gl.end_list();
 
-  Gl.material face:`both (`diffuse color.(0));
-  Gl.call_list list;
-  Gl.rotate angle:cubeangle x:1.0;
-  Gl.material face:`both (`diffuse color.(1));
-  Gl.call_list list;
-  Gl.rotate angle:cubeangle x:1.0;
-  Gl.material face:`both (`diffuse color.(2));
-  Gl.call_list list;
-  Gl.rotate angle:cubeangle x:1.0;
-  Gl.material face:`both (`diffuse color.(3));
-  Gl.call_list list;
+  call_list list color.(0);
+  for i = 1 to 3 do
+    Gl.rotate angle:cubeangle x:1.0;
+    call_list list color.(i)
+  done;
   Gl.rotate angle:cubeangle y:1.0;
-  Gl.material face:`both (`diffuse color.(4));
-  Gl.call_list list;
+  call_list list color.(4);
   Gl.rotate angle:(2.0 *. cubeangle) y:1.0;
-  Gl.material face:`both (`diffuse color.(5));
-  Gl.call_list list;
+  call_list list color.(5);
 
   Gl.delete_lists from:list range:1
 
@@ -327,26 +319,20 @@ let draw_octa :amp :divisions :color =
   triangle edge:2.0 :amp :divisions z:(1.0 /. sqrt6);
   Gl.end_list();
 
-  Gl.material face:`both (`diffuse color.(0));
-  Gl.call_list list;
+  let do_list (i,y) =
+    Gl.push_matrix();
+    Gl.rotate angle:180.0 y:1.0;
+    Gl.rotate angle:(-.octaangle) x:0.5 :y;
+    call_list list color.(i);
+    Gl.pop_matrix()
+  in
+  call_list list color.(0);
   Gl.push_matrix();
   Gl.rotate angle:180.0 z:1.0;
   Gl.rotate angle:(-180.0 +. octaangle) x:1.0;
-  Gl.material face:`both (`diffuse color.(1));
-  Gl.call_list list;
+  call_list list color.(1);
   Gl.pop_matrix();
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 y:1.0;
-  Gl.rotate angle:(-.octaangle) x:0.5 y:(sqrt3 /. 2.0);
-  Gl.material face:`both (`diffuse color.(2));
-  Gl.call_list list;
-  Gl.pop_matrix();
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 y:1.0;
-  Gl.rotate angle:(-.octaangle) x:0.5 y:(-.sqrt3 /. 2.0);
-  Gl.material face:`both (`diffuse color.(3));
-  Gl.call_list list;
-  Gl.pop_matrix();
+  List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] fun:do_list;
   Gl.rotate angle:180.0 x:1.0;
   Gl.material face:`both (`diffuse color.(4));
   Gl.call_list list;
@@ -356,16 +342,7 @@ let draw_octa :amp :divisions :color =
   Gl.material face:`both (`diffuse color.(5));
   Gl.call_list list;
   Gl.pop_matrix();
-  Gl.push_matrix();
-  Gl.rotate angle:180.0 y:1.0;
-  Gl.rotate angle:(-.octaangle) x:0.5 y:(sqrt3 /. 2.0);
-  Gl.material face:`both (`diffuse color.(2));
-  Gl.call_list list;
-  Gl.pop_matrix();
-  Gl.rotate angle:180.0 y:1.0;
-  Gl.rotate angle:(-.octaangle) x:0.5 y:(-.sqrt3 /. 2.0);
-  Gl.material face:`both (`diffuse color.(3));
-  Gl.call_list list;
+  List.iter [6, sqrt3 /. 2.0; 7, -.sqrt3 /. 2.0] fun:do_list;
 
   Gl.delete_lists from:list range:1
 
@@ -377,152 +354,100 @@ let draw_dodeca :amp :divisions :color =
     z:(sqr(tau) *. sqrt ((tau+.2.0)/.5.0) /. 2.0);
   Gl.end_list();
 
-  let do_list (angle,x,y,i) =
+  let do_list (i,angle,x,y) =
     Gl.push_matrix();
     Gl.rotate :angle :x :y;
-    Gl.material face:`both (`diffuse color.(i));
-    Gl.call_list list;
+    call_list list color.(i);
     Gl.pop_matrix();
   in
   Gl.push_matrix ();
-  Gl.material face:`both (`diffuse color.(0));
-  Gl.call_list list;
+  call_list list color.(0);
   Gl.rotate angle:180.0 z:1.0;
   List.iter fun:do_list
-    [ -.dodecaangle, 1.0, 0.0, 1;
-      -.dodecaangle, cos72, sin72, 2;
-      -.dodecaangle, cos72, -.sin72, 3;
-      dodecaangle, cos36, -.sin36, 4;
-      dodecaangle, cos36, sin36, 5 ];
+    [ 1, -.dodecaangle, 1.0, 0.0;
+      2, -.dodecaangle, cos72, sin72;
+      3, -.dodecaangle, cos72, -.sin72;
+      4, dodecaangle, cos36, -.sin36;
+      5, dodecaangle, cos36, sin36 ];
   Gl.pop_matrix ();
   Gl.rotate angle:180.0 x:1.0;
-  Gl.material face:`both (`diffuse color.(6));
-  Gl.call_list list;
+  call_list list color.(6);
   Gl.rotate angle:180.0 z:1.0;
   List.iter fun:do_list
-    [ -.dodecaangle, 1.0, 0.0, 7;
-      -.dodecaangle, cos72, sin72, 8;
-      -.dodecaangle, cos72, -.sin72, 9;
-      dodecaangle, cos36, -.sin36, 10 ];
+    [ 7, -.dodecaangle, 1.0, 0.0;
+      8, -.dodecaangle, cos72, sin72;
+      9, -.dodecaangle, cos72, -.sin72;
+      10, dodecaangle, cos36, -.sin36 ];
   Gl.pop_matrix ();
-  do_list (dodecaangle, cos36, sin36, 11);
+  do_list (11, dodecaangle, cos36, sin36);
 
   Gl.delete_lists from:list range:1
 
-(*
-static void draw_ico( void )
-{
-  GLuint list;
+let draw_ico :amp :divisions :color =
+  let list = Gl.gen_lists 1 in
+  Gl.new_list list mode:`compile;
+  triangle edge:1.5 :amp :divisions
+    z:((3.0 *. sqrt3 +. sqrt15) /. 12.0);
+  Gl.end_list();
 
-  list = glGenLists( 1 );
-  glNewList( list, GL_COMPILE );
-  TRIANGLE(1.5,seno,edgedivisions,(3*SQRT3+SQRT15)/12);
-  glEndList();
+  let do_list1 i =
+    Gl.rotate angle:180.0 y:1.0;
+    Gl.rotate angle:(-180.0 +. icoangle) x:0.5 y:(sqrt3/.2.0);
+    call_list list color.(i)
+  and do_list2 i =
+    Gl.rotate angle:180.0 y:1.0;
+    Gl.rotate angle:(-180.0 +. icoangle) x:0.5 y:(-.sqrt3/.2.0);
+    call_list list color.(i)
+  and do_list3 i =
+    Gl.rotate angle:180.0 z:1.0;
+    Gl.rotate angle:(-.icoangle) x:1.0;
+    call_list list color.(i)
+  in
+  Gl.push_matrix ();
+  call_list list color.(0);
+  Gl.push_matrix ();
+  do_list3 1;
+  Gl.push_matrix ();
+  do_list1 2;
+  Gl.pop_matrix ();
+  do_list2 3;
+  Gl.pop_matrix ();
+  Gl.push_matrix ();
+  do_list1 4;
+  Gl.push_matrix ();
+  do_list1 5;
+  Gl.pop_matrix();
+  do_list3 6;
+  Gl.pop_matrix ();
+  do_list2 7;
+  Gl.push_matrix ();
+  do_list2 8;
+  Gl.pop_matrix ();
+  do_list3 9;
+  Gl.pop_matrix ();
+  Gl.rotate angle:180.0 x:1.0;
+  call_list list color.(10);
+  Gl.push_matrix ();
+  do_list3 11;
+  Gl.push_matrix ();
+  do_list1 12;
+  Gl.pop_matrix ();
+  do_list2 13;
+  Gl.pop_matrix ();
+  Gl.push_matrix ();
+  do_list1 14;
+  Gl.push_matrix ();
+  do_list1 15;
+  Gl.pop_matrix ();
+  do_list3 16;
+  Gl.pop_matrix ();
+  do_list2 17;
+  Gl.push_matrix ();
+  do_list2 18;
+  Gl.pop_matrix ();
+  do_list3 19;
 
-  glPushMatrix();
-
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[0]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,0,1);
-  glRotatef(-icoangle,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[1]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[2]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,-SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[3]);
-  glCallList(list);
-  glPopMatrix();
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[4]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[5]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,0,1);
-  glRotatef(-icoangle,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[6]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,-SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[7]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,-SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[8]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,0,1);
-  glRotatef(-icoangle,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[9]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[10]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,0,1);
-  glRotatef(-icoangle,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[11]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[12]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,-SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[13]);
-  glCallList(list);
-  glPopMatrix();
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[14]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[15]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,0,1);
-  glRotatef(-icoangle,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[16]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,-SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[17]);
-  glCallList(list);
-  glPushMatrix();
-  glRotatef(180,0,1,0);
-  glRotatef(-180+icoangle,0.5,-SQRT3/2,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[18]);
-  glCallList(list);
-  glPopMatrix();
-  glRotatef(180,0,0,1);
-  glRotatef(-icoangle,1,0,0);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialColor[19]);
-  glCallList(list);
-
-  glDeleteLists(list,1);
-}
-*)
+  Gl.delete_lists from:list range:1
 
 class view togl as self =
   val togl = togl
@@ -604,34 +529,20 @@ class view togl as self =
 		   materialGreen; materialCyan; materialRed;
 		   materialMagenta; materialBlue; materialYellow|];
       magnitude <- 2.0
+    | 5 ->
+	draw_object <- draw_ico
+	     divisions:icodivisions
+	     color:[|materialRed; materialGreen; materialBlue;
+		     materialCyan; materialYellow; materialMagenta;
+		     materialRed; materialGreen; materialBlue;
+		     materialWhite; materialCyan; materialYellow;
+		     materialMagenta; materialRed; materialGreen;
+		     materialBlue; materialCyan; materialYellow;
+		     materialMagenta; materialGray|];
+	magnitude <- 3.5
     | _ -> ()
     end;
 (*
-    case 5:
-      draw_object=draw_ico;
-      MaterialColor[ 0]=MaterialRed;
-      MaterialColor[ 1]=MaterialGreen;
-      MaterialColor[ 2]=MaterialBlue;
-      MaterialColor[ 3]=MaterialCyan;
-      MaterialColor[ 4]=MaterialYellow;
-      MaterialColor[ 5]=MaterialMagenta;
-      MaterialColor[ 6]=MaterialRed;
-      MaterialColor[ 7]=MaterialGreen;
-      MaterialColor[ 8]=MaterialBlue;
-      MaterialColor[ 9]=MaterialWhite;
-      MaterialColor[10]=MaterialCyan;
-      MaterialColor[11]=MaterialYellow;
-      MaterialColor[12]=MaterialMagenta;
-      MaterialColor[13]=MaterialRed;
-      MaterialColor[14]=MaterialGreen;
-      MaterialColor[15]=MaterialBlue;
-      MaterialColor[16]=MaterialCyan;
-      MaterialColor[17]=MaterialYellow;
-      MaterialColor[18]=MaterialMagenta;
-      MaterialColor[19]=MaterialGray;
-      edgedivisions=icodivisions;
-      Magnitude=2.5;
-      break;
   if (mono) {
     int loop;
     for (loop=0; loop<20; loop++) MaterialColor[loop]=MaterialGray;
@@ -651,7 +562,7 @@ let main () =
       "  [3]    - Octahedron\n";
       "  [4]    - Dodecahedron\n";
       "  [5]    - Icosahedron\n";
-      "[SPACE]  - Toggle colored faces\n";
+     (* "[SPACE]  - Toggle colored faces\n"; *)
       "[RETURN] - Toggle smooth/flat shading\n";
       " [ESC]   - Quit\n" ];
   flush stdout;
@@ -694,7 +605,7 @@ let main () =
   Togl.timer_func ms:20 cb:(fun () -> view#draw);
   bind togl events:[[],`KeyPress]
     action:(`Set([`KeySymString], fun ev -> view#key ev.ev_KeySymString));
-  Focus.set togl;
+  bind togl events:[[],`Enter] action:(`Set([], fun _ -> Focus.set togl));
   pack [togl] expand:true fill:`Both;
   mainLoop ()
 

@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.9 1998-01-26 06:22:03 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.10 1998-01-27 08:02:02 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -229,31 +229,39 @@ end
 
 let ready = ref false
 
+let init_togl () =
+  init ();
+  _create_func ();
+  _display_func ();
+  _reshape_func ();
+  _overlay_display_func ();
+  _destroy_func ();
+  ready := true
+
 let create :parent ?:name =
   togl_options_optionals
     ?(fun options ->
-      if not !ready then begin
-	init ();
-	_create_func ();
-	_display_func ();
-	_reshape_func ();
-	_overlay_display_func ();
-	_destroy_func ();
-	ready := true
-      end;
+      if not !ready then init_togl ();
       let w : widget =
 	Widget.new_atom class:"togl" :parent ?:name in
       let togl = ref None in
       callback_table.(create_id) <-
 	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);
       callback_table.(destroy_id) <-
-        (fun _ ->
+        (fun t ->
+	  begin try Hashtbl.remove key:w togl_table with Not_found -> () end;
 	  List.iter [display_table; reshape_table; overlay_table] fun:
 	    begin fun tbl ->
 	      try Hashtbl.remove tbl key:(Widget.name w) with Not_found -> ()
 	    end);
-      tkEval [|TkToken "togl"; TkToken (Widget.name w);
-	       TkToken "-ident"; TkToken (Widget.name w);
-	       TkTokenList options|];
+      let command =
+	[|TkToken "togl"; TkToken (Widget.name w);
+	  TkToken "-ident"; TkToken (Widget.name w);
+	  TkTokenList options|] in
+      begin
+	try tkEval command
+	with TkError "invalid command name \"togl\"" ->
+	  init_togl (); tkEval command
+      end;
       match !togl with None -> raise (TkError "Togl widget creation failed")
       |	Some t -> w)
