@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.1 1998-01-13 11:07:15 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.2 1998-01-16 00:19:38 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -58,4 +58,18 @@ value ml_gluSphere (value quad, value radius, value slices, value stacks)
     gluSphere (Addr_val(quad), Double_val(radius),
 	       Int_val(slices), Int_val(stacks));
     return Val_unit;
+}
+
+value ml_gluCylinder (value quad, value base, value top, value height,
+		    value slices, value stacks)
+{
+    gluCylinder (Addr_val(quad), Double_val(base), Double_val(top),
+		 Double_val(height), Int_val(slices), Int_val(stacks));
+    return Val_unit;
+}
+
+value ml_gluCylinder_bc (value tup)
+{
+    ml_gluCylinder (Field(tup,0), Field(tup,1), Field(tup,2),
+		    Field(tup,3), Field(tup,4), Field(tup,5));
 }

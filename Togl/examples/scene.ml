@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.2 1998-01-09 13:12:36 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.3 1998-01-16 00:19:38 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -9,10 +9,10 @@ let myinit () =
   (*  light_position is NOT default value	*)
   and light_position = 1.0, 1.0, 1.0, 0.0
   in
-  Gl.light num:0 param:(`ambient light_ambient);
-  Gl.light num:0 param:(`diffuse light_diffuse);
-  Gl.light num:0 param:(`specular light_specular);
-  Gl.light num:0 param:(`position light_position);
+  Gl.light num:0 (`ambient light_ambient);
+  Gl.light num:0 (`diffuse light_diffuse);
+  Gl.light num:0 (`specular light_specular);
+  Gl.light num:0 (`position light_position);
   
   Gl.depth_func `less;
   List.iter fun:Gl.enable [`lighting; `light0; `depth_test]
@@ -21,22 +21,22 @@ let display () =
   Gl.clear [`color; `depth];
 
   Gl.push_matrix ();
-  Gl.rotate angle:20.0 x:1.0 y:0.0 z:0.0;
+  Gl.rotate angle:20.0 x:1.0;
 
   Gl.push_matrix ();
-  Gl.translate x:(-0.75) y:0.5 z:0.0; 
-  Gl.rotate angle:90.0 x:1.0 y:0.0 z:0.0;
+  Gl.translate x:(-0.75) y:0.5; 
+  Gl.rotate angle:90.0 x:1.0;
   Aux.solid_torus inner:0.275 outer:0.85;
   Gl.pop_matrix ();
 
   Gl.push_matrix ();
-  Gl.translate x:(-0.75) y:(-0.5) z:0.0; 
-  Gl.rotate angle:270.0 x:1.0 y:0.0 z:0.0;
+  Gl.translate x:(-0.75) y:(-0.5); 
+  Gl.rotate angle:270.0 x:1.0;
   Aux.solid_cone radius:1.0 height:2.0;
   Gl.pop_matrix ();
 
   Gl.push_matrix ();
-  Gl.translate x:0.75 y:0.0 z:(-1.0); 
+  Gl.translate x:0.75 z:(-1.0); 
   Aux.solid_sphere radius:1.0;
   Gl.pop_matrix ();
 

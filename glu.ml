@@ -1,4 +1,4 @@
-(* $Id: glu.ml,v 1.1 1998-01-13 11:07:13 garrigue Exp $ *)
+(* $Id: glu.ml,v 1.2 1998-01-16 00:19:36 garrigue Exp $ *)
 
 type nurbs
 type tesselator
@@ -29,6 +29,11 @@ external ortho2d :
 
 external sphere : quadric -> radius:float -> slices:int -> stacks:int -> unit
     = "ml_gluSphere"
+
+external cylinder :
+    quadric -> base:float -> top:float -> height:float ->
+    slices:int -> stacks:int -> unit
+    = "ml_gluCylinder_bc" "ml_gluCylinder"
 
 (*
 type component = [
