@@ -43,12 +43,12 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 	var2def < $< > $@
 
 .cmx.opt: lablgl.cmxa liblablgl.a
-	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa tk41.cmxa lablgl.cmxa $< \
-		 -ccopt -L. -ccopt -L$(LABLTKDIR) -cclib "$(OTHERLIBS)"
+	$(OPTLINK) -o $@ $(OCAMLINC) unix.cmxa labltk.cmxa lablgl.cmxa $< \
+		 -ccopt -L. -cclib "$(OTHERLIBS)"
 
-all: 	var2def	var2switch lablgltop lablgl lablgllink
+all: 	var2def	var2switch lablgltop lablgl
 
-opt:	lablgl.cmxa lablglopt
+opt:	lablgl.cmxa
 
 var2def: var2def.cmo
 	$(LINKER) var2def.cmo -o $@
@@ -73,8 +73,7 @@ $(TOGLDIR)/togl.o:
 
 lablgltop: lablgl.cma togl.cmo liblablgl.a
 	ocamlmktop $(OCAMLINC) -o lablgltop \
-		unix.cma tk41.cma lablgl.cma togl.cmo \
-		-ccopt -L. -ccopt -L$(LABLTKDIR)
+	    unix.cma str.cma labltk.cma -ccopt -L. lablgl.cma togl.cmo
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
@@ -112,16 +111,15 @@ install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp lablgl.cma togl.cmo liblablgl.a $(INSTALLDIR)
+	cp lablgl.cma togl.cmo $(INSTALLDIR)
+	cp liblablgl.a $(LIBDIR)
 	cp lablgltop $(INSTALLDIR)
-	cp lablgl lablgllink $(BINDIR)
+	cp lablgl $(BINDIR)
 	if test -f lablgl.cmxa; then $(MAKE) installopt; fi
 
 installopt:
 	cp $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
 	cp lablgl.cmxa lablgl.a $(INSTALLDIR)
-	cp lablglopt $(BINDIR)
-
 
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
