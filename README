@@ -1,5 +1,5 @@
 
-		LablGL 0.96-beta: Installation and Use instructions
+		LablGL 0.97: Installation and Use instructions
 
 1. Description
 
@@ -8,7 +8,7 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Caml 3.03-alpha
+  * Objective Caml 3.04
   * LablTk (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
@@ -18,8 +18,10 @@ support for the Togl widget, you can comfortably use it with LablTk.
   OpenGL (with hardware support) is already on your machine on SGI and
 most DEC Alpha systems. It may also be the case with Solaris machines,
 and if you do not have it you may obtain it from Sun.
-  If you are not lucky enough to have OpenGL support, you can still
-use Mesa, an openGL-compatible freeware, which works on almost
+  XFree86 also supports the GLX protocol since version 4.0, with
+hardware acceleration on some platforms.
+  If you are not lucky enough to have built-in OpenGL support, you can
+still use Mesa, an openGL-compatible freeware, which works on almost
 everything.
 	http://www.mesa3d.org/
 
@@ -273,4 +275,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.13 2001-10-12 14:19:58 garrigue Exp $
+$Id: README,v 1.14 2002-03-14 06:14:03 garrigue Exp $
