@@ -113,7 +113,8 @@ unsigned int glGenLists( int range );
 void glNewList( unsigned int list, unsigned int mode );
 void glEndList( void );
 void glCallList( unsigned int list );
-void glCallLists( int n, unsigned int type, [in,bigarray] void *lists );
+void glCallLists( int n, [in,size_is(n)] int lists[])
+    quote(call, "glCallLists(n, GL_INT, lists);");
 void glListBase( unsigned int base );
 void glBegin( unsigned int mode );
 void glEnd( void );
@@ -408,7 +409,7 @@ void glFogiv( unsigned int pname, [in,size_is(nparams)] int params[], int nparam
     quote(call, "glFogiv(pname, params);");
 void glFeedbackBuffer( int size, unsigned int type, [out,size_is(size)] float buffer[] );
 void glPassThrough( float token );
-void glSelectBuffer( int size, [bigarray,size_is(size)] unsigned int buffer[] );
+void glSelectBuffer( int size, [in,out,length_is(size),*int32,bigarray] int buffer[] );
 void glInitNames( void );
 void glLoadName( unsigned int name );
 void glPushName( unsigned int name );
