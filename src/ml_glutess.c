@@ -1,4 +1,4 @@
-/* $Id: ml_glutess.c,v 1.1 2004-07-13 07:55:18 garrigue Exp $ */
+/* $Id: ml_glutess.c,v 1.2 2004-07-13 09:44:03 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
 #include <stdio.h>
@@ -36,26 +36,45 @@ ML_fail (gluTesselateAndReturn)
 #define CALLBACK
 #endif
 
-void CALLBACK errorCallback(GLenum error)
+static void CALLBACK errorCallback(GLenum error)
 {
   ml_raise_gl((char*)gluErrorString(error));
 }
 
-typedef struct addrlist
+typedef struct chunklist
 {
-  void *addr;
-  struct addrlist *next;
-} addrlist;
+  struct chunklist *next;
+  int current;
+  int size;
+  GLdouble data[32][3];
+} chunklist;
 
-static addrlist *rootaddrlist=NULL;
+static chunklist *rootchunk=NULL;
 
-static void *register_addr(addrlist **root, void *data)
+static GLdouble *new_vertex(GLdouble x, GLdouble y, GLdouble z)
 {
-  addrlist *newroot=malloc(sizeof(addrlist));
-  newroot->addr = data;
-  newroot->next = (*root);
-  *(root) = newroot;
-  return data;
+  GLdouble *vert;
+  if (rootchunk == NULL || rootchunk->current >= rootchunk->size) {
+    chunklist *tmp = rootchunk;
+    rootchunk = (chunklist*)malloc(sizeof(chunklist));
+    rootchunk->next = tmp;
+    rootchunk->current = 0;
+    rootchunk->size = 32;
+  }
+  vert = rootchunk->data[rootchunk->current++];
+  vert[0] = x;
+  vert[1] = y;
+  vert[2] = z;
+  return vert;
+}
+
+static void free_chunks()
+{
+  while (rootchunk != NULL) {
+    chunklist *next = rootchunk->next;
+    free(rootchunk);
+    rootchunk = next;
+  }
 }
 
 static void CALLBACK combineCallback(GLdouble coords[3],
@@ -63,11 +82,7 @@ static void CALLBACK combineCallback(GLdouble coords[3],
 			      GLfloat weight[4],
 			      GLdouble **data)
 {
-  *data = (GLdouble *)register_addr(&rootaddrlist,
-				    malloc(3*sizeof(GLdouble)));
-  *(*data) = coords[0];
-  *(*data+1) = coords[1];
-  *(*data+2) = coords[2];
+  *data = new_vertex(coords[0],coords[1],coords[2]);
 }
 
 /* prim is only valid during callbacks */
@@ -101,7 +116,6 @@ static void push_list()
 
 static void CALLBACK beginCallback(GLenum type)
 {
-  printf("beginCallback\n");
   switch (type)
   {
   case GL_TRIANGLES      : kind = 0; break;
@@ -112,40 +126,29 @@ static void CALLBACK beginCallback(GLenum type)
     abort();
   }
   push_list();
-  printf("done\n");
 }
 
 static void CALLBACK vertexCallback(void *vertex_data)
 {
-  printf("vertexCallback\n");
   GLdouble *verts=(GLdouble *)vertex_data;
   push_vert(Field(*prim,kind), verts[0], verts[1], verts[2]);
 }
 
 static void CALLBACK endCallback()
 {
-  printf("endCallback\n");
   kind = 0;
 }
 
-GLUtesselator *tobj=NULL;
+static GLUtesselator *tobj=NULL;
 
-static void free_addrlist(addrlist **root)
+
+static void iniTesselator(value winding, value by_only, value tolerance)
 {
-  while (*root)
-    {
-      addrlist *mem=*root;
-      free(mem->addr);
-      mem->addr = NULL;
-      *root = (*root)->next;
-      free(mem);
-    }
-
-  *root = NULL;
-}
-
-static void setProperties(value winding, value by_only, value tolerance)
-{
+  if (!tobj) {
+    tobj=gluNewTess();
+    if (!tobj) ml_raise_gl("Failed to initialise the GLU tesselator.");
+  }
+  gluTessNormal(tobj, 0.0, 0.0, 1.0);
   gluTessProperty(tobj, GLU_TESS_WINDING_RULE,
                   (winding != Val_unit ? GLUenum_val(Field(winding,0))
                    : GLU_TESS_WINDING_ODD));
@@ -155,112 +158,68 @@ static void setProperties(value winding, value by_only, value tolerance)
                   (tolerance != Val_unit ? Float_val(Field(by_only,0)) : 0));
 }
 
+static void runTesselator(value contours)
+{
+  CAMLparam1(contours);
+
+  gluTessBeginPolygon(tobj, NULL);
+  while (contours != Val_int(0)) {
+    gluTessBeginContour(tobj);
+    value contour=Field(contours, 0);
+    while (contour != Val_int(0)) {
+      value v=Field(contour, 0);
+      GLdouble *r =
+        new_vertex(Double_val(Field(v, 0)),
+                   Double_val(Field(v, 1)),
+                   Double_val(Field(v, 2)));
+      gluTessVertex(tobj, r, (void *)r);
+      contour = Field(contour, 1);
+    }
+    contours = Field(contours, 1);
+    gluTessEndContour(tobj);
+  }
+  gluTessEndPolygon(tobj);
+
+  gluDeleteTess(tobj);
+  tobj = NULL;
+  free_chunks();
+  CAMLreturn0;
+}
+
 CAMLprim value ml_gluTesselateAndReturn(value winding, value tolerance,
                                         value contours)
 {
   CAMLparam1(contours);
   CAMLlocal1(res);
-  int i;
-
-  if (!tobj)
-    {
-      tobj=gluNewTess();
-
-      if (!tobj) ml_raise_gl("Failed to initialise the GLU tesselator.");
-    }
 
   res = alloc_tuple(3);
   Field(res,0) = Field(res,1) = Field(res,2) = Val_unit;
   prim = &res;
 
-  gluTessNormal(tobj, 0.0, 0.0, 1.0);
-  setProperties(winding, Val_unit, tolerance);
+  iniTesselator(winding, Val_unit, tolerance);
   gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr)beginCallback);
   gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr)vertexCallback);
   gluTessCallback(tobj, GLU_TESS_END, (_GLUfuncptr)endCallback);
   gluTessCallback(tobj, GLU_TESS_ERROR, (_GLUfuncptr)errorCallback);
   gluTessCallback(tobj, GLU_TESS_COMBINE, (_GLUfuncptr)combineCallback);
 
-  printf("gluTessBeginPolygon\n");
-  gluTessBeginPolygon(tobj, NULL);
-  while (contours != Val_int(0))
-    {
-      printf("gluTessBeginContour\n");
-      gluTessBeginContour(tobj);
-      value contour=Field(contours, 0);
-      while (contour != Val_int(0))
-	{
-	  value v=Field(contour, 0);
-	  GLdouble *r=(GLdouble *)register_addr(&rootaddrlist,
-						malloc(3*sizeof(GLdouble)));
-	  r[0]=Float_val(Field(v, 0));
-	  r[1]=Float_val(Field(v, 1));
-	  r[2]=Float_val(Field(v, 2));
+  runTesselator(contours);
 
-	  gluTessVertex(tobj, r, (void *)r);
-
-	  contour = Field(contour, 1);
-	}
-      contours = Field(contours, 1);
-      gluTessEndContour(tobj);
-    }
-  printf("gluTessEndPolygon\n");
-  gluTessEndPolygon(tobj);
-  gluDeleteTess(tobj);
-  printf("finished\n");
-  tobj = NULL;
-
-  /* Delete all temporary data. */
-  free_addrlist(&rootaddrlist);
-
-  /* Return the ocaml data structure. */
   CAMLreturn (res);
 }
 
 CAMLprim value ml_gluTesselate (value winding, value by_only,
                                 value tolerance, value contours)
 {
-  if (!tobj)
-    {
-      tobj=gluNewTess();
+  iniTesselator(winding, by_only, tolerance);
 
-      if (!tobj) ml_raise_gl("Failed to initialise the GLU tesselator.");
-    }
-
-  gluTessNormal(tobj, 0.0, 0.0, 1.0);
-  setProperties(winding, by_only, tolerance);
   gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr)glBegin);
   gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr)glVertex3dv);
   gluTessCallback(tobj, GLU_TESS_END, (_GLUfuncptr)glEnd);
   gluTessCallback(tobj, GLU_TESS_ERROR, (_GLUfuncptr)errorCallback);
   gluTessCallback(tobj, GLU_TESS_COMBINE, (_GLUfuncptr)combineCallback);
 
-  gluTessBeginPolygon(tobj, NULL);
-  while (contours != Val_int(0))
-    {
-      gluTessBeginContour(tobj);
-      value contour=Field(contours, 0);
-      while (contour != Val_int(0))
-	{
-	  value v=Field(contour, 0);
-	  GLdouble *r=(GLdouble *)register_addr(&rootaddrlist,
-						malloc(3*sizeof(GLdouble)));
-	  r[0]=Float_val(Field(v, 0));
-	  r[1]=Float_val(Field(v, 1));
-	  r[2]=Float_val(Field(v, 2));
-
-	  gluTessVertex(tobj, r, (void *)r);
-
-	  contour = Field(contour, 1);
-	}
-      contours = Field(contours, 1);
-      gluTessEndContour(tobj);
-    }
-  gluTessEndPolygon(tobj);
-  gluDeleteTess(tobj);
-  tobj=NULL;
-
-  free_addrlist(&rootaddrlist);
+  runTesselator(contours);
 
   return Val_unit;
 }
