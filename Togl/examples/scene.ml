@@ -1,4 +1,4 @@
-(* $Id: scene.ml,v 1.7 1999-11-17 13:23:30 garrigue Exp $ *)
+(* $Id: scene.ml,v 1.8 1999-11-23 17:18:19 garrigue Exp $ *)
 
 (*  Initialize material property and light source.
  *)
@@ -55,17 +55,17 @@ let display () =
   GlClear.clear [`color; `depth];
 
   GlMat.push ();
-  GlMat.rotate 20.0 x:1.0;
+  GlMat.rotate angle:20.0 x:1.0 ();
 
   GlMat.push ();
   GlMat.translate x:(-0.75) y:0.5 ();
-  GlMat.rotate 90.0 x:1.0;
+  GlMat.rotate angle:90.0 x:1.0 ();
   solid_torus inner:0.275 outer:0.85;
   GlMat.pop ();
 
   GlMat.push ();
   GlMat.translate x:(-0.75) y:(-0.5) (); 
-  GlMat.rotate 270.0 x:1.0;
+  GlMat.rotate angle:270.0 x:1.0 ();
   solid_cone radius:1.0 height:2.0;
   GlMat.pop ();
 

@@ -1,4 +1,4 @@
-(* $Id: gears.ml,v 1.8 1999-11-17 13:23:28 garrigue Exp $ *)
+(* $Id: gears.ml,v 1.9 1999-11-23 17:18:17 garrigue Exp $ *)
 
 (*
  * 3-D gear wheels.  This program is in the public domain.
@@ -132,27 +132,27 @@ class view :gear1 :gear2 :gear3 ?:limit{=0} togl = object (self)
     GlClear.clear [`color;`depth];
 
     GlMat.push ();
-    GlMat.rotate view_rotx x:1.0;
-    GlMat.rotate view_roty y:1.0;
-    GlMat.rotate view_rotz z:1.0;
+    GlMat.rotate angle:view_rotx x:1.0 ();
+    GlMat.rotate angle:view_roty y:1.0 ();
+    GlMat.rotate angle:view_rotz z:1.0 ();
 
     GlMat.push ();
     GlMat.translate x:(-3.0) y:(-2.0) ();
-    GlMat.rotate angle z:1.0;
+    GlMat.rotate angle:angle z:1.0 ();
     (* gear inner:1.0 outer:4.0 width:1.0 teeth:20 tooth_depth:0.7; *)
     GlList.call gear1;
     GlMat.pop ();
 
     GlMat.push ();
     GlMat.translate x:3.1 y:(-2.0) ();
-    GlMat.rotate (-2.0 *. angle -. 9.0) z:1.0;
+    GlMat.rotate angle:(-2.0 *. angle -. 9.0) z:1.0 ();
     (* gear inner:0.5 outer:2.0 width:2.0 teeth:10 tooth_depth:0.7; *)
     GlList.call gear2;
     GlMat.pop ();
 
     GlMat.push ();
     GlMat.translate x:(-3.1) y:4.2 ();
-    GlMat.rotate (-2.0 *. angle -. 25.0) z:1.0;
+    GlMat.rotate angle:(-2.0 *. angle -. 25.0) z:1.0 ();
     (* gear inner:1.3 outer:2.0 width:0.5 teeth:10 tooth_depth:0.7; *)
     GlList.call gear3;
     GlMat.pop ();

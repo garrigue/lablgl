@@ -1,4 +1,4 @@
-(* $Id: double.ml,v 1.6 1999-11-17 13:23:28 garrigue Exp $ *)
+(* $Id: double.ml,v 1.7 1999-11-23 17:18:17 garrigue Exp $ *)
 
 class view togl :title = object (self)
   val mutable corner_x = 0.
@@ -31,10 +31,10 @@ class view togl :title = object (self)
   method display =
     GlClear.clear [`color;`depth];
     GlMat.load_identity(); (* Reset modelview matrix to the identity matrix *)
-    GlMat.translate z:(-3.0) ();      (* Move the camera back three units *)
-    GlMat.rotate x:1. x_angle;  (* Rotate by X, Y, Z angles *)
-    GlMat.rotate y:1. y_angle;
-    GlMat.rotate z:1. z_angle;
+    GlMat.translate z:(-3.0) ();         (* Move the camera back three units *)
+    GlMat.rotate angle:x_angle x:1. ();  (* Rotate by X, Y, Z angles *)
+    GlMat.rotate angle:y_angle y:1. ();
+    GlMat.rotate angle:z_angle z:1. ();
     
     Gl.enable `depth_test;
 

@@ -1,4 +1,4 @@
-(* $Id: glMat.ml,v 1.3 1999-11-15 14:32:10 garrigue Exp $ *)
+(* $Id: glMat.ml,v 1.4 1999-11-23 17:18:16 garrigue Exp $ *)
 
 type t = [`double] Raw.t
 
@@ -28,8 +28,8 @@ external push : unit -> unit = "ml_glPushMatrix"
 
 external rotate : angle:float -> x:float -> y:float -> z:float -> unit
     = "ml_glRotated"
-let rotate3 normal:(x,y,z) angle = rotate :angle :x :y :z
-let rotate ?:x{=0.} ?:y{=0.} ?:z{=0.} angle = rotate :angle :x :y :z
+let rotate3 :angle (x,y,z) = rotate :angle :x :y :z
+let rotate :angle ?:x{=0.} ?:y{=0.} ?:z{=0.} () = rotate :angle :x :y :z
 
 external scale : x:float -> y:float -> z:float -> unit = "ml_glScaled"
 let scale3 (x,y,z) = scale :x :y :z

@@ -1,5 +1,5 @@
 (* This program was written by Yasuhiko Minamide, nan@kurims.kyoto-u.ac.jp *)
-(* $Id: tennis.ml,v 1.10 1999-11-17 13:23:31 garrigue Exp $ *)
+(* $Id: tennis.ml,v 1.11 1999-11-23 17:18:19 garrigue Exp $ *)
 
 let image_height = 64
 and image_width = 64
@@ -322,7 +322,7 @@ class view3d :togl :ball :player :viewtype = object
       begin
 	GlMat.mode `projection;
 	GlMat.load_identity ();
-	GlMat.rotate 90.0 z:1.0; 
+	GlMat.rotate angle:90.0 z:1.0 ();
 	GlMat.ortho x:(-1.2,1.2) y:(-1.2,1.2) z:(0.0,2.0); 
 	GlMat.mode `modelview;
 	GlMat.load_identity ();
@@ -390,7 +390,7 @@ class view2d :togl :ball :player = object
 
     GlMat.mode `projection;
     GlMat.load_identity ();
-    GlMat.rotate 90.0 z:1.0; 
+    GlMat.rotate angle:90.0 z:1.0 ();
     GlMat.ortho x:(-1.5,1.5) y:(-1.5,1.5) z:(0.0,2.0); 
     GlMat.mode `modelview;
     GlMat.load_identity ();

@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.7 1999-11-17 13:23:31 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.8 1999-11-23 17:18:20 garrigue Exp $ *)
 
 let texpts =
   [|[|0.0; 0.0;  0.0; 1.0|];
@@ -71,7 +71,7 @@ let my_reshape togl =
     GlMat.ortho x:(-4.0 /. r, 4.0 /. r) y:(-4.0, 4.0) z:(-4.0, 4.0);
   GlMat.mode `modelview;
   GlMat.load_identity ();
-  GlMat.rotate 85. x:1. y:1. z:1.
+  GlMat.rotate angle:85. x:1. y:1. z:1. ()
 
 open Tk
 
@@ -87,10 +87,10 @@ let main () =
   bind top events:[[],`KeyPress]
     action:(`Set([`KeySymString], fun ev ->
       match ev.ev_KeySymString with
-	"Up" -> GlMat.rotate (-5.) z:1.0; display togl
-      |	"Down" -> GlMat.rotate (5.) z:1.0; display togl
-      |	"Left" -> GlMat.rotate (5.) x:1.0; display togl
-      |	"Right" -> GlMat.rotate (-5.) x:1.0; display togl
+	"Up" -> GlMat.rotate angle:(-5.) z:1.0 (); display togl
+      |	"Down" -> GlMat.rotate angle:(5.) z:1.0 (); display togl
+      |	"Left" -> GlMat.rotate angle:(5.) x:1.0 (); display togl
+      |	"Right" -> GlMat.rotate angle:(-5.) x:1.0 (); display togl
       |	"Escape" -> destroy top; exit 0
       |	_ -> ()));
   pack [togl] expand:true fill:`Both;

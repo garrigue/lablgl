@@ -1,4 +1,4 @@
-(* $Id: glMat.mli,v 1.3 1999-11-15 14:32:11 garrigue Exp $ *)
+(* $Id: glMat.mli,v 1.4 1999-11-23 17:18:16 garrigue Exp $ *)
 
 open Gl
 
@@ -22,11 +22,11 @@ val pop : unit -> unit
 
 val mode : [`modelview|`projection|`texture] -> unit
 
-val rotate : ?x:float -> ?y:float -> ?z:float -> float -> unit
+val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val scale : ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val translate : ?x:float -> ?y:float -> ?z:float -> unit -> unit
 
-val rotate3 : normal:point3 -> float -> unit
+val rotate3 : angle:float -> vect3 -> unit
 val scale3 : point3 -> unit
 val translate3 : point3 -> unit
 

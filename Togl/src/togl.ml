@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.13 1999-11-17 13:23:27 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.14 1999-11-23 17:18:17 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -195,8 +195,7 @@ let dump_to_eps_file :filename ?:rgba ?:render =
   wrap (dump_to_eps_file :filename ?:rgba ?:render)
 
 let rec timer_func :ms :cb =
-  Timer.add :ms callback:(fun () -> cb (); timer_func :ms :cb);
-  ()
+  ignore (Timer.add :ms callback:(fun () -> cb (); timer_func :ms :cb))
 
 let configure ?:height ?:width w =
   let options = may height "-height" cint @ may width "-width" cint in
@@ -259,10 +258,10 @@ let create ?:name =
 	[|TkToken "togl"; TkToken (Widget.name w);
 	  TkToken "-ident"; TkToken (Widget.name w);
 	  TkTokenList options|] in
-      begin
+      let res : string =
 	try tkEval command
 	with TkError "invalid command name \"togl\"" ->
 	  init_togl (); tkEval command
-      end;
+      in
       match !togl with None -> raise (TkError "Togl widget creation failed")
       |	Some t -> w)
