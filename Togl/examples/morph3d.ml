@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.6 1998-01-30 10:18:48 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.7 1998-02-05 09:09:51 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -374,8 +374,8 @@ let draw_dodeca :amp :divisions :color =
       8, -.dodecaangle, cos72, sin72;
       9, -.dodecaangle, cos72, -.sin72;
       10, dodecaangle, cos36, -.sin36 ];
-  GlMat.pop ();
-  do_list (11, dodecaangle, cos36, sin36);
+  GlMat.rotate angle:dodecaangle x:cos36 y:sin36;
+  call_list list color.(11);
 
   GlList.delete list
 
