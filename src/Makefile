@@ -57,13 +57,13 @@ var2switch: var2switch.cmo
 	$(LINKER) var2switch.cmo -o $@
 
 lablgl.cma: $(LIBOBJS) $(COBJS) Makefile.config
-	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(OTHERLIBS)
+	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(OTHERLIBS) $(XLIBS)
 
 lablgl.cmxa: lablgl.cma $(OPTOBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(OPTOBJS)
 
 togl.cma: togl.cmo $(TOGLOBJS) Makefile.config
-	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS)
+	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(OTHERLIBS) $(TKLIBS) $(XLIBS)
 
 togl.cmxa: togl.cma togl.cmx Makefile.config
 	$(LIBRARIAN) -o togl togl.cmx
