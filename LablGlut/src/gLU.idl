@@ -34,6 +34,7 @@
 
 #include "glu_constants.idl"
 
+quote(C,"#include <GL/gl.h>");
 quote(C,"#include <GL/glu.h>");
 quote(C,"typedef void* glu_nurbs;");
 quote(C,"typedef void* glu_quadric;");
@@ -49,6 +50,10 @@ typedef [abstract] void* glu_tesselator;
 typedef [abstract] void* glu_triangulator;
 
 typedef [abstract,mltype("unit->unit")] void* glu_callback; 
+
+
+quote(mlmli, "open Bigarray");
+quote(mlmli, "type f64ba_t = (float, float64_elt, c_layout) Array1.t");
 
 /* zero on sucess */
 typedef [errorcode, errorcheck(idlglu_errcode_check)] int idlglu_errcode;
@@ -76,7 +81,6 @@ quote(C,"
 ");
 
 void gluBeginCurve (glu_nurbs nurb);
-void gluBeginPolygon (glu_tesselator tess);
 void gluBeginSurface (glu_nurbs nurb);
 void gluBeginTrim (glu_nurbs nurb);
 
@@ -109,6 +113,7 @@ glu_quadric gluNewQuadric (void); // Should throw an exception if it returns nul
 glu_tesselator gluNewTess (void); // Should throw an exception if it returns null
 void gluNextContour (glu_tesselator tess, unsigned int type);
 
+// FIXME: Need to be able to handle multiple nurbs callbacks.
 quote(C, "static void c_nurbs_callback()                                   ");
 quote(C, "{                                                                    ");
 quote(C, "      callback(*caml_named_value(\"ocamlglu_nurbs_cb\"), Val_unit);  ");
@@ -123,8 +128,8 @@ quote(ml, "        Callback.register \"ocamlglu_nurbs_cb\" callback; ");
 quote(ml, "        _gluNurbsCallback nurbs which;;");
 
 
-// void gluNurbsCallbackData (glu_nurbs nurb, gl_void* userData); <- not needed because we have closures.
-// void gluNurbsCallbackDataEXT (glu_nurbs nurb, gl_void* userData); <- not needed
+void gluNurbsCallbackData (glu_nurbs nurb, [in, bigarray] void* userData); 
+void gluNurbsCallbackDataEXT (glu_nurbs nurb, [in, bigarray] void* userData); 
 void gluNurbsCurve (glu_nurbs nurb, int knotCount, 
     [in,bigarray] float knots[], int stride, 
     [in,bigarray] float control[], int order, unsigned int type);
@@ -143,10 +148,11 @@ idlglu_tf_errcode gluProject (double objX, double objY, double objZ, [in,bigarra
 model[16], [in,bigarray] double proj[16], [in,bigarray] int view[16], [out, ref] double* winX, [out, ref] double* winY, [out, ref] double* winZ);
 void gluPwlCurve (glu_nurbs nurb, int count, [in,bigarray] float data[], int stride, unsigned int type);
 
-quote(C, "static void c_quadric_callback()                                   ");
-quote(C, "{                                                                    ");
-quote(C, "      callback(*caml_named_value(\"ocamlglu_quadric_cb\"), Val_unit);  ");
-quote(C, "}                                                                    ");
+// FIXME: Need to be able to handle multiple quadric callbacks.
+quote(C, "
+static void c_quadric_callback()
+{ callback(*caml_named_value(\"ocamlglu_quadric_cb\"), Val_unit); }
+");
 
 quote(mli, "val gluQuadricCallback : glu_quadric -> int -> glu_callback -> unit");
 
@@ -166,29 +172,21 @@ idlglu_errcode gluScaleImage (int format, int wIn, int hIn, int typeIn, [in,biga
     int wOut, int hOut, int typeOut, [in,out,bigarray] void *dataOut);
 void gluSphere (glu_quadric quad, double radius, int slices, int stacks);
 void gluTessBeginContour (glu_tesselator tess);
-void gluTessBeginPolygon (glu_tesselator tess) // void* data argument omitted.  Use closures.
-    quote(call,"gluTessBeginPolygon(tess,NULL);");
 
-quote(C, "static void c_tess_callback()                                   ");
-quote(C, "{                                                                    ");
-quote(C, "      callback(*caml_named_value(\"ocamlglu_tess_cb\"), Val_unit);  ");
-quote(C, "}                                                                    ");
-
-quote(mli, "val gluTessCallback : glu_tesselator -> int -> glu_callback -> unit");
-
-void _gluTessCallback (glu_tesselator tess, unsigned int which)
-    quote(call, "  gluTessCallback( tess, which, &c_tess_callback );");
-
-quote(ml, "let gluTessCallback tess which callback =");
-quote(ml, "        Callback.register \"ocamlglu_tess_cb\" callback; ");
-quote(ml, "        _gluTessCallback tess which;;");
+/* Callers of gluTessBeginPolygon can emulate the void* data argument using 
+   anonymous OCaml functions and closures. */
+void gluTessBeginPolygon (glu_tesselator tess) 
+    quote(call,"gluTessBeginPolygon(tess, tess);");
+void gluBeginPolygon (glu_tesselator tess) 
+    quote(call, "gluTessBeginPolygon(tess, tess); gluTessBeginContour(tess);");
 
 void gluTessEndContour (glu_tesselator tess);
 void gluTessEndPolygon (glu_tesselator tess);
 void gluTessNormal (glu_tesselator tess, double valueX, double valueY, double valueZ);
 void gluTessProperty (glu_tesselator tess, unsigned int which, double data);
-void gluTessVertex (glu_tesselator tess, [in,bigarray] double location[]) // void* data argument omitted
-    quote(call, "gluTessVertex(tess, location, NULL);");
+void gluTessVertex (glu_tesselator tess, [in,bigarray] double location[], 
+    [in, bigarray] double* data) // FIXME: allow void* data?
+    quote(call, "gluTessVertex(tess, location, Bigarray_val(_v_data));");
 idlglu_tf_errcode gluUnProject (double winX, double winY, double winZ, [in,bigarray]
     double model[16], [in,bigarray] double proj[16], 
     [in,*int32,bigarray] int view[4], 
@@ -199,4 +197,190 @@ idlglu_tf_errcode gluUnProject4 (double winX, double winY, double winZ, double c
     [out,ref] double* objX, [out,ref] double* objY, [out,ref] double* objZ, 
     [out,ref] double* objW);
 
+quote(mlmli, "
+type idlglu_vert_func = f64ba_t -> unit
+type idlglu_combine_func = 
+    (* coords *) f64ba_t -> 
+    (* vertex_data0 *) f64ba_t ->
+    (* vertex_data1 *) f64ba_t ->
+    (* vertex_data2 *) f64ba_t ->
+    (* vertex_data3 *) f64ba_t ->
+    (* weight *) f64ba_t -> 
+    (* result *) f64ba_t
+type glu_tess_callback = 
+  GLU_TESS_BEGIN of (* type *) (int -> unit)
+| GLU_TESS_EDGE_FLAG of (* flag *) (bool -> unit)
+| GLU_TESS_VERTEX of idlglu_vert_func
+| GLU_TESS_END of (unit -> unit)
+| GLU_TESS_ERROR of (* error number *) (int -> unit)
+| GLU_TESS_COMBINE of idlglu_combine_func 
+");
+
+quote(C, "
+    #include <stdio.h>
+static char * ptr2str(void* p)
+{
+    static char res[80];
+    sprintf(res, \"%p\", p);
+    return res;
+}
+");
+[string] char * _idlglu_tess_id_str(glu_tesselator tess)
+    quote(call, "_res = ptr2str(tess);");
+
+quote(C, "
+static char* _cbname(char* kind, char* id)
+{
+    static char res[80*5];
+    sprintf(res, \"idlglu_callback_%s_%s\", kind, id);
+    return res;
+}
+");
+[string] char* _cbname([string] char* kind, [string] char *id);
+
+/* Win32 calling conventions. */
+#ifndef CALLBACK
+#define CALLBACK
+#endif
+
+quote(C, "
+
+void CALLBACK idlglu_tess_begin_callback(int msg, void* vp_tess)
+{ 
+    callback(*caml_named_value(_cbname(\"TessBegin\", ptr2str(vp_tess))), 
+        Val_int(msg)); 
+}
+
+void CALLBACK idlglu_tess_edge_flag_callback(int msg, void* vp_tess)
+{ 
+    callback(*caml_named_value(_cbname(\"TessEdgeFlag\", ptr2str(vp_tess))), 
+        Val_int(msg)); 
+}
+
+void CALLBACK idlglu_tess_vertex_callback(void* vp_bigarray, void* vp_tess)
+{ 
+    value ba_val;
+    struct caml_bigarray* ba=(struct caml_bigarray*) vp_bigarray;
+    ba_val = alloc_bigarray(ba->flags, ba->num_dims, ba->data, ba->dim);
+    callback(*caml_named_value(_cbname(\"TessVertex\", ptr2str(vp_tess))), 
+        ba_val);
+}
+
+void CALLBACK idlglu_tess_end_callback(int msg, void* vp_tess)
+{ 
+    callback(*caml_named_value(_cbname(\"TessEnd\", ptr2str(vp_tess))), 
+        Val_unit); 
+}
+
+void CALLBACK idlglu_tess_error_callback(int msg, void* vp_tess)
+{ 
+    callback(*caml_named_value(_cbname(\"TessError\", ptr2str(vp_tess))), 
+        Val_int(msg)); 
+}
+
+    #include <assert.h>
+
+void CALLBACK idlglu_tess_combine_callback( GLdouble coords[3], 
+    void *vertex_data[4], GLfloat weights[4], void **dataOut, void* vp_tess )
+{
+    GLdouble weights2[4];
+    value val_args[6], ba_data_out_val, *cb;
+    struct caml_bigarray * ba_data_out;
+    int i, k, flags;
+
+    k=0;
+    flags = BIGARRAY_FLOAT64 | BIGARRAY_C_LAYOUT; 
+    val_args[k++]=alloc_bigarray_dims(flags, /*numdims*/1, coords, /*size*/3);
+
+    for(i=0; i<4; i++) {
+        struct caml_bigarray* ba = (struct caml_bigarray*)vertex_data[i];
+        val_args[k++] = alloc_bigarray(ba->flags, ba->num_dims, ba->data, ba->dim);
+    }
+
+    for(i=0; i<4; i++) { weights2[i] = (GLdouble) weights[i]; }
+    val_args[k++]=alloc_bigarray_dims(flags, 1, weights2, /*size*/4);
+
+    cb = caml_named_value(_cbname(\"TessCombine\", ptr2str(vp_tess))); 
+    ba_data_out_val = callbackN(*cb, k, val_args);
+
+    /* ba_data_out is a 2D bigarray.  Use it to fill dataOut. */
+    ba_data_out = Bigarray_val(ba_data_out_val);
+    assert(ba_data_out->num_dims == 2);
+    for(i=0; i<ba_data_out->dim[0]; i++) {
+        int size_each = ba_data_out->dim[1];
+        GLdouble * data = ba_data_out->data;
+        dataOut[i] = &data[i*size_each];
+    }
+}
+");
+
+void _gluTessCallback(glu_tesselator tess, int which)
+quote(call, "
+    switch(which) {
+        case GLU_TESS_BEGIN_DATA:       
+            gluTessCallback(tess, which, 
+                (GLvoid (CALLBACK*) ()) &idlglu_tess_begin_callback);       
+            break;
+        case GLU_TESS_EDGE_FLAG_DATA:   
+            gluTessCallback(tess, which, 
+                (GLvoid (CALLBACK*) ()) &idlglu_tess_edge_flag_callback);   
+            break;
+        case GLU_TESS_VERTEX_DATA:      
+            gluTessCallback(tess, which, 
+                (GLvoid (CALLBACK*) ()) &idlglu_tess_vertex_callback);      
+            break;
+        case GLU_TESS_END_DATA:         
+            gluTessCallback(tess, which, 
+                (GLvoid (CALLBACK*) ()) &idlglu_tess_end_callback);         
+            break;
+        case GLU_TESS_ERROR_DATA:       
+            gluTessCallback(tess, which, 
+                (GLvoid (CALLBACK*) ()) &idlglu_tess_error_callback);       
+            break;
+        case GLU_TESS_COMBINE_DATA:     
+            gluTessCallback(tess, which, 
+                (GLvoid (CALLBACK*) ()) &idlglu_tess_combine_callback);     
+            break;
+        default: 
+            failwith(\"Invalid callback type in _gluTessCallback\");
+    }
+");
+
+quote(mli, "
+val gluTessCallback : glu_tesselator -> glu_tess_callback -> unit
+");
+
+quote(ml, "
+let register_cb name cb = 
+    prerr_endline (\"Registering callback \"^name);
+    Callback.register name cb
+
+let gluTessCallback tess callback =
+    let idstr = _idlglu_tess_id_str tess in
+    match callback with 
+      GLU_TESS_BEGIN cb -> 
+        let name = _cbname \"TessBegin\" idstr in
+        register_cb name cb;
+        _gluTessCallback tess glu_tess_begin_data
+    | GLU_TESS_EDGE_FLAG cb -> 
+        let name = _cbname \"TessEdgeFlag\" idstr in
+        register_cb name (fun i -> cb (i<>0));
+        _gluTessCallback tess glu_tess_edge_flag_data
+    | GLU_TESS_VERTEX cb -> 
+        let name = _cbname \"TessVertex\" idstr in
+        register_cb name cb;
+        _gluTessCallback tess glu_tess_vertex_data
+    | GLU_TESS_END cb -> 
+        let name = _cbname \"TessEnd\" idstr in
+        register_cb name (fun i -> cb());
+        _gluTessCallback tess glu_tess_end_data
+    | GLU_TESS_ERROR cb -> 
+        let name = _cbname \"TessError\" idstr in
+        register_cb name cb;
+        _gluTessCallback tess glu_tess_error_data
+    | GLU_TESS_COMBINE cb ->
+        let name = _cbname \"TessError\" idstr in
+        register_cb name cb;
+        _gluTessCallback tess glu_tess_combine_data
+");
 
