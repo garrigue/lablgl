@@ -8,13 +8,12 @@ support for the Togl widget, you can comfortably use it with LablTk.
 
 2. Requisites
 
-  * Objective Caml 3.00 or more
-  * LablTk 3.00 or more (included in Objective Caml, requires Tcl/Tk)
+  * Objective Caml 2.99 or more
+  * LablTk (included in Objective Caml, requires Tcl/Tk)
   * OpenGL version 1.0 or 1.1
 
   Objective Caml and LablTk can be obtained from
-	http://caml.inria.fr/
-	http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/
+	http://caml.inria.fr/ocaml/
 
   OpenGL (with hardware support) is already on your machine on SGI and
 most DEC Alpha systems. It may also be the case with Solaris machines,
@@ -44,7 +43,7 @@ about Togl at:
 
 4. Use
 
-  Installing LablGL makes two commands available:
+  Installing LablGL makes three commands available:
 
   * lablgl
     This is a toplevel, like ocaml, including LablTk, Unix and LablGL.
@@ -62,14 +61,11 @@ about Togl at:
 	morph3d.ml
 	tennis.ml
 
-  * lablglopt
-    This script calls ocamlopt, like labltkopt, linking LablTk and
-    LablGL. Use it as a replacement of ocamlopt for your LablGL
-    programs.
-	% lablglopt example.ml -o example
-
-    There is no lablgllink, since you will probably want the native
-    code speed as soon as you work with animations.
+  * lablgllink/lablglopt
+    These script call ocamlc or ocamlopt, like labltklink/labltkopt,
+    linking LablTk and LablGL. Use it as a replacement of ocamlc
+    or ocamlopt for your LablGL programs.
+	% lablgllink example.ml -o example
 
 5. Writing programs
 
@@ -280,4 +276,4 @@ GluTess: Tessalating functions.
    gluTessVertex	-> vertex
    (1.2) only available with GLU 1.2
 
-$Id: README,v 1.7 1999-11-15 14:32:08 garrigue Exp $
+$Id: README,v 1.8 1999-12-20 09:47:06 garrigue Exp $

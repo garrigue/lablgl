@@ -1,3 +1,14 @@
+LablGL 0.99:
+------------
+
+* use Objective Caml 3 instead of Objective Label.
+
+* a few functions changed, to comply with the new semantics
+  for optional arguments.
+
+* togl.cmo is not included in lablgl.cma, to allow easy linking
+  with lablgtk.
+
 LablGL 0.92:
 ------------
 

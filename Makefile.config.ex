@@ -1,13 +1,12 @@
 #	LablGL and Togl configuration file
 #
-# Please have a look at the Makefile.config of the labltk41 directory
-# in the distribution, or at the labltklink script to get the
-# information needed here
+# Please have a look at the config/Makefile in the Objective Caml distribution,
+# or at the labltklink script to get the information needed here
 #
 
 ##### Adjust these always
 
-# Where to put the lablgl and lablglopt scripts
+# Where to put the lablgl, lablgllink and lablglopt scripts
 BINDIR = /usr/local/bin
 
 # The Objective Label library directory (obtain it by ocamlc -v)
