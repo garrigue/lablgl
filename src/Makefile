@@ -39,10 +39,11 @@ LIBOBJS =	raw.cmo \
 		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
 		glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo \
 		glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo \
-		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo
+		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo \
+		glArray.cmo
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
-COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO)
+COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO)
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 
 # Default rules
@@ -198,7 +199,7 @@ clean:
 	rm -f $(TOGLDIR)/togl$(XO)
 
 depend:
-	ocamldep *.ml *.mli > .depend
+	ocamldep  -pp camlp4o *.ml *.mli > .depend
 
 #dependencies
 ml_gl$(XO): ml_gl.h gl_tags.h gl_tags.c ml_raw.h
