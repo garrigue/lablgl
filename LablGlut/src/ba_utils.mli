@@ -2,6 +2,8 @@ val float_ba_make :
   int -> (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Array1.t
 val int_ba_make :
   int -> (int, Bigarray.int_elt, Bigarray.c_layout) Bigarray.Array1.t
+val int32_ba_make :
+  int -> (int32, Bigarray.int32_elt, Bigarray.c_layout) Bigarray.Array1.t
 val ubyte_ba_make :
   int ->
   (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
