@@ -1,4 +1,4 @@
-(* $Id: glMat.ml,v 1.8 2000-04-12 07:40:24 garrigue Exp $ *)
+(* $Id: glMat.ml,v 1.9 2003-03-17 19:38:55 erickt Exp $ *)
 
 type t = [`double] Raw.t
 
@@ -11,11 +11,19 @@ external load : t -> unit = "ml_glLoadMatrixd"
 let load m =
   if Raw.length m <> 16 then invalid_arg "Gl.load_matrix";
   load m
+external load_transpose : t -> unit = "ml_glLoadTransposeMatrixd"
+let load_transpose m =
+  if Raw.length m <> 16 then invalid_arg "Gl.load_transpose_matrix";
+  load_transpose m
 
 external mode : [`modelview|`projection|`texture] -> unit
     = "ml_glMatrixMode"
 external mult : t -> unit = "ml_glMultMatrixd"
 let mult m =
+  if Raw.length m <> 16 then invalid_arg "Gl.mult_matrix";
+  mult m
+external mult_transpose : t -> unit = "ml_glMultTransposeMatrixd"
+let mult_transpose m =
   if Raw.length m <> 16 then invalid_arg "Gl.mult_matrix";
   mult m
 

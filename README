@@ -202,12 +202,14 @@ GlMap: Map and meshes functions.
 GlMat: Matrix functions. (*)
    glFrustum
    glLoadIdentity
-   glLoadMatrix		-> load
-   glMatrixMode		-> mode
-   glMultMatrix		-> mult
+   glLoadMatrix		 -> load
+   glLoadTransposeMatrix -> load_transpose (gl 1.3)
+   glMatrixMode	 	 -> mode
+   glMultMatrix		 -> mult
+   glMultTransposeMatrix -> mult_transpose (gl 1.3)
    glOrtho
-   glPopMatrix		-> pop
-   glPushMatrix		-> push
+   glPopMatrix		 -> pop
+   glPushMatrix		 -> push
    glRotate
    glScale
    glTranslate
@@ -288,13 +290,12 @@ GluTess: Tessalating functions.
    gluBeginPolygon	-> begins
    gluEndPolygon	-> ends
    gluNewTess		-> create
-   gluTessBeginContour	-> begin_contour (1.2)
-   gluTessBeginPolygon	-> begin_polygon (1.2)
-   gluTessEndContour	-> end_contour	 (1.2)
-   gluTessEndPolygon	-> end_polygon	 (1.2)
-   gluTessNormal	-> normal	 (1.2)
-   gluTessProperty	-> property	 (1.2)
+   gluTessBeginContour	-> begin_contour (glu 1.2)
+   gluTessBeginPolygon	-> begin_polygon (glu 1.2)
+   gluTessEndContour	-> end_contour	 (glu 1.2)
+   gluTessEndPolygon	-> end_polygon	 (glu 1.2)
+   gluTessNormal	-> normal	 (glu 1.2)
+   gluTessProperty	-> property	 (glu 1.2)
    gluTessVertex	-> vertex
-   (1.2) only available with GLU 1.2
 
-$Id: README,v 1.21 2003-03-15 08:33:36 erickt Exp $
+$Id: README,v 1.22 2003-03-17 19:38:55 erickt Exp $

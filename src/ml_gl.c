@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.35 2003-03-15 20:34:30 erickt Exp $ */
+/* $Id: ml_gl.c,v 1.36 2003-03-17 19:38:55 erickt Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -294,6 +294,15 @@ ML_2 (glLineStipple, Int_val, Int_val)
 ML_1 (glLoadName, Int_val)
 ML_0 (glLoadIdentity)
 ML_1 (glLoadMatrixd, Double_raw)
+
+#ifdef GL_VERSION_1_3
+ML_1 (glLoadTransposeMatrixd, Double_raw)
+#else
+void ml_glLoadTransposeMatrixd (value raw)
+{
+    ml_raise_gl ("Function: glLoadTransposeMatrixd not available");
+}
+#endif
 ML_1 (glLogicOp, GLenum_val)
 
 CAMLprim value ml_glMap1d (value target, value *u, value order, value raw)
@@ -389,6 +398,15 @@ CAMLprim value ml_glMaterial (value face, value param)  /* ML */
 
 ML_1 (glMatrixMode, GLenum_val)
 ML_1 (glMultMatrixd, Double_raw)
+
+#ifdef GL_VERSION_1_3
+ML_1 (glMultTransposeMatrixd, Double_raw)
+#else
+void ml_glMultTransposeMatrixd (value raw)
+{
+  ml_raise_gl ("Function: glMultTransposeMatrixd not available");
+}
+#endif 
 
 ML_3 (glNormal3d, Double_val, Double_val, Double_val)
 

@@ -1,4 +1,4 @@
-(* $Id: glMat.mli,v 1.4 1999-11-23 17:18:16 garrigue Exp $ *)
+(* $Id: glMat.mli,v 1.5 2003-03-17 19:38:55 erickt Exp $ *)
 
 open Gl
 
@@ -13,7 +13,9 @@ val of_array : float array array -> t
 val to_array : t -> float array array
 
 val load : t -> unit
+val load_transpose : t -> unit
 val mult : t -> unit
+val mult_transpose : t -> unit
 val load_identity : unit -> unit
 
 val push : unit -> unit
