@@ -1,0 +1,5 @@
+#!/bin/sh
+
+exec olablc -custom @INCLUDES@ -I @INSTALLDIR@ tk41.cma lablgl.cma $* \
+	-ccopt -L@INSTALLDIR@ -cclib -llablgl \
+	@OTHERLIBS@

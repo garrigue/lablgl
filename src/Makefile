@@ -41,7 +41,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 		-ccopt -L. -cclib -llablgl -cclib -lunix \
 		$(GLLIBS) $(XLIBS) $(TKLIBS)
 
-all: 	var2def	var2switch lablgltop lablgl
+all: 	var2def	var2switch lablgltop lablgl lablgllink
 
 opt:	lablgl.cmxa lablglopt
 
@@ -68,15 +68,24 @@ lablgltop: lablgl.cma liblablgl.a
 		$(GLLIBS) $(XLIBS) $(TKLIBS)
 
 lablgl: lablgl.in Makefile.config
-	sed -e 's|LABLTKDIR|$(LABLTKDIR)|g' -e 's|INSTALLDIR|$(INSTALLDIR)|g' \
-		< lablgl.in > $@
-	chmod +x $@
+	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
+	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g'	\
+	    < lablgl.in > $@
+	chmod 755 $@
+
+lablgllink: lablgllink.in Makefile.config
+	sed -e 's|@INCLUDES@|$(INCLUDES)|g'	\
+	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
+	    -e 's|@OTHERLIBS@|$(GLLIBS) $(XLIBS) $(TKLIBS)|g' \
+	    < lablgllink.in > $@
+	chmod 755 $@
 
 lablglopt: lablglopt.in Makefile.config
-	sed -e 's|INCLUDES|$(INCLUDES)|g' -e 's|INSTALLDIR|$(INSTALLDIR)|g' \
-		-e 's|OTHERLIBS|$(GLLIBS) $(XLIBS) $(TKLIBS)|g' \
-		< lablglopt.in > $@
-	chmod +x $@
+	sed -e 's|@INCLUDES@|$(INCLUDES)|g'	\
+	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
+	    -e 's|@OTHERLIBS@|$(GLLIBS) $(XLIBS) $(TKLIBS)|g' \
+	    < lablglopt.in > $@
+	chmod 755 $@
 
 gl_tags.c: gl_tags.var
 	./var2switch -table GL_ < gl_tags.var > $@
@@ -96,7 +105,7 @@ install:
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
 	cp lablgl.cma liblablgl.a $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
-	cp lablgl $(BINDIR)
+	cp lablgl lablgllink $(BINDIR)
 	if test -f lablgl.cmxa; then : ; \
 		cp lablgl.cmxa lablgl.a $(INSTALLDIR); \
 		cp lablglopt $(BINDIR); fi

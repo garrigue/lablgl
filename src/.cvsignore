@@ -5,5 +5,6 @@ var2switch
 *.opt
 lablgltop
 lablgl
+lablgllink
 lablglopt
 Makefile.config
