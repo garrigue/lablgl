@@ -235,6 +235,9 @@ clamp repeat
 (* glGetString *)
 vendor renderer version extensions
 
+(* glRenderMode *)
+render select feedback
+
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End
@@ -250,9 +253,6 @@ texture_coord_3 texture_coord_4
 (* glPushAttrib *)
 accum_buffer color_buffer current depth_buffer enable eval
 hint list pixel_mode scissor stencil_buffer transform viewport
-
-(* glRenderMode *)
-render select feedback
 
 (* glReadBuffer *)
 aux
