@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.14 1998-01-19 06:57:06 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.15 1998-01-19 07:29:09 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -405,7 +405,7 @@ external tex_coord1 : float -> unit = "ml_glTexCoord1d"
 external tex_coord2 : float -> float -> unit = "ml_glTexCoord2d"
 external tex_coord3 : float -> float -> float -> unit = "ml_glTexCoord3d"
 external tex_coord4 : float -> float -> float -> float -> unit
-    = "ml_glTexCoord1d"
+    = "ml_glTexCoord4d"
 let default x = function Some x -> x | None -> x
 let tex_coord :s ?:t ?:r ?:q =
   match q with

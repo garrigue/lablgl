@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.8 1998-01-19 06:57:07 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.9 1998-01-19 07:29:10 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -10,15 +10,14 @@ type point3 = float * float * float
 type point4 = float * float * float * float
 
 type clampf = float
-type glist
+type glist = int
 
 type addr
 type gltype = [bitmap byte float int short ubyte uint ushort]
-type 'a rawdata = { kind: 'a; size: int; addr: addr }
-
+type 'a rawdata
 val coerce_bitmap : gltype rawdata -> [bitmap] rawdata
 
-type cmp_func = [ never less equal lequal greater notequal gequal always ]
+type cmp_func = [always equal gequal greater lequal less never notequal]
 type face = [back both front]
 type cap =
   [alpha_test auto_normal blend clip_plane0 clip_plane1 clip_plane2
@@ -106,8 +105,8 @@ external eval_point2 : int -> int -> unit = "ml_glEvalPoint2"
 external flush : unit -> unit = "ml_glFlush"
 external finish : unit -> unit = "ml_glFinish"
 type fog_param =
-  [End(float) color(rgba) density(float) index(float)
-   mode([exp exp2 linear]) start(float)]
+  [End(float) color(rgba) density(float) index(float) mode([exp exp2 linear])
+   start(float)]
 external fog : fog_param -> unit = "ml_glFog"
 external front_face : [ccw cw] -> unit = "ml_glFrontFace"
 external frustum :
@@ -218,11 +217,54 @@ external read_pixels :
   height:int -> format:pixels_format -> type:#gltype -> #gltype rawdata
   = "ml_glReadPixels_bc" "ml_glReadPixels"
 external rect : point2 -> point2 -> unit = "ml_glRect"
+external render_mode : [feedback render select] -> int = "ml_glRenderMode"
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit
 
 val scale : ?x:float -> ?y:float -> ?z:float -> unit
+external select_buffer : [uint] rawdata -> unit = "ml_glSelectBuffer"
 external shade_model : [flat smooth] -> unit = "ml_glShadeModel"
+external stencil_func : cmp_func -> ref:int -> mask:int -> unit
+  = "ml_glStencilFunc"
+external stencil_mask : int -> unit = "ml_glStencilMask"
+type stencil_op = [decr incr invert keep replace zero]
+val stencil_op :
+  ?fail:stencil_op -> ?zfail:stencil_op -> ?zpass:stencil_op -> unit
 
+external tex_coord1 : float -> unit = "ml_glTexCoord1d"
+val tex_coord : s:float -> ?t:float -> ?r:float -> ?q:float -> unit
+val tex_coord2 : float * float -> unit
+val tex_coord3 : float * float * float -> unit
+val tex_coord4 : float * float * float * float -> unit
+type tex_env_param = [color(rgba) mode([blend decal modulate replace])]
+external tex_env : tex_env_param -> unit = "ml_glTexEnv"
+type tex_coord = [q r s t]
+type tex_gen_param =
+  [eye_plane(point4) mode([eye_linear object_linear sphere_map])
+   object_plane(point4)]
+external tex_gen : coord:tex_coord -> tex_gen_param -> unit = "ml_glTexGen"
+type tex_format =
+  [alpha blue color_index depth_component green luminance luminance_alpha 
+   red rgb rgba]
+val tex_image1d :
+  proxy:bool ->
+  level:int ->
+  internal:int ->
+  width:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+val tex_image2d :
+  proxy:bool ->
+  level:int ->
+  internal:int ->
+  width:int ->
+  height:int -> border:bool -> format:tex_format -> gltype rawdata -> unit
+type tex_filter =
+  [linear linear_mipmap_linear linear_mipmap_nearest nearest
+   nearest_mipmap_linear nearest_mipmap_nearest]
+type tex_wrap = [clamp repeat]
+type tex_param =
+  [border_color(rgba) mag_filter([linear nearest]) min_filter(tex_filter)
+   priority(clampf) wrap_s(tex_wrap) wrap_t(tex_wrap)]
+external tex_parameter : target:[texture_1d texture_2d] -> tex_param -> unit
+  = "ml_glTexParameter"
 val translate : ?x:float -> ?y:float -> ?z:float -> unit
 
 external vertex : x:float -> y:float -> ?z:float -> ?w:float -> unit
