@@ -28,11 +28,11 @@ RANLIB = ranlib
 
 ##### Adjust these if non standard
 
-# Where is LablTk (standard)
-LABLTKDIR = +labltk
-
 # The Objective Caml library directory
 LIBDIR = `ocamlc -where`
+
+# Where is LablTk (standard)
+LABLTKDIR = $(LIBDIR)/labltk
 
 # Where to put LablGL (standard)
 INSTALLDIR = $(LIBDIR)/lablGL
@@ -40,10 +40,7 @@ INSTALLDIR = $(LIBDIR)/lablGL
 # Where is Togl (default)
 TOGLDIR = Togl
 
-# The C compiler (Togl only)
-CC = cc
-
-# Compiler options:
+# C Compiler options
 COPTS = -c -O
 
 ###### No need to change these

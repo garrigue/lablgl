@@ -1,4 +1,4 @@
-(* $Id: var2def.ml,v 1.8 2001-05-08 01:58:25 garrigue Exp $ *)
+(* $Id: var2def.ml,v 1.9 2001-09-06 08:27:02 garrigue Exp $ *)
 
 open StdLabels
 
@@ -33,7 +33,7 @@ let main () =
 	  failwith
 	    (String.concat ~sep:" "
 	       ["Doublon ~tag:";tag;"and";Hashtbl.find tags hash])
-	with Not_found -> Hashtbl.add' ~key:hash ~data:tag tags
+	with Not_found -> Hashtbl.add tags hash tag
 	end;
 	print_int hash;
 	print_string ")\n"

@@ -3,7 +3,7 @@ CAMLC=ocamlc
 CAMLOPT=ocamlopt
 COMPILER=$(CAMLC) -c
 OPTCOMP=$(CAMLOPT) -c
-LIBRARIAN=$(CAMLC) -a
+LIBRARIAN=ocamlmklib
 OPTLIB=$(CAMLOPT) -a
 LINKER=$(CAMLC)
 OPTLINK=$(CAMLOPT)
@@ -21,8 +21,8 @@ LIBOBJS =	raw.cmo \
 		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(MLOBJS:.cmo=.cmx)
-COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
-		$(TOGLDIR)/togl.o
+COBJS =		ml_gl.o		ml_glu.o	ml_raw.o
+TOGLOBJS =	ml_togl.o	$(TOGLDIR)/togl.o
 
 # Default rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt
@@ -37,7 +37,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 	$(COMPILER) $(OCAMLINC) $<
 
 .c.o:
-	$(CC) $(COPTS) -I$(LIBDIR) -I$(TOGLDIR) $(INCLUDES) $<
+	$(COMPILER) -ccopt "$(COPTS) -I$(TOGLDIR) $(INCLUDES)" $<
 
 .var.h:
 	./var2def < $< > $@
@@ -48,7 +48,7 @@ COBJS =		ml_gl.o		ml_glu.o	ml_togl.o	ml_raw.o \
 
 all: 	var2def	var2switch lablgltop lablgl
 
-opt:	lablgl.cmxa
+opt:	lablgl.cmxa togl.cmxa
 
 var2def: var2def.cmo
 	$(LINKER) var2def.cmo -o $@
@@ -56,24 +56,29 @@ var2def: var2def.cmo
 var2switch: var2switch.cmo
 	$(LINKER) var2switch.cmo -o $@
 
-lablgl.cma: $(LIBOBJS) Makefile.config
-	$(LIBRARIAN) -custom -o lablgl.cma $(LIBOBJS) \
-		-cclib "-llablgl $(OTHERLIBS)"
+lablgl.cma: $(LIBOBJS) $(COBJS) Makefile.config
+	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(COBJS) $(OTHERLIBS)
 
-lablgl.cmxa: $(OPTOBJS) Makefile.config
-	$(OPTLIB) -o lablgl.cmxa $(OPTOBJS) \
-		-cclib "-llablgl $(OTHERLIBS)"
+lablgl.cmxa: lablgl.cma $(OPTOBJS) Makefile.config
+	$(LIBRARIAN) -o lablgl $(OPTOBJS)
 
-liblablgl.a: $(COBJS)
-	ar rc liblablgl.a $(COBJS)
-	$(RANLIB) liblablgl.a
+togl.cma: togl.cmo $(TOGLOBJS) Makefile.config
+	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS)
+
+togl.cmxa: togl.cma togl.cmx Makefile.config
+	$(LIBRARIAN) -o togl togl.cmx
+
+#liblablgl.a: $(COBJS)
+#	ar rc liblablgl.a $(COBJS)
+#	$(RANLIB) liblablgl.a
 
 $(TOGLDIR)/togl.o:
-	cd $(TOGLDIR) && $(MAKE) togl.o
+	cd $(TOGLDIR) && $(MAKE) togl.o CC="$(CAMLC)" CFLAGS='-c -ccopt "$(COPTS) $(INCLUDES) $(TK_FLAGS)"'
 
-lablgltop: lablgl.cma togl.cmo liblablgl.a
-	ocamlmktop $(OCAMLINC) -o lablgltop \
-	    unix.cma str.cma labltk.cma -ccopt -L. lablgl.cma togl.cmo
+lablgltop: lablgl.cma togl.cma
+	ocamlmktop -custom -I . $(OCAMLINC) -o lablgltop \
+	    -dllpath $(LABLTKDIR) -dllpath $(INSTALLDIR) \
+	    unix.cma str.cma labltk.cma lablgl.cma togl.cma
 
 lablgl: lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
@@ -100,13 +105,17 @@ real-install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp liblablgl.a lablgl.cma togl.cmo $(INSTALLDIR)
+	cp liblablgl.a lablgl.cma togl.cma $(INSTALLDIR)
 	cp lablgltop $(INSTALLDIR)
 	cp lablgl $(BINDIR)
+	@if test -f liblablgl.so; then $(MAKE) installdll; fi
 	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
 
+installdll:
+	cp liblablgl.so libtogl.so $(INSTALLDIR)
+
 installopt:
-	cp lablgl.cmxa lablgl.a $(MLOBJS:.cmo=.cmx) togl.o $(INSTALLDIR)
+	cp lablgl.cmxa lablgl.a togl.cmxa togl.a $(MLOBJS:.cmo=.cmx) $(INSTALLDIR)
 
 clean:
 	rm -f *.cm* *.a *.o *.opt *_tags.c *_tags.h *~ \
