@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.30 2002-07-13 14:11:04 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.31 2002-07-15 02:15:48 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -73,6 +73,9 @@ GLenum GLenum_val(value tag)
 	hash++;
 	if (hash == TABLE_SIZE) hash = 0;
     }
+    /*
+    fprintf(stderr, "Converted %ld to %d", Int_val(tag), tag_table[hash].data);
+    */
     return tag_table[hash].data;
 }
 

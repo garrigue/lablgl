@@ -16,12 +16,13 @@ COPTS = -c -O
 # Default toolchain (unix)
 TOOLCHAIN = unix
 XA = .a
-XO = .o
+XB =
 XE =
+XO = .o
 XS = .so
 # Windows specific
 MKLIB=lib /nologo /debugtype:CV /out:
-MKDLL=link /nologo /dll `ocamlc -where`/ocamlrun.lib /implib:tmp.lib /out:
+MKDLL=link /nologo /dll `ocamlc -where`/ocamlrun.lib /out:
 
 include Makefile.config
 
@@ -69,7 +70,7 @@ TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 	$(OPTLINK) -o $@ $(OCAMLINC) -ccopt -L. \
 	    unix.cmxa labltk.cmxa lablgl.cmxa togl.cmxa $<
 
-all: 	var2def$(XE) var2switch$(XE) lablgltop$(XE) lablgl
+all: 	var2def$(XE) var2switch$(XE) lablgltop$(XE) lablgl$(XB)
 
 opt:	lablgl.cmxa togl.cmxa
 
@@ -101,6 +102,7 @@ togl.cma: libtogl$(XA) dlltogl.dll togl.cmo Makefile.config
 togl.cmxa: libtogl$(XA) togl.cmx Makefile.config
 	$(OPTLINK) -a -o $@ togl.cmx -cclib -ltogl \
 	  -cclib "$(GLLIBS) $(TKLIBS)"
+#CUSTOMTOP = -verbose -custom unix.cma
 else
 liblablgl.a: $(COBJS) Makefile.config
 	$(LIBRARIAN) -o lablgl $(COBJS) $(GLLIBS) $(XLIBS)
@@ -114,6 +116,7 @@ togl.cma: libtogl.a togl.cmo Makefile.config
 	$(LIBRARIAN) -o togl togl.cmo $(GLLIBS) $(TKLIBS) $(XLIBS)
 togl.cmxa: libtogl.a togl.cmx Makefile.config
 	$(LIBRARIAN) -o togl togl.cmx $(GLLIBS) $(TKLIBS) $(XLIBS)
+INSTTOP = lablgltop
 endif
 
 $(TOGLDIR)/togl.o:
@@ -130,7 +133,7 @@ $(TOGLDIR)/togl.d.obj:
 		togl.c
 
 lablgltop$(XE): lablgl.cma togl.cma
-	ocamlmktop -verbose -I . $(OCAMLINC) -o $@ \
+	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
 lablgl: lablgl.in Makefile.config
@@ -158,10 +161,9 @@ real-install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(MLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp $(MLOBJS:.cmo=.mli) $(INSTALLDIR)
-	cp liblablgl$(XA) lablgl.cma libtogl$(XA) togl.cma $(INSTALLDIR)
+	cp liblablgl$(XA) lablgl.cma libtogl$(XA) togl.cma $(INSTTOP) $(INSTALLDIR)
 	cd $(INSTALLDIR) && $(RANLIB) liblablgl$(XA) libtogl$(XA)
-	cp lablgltop $(INSTALLDIR)
-	cp lablgl $(BINDIR)
+	cp lablgl$(XB) $(BINDIR)
 	@if test -f dlllablgl$(XS); then $(MAKE) installdll; fi
 	@if test -f lablgl.cmxa; then $(MAKE) installopt LIBDIR=$(LIBDIR); fi
 
@@ -176,7 +178,7 @@ installopt:
 clean:
 	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
 		var2def var2switch lablgltop lablgl lablgllink lablglopt
-	cd $(TOGLDIR) && $(MAKE) clean
+	rm -f $(TOGLDIR)/togl$(XO)
 
 depend:
 	ocamldep *.ml *.mli > .depend

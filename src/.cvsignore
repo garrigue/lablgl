@@ -4,8 +4,8 @@ var2switch
 *_tags.c
 *.opt
 *.lib
+*.dll
+*.exp
 lablgltop
 lablgl
-lablgllink
-lablglopt
 Makefile.config

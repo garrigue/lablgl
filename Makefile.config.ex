@@ -35,8 +35,9 @@ RANLIB = :
 #GLLIBS = opengl32.lib glu32.lib
 #TOOLCHAIN = msvc
 #XA = .lib
-#XO = .obj
+#XB = .bat
 #XE = .exe
+#XO = .obj
 #XS = .dll
 
 ##### Adjust these if non standard
