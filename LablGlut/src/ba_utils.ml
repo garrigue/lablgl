@@ -6,6 +6,12 @@ let int_ba_make n = Array1.create int c_layout n
 
 let int32_ba_make n = Array1.create int32 c_layout n
 
+let int_array_of_int32_ba ba = 
+    let n = Array1.dim ba in 
+    let a = Array.make n 0 in
+    for i = 0 to n-1 do a.(i) <- Int32.to_int ba.{i} done;
+    a
+
 let ubyte_ba_make n = Array1.create int8_unsigned c_layout n
 
 let float_ba_of_array a =
