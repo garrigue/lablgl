@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.1 1998-01-12 09:27:26 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.2 1998-01-12 14:08:53 garrigue Exp $ */
 
 #include <stdlib.h>
 #include <GL/gl.h>
@@ -9,7 +9,7 @@
 #include <caml/memory.h>
 #include "togl.h"
 #include "ml_gl.h"
-#include "tk_tags.h"
+#include "togl_tags.h"
 
 extern Tcl_Interp *cltclinterp; /* The Tcl interpretor */
 extern void tk_error (char *message); /* Raise TKerror */
@@ -18,7 +18,7 @@ int TOGLenum_val(value tag)
 {
     switch(tag)
     {
-#include "togle_tags.c"
+#include "togl_tags.c"
     }
     invalid_argument ("Unknown Togl tag");
 }
@@ -46,6 +46,7 @@ enum {
      DestroyFunc,
      TimerFunc,
      OverlayDisplayFunc,
+     RenderFunc,
      LastFunc
 };
 
@@ -54,7 +55,8 @@ static value *callbacks = NULL;
 #define CALLBACK(func) \
 static void callback_##func (struct Togl *togl) \
 { callback (Field(*callbacks, func), Val_togl(togl)); }
-#define ENABLER(func)
+
+#define ENABLER(func) \
 value ml_Togl_##func (value unit) \
 { if (callbacks == NULL) callbacks = caml_named_value ("togl_callbacks"); \
   Togl_##func (callback_##func); \
@@ -87,7 +89,15 @@ value ml_Togl_LoadBitmapFont (value togl, value font)  /* ML */
     char *fontname;
 
     if (Is_block(font)) fontname = String_val (Field(font,0));
-    else fontname = Togl_enum_val (font);
+    else switch (font) {
+    case MLTAG_fixed_8x13:	fontname = TOGL_BITMAP_8_BY_13; break;
+    case MLTAG_fixed_9x15:	fontname = TOGL_BITMAP_9_BY_15; break;
+    case MLTAG_times_10:	fontname = TOGL_BITMAP_TIMES_ROMAN_10; break;
+    case MLTAG_times_24:	fontname = TOGL_BITMAP_TIMES_ROMAN_24; break;
+    case MLTAG_helvetica_10:	fontname = TOGL_BITMAP_HELVETICA_10; break;
+    case MLTAG_helvetica_12:	fontname = TOGL_BITMAP_HELVETICA_12; break;
+    case MLTAG_helvetica_18:	fontname = TOGL_BITMAP_HELVETICA_18; break;
+    }
     return Val_int (Togl_LoadBitmapFont (Togl_val(togl), fontname));
 }
 
@@ -103,7 +113,7 @@ value ml_Togl_DumpToEpsFile (value togl, value filename, value rgbFlag)
 {
     if (callbacks == NULL) callbacks = caml_named_value ("togl_callbacks");
     if (Togl_DumpToEpsFile(Togl_val(togl), String_val(filename),
-			   Int_val(rgbFlag), callbackRenderFunct)
+			   Int_val(rgbFlag), callback_RenderFunc)
 	== TCL_ERROR)
 	tk_error ("Dump to EPS file failed");
     return Val_unit;

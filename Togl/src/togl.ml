@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.1 1998-01-12 09:27:26 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.2 1998-01-12 14:08:54 garrigue Exp $ *)
 
 open Tk
 open Protocol
@@ -64,11 +64,11 @@ let togl_options_optionals f =
 	 @ may width "-width" cint)
 
 type w = Widget.any
-type t = unit
+type t = Togl
 
 let togl_table = Hashtbl.create size:3
 let callback_table : (t -> unit) array =
-  Array.create len:6 fill:(fun _ -> ())
+  Array.create len:7 fill:(fun _ -> ())
 let _ = Callback.register "togl_callbacks" callback_table
 let create_id = 0
 and display_id = 1
@@ -76,6 +76,7 @@ and reshape_id = 2
 and destroy_id = 3
 and timer_id = 4
 and overlay_display_id = 5
+and render_id = 6
 
 external _create_func : unit -> unit = "ml_Togl_CreateFunc"
 external _display_func : unit -> unit = "ml_Togl_DisplayFunc"
@@ -84,22 +85,22 @@ external _destroy_func : unit -> unit = "ml_Togl_DestroyFunc"
 external _timer_func : unit -> unit = "ml_Togl_TimerFunc"
 external _overlay_display_func : unit -> unit = "ml_Togl_OverlayDisplayFunc"
 
-let create :parent ?:name =
-  togl_options_optionals
-    ?(fun options ->
-      let w : w Widget.widget =
-	Widget.new_atom class:"togl" :parent ?:name in
-      callback_table.(create_id) <-
-	 (fun t -> Hashtbl.add togl_table key:w data:t);
-      Protocol.tkEval
-	[|Protocol.TkToken wclass; Protocol.TkToken (Widget.name w);
-	  Protocol.TkTokenList options|];
-      w)
+let display_func f =
+  callback_table.(display_id) <- f; _display_func ()
+let reshape_func f =
+  callback_table.(reshape_id) <- f; _reshape_func ()
+let destroy_func f =
+  callback_table.(destroy_id) <- f; _destroy_func ()
+let timer_func f =
+  callback_table.(timer_id) <- f; _timer_func ()
+let overlay_display_func f =
+  callback_table.(overlay_display_id) <- f; _overlay_display_func ()
 
+external init : unit -> unit = "ml_Togl_Init"
 external reset_default_callbacks : unit -> unit
     = "ml_Togl_ResetDefaultCallbacks"
 external post_redisplay : t -> unit = "ml_Togl_PostRedisplay"
-external _swap_buffers : t -> unit = "ml_Togl_SwapBuffers"
+external swap_buffers : t -> unit = "ml_Togl_SwapBuffers"
 
 external ident : t -> string = "ml_Togl_Ident"
 external height : t -> int = "ml_Togl_Height"
@@ -117,11 +118,60 @@ external post_overlay_redisplay : t -> unit = "ml_Togl_PostOverlayRedisplay"
 
 external exists_overlay : t -> bool = "ml_Togl_ExistsOverlay"
 external get_overlay_transparent_value : t -> int
-    = "ml_Togl_GetOVerlayTransparentValue"
+    = "ml_Togl_GetOverlayTransparentValue"
 
 external _dump_to_eps_file : t -> string -> bool -> unit
     = "ml_Togl_DumpToEpsFile"
 let dump_to_eps_file togl :filename ?:rgba [< false >]
-    ?:redraw [< callbacks_table.(display_id) >] =
-  callback_table.(overlay_display_id) <- redraw;
+    ?:render [< callback_table.(display_id) >] =
+  callback_table.(render_id) <- render;
   _dump_to_eps_file togl filename rgba
+
+let rec timer_func :ms fun:f =
+  Timer.add :ms callback:(fun () -> f (); timer_func :ms fun:f);
+  ()
+
+let configure w ?:height ?:width =
+  let options = may height "-height" cint @ may width "-width" cint in
+  tkEval [|TkToken (Widget.name w); TkTokenList options|]
+
+class widget w t =
+  val w : w Widget.widget = w
+  val t = t
+  method widget = w
+  method name = coe w
+  method configure = configure ?w
+  method bind = bind w
+  method redisplay = post_redisplay t
+  method swap_buffers = swap_buffers t
+  method ident = ident t
+  method width = width t
+  method height = height t
+  method load_font = load_bitmap_font t
+  method unload_font = unload_bitmap_font t
+  method use_layer = use_layer t
+  method show_overlay = show_overlay t
+  method hide_overlay = hide_overlay t
+  method overlay_redisplay = post_overlay_redisplay t
+  method exist_overlay = exists_overlay t
+  method overlay_transparent_value = get_overlay_transparent_value t
+  method dump_to_eps_file = dump_to_eps_file t
+  method make_current =
+    tkEval [|TkToken (Widget.name w); TkToken "makecurrent"|]
+end
+
+let ready = ref false
+
+let create :parent ?:name =
+  togl_options_optionals
+    ?(fun options ->
+      if not !ready then (init (); ready := true);
+      let w : w Widget.widget =
+	Widget.new_atom class:"togl" :parent ?:name in
+      let togl = ref None in
+      callback_table.(create_id) <-
+	 (fun t -> togl := Some t; Hashtbl.add togl_table key:w data:t);
+      _create_func ();
+      tkEval [|TkToken "togl"; TkToken (Widget.name w); TkTokenList options|];
+      match !togl with None -> raise (TkError "Togl widget creation failed")
+      |	Some t -> new widget w t)

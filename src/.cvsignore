@@ -3,5 +3,7 @@ gl_tags.h
 tk_tags.h
 gl_tags.c
 tk_tags.c
+togl_tags.h
+togl_tags.c
 var2switch
 lablgl

@@ -1,4 +1,4 @@
-/* $Id: ml_gl.h,v 1.7 1998-01-12 09:27:25 garrigue Exp $ */
+/* $Id: ml_gl.h,v 1.8 1998-01-12 14:08:53 garrigue Exp $ */
 
 #ifndef _ml_gl_
 #define _ml_gl_
@@ -117,7 +117,11 @@ value ml_##cname (struct Togl *togl) \
 { return Val_int (cname (Togl_val(togl))); }
 
 #define ML_togl_int_(cname) \
-value ml_##cname (value togle, value n) \
+value ml_##cname (value togl, value n) \
 { cname (Togl_val(togl), Int_val(n)); return Val_unit; }
+
+#define ML_togl_TOGLenum_(cname) \
+value ml_##cname (value togl, value tag) \
+{ cname (Togl_val(togl), TOGLenum_val(tag)); return Val_unit; }
 
 #endif
