@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.17 1998-01-21 09:12:32 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.18 1998-01-21 23:25:17 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -19,11 +19,6 @@ type clampf = float
 type glist = int
 
 type gltype = [bitmap byte ubyte short ushort int uint float]
-(*
-let coerce_bitmap (data : #gltype Raw.t) : [bitmap] Raw.t =
-  match data with {kind = `bitmap} as bitmap -> bitmap
-  | _ -> invalid_arg "Gl.coerce_bitmap"
-*)
 
 type cmp_func = [ never less equal lequal greater notequal gequal always ]
 type face = [front back both]

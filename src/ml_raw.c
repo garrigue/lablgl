@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.2 1998-01-21 09:12:37 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.3 1998-01-21 23:25:20 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/mlvalues.h>
@@ -394,7 +394,7 @@ value ml_raw_alloc_static (value kind, value len)  /* ML */
     raw = alloc_tuple (4);
     Kind_raw(raw) = kind;
     Size_raw(raw) = Val_int(size);
-    Addr_raw(raw) = data;
+    Void_raw(raw) = data;
     Static_raw(raw) = Val_true;
     return raw;
 }
@@ -402,7 +402,7 @@ value ml_raw_alloc_static (value kind, value len)  /* ML */
 value ml_raw_free_static (value raw)  /* ML */
 {
     if (Static_raw(raw) != Val_int(1)) invalid_argument ("Raw.free_static");
-    stat_free (Addr_raw(raw));
+    stat_free (Void_raw(raw));
     Addr_raw(raw) = Val_unit;
     Size_raw(raw) = Val_unit;
     return Val_unit;

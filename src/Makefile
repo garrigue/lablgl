@@ -73,7 +73,9 @@ ml_togl.o : ml_gl.h togl_tags.h togl_tags.c
 ml_glu.o : ml_gl.h glu_tags.h glu_tags.c
 ml_raw.o: raw_tags.h ml_raw.h
 raw.cmo: raw.cmi
+gl.cmi: raw.cmi
 gl.cmo: gl.cmi
+glu.cmo: gl.cmi raw.cmi
 glm.cmo: gl.cmi
 aux.cmo: gltk.cmi
 togl.cmi: gl.cmi

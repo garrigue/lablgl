@@ -1,4 +1,4 @@
-(* $Id: raw.ml,v 1.2 1998-01-20 11:35:43 garrigue Exp $ *)
+(* $Id: raw.ml,v 1.3 1998-01-21 23:25:21 garrigue Exp $ *)
 
 type addr
 type kind =
@@ -19,25 +19,25 @@ external sizeof : #kind -> int = "ml_raw_sizeof"
 let length raw = raw.size / sizeof raw.kind
 
 external get : #ikind t -> pos:int -> int = "ml_raw_get"
-external set : #ikind t -> pos:int -> to:int -> unit = "ml_raw_set"
+external set : #ikind t -> pos:int -> int -> unit = "ml_raw_set"
 external get_float : #fkind t -> pos:int -> float = "ml_raw_get_float"
-external set_float : #fkind t -> pos:int -> to:float -> unit
+external set_float : #fkind t -> pos:int -> float -> unit
     = "ml_raw_set_float"
 external get_hi : #lkind t -> pos:int -> int = "ml_raw_get_hi"
-external set_hi : #lkind t -> pos:int -> to:int -> unit = "ml_raw_set_hi"
+external set_hi : #lkind t -> pos:int -> int -> unit = "ml_raw_set_hi"
 external get_lo : #lkind t -> pos:int -> int = "ml_raw_get_lo"
-external set_lo : #lkind t -> pos:int -> to:int -> unit = "ml_raw_set_lo"
+external set_lo : #lkind t -> pos:int -> int -> unit = "ml_raw_set_lo"
 
-external read : #ikind t -> pos:int -> len:int -> int array
+external gets : #ikind t -> pos:int -> len:int -> int array
     = "ml_raw_read"
-external read_string : 'a t -> pos:int -> len:int -> string
+external gets_string : 'a t -> pos:int -> len:int -> string
     = "ml_raw_read_string"
-external read_float : #fkind t -> pos:int -> len:int -> float array
+external gets_float : #fkind t -> pos:int -> len:int -> float array
     = "ml_raw_read_float"
-external write : #ikind t -> pos:int -> src:int array -> unit = "ml_raw_write"
-external write_string : 'a t -> pos:int -> src:string -> unit
+external sets : #ikind t -> pos:int -> int array -> unit = "ml_raw_write"
+external sets_string : 'a t -> pos:int -> string -> unit
     = "ml_raw_write_string"
-external write_float : #fkind t -> pos:int -> src:float array -> unit
+external sets_float : #fkind t -> pos:int -> float array -> unit
     = "ml_raw_write_float"
 
 (*

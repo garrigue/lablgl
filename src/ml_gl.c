@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.15 1998-01-21 09:12:35 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.16 1998-01-21 23:25:19 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <caml/mlvalues.h>
@@ -615,7 +615,7 @@ value ml_glTexImage1D (value proxy, value level, value internal,
 		       value width, value border, value format, value data)
 {
     glTexImage1D (proxy == Val_int(1)
-		  ? GL_PROXY_TEXTURE_1D_EXT : GL_TEXTURE_1D,
+		  ? GL_PROXY_TEXTURE_1D : GL_TEXTURE_1D,
 		  Int_val(level), Int_val(internal), Int_val(width),
 		  Int_val(border), GLenum_val(format),
 		  Type_raw(data), Void_raw(data));
@@ -634,7 +634,7 @@ value ml_glTexImage2D (value proxy, value level, value internal,
 {
     /* printf("p=%x,l=%d,i=%d,w=%d,h=%d,b=%d,f=%x,t=%x,d=%x\n", */
     glTexImage2D (proxy == Val_int(1)
-		  ? GL_PROXY_TEXTURE_2D_EXT : GL_TEXTURE_2D,
+		  ? GL_PROXY_TEXTURE_2D : GL_TEXTURE_2D,
 		  Int_val(level), Int_val(internal), Int_val(width),
 		  Int_val(height), Int_val(border), GLenum_val(format),
 		  Type_raw(data), Void_raw(data));

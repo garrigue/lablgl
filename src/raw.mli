@@ -1,47 +1,74 @@
-(* $Id: raw.mli,v 1.1 1998-01-20 11:36:10 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.2 1998-01-21 23:25:22 garrigue Exp $ *)
+
+(* This module provides a direct way to access C arrays of basic types.
+   This is particularly useful when one wants to avoid costly
+   conversions between ML and C representations. *)
 
 type 'a t
 
 type kind = [bitmap byte double float int long short ubyte uint ulong ushort]
+    (* Supported element types. [bitmap] is equivalent to [ubyte] but
+       allows user modules to distinguish between them *)
 type fkind = [double float]
 type ikind = [bitmap byte int long short ubyte uint ulong ushort]
 type lkind = [int long uint ulong]
 
+external create : (#kind as 'a) -> len:int -> 'a t = "ml_raw_alloc"
+    (* [create t :len] returns a new raw array of C type t
+       and length len. This array is managed by the GC *)
+external create_static : (#kind as 'a) -> len:int -> 'a t
+  = "ml_raw_alloc_static"
+    (* [create_static t :len] returns a new raw array of C type t
+       and length len. This array is created through malloc.
+       You must free it explicitely *)
+external free_static : 'a t -> unit = "ml_raw_free_static"
+    (* Free a raw array created through create_static *)
+
 val kind : 'a t -> 'a
+    (* Returns the type of a free array. Beware of the influence on the
+       type system: you probably want to write [(kind raw :> kind)] *)
 val byte_size : 'a t -> int
+    (* The size of the array in bytes. That is (sizeof t * len)
+       where t and len are the parameters to create *)
 val static : 'a t -> bool
+    (* Wether this array was statically allocated or not *)
 val cast : 'a t -> to:'b -> 'b t
+    (* Change the type of a raw array *)
 
 external sizeof : #kind -> int = "ml_raw_sizeof"
+    (* [sizeof t] returns the physical size of t in bytes *)
 val length : #kind t -> int
+    (* [length raw] returns the length of raw array according to
+       its contents type *)
+
+(* The following functions access raw arrays in the intuitive way.
+   They raise [Invalid_argument] when access is attempted out of
+   bounds *)
 
 external get : #ikind t -> pos:int -> int = "ml_raw_get"
-external set : #ikind t -> pos:int -> to:int -> unit = "ml_raw_set"
-
+external set : #ikind t -> pos:int -> int -> unit = "ml_raw_set"
 external get_float : #fkind t -> pos:int -> float = "ml_raw_get_float"
-external set_float : #fkind t -> pos:int -> to:float -> unit
+external set_float : #fkind t -> pos:int -> float -> unit
   = "ml_raw_set_float"
-
 external get_hi : #lkind t -> pos:int -> int = "ml_raw_get_hi"
-external set_hi : #lkind t -> pos:int -> to:int -> unit = "ml_raw_set_hi"
-
+external set_hi : #lkind t -> pos:int -> int -> unit = "ml_raw_set_hi"
 external get_lo : #lkind t -> pos:int -> int = "ml_raw_get_lo"
-external set_lo : #lkind t -> pos:int -> to:int -> unit = "ml_raw_set_lo"
+external set_lo : #lkind t -> pos:int -> int -> unit = "ml_raw_set_lo"
 
-external read : #ikind t -> pos:int -> len:int -> int array = "ml_raw_read"
-external read_string : 'a t -> pos:int -> len:int -> string
-  = "ml_raw_read_string"
-external read_float : #fkind t -> pos:int -> len:int -> float array
+(* Simultaneous access versions are much more efficient than individual
+   access, the overhead being paid only once *)
+
+external gets : #ikind t -> pos:int -> len:int -> int array = "ml_raw_read"
+external sets : #ikind t -> pos:int -> int array -> unit = "ml_raw_write"
+external gets_float : #fkind t -> pos:int -> len:int -> float array
   = "ml_raw_read_float"
-
-external write : #ikind t -> pos:int -> src:int array -> unit
-  = "ml_raw_write"
-external write_string : 'a t -> pos:int -> src:string -> unit
-  = "ml_raw_write_string"
-external write_float : #fkind t -> pos:int -> src:float array -> unit
+external sets_float : #fkind t -> pos:int -> float array -> unit
   = "ml_raw_write_float"
 
-external create : (#kind as 'a) -> len:int -> 'a t = "ml_raw_alloc"
-external create_static : (#kind as 'a) -> len:int -> 'a t
-    = "ml_raw_alloc_static"
-external free_static : 'a t -> unit = "ml_raw_free_static"
+(* Fastest version: simply copy the contents of the array to and from
+   a string *)
+
+external gets_string : 'a t -> pos:int -> len:int -> string
+  = "ml_raw_read_string"
+external sets_string : 'a t -> pos:int -> string -> unit
+  = "ml_raw_write_string"

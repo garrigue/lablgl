@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.11 1998-01-21 09:12:33 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.12 1998-01-21 23:25:18 garrigue Exp $ *)
 
 exception GLerror of string
 
@@ -13,9 +13,6 @@ type clampf = float
 type glist = int
 
 type gltype = [bitmap byte float int short ubyte uint ushort]
-(*
-val coerce_bitmap : #gltype Raw.t -> [bitmap] Raw.t
-*)
 
 type cmp_func = [always equal gequal greater lequal less never notequal]
 type face = [back both front]

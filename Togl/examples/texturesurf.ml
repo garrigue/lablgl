@@ -1,4 +1,4 @@
-(* $Id: texturesurf.ml,v 1.2 1998-01-21 09:12:39 garrigue Exp $ *)
+(* $Id: texturesurf.ml,v 1.3 1998-01-21 23:25:22 garrigue Exp $ *)
 
 let ctrlpoints =
   [|[|-1.5; -1.5; 4.9;  -0.5; -1.5; 2.0;  0.5; -1.5; -1.0;  1.5; -1.5; 2.0|];
@@ -15,11 +15,12 @@ and image_height = 64
 
 let pi = acos (-1.0)
 
-let display () =
+let display togl =
   Gl.clear [`color;`depth];
   Gl.color (1.0,1.0,1.0);
   Gl.eval_mesh2 mode:`fill 0 20 0 20;
-  Gl.flush ()
+  Gl.flush ();
+  Togl.swap_buffers togl
 
 let make_image () =
   let image = Raw.create_static `ubyte len:(3*image_height*image_width) in
@@ -27,9 +28,9 @@ let make_image () =
     let ti = 2.0 *. pi *. float i /. float image_width in
     for j = 0 to image_height - 1 do
       let tj = 2.0 *. pi *. float j /. float image_height in
-      Raw.write image pos:(3*(image_height*i+j))
-	src:(Array.map fun:(fun x -> truncate (127.0 *. (1.0 +. x)))
-	       [|sin ti; cos (2.0 *. ti); cos (ti +. tj)|]);
+      Raw.sets image pos:(3*(image_height*i+j))
+	(Array.map fun:(fun x -> truncate (127.0 *. (1.0 +. x)))
+	   [|sin ti; cos (2.0 *. ti); cos (ti +. tj)|]);
       done;
   done;
   image
@@ -71,12 +72,22 @@ open Tk
 let main () =
   let top = openTk () in
   let togl =
-    Togl.create parent:top rgba:true depth:true width:300 height:300
+    Togl.create parent:top rgba:true depth:true
+      width:300 height:300 double:true
   in
   Wm.title_set top title:"Texture Surf";
   myinit ();
   Togl.reshape_func togl cb:(fun () -> my_reshape togl);
-  Togl.display_func togl cb:display;
+  Togl.display_func togl cb:(fun () -> display togl);
+  Focus.set togl;
+  bind togl events:[[],`KeyPress]
+    action:(`Set([`KeySymString], fun ev ->
+      match ev.ev_KeySymString with
+	"Up" -> Gl.rotate angle:(-5.) z:1.0; display togl
+      |	"Down" -> Gl.rotate angle:(5.) z:1.0; display togl
+      |	"Left" -> Gl.rotate angle:(5.) x:1.0; display togl
+      |	"Right" -> Gl.rotate angle:(-5.) x:1.0; display togl
+      |	_ -> ()));
   pack [togl] expand:true fill:`Both;
   mainLoop ()
 
