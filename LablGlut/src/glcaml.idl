@@ -35,7 +35,7 @@ void glClearIndex( float c );
 void glClearColor( float red, float green, float blue, float alpha );
 void glClear( unsigned int mask );
 void glIndexMask( unsigned int mask );
-void glColorMask( unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha );
+void glColorMask( boolean red, boolean green, boolean blue, boolean alpha );
 void glAlphaFunc( unsigned int func, float ref );
 void glBlendFunc( unsigned int sfactor, unsigned int dfactor );
 void glLogicOp( unsigned int opcode );
@@ -48,7 +48,7 @@ void glPolygonMode( unsigned int face, unsigned int mode );
 void glPolygonOffset( float factor, float units );
 void glPolygonStipple( [in] unsigned char mask[1024] );
 void glGetPolygonStipple( [out] unsigned char mask[1024] );
-void glEdgeFlag( unsigned char flag );
+void glEdgeFlag( boolean flag );
 void glEdgeFlagv( [in] unsigned char flag[1] );
 void glScissor( int x, int y, int width, int height);
 void glClipPlane( unsigned int plane, [in] double equation[4] );
@@ -57,7 +57,7 @@ void glDrawBuffer( unsigned int mode );
 void glReadBuffer( unsigned int mode );
 void glEnable( unsigned int cap );
 void glDisable( unsigned int cap );
-unsigned char glIsEnabled( unsigned int cap );
+boolean glIsEnabled( unsigned int cap );
 void glEnableClientState( unsigned int cap );
 void glDisableClientState( unsigned int cap );
 void _glGetBooleanv( unsigned int pname, [out,size_is(num_params)] unsigned char params[], int num_params )
@@ -86,7 +86,7 @@ void glFlush( void );
 void glHint( unsigned int target, unsigned int mode );
 void glClearDepth( double depth );
 void glDepthFunc( unsigned int func );
-void glDepthMask( unsigned char flag );
+void glDepthMask( boolean flag );
 void glDepthRange( double near_val, double far_val );
 void glClearAccum( float red, float green, float blue, float alpha );
 void glAccum( unsigned int op, float value );
@@ -107,7 +107,7 @@ void glScaled( double x, double y, double z );
 void glScalef( float x, float y, float z );
 void glTranslated( double x, double y, double z );
 void glTranslatef( float x, float y, float z );
-unsigned char glIsList( unsigned int list );
+boolean glIsList( unsigned int list );
 void glDeleteLists( unsigned int list, int range );
 unsigned int glGenLists( int range );
 void glNewList( unsigned int list, unsigned int mode );
@@ -358,10 +358,10 @@ void glDeleteTextures( int n, [in,size_is(n)] unsigned int *textures);
 void glBindTexture( unsigned int target, unsigned int texture );
 void glPrioritizeTextures( int n, [in,size_is(n)] unsigned int textures[],
     [in,size_is(n)] float priorities[] );
-unsigned char glAreTexturesResident( int n, 
+boolean glAreTexturesResident( int n, 
     [in,size_is(n)] unsigned int textures[], 
     [out,size_is(n)] unsigned char residences[] );
-unsigned char glIsTexture( unsigned int texture );
+boolean glIsTexture( unsigned int texture );
 void glTexSubImage1D( unsigned int target, int level, int xoffset, int
     width, unsigned int format, unsigned int type, [in,bigarray] void *pixels );
 void glTexSubImage2D( unsigned int target, int level, int xoffset, int
@@ -432,13 +432,14 @@ void glGetColorTableParameterfv( unsigned int target, unsigned int pname, [in] f
 void glGetColorTableParameteriv( unsigned int target, unsigned int pname, [in] int params[] );
 void glBlendEquation( unsigned int mode );
 void glBlendColor( float red, float green, float blue, float alpha );
-void glHistogram( unsigned int target, int width, unsigned int internalformat, unsigned char sink );
+void glHistogram( unsigned int target, int width, unsigned int internalformat,
+    boolean sink );
 void glResetHistogram( unsigned int target );
-void glGetHistogram( unsigned int target, unsigned char reset, unsigned int
+void glGetHistogram( unsigned int target, boolean reset, unsigned int
     format, unsigned int type, [in,out,bigarray] void *values );
 void glGetHistogramParameterfv( unsigned int target, unsigned int pname, [in] float params[] );
 void glGetHistogramParameteriv( unsigned int target, unsigned int pname, [in] int params[] );
-void glMinmax( unsigned int target, unsigned int internalformat, unsigned char sink );
+void glMinmax( unsigned int target, unsigned int internalformat, boolean sink );
 void glResetMinmax( unsigned int target );
 void glGetMinmax( unsigned int target, unsigned char reset, unsigned int
     format, unsigned int types, [in,out,bigarray] void *values );
