@@ -1,4 +1,4 @@
-(* $Id: gluTess.mli,v 1.1 1998-01-29 11:46:15 garrigue Exp $ *)
+(* $Id: gluTess.mli,v 1.2 1998-04-07 02:07:07 garrigue Exp $ *)
 
 type t
 
@@ -23,6 +23,6 @@ val normal : t -> Gl.vect3 -> unit
 
 type property =
   [boundary_only(bool) tolerance(float)
-   windind_rule([abs_geq_two negative nonzero odd positive])]
+   winding_rule([abs_geq_two negative nonzero odd positive])]
 val property : t -> property -> unit
 

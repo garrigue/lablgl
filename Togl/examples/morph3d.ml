@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.7 1998-02-05 09:09:51 garrigue Exp $ *)
+(* $Id: morph3d.ml,v 1.8 1998-04-07 02:07:08 garrigue Exp $ *)
 
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
@@ -490,7 +490,7 @@ class view togl as self =
     | "5" -> object <- 5
     | "Space" -> mono <- not mono
     | "Return" -> smooth <- not smooth
-    | "Escape" -> exit 0
+    | "Escape" -> Tk.destroy (Winfo.toplevel togl)
     | _ -> ()
     end;
     self#pinit

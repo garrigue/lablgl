@@ -1,4 +1,4 @@
-(* $Id: gluTess.ml,v 1.1 1998-01-29 11:46:14 garrigue Exp $ *)
+(* $Id: gluTess.ml,v 1.2 1998-04-07 02:07:07 garrigue Exp $ *)
 
 type t
 
@@ -23,7 +23,7 @@ external normal : t -> float -> float -> float -> unit
 let normal tess (x,y,z) = normal tess x y z
   
 type property = [
-      windind_rule ([odd nonzero positive negative abs_geq_two])
+      winding_rule ([odd nonzero positive negative abs_geq_two])
       boundary_only (bool)
       tolerance (float)
   ]
