@@ -4,6 +4,11 @@ let float_ba_make n = Array1.create float32 c_layout n
 let float_ba1_make = float_ba_make
 let float_ba2_make m n = Array2.create float32 c_layout m n
 let float_ba3_make m n p = Array3.create float32 c_layout m n p
+let float_ba_of_int_ba ia = 
+    let n = Array1.dim ia in
+    let fba = float_ba_make n in
+    for i = 0 to n-1 do fba.{i} <- float ia.{i} done;
+    fba
 
 let int_ba_make n = Array1.create int c_layout n
 let int_ba1_make = int_ba_make
@@ -114,4 +119,53 @@ let flatten_ba3 ba =
     reshape_1 (genarray_of_array3 ba) (n1 * n2 * n3)
 
 let flatten_image = flatten_ba3
+
+let i32toi = Int32.to_int
+
+let map1 f ba =
+    let m = Array1.dim ba in
+    Array.init m (fun i -> f ba.{i}) 
+
+let map2 f ba =
+    let m = Array2.dim1 ba in
+    let n = Array2.dim2 ba in
+    Array.init m (fun i -> Array.init n (fun j -> f ba.{i,j}))
+
+let map3 f ba = 
+    let m = Array3.dim1 ba in
+    let n = Array3.dim2 ba in
+    let p = Array3.dim3 ba in
+    Array.init m 
+        (fun i -> Array.init n (fun j -> Array.init p (fun k -> f ba.{i,j,k})))
+
+let map = map1
+
+let iter1 f ba =
+    let m = Array1.dim ba in
+    for i = 0 to m-1 do 
+        f ba.{i} 
+    done
+
+let iter2 f ba =
+    let m = Array2.dim1 ba in
+    let n = Array2.dim2 ba in
+    for i = 0 to m-1 do 
+        for j = 0 to n-1 do
+            f ba.{i,j} 
+        done
+    done
+
+let iter3 f ba =
+    let m = Array3.dim1 ba in
+    let n = Array3.dim2 ba in
+    let p = Array3.dim3 ba in
+    for i = 0 to m-1 do 
+        for j = 0 to n-1 do
+            for k = 0 to p-1 do
+                f ba.{i,j,k} 
+            done
+        done
+    done
+
+let iter = iter1
 
