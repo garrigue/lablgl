@@ -3,6 +3,8 @@ LablGL 0.99:
 
 * add texture binding functions, contributed by Chris Hecker
 
+* add support for Tcl/Tk8.4
+
 LablGL 0.98:
 ------------
 
