@@ -406,8 +406,7 @@ void glFogfv( unsigned int pname, [in,size_is(nparams)] float params[], int npar
     quote(call, "glFogfv(pname, params);");
 void glFogiv( unsigned int pname, [in,size_is(nparams)] int params[], int nparams )
     quote(call, "glFogiv(pname, params);");
-void glFeedbackBuffer( int size, unsigned int type,
-[out,bigarray,size_is(size)] float buffer[] );
+void glFeedbackBuffer( int size, unsigned int type, [out,size_is(size)] float buffer[] );
 void glPassThrough( float token );
 void glSelectBuffer( int size, [bigarray,size_is(size)] unsigned int buffer[] );
 void glInitNames( void );
