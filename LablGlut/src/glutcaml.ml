@@ -248,6 +248,9 @@ let glutInit ~argv =
   _glutInit argc argv;
   let retargs = Array.of_list (List.rev !new_argv) in retargs
 
+let glutInit2 () = 
+    ignore(glutInit Sys.argv);;
+
 external _glutInitDisplayMode :
   double_buffer:bool -> index:bool -> accum:bool -> alpha:bool ->
     depth:bool -> stencil:bool -> multisample:bool -> stereo:bool ->
@@ -280,6 +283,8 @@ external _glutCreateWindow : string -> int = "ml_glutCreateWindow"
 
 let glutCreateWindow ~title =
   has_createdWindow := true; let winid = _glutCreateWindow title in winid
+
+let glutCreateWindow2 ~title = ignore(glutCreateWindow ~title);;
 
 external glutPostRedisplay : unit -> unit = "ml_glutPostRedisplay"
 external glutSwapBuffers : unit -> unit = "ml_glutSwapBuffers" 

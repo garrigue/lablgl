@@ -215,6 +215,7 @@ exception InvalidState of string
 
 (* GLUT initialization sub-API. *)
 val glutInit : argv:string array -> string array(* returns new argv *)
+val glutInit2 : unit -> unit (* simpler version that sends off Sys.argv *)
 val glutInitDisplayMode :
   ?double_buffer: bool -> ?index: bool -> ?accum: bool -> ?alpha: bool ->
     ?depth: bool -> ?stencil: bool -> ?multisample: bool -> ?stereo: bool ->
@@ -225,6 +226,7 @@ val glutMainLoop : unit -> unit
 
 (* GLUT window sub-API. *)
 val glutCreateWindow : title:string -> int(* returns window id *)
+val glutCreateWindow2 : title:string -> unit 
 val glutPostRedisplay : unit -> unit
 val glutSwapBuffers : unit -> unit
 val glutCreateSubWindow : win:int -> x:int -> y:int -> w:int -> h:int -> int
