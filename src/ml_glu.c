@@ -1,4 +1,4 @@
-/* $Id: ml_glu.c,v 1.12 1998-04-16 07:19:50 garrigue Exp $ */
+/* $Id: ml_glu.c,v 1.13 1998-04-27 07:35:28 garrigue Exp $ */
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -254,22 +254,20 @@ value ml_gluProject (value object)
     GLdouble model[16];
     GLdouble proj[16];
     GLint viewport[4];
-    value win = Val_unit, winX = Val_unit, winY = Val_unit, winZ = Val_unit;
+    GLdouble winX, winY, winZ;
+    value win = Val_unit;
 
     glGetDoublev (GL_MODELVIEW_MATRIX, model);
     glGetDoublev (GL_PROJECTION_MATRIX, proj);
     glGetIntegerv (GL_VIEWPORT, viewport);
-    Begin_roots4 (win,winX,winY,winZ);
-    winX = alloc (Double_wosize, Double_tag);
-    winY = alloc (Double_wosize, Double_tag);
-    winZ = alloc (Double_wosize, Double_tag);
-    win = alloc_tuple (3);
-    Field(win,0) = winX;
-    Field(win,1) = winY;
-    Field(win,2) = winZ;
     gluProject (Double_val(Field(object,0)), Double_val(Field(object,1)),
 		Double_val(Field(object,2)), model, proj, viewport,
-		(double *) winX, (double *) winY, (double *) winZ);
+		&winX, &winY, &winZ);
+    Begin_root (win);
+    win = alloc (3, 0);
+    Field(win,0) = copy_double(winX);
+    Field(win,1) = copy_double(winY);
+    Field(win,2) = copy_double(winZ);
     End_roots ();
     return win;
 }
@@ -342,24 +340,22 @@ value ml_gluUnProject (value win)
     GLdouble model[16];
     GLdouble proj[16];
     GLint viewport[4];
-    value obj = Val_unit, objX = Val_unit, objY = Val_unit, objZ = Val_unit;
+    value obj = Val_unit;
+    GLdouble objX, objY, objZ;
     GLint ok;
 
     glGetDoublev (GL_MODELVIEW_MATRIX, model);
     glGetDoublev (GL_PROJECTION_MATRIX, proj);
     glGetIntegerv (GL_VIEWPORT, viewport);
-    Begin_roots4 (obj,objX,objY,objZ);
-    objX = alloc (Double_wosize, Double_tag);
-    objY = alloc (Double_wosize, Double_tag);
-    objZ = alloc (Double_wosize, Double_tag);
-    obj = alloc_tuple (3);
-    Field(obj,0) = objX;
-    Field(obj,1) = objY;
-    Field(obj,2) = objZ;
     ok = gluUnProject (Double_val(Field(win,0)), Double_val(Field(win,1)),
 		       Double_val(Field(win,2)), model, proj, viewport,
-		       (double *) objX, (double *) objY, (double *) objZ);
-    End_roots ();
+		       &objX, &objY, &objZ);
     if (!ok) ml_raise_gl ("Glu.unproject : point out of window");
+    Begin_root (obj);
+    obj = alloc_tuple (3);
+    Field(obj,0) = copy_double(objX);
+    Field(obj,1) = copy_double(objY);
+    Field(obj,2) = copy_double(objZ);
+    End_roots ();
     return obj;
 }
