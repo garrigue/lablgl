@@ -41,7 +41,6 @@ togl.cma: libtogl.a togl.cmo $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmo $(GLLIBS) $(TKLIBS) $(XLIBS)
 togl.cmxa: libtogl.a togl.cmx $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(GLLIBS) $(TKLIBS) $(XLIBS)
-INSTTOP = lablgltop
 endif
 
 $(TOGLDIR)/togl.o:
@@ -61,11 +60,18 @@ lablgltop$(XE): ../../src/lablgl.cma togl.cma
 	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
-lablgl: lablgl.in $(CONFIG)
-	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
-	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
-	    < lablgl.in > $@
-	chmod 755 $@
+lablgl: $(CONFIG) Makefile libtogl$(XA)
+	$(MAKE) INSTALLDIR="$(INSTALLDIR)" real-$@
+
+real-lablgl:
+	@echo generate lablgl
+	echo "#!/bin/sh" > lablgl
+	echo "# toplevel with lablGL and Togl" >> lablgl
+	if test -f dlltogl$(XS); then \
+	    echo 'exec ocaml -I +labltk -I "$(INSTALLDIR)" lablgl.cma labltk.cma togl.cma $$*' >> lablgl; \
+	 else echo 'exec "$(INSTALLDIR)/lablgltop" -I +labltk -I "$(INSTALLDIR)" $$*' >> lablgl; fi
+	chmod 755 lablgl
+	
 
 togl_tags.c: togl_tags.var
 	$(VAR2SWITCH) TOGL_ < togl_tags.var > $@
@@ -76,9 +82,16 @@ install:
 toglinstall:
 	cp togl.cmi togl.mli libtogl$(XA) togl.cma $(INSTTOP) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) libtogl$(XA)
-	if test -f dlltogl$(XS); then cp dlltogl$(XS) "$(DLLDIR)"; fi
+	@if test -f dlltogl$(XS); then $(MAKE) installdll; \
+	 else $(MAKE) installtop; fi
 	cp lablgl$(XB) "$(BINDIR)"
 	@if test -f togl.cmxa; then $(MAKE) toglinstallopt; fi
+
+installdll:
+	cp dlltogl$(XS) "$(DLLDIR)"
+
+installtop:
+	cp lablgltop$(XE) "$(INSTALLDIR)"
 
 toglinstallopt:
 	cp togl.cmxa togl$(XA) togl.cmx "$(INSTALLDIR)"
