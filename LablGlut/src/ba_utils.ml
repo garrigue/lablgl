@@ -30,5 +30,14 @@ let int_ba_of_matrix m =
     done;
     ba;;
 
-
+let ubyte_ba_of_matrix m = 
+    let r = (Array.length m) in
+    let c = Array.length m.(0) in
+    let ba = Array1.create int8_unsigned c_layout (r*c) in
+    for i = 0 to r-1 do
+        for j=0 to c-1 do
+            ba.{i*c+j} <- m.(i).(j)
+        done
+    done;
+    ba;;
 

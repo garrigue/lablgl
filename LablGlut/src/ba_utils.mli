@@ -7,3 +7,6 @@ val float_ba_of_matrix :
 val int_ba_of_matrix :
   int array array ->
   (int, Bigarray.int_elt, Bigarray.c_layout) Bigarray.Array1.t
+val ubyte_ba_of_matrix :
+  int array array ->
+  (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
