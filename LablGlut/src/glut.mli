@@ -1,8 +1,8 @@
-(* 
-
-   glut.mli: interface for the lablglut GLUT binding. 
-
-*)
+(* glut.mli: interface for the lablglut GLUT binding.
+   Copyright (c) Issac Trotts 2003.
+   Under a BSD-style license. 
+   
+   Note: The Glut module is deprecated.  Please use Glut2 instead. *)
 
 type button_t = 
   | LEFT_BUTTON 

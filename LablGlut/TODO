@@ -1,5 +1,3 @@
-- add reading of .rgb files
-- add optional support (via autoconf) for caml-images
-- port all remaining demos in examples/glut-3.7/not_yet_ported
-
+- port lots of demos
+- add reading of .pnm files
 

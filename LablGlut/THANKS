@@ -1,8 +1,15 @@
                                 THANKS TO
 
-- Mark Kilgard (mjk@nvidia.com) for creating GLUT
-- Jacques Garrigue (garrigue@kurims.kyoto-u.ac.jp) for writing LablGL
-- Jeffrey Palmer (jeffrey.palmer@acm.org) for contributing the nehe demo ports
-- The OCaml team for assembling the wonderful OCaml distributions
+- Jeffrey Palmer for contributing the nehe demo ports
+- Mark Kilgard for creating GLUT
+- Jacques Garrigue for writing LablGL
 - Markus Mottl for writing OCamlMakefile
+- Hugues Casse for writing FrontC, the basis for the program c2ml 
+  included with LablGLUT.  This program was very helpful in porting the
+  original GLUT demos written in C.
+- Xavier Leroy for writing Camlidl, a wrapper generator for OCaml.  
+  LablGLUT comes with a modified version of Camlidl that can handle 
+  [bigarray,in] void* arguments, as well as arrays of GLdoubles and GLfloats.
+  Camlidl was used to write LablGLUT's simplified bindings for GL and GLU.
+- The OCaml team 
 

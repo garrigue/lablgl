@@ -1,7 +1,11 @@
-lablglut: Copyright (c) 2002 Issac Trotts.  All rights reserved.  
-This copyright does not apply to the bundled LablGL library 
-by Jacques Garrigue or any of the bundled demos by Mike Kilgard
-or others.
+LablGLUT, copyright (c) 2003 Issac Trotts.  All rights reserved.  
+This copyright does not apply to any of the bundled demos by 
+Mike Kilgard or others, nor to the (modified) code by Hugues Casse contained 
+in the c2ml directory, nor to the (modified) code by Xavier Leroy contained
+in the camlidl directory.
+
+Many of the demos are derived from original C sources in Mark Kilgard's 
+GLUT distribution.  
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
