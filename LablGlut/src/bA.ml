@@ -33,7 +33,9 @@ let ba_init3 m n p f kind =
 let ba_init = ba_init1
 
 let fba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) float32
+let f64ba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) float64
 let i32ba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) int32
+let i64ba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) int64
 let byteba_init a = ba_init1 (Array.length a) (fun i -> a.(i)) int8_unsigned
 
 let ba1_dim ba = 
