@@ -58,7 +58,7 @@ COBJS =		wrap_gl$(XO)	wrap_glut$(XO)
 	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(INCLUDES) -I $(TOGLDIR)" $<
 
 
-all: 	lib lablgluttop$(XE)
+all: 	lib lablgluttop$(XE) lablglut$(XB)
 
 opt:	libopt
 
@@ -93,6 +93,12 @@ lablgluttop$(XE): lablglut.cma
 	ocamlmktop $(CUSTOMTOP) -I . -I ../.. $(OCAMLINC) -o $@ \
 	  lablglut.cma ../../lablgl.cma
 
+lablglut$(XB): lablglut.in ../../Makefile.config
+	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
+	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
+	    < lablglut.in > $@
+	chmod 755 $@
+
 install libinstall: real-install installtop
 
 real-install: 
@@ -118,12 +124,12 @@ installopt:
 	cd "$(INSTALLDIR)" && $(RANLIB) lablglut$(XA) 
 
 installtop:
-	cp lablgluttop "$(INSTALLDIR)" 
-	cp ../toplevel_lablglut/lablglut "$(BINDIR)"
+	cp lablgluttop$(EX) "$(INSTALLDIR)" 
+	cp lablglut$(XB) "$(BINDIR)"
 
 clean:
 	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
-	     lablgluttop lablglut 
+	     lablgluttop$(EX) lablglut$(XB) 
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

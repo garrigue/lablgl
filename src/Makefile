@@ -94,10 +94,10 @@ var2switch$(XE): var2switch.ml
 	$(LINKER) -pp camlp4o var2switch.ml -o $@
 
 glut:
-	cd LablGlut/src_lablglut; $(MAKE)
+	cd LablGlut/src_lablglut && $(MAKE)
 
 glutopt:
-	cd LablGlut/src_lablglut; $(MAKE) opt
+	cd LablGlut/src_lablglut && $(MAKE) opt
 
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
@@ -155,7 +155,7 @@ lablgltop$(XE): lablgl.cma togl.cma
 	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \
 	  labltk.cma lablgl.cma togl.cma
 
-lablgl: lablgl.in Makefile.config
+lablgl$(XB): lablgl.in Makefile.config
 	sed -e 's|@LABLTKDIR@|$(LABLTKDIR)|g'	\
 	    -e 's|@INSTALLDIR@|'"$(INSTALLDIR)"'|g'	\
 	    < lablgl.in > $@
@@ -200,7 +200,7 @@ installdll:
 	cp dlllablgl$(XS) dlltogl$(XS) "$(DLLDIR)"
 
 installglut:
-	cd LablGlut/src_lablglut; $(MAKE) install
+	cd LablGlut/src_lablglut && $(MAKE) install
 
 libinstallopt:
 	cp lablgl.cmxa lablgl$(XA) $(LIBOBJS:.cmo=.cmx) "$(INSTALLDIR)"
@@ -213,9 +213,9 @@ installopt:
 
 clean:
 	rm -f *.cm* *.a *.o *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
-		var2def var2switch lablgltop lablgl lablgllink lablglopt
+		var2def var2switch lablgltop$(EX) lablgl$(XB) lablgllink lablglopt
 	rm -f $(TOGLDIR)/togl$(XO)
-	cd LablGlut/src_lablglut; $(MAKE) clean
+	cd LablGlut/src_lablglut && $(MAKE) clean
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend
