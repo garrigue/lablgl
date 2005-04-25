@@ -1,4 +1,4 @@
-(* $Id: glMisc.mli,v 1.3 2003-04-22 03:24:02 erickt Exp $ *)
+(* $Id: glMisc.mli,v 1.4 2005-04-25 01:52:41 garrigue Exp $ *)
 
 (* Getting information *)
 val get_string : [`vendor|`renderer|`version|`extensions] -> string
@@ -29,3 +29,5 @@ val pop_attrib : unit -> unit
 val render_mode : [`feedback|`render|`select] -> int
 val pass_through : float -> unit
 val select_buffer : [`uint] Raw.t -> unit
+
+val scissor : x:int -> y:int -> width:int -> height:int -> unit

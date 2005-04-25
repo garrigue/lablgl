@@ -279,6 +279,7 @@ GlMisc: Miscellanous functions.
    glPushAttrib
    glPushName
    glRenderMode
+   glScissor
    glSelectBuffer
 
 GlPix: Rasterized pixel functions. (*)
@@ -343,4 +344,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.35 2004-07-15 01:04:10 garrigue Exp $
+$Id: README,v 1.36 2005-04-25 01:52:41 garrigue Exp $

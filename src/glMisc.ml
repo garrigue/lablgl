@@ -1,4 +1,4 @@
-(* $Id: glMisc.ml,v 1.5 2003-04-22 03:24:02 erickt Exp $ *)
+(* $Id: glMisc.ml,v 1.6 2005-04-25 01:52:41 garrigue Exp $ *)
 
 external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
@@ -32,3 +32,6 @@ external pass_through : float -> unit = "ml_glPassThrough"
 external render_mode : [`render|`select|`feedback] -> int = "ml_glRenderMode"
 external select_buffer : int -> [`uint] Raw.t -> unit = "ml_glSelectBuffer"
 let select_buffer raw = select_buffer (Raw.length raw) raw
+
+external scissor : x:int -> y:int -> width:int -> height:int -> unit
+  = "ml_glScissor"
