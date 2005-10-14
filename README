@@ -168,6 +168,7 @@ Gl: Common data types and functions.
    glEnable
    glDisable
    glIsEnabled
+   glGetError
 
 GlArray: Array functions
    glEdgeFlagPointer    -> edge_flag
@@ -344,4 +345,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.36 2005-04-25 01:52:41 garrigue Exp $
+$Id: README,v 1.37 2005-10-14 13:30:30 garrigue Exp $

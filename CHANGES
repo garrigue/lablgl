@@ -1,3 +1,6 @@
+2005-10-14: [Jacques]
+* add glGetError
+
 2004-07-20: [Jacques]
 * add index_logic_op and color_logic_op
 

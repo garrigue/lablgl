@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.28 2004-07-20 03:24:36 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.29 2005-10-14 13:30:30 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -66,3 +66,23 @@ type cap =
 external enable : cap -> unit = "ml_glEnable"
 external disable : cap -> unit = "ml_glDisable"
 external is_enabled : cap -> bool = "ml_glIsEnabled"
+
+type error =
+  [`no_error|`invalid_enum|`invalid_value|`invalid_operation
+  |`stack_overflow|`stack_underflow|`out_of_memory|`table_too_large]
+external get_error : unit -> error = "ml_glGetError"
+let raise_error name =
+  let err = get_error () in
+  if err = `no_error then () else
+  let s =
+    List.assoc err
+      [ `invalid_enum, "Invalid Enum";
+        `invalid_value, "Invalid Value";
+        `invalid_operation, "Invalid Operation";
+        `stack_overflow, "Stack Overflow";
+        `stack_underflow, "Stack Underflow";
+        `out_of_memory, "Out of Memory";
+        `table_too_large, "Table Too Large" ]
+  in
+  let s = if name = "" then s else (name ^ ": " ^ s) in
+  raise (GLerror s)

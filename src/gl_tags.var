@@ -266,3 +266,8 @@ aux
 edge_flag texture_coord vertex
 two three four
 
+(* glGetError *)
+no_error
+invalid_enum invalid_value invalid_operation
+stack_overflow stack_underflow
+out_of_memory table_too_large

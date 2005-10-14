@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.45 2005-01-25 02:38:19 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.46 2005-10-14 13:30:30 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -216,7 +216,22 @@ ML_3 (glFrustum, Pair(arg1,Double_val,Double_val),
       Pair(arg2,Double_val,Double_val), Pair(arg3,Double_val,Double_val))
 
 ML_1_ (glGetString, GLenum_val, copy_string_check)
-ML_2 (glGetDoublev, GLenum_val, Double_raw)	
+ML_2 (glGetDoublev, GLenum_val, Double_raw)
+
+CAMLprim value ml_glGetError(value unit)
+{
+    switch (glGetError()) {
+    case GL_NO_ERROR:       return MLTAG_no_error;
+    case GL_INVALID_ENUM:   return MLTAG_invalid_enum;
+    case GL_INVALID_VALUE:  return MLTAG_invalid_value;
+    case GL_INVALID_OPERATION:  return MLTAG_invalid_operation;
+    case GL_STACK_OVERFLOW: return MLTAG_stack_overflow;
+    case GL_STACK_UNDERFLOW: return MLTAG_stack_underflow;
+    case GL_OUT_OF_MEMORY:  return MLTAG_out_of_memory;
+    case GL_TABLE_TOO_LARGE: return MLTAG_table_too_large;
+    default: ml_raise_gl("glGetError: unknown error");
+    }
+}
 	
 CAMLprim value ml_glHint (value target, value hint)
 {

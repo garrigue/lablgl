@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.20 2004-07-20 03:24:36 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.21 2005-10-14 13:30:30 garrigue Exp $ *)
 
 (* Exceptions *)
 
@@ -54,3 +54,10 @@ type cap =
 val enable : cap -> unit
 val disable : cap -> unit
 val is_enabled : cap -> bool
+
+type error =
+  [`no_error|`invalid_enum|`invalid_value|`invalid_operation
+  |`stack_overflow|`stack_underflow|`out_of_memory|`table_too_large]
+val get_error : unit -> error
+val raise_error : string -> unit
+  (* raise GLerror if there is a current error, otherwise do nothing *)
