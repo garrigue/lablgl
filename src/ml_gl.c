@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.46 2005-10-14 13:30:30 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.47 2005-10-14 13:35:32 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -228,7 +228,9 @@ CAMLprim value ml_glGetError(value unit)
     case GL_STACK_OVERFLOW: return MLTAG_stack_overflow;
     case GL_STACK_UNDERFLOW: return MLTAG_stack_underflow;
     case GL_OUT_OF_MEMORY:  return MLTAG_out_of_memory;
+#if defined(GL_VERSION_1_2) || defined(GL_TABLE_TOO_LARGE)
     case GL_TABLE_TOO_LARGE: return MLTAG_table_too_large;
+#endif
     default: ml_raise_gl("glGetError: unknown error");
     }
 }

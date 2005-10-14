@@ -1,4 +1,4 @@
-(* $Id: glPix.ml,v 1.9 2004-12-02 02:01:16 garrigue Exp $ *)
+(* $Id: glPix.ml,v 1.10 2005-10-14 13:35:32 garrigue Exp $ *)
 
 open Gl
 
@@ -7,7 +7,7 @@ type ('a,'b) t = { format: 'a ; width: int ; height:int ; raw: 'b Raw.t }
 let create k ~format ~width ~height =
   let size = format_size format * width * height in
   let len = match k with `bitmap -> (size-1)/8+1 | #Gl.real_kind -> size in
-  let raw = Raw.create k ~len:(width * height * format_size format) in
+  let raw = Raw.create k ~len in
   { format = format; width = width; height = height; raw = raw }
   
 let of_raw raw ~format ~width ~height =
