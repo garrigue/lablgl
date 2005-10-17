@@ -28,6 +28,11 @@ glut: lib
 glutopt: libopt
 	cd LablGlut/src && $(MAKE) opt
 
+preinstall:
+	cd src && $(MAKE) preinstall INSTALLDIR="$(INSTALLDIR)" DLLDIR="$(DLLDIR)"
+	cd Togl/src && $(MAKE) preinstall INSTALLDIR="$(INSTALLDIR)" DLLDIR="$(DLLDIR)"
+	cd LablGlut/src && $(MAKE) preinstall INSTALLDIR="$(INSTALLDIR)" DLLDIR="$(DLLDIR)"
+
 install:
 	@$(MAKE) real-install INSTALLDIR="$(INSTALLDIR)" DLLDIR="$(DLLDIR)"
 

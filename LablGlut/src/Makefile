@@ -62,15 +62,17 @@ real-lablglut:
 install:
 	@if test -f lablglut.cma; then $(MAKE) real-install; fi
 
-real-install: 
+preinstall:
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
-	cp $(LIBOBJS:.cmo=.cmi) "$(INSTALLDIR)"
-	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
-	cp liblablglut$(XA) lablglut.cma "$(INSTALLDIR)"
+	cp $(LIBOBJS:.cmo=.ml) $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
+	cp liblablglut$(XA) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) liblablglut$(XA)
 	@if test -f dlllablglut$(XS); then $(MAKE) installdll; \
 	 else $(MAKE) installtop; fi
 	cp lablglut$(XB) "$(BINDIR)"
+
+real-install: preinstall
+	cp $(LIBOBJS:.cmo=.cmi) lablglut.cma "$(INSTALLDIR)"
 	@if test -f lablglut.cmxa; then $(MAKE) installopt; fi
 
 installdll:
@@ -84,7 +86,7 @@ installopt:
 	cd "$(INSTALLDIR)" && $(RANLIB) lablglut$(XA)
 
 clean:
-	rm -f *.cm* *.o *.obj *.a *.lib *.so *.dll *.exe *.opt \
+	rm -f *.cm* *.o *.obj *.a lib*.lib *.so *.dll *.exe *.opt \
 	     *_tags.c *_tags.h *~ lablgluttop$(EX) lablglut
 
 depend:

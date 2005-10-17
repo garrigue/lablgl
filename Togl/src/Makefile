@@ -71,20 +71,22 @@ real-lablgl:
 	    echo 'exec ocaml -I +labltk -I "$(INSTALLDIR)" lablgl.cma labltk.cma togl.cma $$*' >> lablgl; \
 	 else echo 'exec "$(INSTALLDIR)/lablgltop" -I +labltk -I "$(INSTALLDIR)" $$*' >> lablgl; fi
 	chmod 755 lablgl
-	
 
 togl_tags.c: togl_tags.var
 	$(VAR2SWITCH) TOGL_ < togl_tags.var > $@
 
-install:
-	@if test -f lablgltop$(XE); then $(MAKE) toglinstall; fi
-
-toglinstall:
-	cp togl.cmi togl.mli libtogl$(XA) togl.cma $(INSTTOP) "$(INSTALLDIR)"
+preinstall:
+	cp togl.mli togl.ml libtogl$(XA) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) libtogl$(XA)
 	@if test -f dlltogl$(XS); then $(MAKE) installdll; \
 	 else $(MAKE) installtop; fi
 	cp lablgl$(XB) "$(BINDIR)"
+
+install:
+	@if test -f lablgltop$(XE); then $(MAKE) toglinstall; fi
+
+toglinstall: preinstall
+	cp togl.cmi togl.cma $(INSTTOP) "$(INSTALLDIR)"
 	@if test -f togl.cmxa; then $(MAKE) toglinstallopt; fi
 
 installdll:

@@ -7,6 +7,9 @@
  *
  */
 
+#ifdef _WIN32
+#define GLUT_DISABLE_ATEXIT_HACK
+#endif
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -348,7 +351,7 @@ CAMLprim value ml_glutSetIdleFuncToNull( value unit )
 
 static value caml_glutTimerFunc_cb = 0;
 
-void init_glutTimerFunc_cb(value v)
+CAMLprim void init_glutTimerFunc_cb(value v)
 { 
   caml_glutTimerFunc_cb = v;
   caml_register_global_root(&caml_glutTimerFunc_cb);

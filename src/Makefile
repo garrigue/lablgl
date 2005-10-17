@@ -60,13 +60,23 @@ gl_tags.c: gl_tags.var
 glu_tags.c: glu_tags.var
 	$(VAR2SWITCH) GLU_ < glu_tags.var > $@
 
-install:
+build.ml: build.ml.in ../Makefile.config
+	sed -e "s|@LABLGL_MLS@|$(LIBOBJS:.cmo=)|" \
+	    -e "s|@TOGL_MLS@|togl|" \
+	    -e "s|@GLUT_MLS@|glut|" \
+	    -e "s|@GLLIBS@|$(GLLIBS)|" \
+	    -e "s|@TKLIBS@|$(TKLIBS)|" \
+	    -e "s|@GLUTLIBS@|$(GLUTLIBS)|" < build.ml.in > $@
+
+preinstall: build.ml
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi
-	cp $(LIBOBJS:.cmo=.cmi) "$(INSTALLDIR)"
-	cp $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
-	cp liblablgl$(XA) lablgl.cma "$(INSTALLDIR)"
+	cp build.ml $(LIBOBJS:.cmo=.ml) $(LIBOBJS:.cmo=.mli) "$(INSTALLDIR)"
+	cp liblablgl$(XA) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) liblablgl$(XA)
 	if test -f dlllablgl$(XS); then cp dlllablgl$(XS) "$(DLLDIR)"; fi
+
+install: preinstall
+	cp $(LIBOBJS:.cmo=.cmi) lablgl.cma "$(INSTALLDIR)"
 	@if test -f lablgl.cmxa; then $(MAKE) installopt; fi
 
 installopt:

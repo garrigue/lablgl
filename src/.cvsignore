@@ -8,6 +8,7 @@ raw_tags.c
 raw_tags.h
 togl_tags.c
 togl_tags.h
+build.ml
 lablgltop
 lablgl
 *.dll
