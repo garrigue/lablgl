@@ -1,4 +1,4 @@
-(* $Id: build.ml,v 1.1 2005-10-17 08:28:18 garrigue Exp $ *)
+(* $Id: build.ml.in,v 1.1 2005-10-17 08:28:55 garrigue Exp $ *)
 (* A script to build lablgtk2 libraries *)
 
 open StdLabels
@@ -19,12 +19,12 @@ let split ?(sep = [' ';'\t';'\r';'\n']) s =
     else loop last next acc
   in List.rev (loop 0 0 [])
 
-let lablgl_mls = split "raw gl		glLight	glList	glMap glMat	glMisc	glPix	glClear glTex	glDraw	glFunc	gluMisc gluNurbs	gluQuadric	gluTess	gluMat glArray"
-let togl_mls = split "togl"
-let glut_mls = split "glut"
-let gl_libs = "opengl32.lib glu32.lib"
-let tk_libs = "tk83.lib tcl83.lib gdi32.lib user32.lib "
-let glut_libs = "glut32.lib "
+let lablgl_mls = split "@LABLGL_MLS@"
+let togl_mls = split "@TOGL_MLS@"
+let glut_mls = split "@GLUT_MLS@"
+let gl_libs = "@GLLIBS@"
+let tk_libs = "@TKLIBS@ "
+let glut_libs = "@GLUTLIBS@ "
 
 (* Hack to check for mingw *)
 let () =
