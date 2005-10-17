@@ -1,4 +1,4 @@
-(* $Id: morph3d.ml,v 1.1 2003-09-25 13:54:10 raffalli Exp $ *)
+(* $Id: morph3d.ml,v 1.2 2005-10-17 11:27:04 garrigue Exp $ *)
 
 open StdLabels
 open Printf
@@ -562,7 +562,7 @@ let main () =
   flush stdout;
 
   ignore(Glut.init Sys.argv);
-  Glut.initDisplayMode ~alpha:false ~double_buffer:true ~depth:true;
+  Glut.initDisplayMode ~alpha:false ~double_buffer:true ~depth:true ();
   Glut.initWindowSize ~w:640 ~h:480;
   ignore(Glut.createWindow ~title:"Morph 3D - Shows morphing platonic polyhedra");
   GlClear.depth 1.0;
