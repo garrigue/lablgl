@@ -1,11 +1,11 @@
-(* $Id: build.ml.in,v 1.1 2005-10-17 08:28:55 garrigue Exp $ *)
-(* A script to build lablgtk2 libraries *)
+(* $Id: build.ml.in,v 1.2 2005-10-17 08:38:42 garrigue Exp $ *)
+(* A script to build lablGL libraries *)
 
 open StdLabels
 
 let ocamlc = ref "ocamlc.opt"
 let ocamlopt = ref "ocamlopt.opt"
-let flags = ref "-thread -w s -I +labltk"
+let flags = ref "-w s -I +labltk"
 let ccomp_type = ref "msvc"   (* "msvc" for MSVC++, "cc" for Mingw. Attempt ot autodetect *)
 
 let split ?(sep = [' ';'\t';'\r';'\n']) s =
