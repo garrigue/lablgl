@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.10 2003-03-15 08:33:36 erickt Exp $ *)
+(* $Id: glTex.ml,v 1.11 2005-10-20 08:21:26 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -72,7 +72,7 @@ let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let border = if border then 1 else 0 in
   if not (is_pow2 (width img - 2 * border)) then
     raise (GLerror "Gl.image2d : bad width");
-  if not (is_pow2 (height img - border)) then
+  if not (is_pow2 (height img - 2 * border)) then
     raise (GLerror "Gl.image2d : bad height");
   image2d ~proxy ~level ~internal ~border
     ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)
