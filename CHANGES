@@ -1,3 +1,8 @@
+LablGL 1.02:
+------------
+2005-10-20: [Jacques]
+* correct GlTex.image2d border bug (Eric Cooper)
+
 2005-10-14: [Jacques]
 * add glGetError
 
