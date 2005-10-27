@@ -1,15 +1,15 @@
 
-		LablGL 1.01: Installation and Use instructions
+		LablGL 1.02: Installation and Use instructions
 
 1. Description
 
   LablGL is an OpenGL interface for Objective Caml. It includes two
 interfaces: the Togl widget, for comfortable use with LablTk, and
-LablGlut for standalone applications not using Tcl/Tk
+LablGlut for standalone applications not using Tcl/Tk.
 
 2. Requisites
 
-  * Objective Caml 3.05 to 3.08
+  * Objective Caml 3.05 to 3.09
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
@@ -43,9 +43,27 @@ of Mesa and XFree86. For windows you need to obtain it from
 
 3. Installation
 
-Precompiled versions of lablGL are available for windows, and a number
-of Linux distributions. In this case you just have to install
-necessary packages. Otherwise, compile from source.
+Precompiled versions of lablGL are available for Windows, and a number
+of Linux distributions. For Linux, just install the package.
+
+For Windows binary distribution:
+
+  a) Install the lablGL distribution.
+     The simplest way is to use the command-line version of unzip, and
+     unpack it on top of your Objective Caml distribution.
+        C:\Program Files\Objective Caml\> unzip lablgl-1.02-win32.zip
+     If you unpacked it somewhere else you must copy manually the
+     contents of the bin, lib\stublibs and lib\lablGL directories to
+     the corresponding directories of the Objective Caml distribution.
+
+  b) Compile the Caml parts.
+     Go to the lib\lablGL directory, and execute the following command 
+        C:\...\lib\lablGL\> ocaml build.ml
+     It will generate the bytecode and native versions of the library.
+     Note that every time you install a new version of Objective Caml
+     you will need to repeat this last step.
+
+Compilation from source (if there is no package):
 
   a) Create Makefile.config.
      Some tested configurations are provided.
@@ -345,4 +363,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.37 2005-10-14 13:30:30 garrigue Exp $
+$Id: README,v 1.38 2005-10-27 00:06:49 garrigue Exp $
