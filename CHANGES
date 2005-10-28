@@ -1,5 +1,8 @@
 LablGL 1.02:
 ------------
+2005-10-28: [Jacques]
+* fix GlMat.mult_transpose (Gregory Guyomarc'h)
+
 2005-10-20: [Jacques]
 * correct GlTex.image2d border bug (Eric Cooper)
 

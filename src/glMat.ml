@@ -1,4 +1,4 @@
-(* $Id: glMat.ml,v 1.10 2003-04-22 03:24:02 erickt Exp $ *)
+(* $Id: glMat.ml,v 1.11 2005-10-28 02:49:09 garrigue Exp $ *)
 
 type t = [`double] Raw.t
 
@@ -32,7 +32,7 @@ let mult m =
 external mult_transpose : t -> unit = "ml_glMultTransposeMatrixd"
 let mult_transpose m =
   if Raw.length m <> 16 then invalid_arg "Gl.mult_matrix";
-  mult m
+  mult_transpose m
 
 external ortho :
     x:(float * float) -> y:(float * float) -> z:(float * float) -> unit
