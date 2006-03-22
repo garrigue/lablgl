@@ -1,4 +1,4 @@
-/* $Id: ml_glutess.c,v 1.5 2004-07-15 03:07:26 garrigue Exp $ */
+/* $Id: ml_glutess.c,v 1.6 2006-03-22 12:49:23 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
 #include <stdio.h>
@@ -122,10 +122,11 @@ static void CALLBACK beginCallback(GLenum type)
   case GL_TRIANGLES      : kind = 0; break;
   case GL_TRIANGLE_FAN   : kind = 1; break;
   case GL_TRIANGLE_STRIP : kind = 2; break;
-  default:
-       fprintf(stderr, "Unknown primitive format %d in tesselation.\n",
-	       (int)type);
-    abort();
+  default: {
+    char msg[80];
+    sprintf(msg, "Unknown primitive format %d in tesselation.\n", (int)type);
+    ml_raise_gl(msg);
+  }
   }
   push_list();
 }

@@ -23,7 +23,7 @@
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
-//#include <caml/fail.h>
+#include <caml/fail.h>
 #include <caml/callback.h>
 #include <caml/signals.h>
 
@@ -385,11 +385,8 @@ static void* i2font(int i)
     case 6: return GLUT_BITMAP_HELVETICA_10; 
     case 7: return GLUT_BITMAP_HELVETICA_12; 
     case 8: return GLUT_BITMAP_HELVETICA_18; 
-    default: {
-      fprintf(stderr, "wrap_glut.c: unrecognized font. impossible...\n");
-      fflush(stderr);
-      exit(-1);
-    }
+    default:
+      caml_failwith("wrap_glut.c: unrecognized font. impossible...\n");
   }
 }
 
