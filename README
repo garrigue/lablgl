@@ -1,5 +1,5 @@
 
-		LablGL 1.02: Installation and Use instructions
+		LablGL 1.02a: Installation and Use instructions
 
 1. Description
 
@@ -62,6 +62,18 @@ For Windows binary distribution:
      It will generate the bytecode and native versions of the library.
      Note that every time you install a new version of Objective Caml
      you will need to repeat this last step.
+     Look carefully at the last line of output of this script, it should
+     tell you which ocaml port you are using. If the guess is wrong, you
+     edit build.ml to correct this.
+
+  c) For glut support, download glut32.dll and copy it to the bin
+     directory of the OCaml distribution (or somewhere else in your
+     path.)
+
+  After this, you should be able to compile and run programs as either
+  bytecode or native code. Note however that Togl doesn't work for
+  native code with mingw (it works with msvc.) On the other hand,
+  LablGlut does work in all combinations.
 
 Compilation from source (if there is no package):
 
@@ -90,13 +102,6 @@ Compilation from source (if there is no package):
 	% make install
 
      This will install all the available parts.   
-
-
-  With the windows binary distribution, copy bin\lablgl.bat,
-  lib\stublibs\*.dll and lib\lablGL to their respective subdirectories
-  in the OCaml distribution. For glut support, copy glut32.dll to
-  the bin directory of the OCaml distribution (or somewhere else in
-  your path).
 
   To compile for Windows, Makefile.config.msvc and
   Makefile.config.mingw are provided.
@@ -363,4 +368,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.38 2005-10-27 00:06:49 garrigue Exp $
+$Id: README,v 1.39 2006-03-23 06:47:07 garrigue Exp $
