@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.14 2004-12-02 02:01:16 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.15 2006-03-23 00:39:29 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/misc.h>
@@ -468,5 +468,6 @@ CAMLprim value ml_raw_free_static (value raw)  /* ML */
     Base_raw(raw) = Val_unit;
     Size_raw(raw) = Val_unit;
     Offset_raw(raw) = Val_unit;
+    Static_raw(raw) = Val_false;
     return Val_unit;
 }

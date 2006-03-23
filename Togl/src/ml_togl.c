@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.14 2004-11-02 07:03:34 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.15 2006-03-23 00:39:27 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -30,6 +30,15 @@ int TOGLenum_val(value tag)
 #include "togl_tags.c"
     }
     invalid_argument ("Unknown Togl tag");
+}
+
+/* Avoid direct use of stderr */
+void togl_prerr(const char *msg)
+{
+    value ml_msg = copy_string(msg);
+    value *prerr = caml_named_value("togl_prerr");
+    if (!prerr) caml_failwith(msg);
+    caml_callback_exn(*prerr, ml_msg);
 }
 
 CAMLprim value ml_Togl_Init (value unit)  /* ML */

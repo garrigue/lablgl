@@ -1,3 +1,7 @@
+2006-03-23: [Jacques]
+* avoid all uses of stderr in stubs (caused incompatibilities)
+* use mingw import libraries
+
 LablGL 1.02:
 ------------
 2005-10-28: [Jacques]

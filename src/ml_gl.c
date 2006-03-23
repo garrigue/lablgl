@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.47 2005-10-14 13:35:32 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.48 2006-03-23 00:39:29 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -178,6 +178,9 @@ ML_3 (glEvalMesh1, GLenum_val, Int_val, Int_val)
 ML_5 (glEvalMesh2, GLenum_val, Int_val, Int_val, Int_val, Int_val)
 ML_1 (glEvalPoint1, Int_val)
 ML_2 (glEvalPoint2, Int_val, Int_val)
+
+
+ML_3 (glFeedbackBuffer, Int_val, GLenum_val, Addr_raw)
 
 CAMLprim value ml_glFog (value param) /* ML */
 {

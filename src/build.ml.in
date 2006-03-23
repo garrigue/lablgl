@@ -1,4 +1,4 @@
-(* $Id: build.ml.in,v 1.2 2005-10-17 08:38:42 garrigue Exp $ *)
+(* $Id: build.ml.in,v 1.3 2006-03-23 00:39:28 garrigue Exp $ *)
 (* A script to build lablGL libraries *)
 
 open StdLabels
@@ -6,7 +6,7 @@ open StdLabels
 let ocamlc = ref "ocamlc.opt"
 let ocamlopt = ref "ocamlopt.opt"
 let flags = ref "-w s -I +labltk"
-let ccomp_type = ref "msvc"   (* "msvc" for MSVC++, "cc" for Mingw. Attempt ot autodetect *)
+let ccomp_type = ref "msvc"   (* "msvc" for MSVC++, "cc" for Mingw. Attempt to autodetect *)
 
 let split ?(sep = [' ';'\t';'\r';'\n']) s =
   let len = String.length s in
@@ -38,16 +38,22 @@ let () =
     done
   with _ -> ()
 
-(*
-let gtk_libs =
-  if !ccomp_type = "msvc" then gtk_libs else
+let has_mingw_import nm =
+  (* sufficient for now... *)
+  Filename.check_suffix nm "32.lib"
+
+let norm_libs libs =
+  if !ccomp_type = "msvc" then libs else
   let libs =
-    List.map (split gtk_libs) ~f:
+    List.map (split libs) ~f:
       (fun nm ->
-        if Filename.check_suffix nm ".lib" then "-l"^Filename.chop_extension nm^".dll"
+        if has_mingw_import nm then "-l" ^ Filename.chop_extension nm
         else nm)
   in String.concat " " libs
-*)
+
+let gl_libs = norm_libs gl_libs
+let tk_libs = norm_libs  tk_libs
+let glut_libs = norm_libs glut_libs
 
 let exe cmd args =
   let cmd = String.concat " " (cmd :: !flags :: args) in
@@ -70,7 +76,7 @@ let byte () =
     ~f:begin fun (lib, mls,libs) ->
       let cmos = List.map mls ~f:(fun nm -> nm ^".cmo") in
       exe !ocamlc (["-a -o"; lib^".cma"; "-cclib -l"^lib; "-dllib -l"^lib;
-                    "-cclib \""^libs^gl_libs^"\""] @ cmos);
+                    "-cclib \""^libs^" "^gl_libs^"\""] @ cmos);
       List.iter cmos ~f:may_remove
     end
 
@@ -83,7 +89,7 @@ let native () =
     ~f:begin fun (lib, mls,libs) ->
       let cmxs = List.map mls ~f:(fun nm -> nm ^".cmx") in
       exe !ocamlopt (["-a -o"; lib^".cmxa"; "-cclib -l"^lib;
-                    "-cclib \""^libs^gl_libs^"\""] @ cmxs);
+                    "-cclib \""^libs^" "^gl_libs^"\""] @ cmxs);
       List.iter mls ~f:(fun nm -> may_remove (nm ^ ".obj"); may_remove (nm ^ ".o"))
     end
 

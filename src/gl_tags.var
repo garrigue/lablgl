@@ -243,6 +243,13 @@ vendor renderer version extensions
 (* glRenderMode *)
 render select feedback
 
+(* glFeedBackBuffer *)
+_2d -> GL_2D
+_3d -> GL_3D
+_3d_color -> GL_3D_COLOR
+_3d_color_texture -> GL_3D_COLOR_TEXTURE
+_4d_color_texture -> GL_4D_COLOR_TEXTURE
+
 $$
 (* glLightModel *)
 local_viewer two_side mode density start index End

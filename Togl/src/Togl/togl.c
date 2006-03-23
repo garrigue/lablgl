@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.10 2004-11-02 07:03:34 garrigue Exp $ */
+/* $Id: togl.c,v 1.11 2006-03-23 00:39:27 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -7,10 +7,15 @@
  * See the LICENSE file for copyright details.
  */
 
+/* Avoid direct use of stderr */
+extern void togl_prerr(const char*);
 
 /*
  * $Log: togl.c,v $
- * Revision 1.10  2004-11-02 07:03:34  garrigue
+ * Revision 1.11  2006-03-23 00:39:27  garrigue
+ * avoid stderr
+ *
+ * Revision 1.10  2004/11/02 07:03:34  garrigue
  * avoid warnings
  *
  * Revision 1.9  2003/10/03 13:41:22  garrigue
@@ -1418,7 +1423,7 @@ static int Togl_MakeWindowExist(struct Togl *togl)
       togl->GlCtx = shareWith->GlCtx;
       togl->VisInfo = shareWith->VisInfo;
       visinfo = togl->VisInfo;
-      printf("SHARE CTX\n");
+      /* printf("SHARE CTX\n"); */
    }
    else {
       /* It may take a few tries to get a visual */
@@ -1753,7 +1758,7 @@ static int Togl_MakeWindowExist(struct Togl *togl)
 
    if (togl->OverlayFlag) {
       if (SetupOverlay( togl )==TCL_ERROR) {
-         fprintf(stderr,"Warning: couldn't setup overlay.\n");
+         togl_prerr("Warning: couldn't setup overlay.\n");
          togl->OverlayFlag = 0;
       }
    }
@@ -2282,12 +2287,12 @@ unsigned long Togl_AllocColor( const struct Togl *togl,
    int exact;
 
    if (togl->RgbaFlag) {
-      fprintf(stderr,"Error: Togl_AllocColor illegal in RGBA mode.\n");
+      togl_prerr("Error: Togl_AllocColor illegal in RGBA mode.\n");
       return 0;
    }
    /* TODO: maybe not... */
    if (togl->PrivateCmapFlag) {
-      fprintf(stderr,"Error: Togl_FreeColor illegal with private colormap\n");
+      togl_prerr("Error: Togl_FreeColor illegal with private colormap\n");
       return 0;
    }
 
@@ -2316,12 +2321,12 @@ unsigned long Togl_AllocColor( const struct Togl *togl,
 void Togl_FreeColor( const struct Togl *togl, unsigned long pixel )
 {
    if (togl->RgbaFlag) {
-      fprintf(stderr,"Error: Togl_AllocColor illegal in RGBA mode.\n");
+      togl_prerr("Error: Togl_AllocColor illegal in RGBA mode.\n");
       return;
    }
    /* TODO: maybe not... */
    if (togl->PrivateCmapFlag) {
-      fprintf(stderr,"Error: Togl_FreeColor illegal with private colormap\n");
+      togl_prerr("Error: Togl_FreeColor illegal with private colormap\n");
       return;
    }
 
@@ -2341,11 +2346,11 @@ void Togl_SetColor( const struct Togl *togl,
    XColor xcol;
 
    if (togl->RgbaFlag) {
-      fprintf(stderr,"Error: Togl_AllocColor illegal in RGBA mode.\n");
+      togl_prerr("Error: Togl_AllocColor illegal in RGBA mode.\n");
       return;
    }
    if (!togl->PrivateCmapFlag) {
-      fprintf(stderr,"Error: Togl_SetColor requires a private colormap\n");
+      togl_prerr("Error: Togl_SetColor requires a private colormap\n");
       return;
    }
 

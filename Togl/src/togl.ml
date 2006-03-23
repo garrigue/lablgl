@@ -1,4 +1,4 @@
-(* $Id: togl.ml,v 1.22 2001-09-06 08:27:02 garrigue Exp $ *)
+(* $Id: togl.ml,v 1.23 2006-03-23 00:39:27 garrigue Exp $ *)
 
 open StdLabels
 open Tk
@@ -168,7 +168,11 @@ let callback_table =
     null_func;
     cb_of_togl overlay_table;
     null_func|]
-let _ = Callback.register "togl_callbacks" callback_table
+let () =
+  Callback.register "togl_callbacks" callback_table;
+  (* Also export an error-reporting function *)
+  Callback.register "togl_prerr"
+    (fun msg -> prerr_string msg; flush stderr)
 
 let callback_func table (w : widget) ~cb =
   let key = Widget.name w in
@@ -259,7 +263,7 @@ let create ?name =
 	[|TkToken "togl"; TkToken (Widget.name w);
 	  TkToken "-ident"; TkToken (Widget.name w);
 	  TkTokenList options|] in
-      let res : string =
+      let _res : string =
 	try tkEval command
 	with TkError "invalid command name \"togl\"" ->
 	  init_togl (); tkEval command

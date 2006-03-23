@@ -1,4 +1,4 @@
-(* $Id: glMisc.mli,v 1.4 2005-04-25 01:52:41 garrigue Exp $ *)
+(* $Id: glMisc.mli,v 1.5 2006-03-23 00:39:28 garrigue Exp $ *)
 
 (* Getting information *)
 val get_string : [`vendor|`renderer|`version|`extensions] -> string
@@ -29,5 +29,10 @@ val pop_attrib : unit -> unit
 val render_mode : [`feedback|`render|`select] -> int
 val pass_through : float -> unit
 val select_buffer : [`uint] Raw.t -> unit
+  (* argument must be a static Raw.t *)
+type feedback_mode =
+    [`_2d |`_3d |`_3d_color |`_3d_color_texture |`_4d_color_texture]
+val feedback_buffer : mode:feedback_mode -> [`float] Raw.t -> unit
+  (* argument must be a static Raw.t *)
 
 val scissor : x:int -> y:int -> width:int -> height:int -> unit

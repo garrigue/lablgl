@@ -1,4 +1,4 @@
-(* $Id: glMisc.ml,v 1.6 2005-04-25 01:52:41 garrigue Exp $ *)
+(* $Id: glMisc.ml,v 1.7 2006-03-23 00:39:28 garrigue Exp $ *)
 
 external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
@@ -31,7 +31,18 @@ external push_attrib : attrib list -> unit = "ml_glPushAttrib"
 external pass_through : float -> unit = "ml_glPassThrough"
 external render_mode : [`render|`select|`feedback] -> int = "ml_glRenderMode"
 external select_buffer : int -> [`uint] Raw.t -> unit = "ml_glSelectBuffer"
-let select_buffer raw = select_buffer (Raw.length raw) raw
+let select_buffer raw =
+  if not (Raw.static raw) then
+    invalid_arg "GlMisc.select_buffer : buffer must be static";
+  select_buffer (Raw.length raw) raw
+type feedback_mode =
+    [`_2d |`_3d |`_3d_color |`_3d_color_texture |`_4d_color_texture]
+external feedback_buffer : int -> feedback_mode -> [`float] Raw.t -> unit
+  = "ml_glFeedbackBuffer"
+let feedback_buffer ~mode buf =
+  if not (Raw.static buf) then
+    invalid_arg "GlMisc.feedback_buffer : buffer must be static";
+  feedback_buffer (Raw.length buf) mode buf
 
 external scissor : x:int -> y:int -> width:int -> height:int -> unit
   = "ml_glScissor"
