@@ -102,7 +102,7 @@ toglinstallopt:
 clean:
 	rm -f *.cm* *.o *.obj *.so *.lib *.a *.dll *.exe *.opt *_tags.c \
 	    *_tags.h *~ lablgltop$(EX) lablgl
-	rm -f $(TOGLDIR)/togl$(XO)
+	rm -f $(TOGLDIR)/togl$(XO) $(TOGLDIR)/togl.d$(XO)
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

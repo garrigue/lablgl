@@ -12,7 +12,7 @@ OCAMLINC=
 # Files
 LIBOBJS = glut.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
-COBJS =	  wrap_gl$(XO)	wrap_glut$(XO)
+COBJS =	  wrap_glut$(XO)
 
 all: 	lib lablgluttop$(XE) lablglut$(XB)
 

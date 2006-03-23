@@ -1,4 +1,4 @@
-/* $Id: ml_togl.c,v 1.15 2006-03-23 00:39:27 garrigue Exp $ */
+/* $Id: ml_togl.c,v 1.16 2006-03-23 06:01:55 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -148,3 +148,9 @@ CAMLprim value ml_Togl_DumpToEpsFile (value togl, value filename, value rgb)
                           "Dump to EPS file failed");
     return Val_unit;
 }
+
+#if 0 && defined(_WIN32) && !defined(CAML_DLL) && (WINVER < 0x0500)
+/* VC7 or later, building with pre-VC7 runtime libraries */
+long _ftol( double ); /* defined by VC6 C libs */
+long _ftol2( double dblSource ) { return _ftol( dblSource ); }
+#endif

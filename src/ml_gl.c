@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.48 2006-03-23 00:39:29 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.49 2006-03-23 06:01:55 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -8,6 +8,10 @@
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
+#endif
+#ifdef HAS_GLEXT_H
+#include <GL/glext.h>
+#undef GL_VERSION_1_3
 #endif
 #include <caml/misc.h>
 #include <caml/mlvalues.h>

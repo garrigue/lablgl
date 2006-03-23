@@ -22,10 +22,11 @@ BINDIR = `ocamlc -where`/../bin
 # This must the same version as for LablTk
 TKINCLUDES = -IC:\Progra~1\Tcl\include
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-TKLIBS = -ltk83 -ltcl83
+#TKLIBS = -ltk83 -ltcl83
+TKLIBS = tk83.lib tcl83.lib -lgdi32 -luser32
 
 # Where to find OpenGL/Mesa/Glut headers and libraries
-GLINCLUDES = -DGLU_VERSION_1_3 -DGL_VERSION_1_2
+GLINCLUDES = -DHAS_GLEXT_H -DGL_GLEXT_PROTOTYPES -DGLU_VERSION_1_3
 GLLIBS = -lglu32 -lopengl32
 GLUTLIBS = -lglut32
 # The following libraries may be required (try to add them one at a time)

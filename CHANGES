@@ -1,6 +1,7 @@
 2006-03-23: [Jacques]
 * avoid all uses of stderr in stubs (caused incompatibilities)
 * use mingw import libraries
+* mingw build works again (but togl only works in dll mode)
 
 LablGL 1.02:
 ------------
