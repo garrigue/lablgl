@@ -223,21 +223,6 @@ exception OverlayNotInUse of string
 
 open Printf;;
 
-external getWindow: unit -> int = "ml_glutGetWindow"
-
-(* generate name for callbacks, based on window id *)
-let cbname glutname = 
-    let name = sprintf "ocaml_%s_cb_%i" glutname (getWindow()) in
-    (* printf "ocaml cbname: %s" name; print_newline(); *)
-    name;;
-
-(* general routine to set up a glut callback *)
-let setup glutname glutwrapper cb = 
-    let _ = Callback.register (cbname glutname) cb in
-    glutwrapper (); (* register the callback with GLUT *)
-    ;;
-
-
 (* ==== file-local variables ==== *)
 
 let is_init = ref false;;
@@ -247,20 +232,16 @@ let is_windowPositionInit = ref false;;
 let has_createdWindow = ref false;;
 
  (* === GLUT initialization sub-API. === *)
-external _glutInit : int -> string array -> unit = "ml_glutInit" 
-
-let new_argv = ref [];; (* built by a callback from _glutInit *)
-
-let add_arg str =
-    new_argv := str :: !new_argv;;
+external _glutInit : int -> string array -> int = "ml_glutInit" 
 
 let init ~argv = 
+  if !is_init then argv else begin
     is_init := true;
-    let argc = (Array.length argv) in
-    let _ = Callback.register "add_arg" add_arg in
-    _glutInit argc argv;
-    let retargs = Array.of_list(List.rev !new_argv) in
-    retargs;;
+    let argc = Array.length argv in
+    let argv = Array.append argv [|""|] in
+    let argc = _glutInit argc argv in
+    Array.sub argv 0 argc
+  end
 
 external _glutInitDisplayMode : 
     double_buffer:bool ->
@@ -333,6 +314,8 @@ external destroyWindow: win:int -> unit =
     "ml_glutDestroyWindow"
 external setWindow: win:int -> unit = 
     "ml_glutSetWindow"
+external getWindow: unit -> int =
+     "ml_glutGetWindow"
 external setWindowTitle: title:string -> unit  = 
     "ml_glutSetWindowTitle"
 external setIconTitle: title:string -> unit = 
@@ -439,13 +422,24 @@ let detachMenu ~button = _detachMenu (b2i button);;
 
  (* === GLUT window callback sub-API. === *)
 
-external displayFunc : cb:(unit->unit)->unit = "ml_glutDisplayFunc"
+let window_wrapper cbFunc wr =
+  let table = Hashtbl.create 3 in
+  fun ~cb ->
+    Hashtbl.add table (getWindow()) cb;
+    cbFunc ~cb:(wr (fun () -> Hashtbl.find table (getWindow())))
+  
+external _displayFunc : cb:(unit->unit)->unit = "ml_glutDisplayFunc"
+let displayFunc = window_wrapper _displayFunc (fun cb () -> cb () ())
 
-external reshapeFunc : cb:(w:int->h:int->unit)->unit = "ml_glutReshapeFunc"
+external _reshapeFunc : cb:(w:int->h:int->unit)->unit = "ml_glutReshapeFunc"
+let reshapeFunc = window_wrapper _reshapeFunc (fun cb ~w -> cb () ~w)
 
-external keyboardFunc : cb:(key:int->x:int->y:int->unit)->unit = "ml_glutKeyboardFunc"
+external _keyboardFunc : cb:(key:int->x:int->y:int->unit)->unit =
+  "ml_glutKeyboardFunc"
+let keyboardFunc = window_wrapper _keyboardFunc (fun cb ~key -> cb () ~key)
 
-external _glutMouseFunc : cb:(int -> int -> int -> int -> unit)->unit = "ml_glutMouseFunc"
+external _glutMouseFunc : cb:(int -> int -> int -> int -> unit)->unit =
+  "ml_glutMouseFunc"
 let mouse_cb_wrapper user_func ibutton istate x y =
     let b = match ibutton with 
         | 0 -> LEFT_BUTTON 
@@ -456,17 +450,27 @@ let mouse_cb_wrapper user_func ibutton istate x y =
         | 0 -> DOWN 
         | 1 -> UP 
         | _ -> raise (BadEnum "istate in mouse_cb_wrapper") in
-    user_func ~button:b ~state:s ~x ~y;;
-let mouseFunc ~cb =
-    _glutMouseFunc (mouse_cb_wrapper cb);;
+    user_func () ~button:b ~state:s ~x ~y;;
+let mouseFunc = window_wrapper _glutMouseFunc mouse_cb_wrapper
 
-external motionFunc : cb:(x:int->y:int->unit)->unit = "ml_glutMotionFunc"
+let eta_x cb ~x = cb () ~x
 
-external passiveMotionFunc : cb:(x:int->y:int->unit)->unit = "ml_glutPassiveMotionFunc"
+external _motionFunc : cb:(x:int->y:int->unit)->unit = "ml_glutMotionFunc"
+let motionFunc = window_wrapper _motionFunc eta_x
 
-external entryFunc : cb:(state:entry_exit_state_t->unit)->unit = "ml_glutEntryFunc" 
+external _passiveMotionFunc : cb:(x:int->y:int->unit)->unit =
+  "ml_glutPassiveMotionFunc"
+let passiveMotionFunc = window_wrapper _passiveMotionFunc eta_x
 
-external visibilityFunc : cb:(state:visibility_state_t->unit)->unit = "ml_glutVisibilityFunc"
+let eta_state cb ~state = cb () ~state
+
+external _entryFunc : cb:(state:entry_exit_state_t->unit)->unit =
+  "ml_glutEntryFunc" 
+let entryFunc = window_wrapper _entryFunc eta_state
+
+external _visibilityFunc : cb:(state:visibility_state_t->unit)->unit =
+  "ml_glutVisibilityFunc"
+let visibilityFunc = window_wrapper _visibilityFunc eta_state
 
 (* idleFunc is for the entire program, not just a single window,
    so its name does not depend on the window id *)
@@ -506,8 +510,6 @@ let timerFunc ~ms ~cb:(cb:(value:'a -> unit)) ~value =
       cb value);
     _timerFunc ms i
 
-external menuStateFunc : cb:(status:menu_state_t->unit)->unit = "ml_glutMenuStateFunc"
-
 let special_of_int i = match i with
   | 1 -> KEY_F1    (* values from glut.h *)
   | 2 -> KEY_F2    
@@ -532,28 +534,47 @@ let special_of_int i = match i with
   | 108 -> KEY_INSERT    
   | _ -> raise (BadEnum "key in special_of_int");;
 
-external _glutSpecialFunc : (key:int->x:int->y:int->unit)->unit = "ml_glutSpecialFunc"
-let specialFunc ~cb =
-  _glutSpecialFunc 
-      (fun ~key ~x ~y -> cb ~key:(special_of_int key) ~x ~y) ;;
+external _glutSpecialFunc : cb:(key:int->x:int->y:int->unit)->unit =
+  "ml_glutSpecialFunc"
+let specialFunc =
+  window_wrapper _glutSpecialFunc
+    (fun cb ~key -> cb () ~key:(special_of_int key))
 
-external spaceballMotionFunc: cb:(x:int->y:int->z:int->unit)->unit = "ml_glutSpaceballMotionFunc"
+external _spaceballMotionFunc: cb:(x:int->y:int->z:int->unit)->unit =
+  "ml_glutSpaceballMotionFunc"
+let spaceballMotionFunc = window_wrapper _spaceballMotionFunc eta_x
 
-external spaceballRotateFunc: cb:(x:int->y:int->z:int->unit)->unit = "ml_glutSpaceballRotateFunc"
+external _spaceballRotateFunc: cb:(x:int->y:int->z:int->unit)->unit =
+  "ml_glutSpaceballRotateFunc"
+let spaceballRotateFunc = window_wrapper _spaceballRotateFunc eta_x
 
-external spaceballButtonFunc: cb:(button:int->state:int->unit)->unit = "ml_glutSpaceballButtonFunc"
+let eta_button cb ~button = cb () ~button
 
-external buttonBoxFunc: cb:(button:int->state:int->unit)->unit = "ml_glutButtonBoxFunc"
+external _spaceballButtonFunc: cb:(button:int->state:int->unit)->unit = "ml_glutSpaceballButtonFunc"
+let spaceballButtonFunc = window_wrapper _spaceballButtonFunc eta_button
 
-external dialsFunc: cb:(dial:int->value:int->unit)->unit = "ml_glutDialsFunc"
+external _buttonBoxFunc: cb:(button:int->state:int->unit)->unit =
+  "ml_glutButtonBoxFunc"
+let buttonBoxFunc = window_wrapper _buttonBoxFunc eta_button
 
-external tabletMotionFunc: cb:(x:int->y:int->unit)->unit = "ml_glutTabletMotionFunc"
+external _dialsFunc: cb:(dial:int->value:int->unit)->unit = "ml_glutDialsFunc"
+let dialsFunc = window_wrapper _dialsFunc (fun cb ~dial -> cb () ~dial)
 
-external tabletButtonFunc: cb:(button:int->state:int->x:int->y:int->unit)->unit = "ml_glutTabletButtonFunc"
+external _tabletMotionFunc: cb:(x:int->y:int->unit)->unit =
+  "ml_glutTabletMotionFunc"
+let tabletMotionFunc = window_wrapper _tabletMotionFunc eta_x
 
-external menuStatusFunc: cb:(status:menu_state_t->x:int->y:int->unit)->unit = "ml_glutMenuStatusFunc"
+external _tabletButtonFunc: cb:(button:int->state:int->x:int->y:int->unit)->unit
+    = "ml_glutTabletButtonFunc"
+let tabletButtonFunc = window_wrapper _tabletButtonFunc eta_button
 
-external overlayDisplayFunc:cb:(unit->unit)->unit = "ml_glutOverlayDisplayFunc"
+external menuStatusFunc: cb:(status:menu_state_t->x:int->y:int->unit)->unit =
+  "ml_glutMenuStatusFunc"
+
+external _overlayDisplayFunc: cb:(unit->unit)->unit =
+  "ml_glutOverlayDisplayFunc"
+let overlayDisplayFunc =
+  window_wrapper _overlayDisplayFunc (fun cb () -> cb () ())
 
  (* === GLUT color index sub-API. === === *)
 external setColor: cell:int->red:float->green:float->blue:float->unit = 

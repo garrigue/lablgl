@@ -1,3 +1,7 @@
+2006-07-29: [Jacques]
+* make LablGlut's callback window dependent
+* simplify glutInit
+
 2006-03-23: [Jacques]
 * avoid all uses of stderr in stubs (caused incompatibilities)
 * use mingw import libraries

@@ -123,34 +123,12 @@ CAMLprim value ml_glutInit( value v_argc, value v_argv )
   
     /* make an array for GLUT to handle */
     argc = Int_val(v_argc);
-    /* the +1 is for the null terminal */
-    argv = (char**) malloc(sizeof(char*) * (argc+1)); 
-    for(i=0; i<argc; i++) 
-    {
-        char * arg = String_val(Field(v_argv, i));
-        argv[i] = (char*) malloc(strlen(arg)+1);
-        strcpy(argv[i], arg);
-        argv[i][strlen(arg)] = '\0';
-    }
+    /* Since glut copies all parameters, we can just pass the ocaml array */
+    argv = (char**)v_argv;
     argv[argc] = NULL;
-
     glutInit(&argc, argv);
 
-    /* 
-    glutInit modifies argv, so we hand the result back to ocaml by repeatedly 
-    calling a callback.  
-    */
-    for(i=0; i<argc; i++) {
-        callback(*caml_named_value("add_arg"), copy_string(argv[i]));
-    }
-
-    /* clean up */
-    for(i=0; i<argc; i++) {
-        free(argv[i]);
-    }
-    free(argv);
-
-    return Val_unit;
+    return Val_int(argc);
 }
 
 
@@ -326,7 +304,6 @@ CB_2(glutMotionFunc, int, Val_int,  int, Val_int)
 CB_3(glutSpecialFunc, int, Val_int,  int, Val_int,  int, Val_int)
 CB_2(glutPassiveMotionFunc, int, Val_int,  int, Val_int)
 CB_1(glutEntryFunc, int, Val_int)
-CB_1(glutMenuStateFunc, int, Val_int)
 CB_3(glutSpaceballMotionFunc, int, Val_int,  int, Val_int,  int, Val_int)
 CB_3(glutSpaceballRotateFunc, int, Val_int,  int, Val_int,  int, Val_int)
 CB_2(glutSpaceballButtonFunc, int, Val_int,  int, Val_int)

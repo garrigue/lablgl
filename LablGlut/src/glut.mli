@@ -293,7 +293,6 @@ val visibilityFunc: cb:(state:visibility_state_t->unit)->unit
 val idleFunc: cb:((unit->unit) option)->unit
 (* you can set as many timer as you want simultanesouly *)
 val timerFunc: ms:int->cb:(value:'a->unit)->value:'a->unit
-val menuStateFunc: cb:(status:menu_state_t->unit)->unit
 val specialFunc: cb:(key:special_key_t->x:int->y:int->unit)->unit
 val spaceballMotionFunc: cb:(x:int->y:int->z:int->unit)->unit
 val spaceballRotateFunc: cb:(x:int->y:int->z:int->unit)->unit
