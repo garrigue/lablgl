@@ -116,21 +116,14 @@ ML_0(glutEnterGameMode)
 ML_0(glutLeaveGameMode)
 ML_1_(glutGameModeGet, Int_val, Val_int)
 
-CAMLprim value ml_glutInit( value v_argc, value v_argv )
+CAMLprim value ml_glutInit( value v_argc, char **argv )
 {
-    int i, argc;
-    char** argv; 
-  
-    /* make an array for GLUT to handle */
-    argc = Int_val(v_argc);
-    /* Since glut copies all parameters, we can just pass the ocaml array */
-    argv = (char**)v_argv;
+    int argc = Int_val(v_argc);
+    /* The input array must have one more element */
     argv[argc] = NULL;
-    glutInit(&argc, argv);
-
+    glutInit(&argc, argv); /* Safe: no callback */
     return Val_int(argc);
 }
-
 
 CAMLprim value native_glutInitDisplayMode(
     value double_buffer, 
