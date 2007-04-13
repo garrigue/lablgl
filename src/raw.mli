@@ -1,4 +1,4 @@
-(* $Id: raw.mli,v 1.9 2001-10-01 02:59:13 garrigue Exp $ *)
+(* $Id: raw.mli,v 1.10 2007-04-13 02:48:43 garrigue Exp $ *)
 
 (* This module provides a direct way to access C arrays of basic types.
    This is particularly useful when one wants to avoid costly
@@ -57,6 +57,9 @@ external get_hi : [< lkind] t -> pos:int -> int = "ml_raw_get_hi"
 external set_hi : [< lkind] t -> pos:int -> int -> unit = "ml_raw_set_hi"
 external get_lo : [< lkind] t -> pos:int -> int = "ml_raw_get_lo"
 external set_lo : [< lkind] t -> pos:int -> int -> unit = "ml_raw_set_lo"
+external get_long : [< lkind] t -> pos:int -> nativeint = "ml_raw_get_long"
+external set_long : [< lkind] t -> pos:int -> nativeint -> unit
+    = "ml_raw_set_long"
 
 (* Simultaneous access versions are much more efficient than individual
    access, the overhead being paid only once *)

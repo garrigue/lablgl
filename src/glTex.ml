@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.11 2005-10-20 08:21:26 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.12 2007-04-13 02:48:43 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -97,9 +97,18 @@ type parameter = [
 external parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
     = "ml_glTexParameter"
 
-type texture_id = int32
-external gen_texture : unit -> texture_id = "ml_glGenTexture"
-let gen_textures n = Array.init n (fun _ -> gen_texture ())
+type texture_id = nativeint
+external _gen_textures : int -> [`uint] Raw.t -> unit = "ml_glGenTextures"
+let gen_textures ~len =
+  let raw = Raw.create `uint ~len in
+  _gen_textures len raw;
+  let arr = Array.create len Nativeint.zero in
+  for i = 0 to len - 1 do
+    arr.(i) <- Raw.get_long raw ~pos:i
+  done;
+  arr
+let gen_texture () =  (gen_textures 1).(0)
+
 external bind_texture : target:[`texture_1d|`texture_2d] -> texture_id -> unit
     = "ml_glBindTexture"
 external delete_texture : texture_id -> unit = "ml_glDeleteTexture"

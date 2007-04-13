@@ -1,4 +1,4 @@
-/* $Id: ml_raw.c,v 1.15 2006-03-23 00:39:29 garrigue Exp $ */
+/* $Id: ml_raw.c,v 1.16 2007-04-13 02:48:43 garrigue Exp $ */
 
 #include <string.h>
 #include <caml/misc.h>
@@ -415,6 +415,40 @@ CAMLprim value ml_raw_set_lo (value raw, value pos, value data)  /* ML */
     case MLTAG_long:
     case MLTAG_ulong:
 	Hlong_raw(raw)[2*i+LO_OFFSET] = Long_val(data);
+	break;
+    }
+    return Val_unit;
+}
+
+CAMLprim value ml_raw_get_long (value raw, value pos)  /* ML */
+{
+    long i = Long_val(pos);
+
+    check_size (raw,i,"Raw.get_long");
+    switch (Kind_raw(raw)) {
+    case MLTAG_int:
+    case MLTAG_uint:
+        return copy_nativeint (Int_raw(raw)[i]);
+    case MLTAG_long:
+    case MLTAG_ulong:
+        return copy_nativeint (Long_raw(raw)[i]);
+    }
+    return Val_unit;
+}
+
+CAMLprim value ml_raw_set_long (value raw, value pos, value data)  /* ML */
+{
+    long i = Long_val(pos);
+
+    check_size (raw,i,"Raw.set_long");
+    switch (Kind_raw(raw)) {
+    case MLTAG_int:
+    case MLTAG_uint:
+	Int_raw(raw)[i] = Nativeint_val(data);
+	break;
+    case MLTAG_long:
+    case MLTAG_ulong:
+	Long_raw(raw)[i] = Nativeint_val(data);
 	break;
     }
     return Val_unit;

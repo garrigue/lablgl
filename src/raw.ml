@@ -1,4 +1,4 @@
-(* $Id: raw.ml,v 1.8 2001-10-01 02:59:13 garrigue Exp $ *)
+(* $Id: raw.ml,v 1.9 2007-04-13 02:48:43 garrigue Exp $ *)
 
 type addr
 type kind =
@@ -33,6 +33,9 @@ external get_hi : [< lkind] t -> pos:int -> int = "ml_raw_get_hi"
 external set_hi : [< lkind] t -> pos:int -> int -> unit = "ml_raw_set_hi"
 external get_lo : [< lkind] t -> pos:int -> int = "ml_raw_get_lo"
 external set_lo : [< lkind] t -> pos:int -> int -> unit = "ml_raw_set_lo"
+external get_long : [< lkind] t -> pos:int -> nativeint = "ml_raw_get_long"
+external set_long : [< lkind] t -> pos:int -> nativeint -> unit
+    = "ml_raw_set_long"
 
 external gets : [< ikind] t -> pos:int -> len:int -> int array
     = "ml_raw_read"

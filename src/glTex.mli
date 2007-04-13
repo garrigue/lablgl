@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.6 2003-03-15 08:33:36 erickt Exp $ *)
+(* $Id: glTex.mli,v 1.7 2007-04-13 02:48:43 garrigue Exp $ *)
 
 open Gl
 
@@ -47,7 +47,7 @@ val parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
 
 type texture_id
 val gen_texture : unit -> texture_id
-val gen_textures : int -> texture_id array
+val gen_textures : len:int -> texture_id array
 val bind_texture : target:[`texture_1d|`texture_2d] -> texture_id -> unit
 val delete_texture : texture_id -> unit
 val delete_textures : texture_id array -> unit
