@@ -213,7 +213,7 @@ CAMLprim value bytecode_glutInitDisplayMode ( value * args, int num_args)
 
 #define CB_0(glut_func)                                                 \
   value glut_func##_value = 0;					\
-  static void glut_func##_cb() {					\
+  static void glut_func##_cb( void ) {					\
     leave_blocking_section ();						\
     callback(glut_func##_value, Val_unit);				\
     enter_blocking_section ();						\
