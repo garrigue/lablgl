@@ -382,13 +382,8 @@ let useLayer layer = _useLayer (match layer with NORMAL -> 0 | OVERLAY -> 1)
 
  (* === GLUT menu sub-API. === *)
 
-external _glutCreateMenu : unit->int = "ml_glutCreateMenu"
-let createMenu ~cb =
-    let _ = Callback.register "ocaml_glutCreateMenu" cb in
-    let menu_id = _glutCreateMenu() in
-    menu_id
-    ;;
-    
+external createMenu: cb:(value:int -> unit) ->int =
+    "ml_glutCreateMenu"
 external destroyMenu: menu:int->unit = 
     "ml_glutDestroyMenu"
 external getMenu: unit->int = 

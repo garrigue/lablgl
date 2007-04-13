@@ -1,5 +1,6 @@
 2007-04-13: [Jacques]
 * add glPolygonOffset
+* fix Glut.createMenu
 
 2006-07-29: [Jacques]
 * make LablGlut's callback window dependent
