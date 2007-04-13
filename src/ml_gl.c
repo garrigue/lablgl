@@ -1,4 +1,4 @@
-/* $Id: ml_gl.c,v 1.49 2006-03-23 06:01:55 garrigue Exp $ */
+/* $Id: ml_gl.c,v 1.50 2007-04-13 01:17:50 garrigue Exp $ */
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -184,7 +184,7 @@ ML_1 (glEvalPoint1, Int_val)
 ML_2 (glEvalPoint2, Int_val, Int_val)
 
 
-ML_3 (glFeedbackBuffer, Int_val, GLenum_val, Addr_raw)
+ML_3 (glFeedbackBuffer, Int_val, GLenum_val, (GLfloat*)Addr_raw)
 
 CAMLprim value ml_glFog (value param) /* ML */
 {
@@ -484,6 +484,7 @@ CAMLprim value ml_glPixelTransfer (value param)
 
 ML_2 (glPixelZoom, Float_val, Float_val)
 ML_1 (glPointSize, Float_val)
+ML_2 (glPolygonOffset, Float_val, Float_val)
 ML_2 (glPolygonMode, GLenum_val, GLenum_val)
 ML_1 (glPolygonStipple, (unsigned char *)Byte_raw)
 ML_0 (glPopAttrib)

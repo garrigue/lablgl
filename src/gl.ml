@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.29 2005-10-14 13:30:30 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.30 2007-04-13 01:17:50 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -60,6 +60,7 @@ type cap =
   |`map1_vertex_3|`map1_vertex_4|`map2_color_4|`map2_index|`map2_normal
   |`map2_texture_coord_1|`map2_texture_coord_2|`map2_texture_coord_3
   |`map2_texture_coord_4|`map2_vertex_3|`map2_vertex_4|`normalize|`point_smooth
+  |`polygon_offset_fill|`polygon_offset_line|`polygon_offset_point
   |`polygon_smooth|`polygon_stipple|`scissor_test|`stencil_test|`texture_1d
   |`texture_2d|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t]
 

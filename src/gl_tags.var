@@ -84,10 +84,10 @@ map2_texture_coord_4
 map2_vertex_3
 map2_vertex_4
 normalize
-(* polygon_offset_fill
-   polygon_offset_line
-   polygon_offset_point *)
 point_smooth
+polygon_offset_fill
+polygon_offset_line
+polygon_offset_point
 polygon_smooth
 polygon_stipple
 scissor_test

@@ -1,4 +1,4 @@
-(* $Id: glDraw.ml,v 1.5 2000-04-12 07:40:23 garrigue Exp $ *)
+(* $Id: glDraw.ml,v 1.6 2007-04-13 01:17:50 garrigue Exp $ *)
 
 open Gl
 
@@ -21,6 +21,8 @@ let line_stipple ?(factor=1) pattern =
   line_stipple ~factor ~pattern
 external point_size : float -> unit = "ml_glPointSize"
 
+external polygon_offset : factor:float -> units:float -> unit
+    = "ml_glPolygonOffset"
 external polygon_mode : face:face -> [`point|`line|`fill] -> unit
     = "ml_glPolygonMode"
 external polygon_stipple : [`bitmap] Raw.t -> unit = "ml_glPolygonStipple"

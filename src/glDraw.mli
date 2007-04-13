@@ -1,4 +1,4 @@
-(* $Id: glDraw.mli,v 1.2 1999-11-15 14:32:09 garrigue Exp $ *)
+(* $Id: glDraw.mli,v 1.3 2007-04-13 01:17:50 garrigue Exp $ *)
 
 open Gl
 
@@ -16,6 +16,7 @@ val line_stipple : ?factor:int -> short -> unit
     (* [line_stipple :factor pattern] sets the line stipple to the
        16-bit integer [pattern]. Each bit is used [factor] times *)
 val point_size : float -> unit
+val polygon_offset : factor:float -> units:float -> unit
 val polygon_mode : face:face -> [`fill|`line|`point] -> unit
 val polygon_stipple : GlPix.bitmap -> unit
 

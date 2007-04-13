@@ -225,6 +225,7 @@ GlDraw: Drawing functions.
    glLineWidth
    glNormal
    glPointSize
+   glPolygonOffset
    glPolygonMode
    glPolygonStipple
    glRect
@@ -368,4 +369,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.39 2006-03-23 06:47:07 garrigue Exp $
+$Id: README,v 1.40 2007-04-13 01:19:04 garrigue Exp $
