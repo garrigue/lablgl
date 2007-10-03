@@ -1,5 +1,5 @@
 
-		LablGL 1.02a: Installation and Use instructions
+		LablGL 1.03: Installation and Use instructions
 
 1. Description
 
@@ -369,4 +369,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.40 2007-04-13 01:19:04 garrigue Exp $
+$Id: README,v 1.41 2007-10-03 05:24:06 garrigue Exp $
