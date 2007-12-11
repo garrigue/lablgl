@@ -52,7 +52,7 @@ $(TOGLDIR)/togl.obj:
 
 $(TOGLDIR)/togl.d.obj:
 	cd $(TOGLDIR) && \
-        $(CAMLC) -c -ccopt "/MD /Fotogl.d.obj -DWIN32" \
+        $(CAMLC) -c -ccopt "/Fotogl.d.obj -DWIN32" \
 		-ccopt "$(COPTS) $(INCLUDES) -I." \
 		togl.c
 

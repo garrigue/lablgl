@@ -1,8 +1,9 @@
 # Main Makefile, to compile subdirectories
 
 # default
-INSTALLDIR = `ocamlc -where`/lablGL
-DLLDIR = `ocamlc -where`/stublibs
+LIBDIR = `ocamlc -where`
+INSTALLDIR = $(LIBDIR)/lablGL
+DLLDIR = $(LIBDIR)/stublibs
 CONFIG = Makefile.config
 include $(CONFIG)
 
@@ -11,7 +12,7 @@ all: lib togl glut
 opt: libopt toglopt glutopt
 
 lib:
-	cd src && $(MAKE) all LIBDIR="`ocamlc -where`"
+	cd src && $(MAKE) all LIBDIR="$(LIBDIR)"
 
 libopt:
 	cd src && $(MAKE) opt
