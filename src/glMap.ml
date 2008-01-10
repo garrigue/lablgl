@@ -1,7 +1,7 @@
-(* $Id: glMap.ml,v 1.3 2000-04-12 07:40:24 garrigue Exp $ *)
+(* $Id: glMap.ml,v 1.4 2008-01-10 05:50:37 garrigue Exp $ *)
 
 external eval_coord1 : float -> unit = "ml_glEvalCoord1d"
-external eval_coord2 : float -> float -> unit = "ml_glEvalCoord1d"
+external eval_coord2 : float -> float -> unit = "ml_glEvalCoord2d"
 external eval_mesh1 : mode:[`point|`line] -> int -> int -> unit
     = "ml_glEvalMesh1"
 let eval_mesh1 ~mode ~range:(u1,u2) = eval_mesh1 ~mode u1 u2
