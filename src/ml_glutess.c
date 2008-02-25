@@ -1,4 +1,4 @@
-/* $Id: ml_glutess.c,v 1.6 2006-03-22 12:49:23 garrigue Exp $ */
+/* $Id: ml_glutess.c,v 1.7 2008-02-25 01:52:20 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
 #include <stdio.h>
@@ -25,7 +25,7 @@
 #ifndef GLU_VERSION_1_2
 #define ML_fail(cname) \
 CAMLprim value ml_##cname (value any) \
-{ ml_raise_gl ("Function not available: "##cname); }
+{ ml_raise_gl ("Function not available: "#cname); }
 ML_fail (gluTesselate)
 ML_fail (gluTesselateAndReturn)
 
