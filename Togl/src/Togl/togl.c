@@ -1,4 +1,4 @@
-/* $Id: togl.c,v 1.11 2006-03-23 00:39:27 garrigue Exp $ */
+/* $Id: togl.c,v 1.12 2008-10-25 02:00:34 garrigue Exp $ */
 
 /*
  * Togl - a Tk OpenGL widget
@@ -12,7 +12,10 @@ extern void togl_prerr(const char*);
 
 /*
  * $Log: togl.c,v $
- * Revision 1.11  2006-03-23 00:39:27  garrigue
+ * Revision 1.12  2008-10-25 02:00:34  garrigue
+ * support 8.5
+ *
+ * Revision 1.11  2006/03/23 00:39:27  garrigue
  * avoid stderr
  *
  * Revision 1.10  2004/11/02 07:03:34  garrigue
@@ -153,12 +156,14 @@ extern void togl_prerr(const char*);
 #  include "tkInt8.3.h"
 #elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==4
 #  include "tkInt8.4.h"
+#elif TK_MAJOR_VERSION==8 && TK_MINOR_VERSION==5
+#  include "tkInt8.5.h"
 #else
-   Sorry, you will have to edit togl.c to include the right tkInt.h file
+#error "Sorry, you will have to edit togl.c to include the right tkInt.h file"
 #endif
 #if defined(WIN32)
 #if TK_MAJOR_VERSION<8
-   Sorry Windows version requires Tcl/Tk ver 8.0 or higher.
+#error "Sorry Windows version requires Tcl/Tk ver 8.0 or higher."
 #endif
 #include "tkFont.h"
 #include "tkWinInt.h"
