@@ -1,3 +1,8 @@
+2008-10-25:
+* support Tcl/Tk 8.5
+* require Raw.static in GlArray (reported by malc)
+* check for GL_ARB_texture_non_power_of_two in GlTex (reported by malc)
+
 2008-01-10:
 * fix GlMap.eval_coord2 (reported by Florent Monnier)
 

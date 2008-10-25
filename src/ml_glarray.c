@@ -24,7 +24,7 @@ int ml_glSizeOfValue(value v) {
    case MLTAG_two: return(2);
    case MLTAG_three: return(3);
    case MLTAG_four: return(4);
-   default: ml_raise_gl("ml_glSizeOfVaue: invalid size");
+   default: ml_raise_gl("ml_glSizeOfValue: invalid size");
    }
 }
 

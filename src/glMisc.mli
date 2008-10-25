@@ -1,8 +1,8 @@
-(* $Id: glMisc.mli,v 1.5 2006-03-23 00:39:28 garrigue Exp $ *)
+(* $Id: glMisc.mli,v 1.6 2008-10-25 02:22:58 garrigue Exp $ *)
 
 (* Getting information *)
 val get_string : [`vendor|`renderer|`version|`extensions] -> string
-
+val check_extension : string -> bool
 
 (* Clipping planes *)
 type equation = float * float * float * float

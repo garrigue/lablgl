@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.12 2007-04-13 02:48:43 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.13 2008-10-25 02:22:58 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -36,8 +36,12 @@ type gen_param = [
 ]
 external gen : coord:coord -> gen_param -> unit = "ml_glTexGen"
 
-let rec is_pow2 n =
-  n = 1 || n land 1 = 0 && is_pow2 (n asr 1)
+let npot = ref None
+
+let check_pow2 n =
+  if !npot = None then
+    npot := Some (GlMisc.check_extension "GL_ARB_texture_non_power_of_two");
+  (!npot = Some true) || (n land (n - 1) = 0)
 
 type format = [
     `color_index
@@ -58,7 +62,7 @@ external image1d :
 let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   let border = if border then 1 else 0 in
-  if not (is_pow2 (width img - 2 * border)) then
+  if not (check_pow2 (width img - 2 * border)) then
     raise (GLerror "Gl.image1d : bad width");
   if height img < 1 then raise (GLerror "Gl.image1d : bad height");
   image1d ~proxy ~level ~internal ~width:(width img) ~border
@@ -70,9 +74,9 @@ external image2d :
 let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> format_size (format img) | Some i -> i in
   let border = if border then 1 else 0 in
-  if not (is_pow2 (width img - 2 * border)) then
+  if not (check_pow2 (width img - 2 * border)) then
     raise (GLerror "Gl.image2d : bad width");
-  if not (is_pow2 (height img - 2 * border)) then
+  if not (check_pow2 (height img - 2 * border)) then
     raise (GLerror "Gl.image2d : bad height");
   image2d ~proxy ~level ~internal ~border
     ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)

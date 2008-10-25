@@ -1,42 +1,47 @@
+(* $Id: glArray.ml,v 1.5 2008-10-25 02:22:58 garrigue Exp $ *)
 
 open Gl
 open Raw
 
 type kind = [`edge_flag | `texture_coord | `color | `index | `normal | `vertex ]
 
-external edge_flag : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
+let check_static func f raw =
+  if not (Raw.static raw) then
+    invalid_arg ("GlArray." ^ func ^ " : buffer must be static")
 
-external tex_coord :
+external _edge_flag : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
+let edge_flag raw = check_static "edge_flag" _edge_flag raw
+
+external _tex_coord :
   [< `one | `two | `three | `four] -> 
   [< `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glTexCoordPointer"
+let tex_coord n = check_static "tex_coord" (_tex_coord n)
 
-external color :
+external _color :
   [< `three | `four] ->
   [< `byte | `ubyte | `short | `ushort | `int | `uint | `float | `double] Raw.t
   -> unit 
 	= "ml_glColorPointer"
+let color n = check_static "color" (_color n)
 
-external index : 
-  [< `ubyte | `short | `int | `float | `double] Raw.t -> unit 
+external _index : [< `ubyte | `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glIndexPointer"
+let index raw = check_static "index" _index raw
 
-external normal : 
-  [< `byte | `short | `int | `float | `double] Raw.t -> unit 
+external _normal : [< `byte | `short | `int | `float | `double] Raw.t -> unit 
 	= "ml_glNormalPointer"
+let normal raw = check_static "normal" _normal raw
 
-external vertex : 
+external _vertex : 
   [< `two | `three | `four] -> [< `short | `int | `float | `double] Raw.t 
   -> unit 
 	= "ml_glVertexPointer"
+let vertex n = check_static "vertex" (_vertex n)
 
-external enable
-    : kind -> unit
-	= "ml_glEnableClientState"
+external enable : kind -> unit= "ml_glEnableClientState"
 
-external disable
-    : kind -> unit
-	= "ml_glDisableClientState"
+external disable : kind -> unit	= "ml_glDisableClientState"
 
 external element : int -> unit = "ml_glArrayElement"
 

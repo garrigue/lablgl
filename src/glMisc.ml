@@ -1,8 +1,23 @@
-(* $Id: glMisc.ml,v 1.7 2006-03-23 00:39:28 garrigue Exp $ *)
+(* $Id: glMisc.ml,v 1.8 2008-10-25 02:22:58 garrigue Exp $ *)
+
+open StdLabels
 
 external get_string : [`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
 
+let rec check_substring ~sep ~start ~buf s =
+  let len = String.length s in
+  if String.length buf < len + start then false else
+  if String.sub buf ~pos:start ~len = s &&
+    (String.length buf = len + start || buf.[len+start] = sep) then true
+  else match
+    try Some (String.index_from buf start sep) with Not_found -> None
+  with
+  | None -> false
+  | Some n -> check_substring ~sep ~start:(n+1) ~buf s
+
+let check_extension s =
+  check_substring ~sep:' ' ~start:0 ~buf:(get_string `extensions) s
 
 type equation = float * float * float * float
 external clip_plane : plane:int -> equation -> unit
