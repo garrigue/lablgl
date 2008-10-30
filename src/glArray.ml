@@ -1,4 +1,4 @@
-(* $Id: glArray.ml,v 1.5 2008-10-25 02:22:58 garrigue Exp $ *)
+(* $Id: glArray.ml,v 1.6 2008-10-30 07:51:33 garrigue Exp $ *)
 
 open Gl
 open Raw
@@ -7,7 +7,8 @@ type kind = [`edge_flag | `texture_coord | `color | `index | `normal | `vertex ]
 
 let check_static func f raw =
   if not (Raw.static raw) then
-    invalid_arg ("GlArray." ^ func ^ " : buffer must be static")
+    invalid_arg ("GlArray." ^ func ^ " : buffer must be static");
+  f raw
 
 external _edge_flag : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
 let edge_flag raw = check_static "edge_flag" _edge_flag raw
