@@ -1,5 +1,5 @@
 
-		LablGL 1.03: Installation and Use instructions
+		LablGL 1.04: Installation and Use instructions
 
 1. Description
 
@@ -9,7 +9,7 @@ LablGlut for standalone applications not using Tcl/Tk.
 
 2. Requisites
 
-  * Objective Caml 3.05 to 3.10
+  * Objective Caml 3.05 to 3.11  (only 3.11 supported on windows)
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
@@ -46,23 +46,17 @@ of Mesa and XFree86. For windows you need to obtain it from
 Precompiled versions of lablGL are available for Windows, and a number
 of Linux distributions. For Linux, just install the package.
 
-For Windows binary distribution:
+For Windows binary distribution for ocaml 3.11:
+(for older versions of ocaml, see instructions inside lablgl-1.03-win32.zip)
 
   a) Install the lablGL distribution.
      The simplest way is to use the command-line version of unzip, and
      unpack it on top of your Objective Caml distribution.
-        C:\Program Files\Objective Caml\> unzip lablgl-1.03-win32.zip
+        C:\Program Files\Objective Caml> unzip lablgl-1.04-msvc.zip
+        (lablgl-1.04-mingw if you use the mingw version of ocaml)
      If you unpacked it somewhere else you must copy manually the
      contents of the bin, lib\stublibs and lib\lablGL directories to
      the corresponding directories of the Objective Caml distribution.
-
-     *** If you are using ocaml 3.10 binaries or later ***
-     OCaml 3.10 on windows uses Tcl/Tk8.4 rather than the default 8.3.
-     To use Togl, you must rename lib\stublibs\dlltogl84.dll into
-     lib\stublibs\dlltogl.dll.
-     Also, if you want to be able to create custom or native executables,
-     rename lib\lablGL\libtogl84.lib into lib\lablGL\libtogl.lib and use
-     ocaml build84.ml in the next step.
 
   b) Compile the Caml parts.
      Go to the lib\lablGL directory, and execute the following command 
@@ -377,4 +371,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.42 2007-12-11 03:20:56 garrigue Exp $
+$Id: README,v 1.43 2008-12-21 11:26:19 garrigue Exp $

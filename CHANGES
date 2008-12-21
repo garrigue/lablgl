@@ -1,3 +1,8 @@
+LablGL 1.04:
+------------
+2008-12-21:
+* support windows compilation for ocaml 3.11
+
 2008-10-25:
 * support Tcl/Tk 8.5
 * require Raw.static in GlArray (reported by malc)
