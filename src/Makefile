@@ -46,12 +46,10 @@ lablgl.cmxa: liblablgl$(XA) $(OPTOBJS) $(CONFIG)
 	$(OPTLINK) -a -o $@ $(OPTOBJS) -cclib -llablgl \
 	  -cclib "$(GLLIBS)"
 else
-liblablgl.a: $(COBJS) $(CONFIG)
-	$(LIBRARIAN) -o lablgl $(COBJS) $(GLLIBS) $(XLIBS)
-lablgl.cma: liblablgl.a $(LIBOBJS) $(CONFIG)
-	$(LIBRARIAN) -o lablgl $(LIBOBJS) $(GLLIBS) $(XLIBS)
-lablgl.cmxa: liblablgl.a $(OPTOBJS) $(CONFIG)
-	$(LIBRARIAN) -o lablgl $(OPTOBJS) $(GLLIBS) $(XLIBS)
+liblablgl$(XA) lablgl.cma: $(COBJS) $(LIBOBJS) $(CONFIG)
+	$(LIBRARIAN) -o lablgl $(COBJS) $(LIBOBJS) $(GLLIBS) $(XLIBS)
+lablgl.cmxa: $(COBJS) $(OPTOBJS) $(CONFIG)
+	$(LIBRARIAN) -o lablgl $(COBJS) $(OPTOBJS) $(GLLIBS) $(XLIBS)
 endif
 
 gl_tags.c: gl_tags.var
@@ -65,7 +63,7 @@ build.ml: build.ml.in ../Makefile.config
 	    -e "s|@TOGL_MLS@|togl|" \
 	    -e "s|@GLUT_MLS@|glut|" \
 	    -e "s|@GLLIBS@|$(GLLIBS)|" \
-	    -e "s|@TKLIBS@|$(TKLIBS)|" \
+	    -e "s|@TKLIBS@|$(TKBLIBS)|" \
 	    -e "s|@GLUTLIBS@|$(GLUTLIBS)|" < build.ml.in > $@
 
 preinstall: build.ml

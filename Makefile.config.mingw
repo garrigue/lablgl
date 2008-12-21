@@ -9,9 +9,13 @@
 # Uncomment if you have the fast ".opt" compilers
 CAMLC = ocamlc.opt
 CAMLOPT = ocamlopt.opt
+LIBRARIAN = ocamlmklib -verbose -ocamlc ocamlc -ocamlopt ocamlopt
 
 # Where to put the lablgl script
-BINDIR = `ocamlc -where`/../bin
+OCAMLDIR = c:/Program Files/Objective Caml
+BINDIR = $(OCAMLDIR)/bin
+DLLDIR = $(OCAMLDIR)/lib/stublibs
+INSTALLDIR = $(OCAMLDIR)/lib/lablGL
 
 # Where to find X headers
 #XINCLUDES = -I/usr/X11R6/include
@@ -20,10 +24,15 @@ BINDIR = `ocamlc -where`/../bin
 
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
-TKINCLUDES = -IC:\Progra~1\Tcl\include
+TK_ROOT = C:/Tcl
+TKINCLUDES = -I"$(TK_ROOT)/include"
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
 #TKLIBS = -ltk83 -ltcl83
-TKLIBS = tk83.lib tcl83.lib -lgdi32 -luser32
+#TKLIBS = -ldopt "$(TK_ROOT)/bin/tcl84.dll" -ldopt "$(TK_ROOT)/bin/tk84.dll" 
+TKBLIBS = -L$(TK_ROOT)/lib tcl84.lib tk84.lib -lws2_32 -luser32 -lgdi32
+TKLIBS = -ldopt -L$(TK_ROOT)/bin -ldopt tcl84.dll -ldopt tk84.dll \
+  -ccopt -L$(TK_ROOT)/lib -cclib tcl84.lib -cclib tk84.lib \
+  -lws2_32 -luser32 -lgdi32
 
 # Where to find OpenGL/Mesa/Glut headers and libraries
 GLINCLUDES = -DHAS_GLEXT_H -DGL_GLEXT_PROTOTYPES -DGLU_VERSION_1_3
@@ -37,7 +46,7 @@ RANLIB = :
 #RANLIB = ranlib
 
 ##### Uncomment these for windows
-TOOLCHAIN = msvc
+#TOOLCHAIN = msvc
 XB = .bat
 XE = .exe
 XS = .dll

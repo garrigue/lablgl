@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <time.h>
 
 #ifdef _MSC_VER
@@ -105,7 +106,7 @@
 /*
  * Define timezone for gettimeofday.
  */
-
+/*
 struct timezone {
     int tz_minuteswest;
     int tz_dsttime;
@@ -113,5 +114,5 @@ struct timezone {
 
 extern int gettimeofday(struct timeval *, struct timezone *);
 EXTERN void		panic _ANSI_ARGS_(TCL_VARARGS(char *,format));
-
+*/
 #endif /* _WINPORT */

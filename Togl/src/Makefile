@@ -35,12 +35,10 @@ togl.cmxa: libtogl$(XA) togl.cmx $(CONFIG)
 	  -cclib "$(GLLIBS) $(TKLIBS)"
 #CUSTOMTOP = -verbose -custom unix.cma
 else
-libtogl.a: $(TOGLOBJS) $(CONFIG)
-	$(LIBRARIAN) -o togl $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
-togl.cma: libtogl.a togl.cmo $(CONFIG)
-	$(LIBRARIAN) -o togl togl.cmo $(GLLIBS) $(TKLIBS) $(XLIBS)
-togl.cmxa: libtogl.a togl.cmx $(CONFIG)
-	$(LIBRARIAN) -o togl togl.cmx $(GLLIBS) $(TKLIBS) $(XLIBS)
+libtogl.a togl.cma: togl.cmo $(TOGLOBJS) $(CONFIG)
+	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
+togl.cmxa: togl.cmx $(TOGLOBJS) $(CONFIG)
+	$(LIBRARIAN) -o togl togl.cmx $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 endif
 
 $(TOGLDIR)/togl.o:
