@@ -62,9 +62,9 @@ build.ml: build.ml.in ../Makefile.config
 	sed -e "s|@LABLGL_MLS@|$(LIBOBJS:.cmo=)|" \
 	    -e "s|@TOGL_MLS@|togl|" \
 	    -e "s|@GLUT_MLS@|glut|" \
-	    -e "s|@GLLIBS@|$(GLLIBS)|" \
-	    -e "s|@TKLIBS@|$(TKBLIBS)|" \
-	    -e "s|@GLUTLIBS@|$(GLUTLIBS)|" < build.ml.in > $@
+	    -e "s|@GLLIBS@|$(GLLIBS0)|" \
+	    -e "s|@TKLIBS@|$(TKLIBS0)|" \
+	    -e "s|@GLUTLIBS@|$(GLUTLIBS0)|" < build.ml.in > $@
 
 preinstall: build.ml
 	if test -d "$(INSTALLDIR)"; then : ; else mkdir -p "$(INSTALLDIR)"; fi

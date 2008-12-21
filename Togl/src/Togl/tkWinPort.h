@@ -32,7 +32,9 @@
 #include <fcntl.h>
 #include <io.h>
 #include <sys/stat.h>
+#ifdef HAS_SYS_TIME
 #include <sys/time.h>
+#endif
 #include <time.h>
 
 #ifdef _MSC_VER

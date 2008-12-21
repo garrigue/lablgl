@@ -9,9 +9,13 @@
 # Uncomment if you have the fast ".opt" compilers
 CAMLC = ocamlc.opt
 CAMLOPT = ocamlopt.opt
+LIBRARIAN = ocamlmklib -verbose -ocamlc ocamlc -ocamlopt ocamlopt
 
 # Where to put the lablgl script
-BINDIR = `ocamlc -where`/../bin
+OCAMLDIR = c:/Program Files/Objective Caml MSVC
+BINDIR = $(OCAMLDIR)/bin
+DLLDIR = $(OCAMLDIR)/lib/stublibs
+INSTALLDIR = $(OCAMLDIR)/lib/lablGL
 
 # Where to find X headers
 XINCLUDES = -I/usr/X11R6/include
@@ -20,14 +24,18 @@ XINCLUDES = -I/usr/X11R6/include
 
 # Where to find Tcl/Tk headers
 # This must the same version as for LablTk
-TKINCLUDES = -IC:/Tcl/include
+TK_ROOT = C:/Tcl
+TKINCLUDES = -I$(TK_ROOT)/include
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-TKLIBS = tk83.lib tcl83.lib gdi32.lib user32.lib
+TKLIBS0 = tk84.lib tcl84.lib gdi32.lib user32.lib
+TKLIBS = -ldopt "-L$(TK_ROOT)/lib $(TKLIBS0)" -cclib "$(TKLIBS0)"
 
 # Where to find OpenGL/Mesa/Glut headers and libraries
 GLINCLUDES =
-GLLIBS = opengl32.lib glu32.lib
-GLUTLIBS = glut32.lib
+GLLIBS0 = opengl32.lib glu32.lib
+GLLIBS = -ldopt "$(GLLIBS0)" -cclib "$(GLLIBS0)"
+GLUTLIBS0 = glut32.lib
+GLUTLIBS = -ldopt "$(GLUTLIBS0)" -cclib "$(GLUTLIBS0)"
 # The following libraries may be required (try to add them one at a time)
 #GLLIBS = -lGL -lGLU -lXmu -lXext -lXi -lcipher -lpthread
 
@@ -36,7 +44,7 @@ RANLIB = :
 #RANLIB = ranlib
 
 ##### Uncomment these for windows
-TOOLCHAIN = msvc
+#TOOLCHAIN = msvc
 XA = .lib
 XB = .bat
 XE = .exe
@@ -58,4 +66,4 @@ XS = .dll
 #TOGLDIR = Togl
 
 # C Compiler options
-#COPTS = -c -O
+COPTS = -c

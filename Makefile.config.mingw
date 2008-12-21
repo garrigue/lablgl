@@ -29,7 +29,7 @@ TKINCLUDES = -I"$(TK_ROOT)/include"
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
 #TKLIBS = -ltk83 -ltcl83
 #TKLIBS = -ldopt "$(TK_ROOT)/bin/tcl84.dll" -ldopt "$(TK_ROOT)/bin/tk84.dll" 
-TKBLIBS = -L$(TK_ROOT)/lib tcl84.lib tk84.lib -lws2_32 -luser32 -lgdi32
+TKLIBS0 = -L$(TK_ROOT)/lib tcl84.lib tk84.lib -lws2_32 -luser32 -lgdi32
 TKLIBS = -ldopt -L$(TK_ROOT)/bin -ldopt tcl84.dll -ldopt tk84.dll \
   -ccopt -L$(TK_ROOT)/lib -cclib tcl84.lib -cclib tk84.lib \
   -lws2_32 -luser32 -lgdi32
@@ -37,7 +37,9 @@ TKLIBS = -ldopt -L$(TK_ROOT)/bin -ldopt tcl84.dll -ldopt tk84.dll \
 # Where to find OpenGL/Mesa/Glut headers and libraries
 GLINCLUDES = -DHAS_GLEXT_H -DGL_GLEXT_PROTOTYPES -DGLU_VERSION_1_3
 GLLIBS = -lglu32 -lopengl32
+GLLIBS0 = $(GLLIBS)
 GLUTLIBS = -lglut32
+GLUTLIBS0 = $(GLUTLIBS)
 # The following libraries may be required (try to add them one at a time)
 #GLLIBS = -lGL -lGLU -lXmu -lXext -lXi -lcipher -lpthread
 
@@ -68,4 +70,4 @@ MKDLL = gcc -mno-cygwin -shared -o
 #TOGLDIR = Togl
 
 # C Compiler options
-#COPTS = -c -O
+COPTS = -c -O -DHAS_SYS_TIME
