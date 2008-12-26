@@ -22,37 +22,17 @@ all: lablgltop$(XE) lablgl$(XB)
 
 opt: togl.cmxa
 
-ifeq ($(TOOLCHAIN), msvc)
-libtogl$(XA): $(TOGLOBJS) $(CONFIG)
-	$(MKLIB)$@ $(TOGLOBJS)
-dlltogl.dll: $(TOGLOBJS:$(XO)=.d$(XO))
-	$(MKDLL)$@ $(TOGLOBJS:$(XO)=.d$(XO)) $(GLLIBS) $(TKLIBS) $(OCAMLDLL)
-togl.cma: libtogl$(XA) dlltogl.dll togl.cmo $(CONFIG)
-	$(LINKER) -a -o $@ togl.cmo -cclib -ltogl -dllib -ltogl \
-	  -cclib "$(GLLIBS) $(TKLIBS)"
-togl.cmxa: libtogl$(XA) togl.cmx $(CONFIG)
-	$(OPTLINK) -a -o $@ togl.cmx -cclib -ltogl \
-	  -cclib "$(GLLIBS) $(TKLIBS)"
-#CUSTOMTOP = -verbose -custom unix.cma
-else
 libtogl.a togl.cma: togl.cmo $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 togl.cmxa: togl.cmx $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
-endif
 
 $(TOGLDIR)/togl.o:
-	cd $(TOGLDIR) && $(MAKE) togl.o CC="$(CAMLC)" CFLAGS='-c -ccopt "$(COPTS) $(INCLUDES) $(TK_FLAGS)"'
+	cd $(TOGLDIR) && $(MAKE) togl.o CC="$(CAMLC) -verbose" CFLAGS='-c -ccopt "$(COPTS) $(INCLUDES) $(TK_FLAGS)"'
 
 $(TOGLDIR)/togl.obj:
 	cd $(TOGLDIR) && \
-        $(CAMLC) -c -ccopt "-DWIN32 $(COPTS) $(INCLUDES) -I." togl.c
-
-$(TOGLDIR)/togl.d.obj:
-	cd $(TOGLDIR) && \
-        $(CAMLC) -c -ccopt "/Fotogl.d.obj -DWIN32" \
-		-ccopt "$(COPTS) $(INCLUDES) -I." \
-		togl.c
+        $(CAMLC) -verbose -c -ccopt "-DWIN32 $(COPTS) $(INCLUDES) -I." togl.c
 
 lablgltop$(XE): ../../src/lablgl.cma togl.cma
 	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \
@@ -100,7 +80,7 @@ toglinstallopt:
 clean:
 	rm -f *.cm* *.o *.obj *.so *.lib *.a *.dll *.exe *.opt *_tags.c \
 	    *_tags.h *~ lablgltop$(EX) lablgl
-	rm -f $(TOGLDIR)/togl$(XO) $(TOGLDIR)/togl.d$(XO)
+	rm -f $(TOGLDIR)/*.o $(TOGLDIR)/*.obj
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

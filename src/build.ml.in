@@ -1,4 +1,4 @@
-(* $Id: build.ml.in,v 1.4 2008-12-26 02:02:28 garrigue Exp $ *)
+(* $Id: build.ml.in,v 1.5 2008-12-26 07:13:21 garrigue Exp $ *)
 (* A script to build lablGL libraries *)
 
 open StdLabels
@@ -116,10 +116,12 @@ let () =
           prerr_endline "You can still use the bytecode version"
     end;
     if !ccomp_type = "msvc" then begin
-      List.iter ["liblablgl"; "libtogl"; "liblablglut"] ~f:(rename ~ext1:".a" ~ext2:".lib");
+      List.iter ["liblablgl"; "libtogl"; "liblablglut"] ~f:(rename ~ext1:".a" ~ext2:".noa");
+      List.iter ["liblablgl"; "libtogl"; "liblablglut"] ~f:(rename ~ext1:".nolib" ~ext2:".lib");
       prerr_endline "Now ready to use on an OCaml MSVC port"
     end else begin
-      List.iter ["liblablgl"; "libtogl"; "liblablglut"] ~f:(rename ~ext2:".a" ~ext1:".lib");
+      List.iter ["liblablgl"; "libtogl"; "liblablglut"] ~f:(rename ~ext1:".noa" ~ext2:".a");
+      List.iter ["liblablgl"; "libtogl"; "liblablglut"] ~f:(rename ~ext1:".lib" ~ext2:".nolib");
       prerr_endline "Now ready to use on an OCaml Mingw port"
     end
   with Failure err ->

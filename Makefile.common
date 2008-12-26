@@ -51,12 +51,6 @@ include $(CONFIG)
 .c$(XO):
 	$(COMPILER) -ccopt "$(COPTS) $(INCLUDES)" $<
 
-.c.d.obj:
-	$(COMPILER) -verbose -ccopt "-DCAML_DLL -Fo$@ $(INCLUDES)" $<
-
-.c.d.o:
-	$(COMPILER) -verbose -ccopt "-DCAML_DLL -o$@ $(INCLUDES)" $<
-
 .var.h:
 	$(VAR2DEF) < $< > $@
 
