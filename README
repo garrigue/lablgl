@@ -46,14 +46,15 @@ of Mesa and XFree86. For windows you need to obtain it from
 Precompiled versions of lablGL are available for Windows, and a number
 of Linux distributions. For Linux, just install the package.
 
-For Windows binary distribution for ocaml 3.11:
-(for older versions of ocaml, see instructions inside lablgl-1.03-win32.zip)
+Windows binary distribution:
+  The file lablgl-1.04-win32.zip supports both MSVC and mingw versions
+  of ocaml 3.11. For older versions of ocaml, you should get
+  lablgl-1.03-win32.zip.
 
   a) Install the lablGL distribution.
      The simplest way is to use the command-line version of unzip, and
      unpack it on top of your Objective Caml distribution.
-        C:\Program Files\Objective Caml> unzip lablgl-1.04-msvc.zip
-        (lablgl-1.04-mingw if you use the mingw version of ocaml)
+        C:\Program Files\Objective Caml> unzip lablgl-1.04-win32.zip
      If you unpacked it somewhere else you must copy manually the
      contents of the bin, lib\stublibs and lib\lablGL directories to
      the corresponding directories of the Objective Caml distribution.
@@ -73,9 +74,7 @@ For Windows binary distribution for ocaml 3.11:
      path.)
 
   After this, you should be able to compile and run programs as either
-  bytecode or native code. Note however that Togl doesn't work for
-  native code with mingw (it works with msvc.) On the other hand,
-  LablGlut does work in all combinations.
+  bytecode or native code.
 
 Compilation from source (if there is no package):
 
@@ -106,7 +105,10 @@ Compilation from source (if there is no package):
      This will install all the available parts.   
 
   To compile for Windows, Makefile.config.msvc and
-  Makefile.config.mingw are provided.
+  Makefile.config.mingw are provided. Note however that the DLL
+  produced for Togl by mingw does not work with the ocaml 3.11 binary
+  distribution, you must use the one   produced by MSVC, included in
+  the binary distribution above.
 
 4. Use
 
@@ -371,4 +373,4 @@ GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
-$Id: README,v 1.43 2008-12-21 11:26:19 garrigue Exp $
+$Id: README,v 1.44 2008-12-26 02:02:28 garrigue Exp $

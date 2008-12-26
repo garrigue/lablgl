@@ -27,8 +27,8 @@ XINCLUDES = -I/usr/X11R6/include
 TK_ROOT = C:/Tcl
 TKINCLUDES = -I$(TK_ROOT)/include
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
-TKLIBS0 = tk84.lib tcl84.lib gdi32.lib user32.lib
-TKLIBS = -ldopt "-L$(TK_ROOT)/lib $(TKLIBS0)" -cclib "$(TKLIBS0)"
+TKLIBS0 = -L$(TK_ROOT)/lib tk84.lib tcl84.lib gdi32.lib user32.lib
+TKLIBS = -ldopt "$(TKLIBS0)" -cclib "$(TKLIBS0)"
 
 # Where to find OpenGL/Mesa/Glut headers and libraries
 GLINCLUDES =
