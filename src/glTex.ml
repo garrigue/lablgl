@@ -1,4 +1,4 @@
-(* $Id: glTex.ml,v 1.13 2008-10-25 02:22:58 garrigue Exp $ *)
+(* $Id: glTex.ml,v 1.14 2012-03-06 03:31:02 garrigue Exp $ *)
 
 open Gl
 open GlPix
@@ -50,7 +50,9 @@ type format = [
   | `blue
   | `alpha
   | `rgb
+  | `bgr
   | `rgba
+  | `bgra
   | `luminance
   | `luminance_alpha
 ]

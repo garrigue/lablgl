@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.7 2007-04-13 02:48:43 garrigue Exp $ *)
+(* $Id: glTex.mli,v 1.8 2012-03-06 03:31:02 garrigue Exp $ *)
 
 open Gl
 
@@ -21,7 +21,7 @@ type gen_param = [
 val gen : coord:coord -> gen_param -> unit
 
 type format =
-    [`color_index|`red|`green|`blue|`alpha|`rgb|`rgba
+    [`color_index|`red|`green|`blue|`alpha|`rgb|`bgr|`rgba|`bgra
     |`luminance|`luminance_alpha]
 val image1d :
   ?proxy:bool -> ?level:int -> ?internal:int -> ?border:bool ->

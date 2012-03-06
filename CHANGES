@@ -1,3 +1,6 @@
+2012-03-06:
+* add `bgr and `bgra to Gl.format and GlTex.format (reported by Vu Ngoc San)
+
 2010-06-16:
 * fix Glut.special_of_int to raise no exception (reported by malc)
 

@@ -1,4 +1,4 @@
-(* $Id: gl.ml,v 1.30 2007-04-13 01:17:50 garrigue Exp $ *)
+(* $Id: gl.ml,v 1.31 2012-03-06 03:31:02 garrigue Exp $ *)
 
 (* Register an exception *)
 
@@ -22,12 +22,12 @@ type kind = [`bitmap|`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 
 type format =
-  [`alpha|`blue|`color_index|`depth_component|`green|`luminance
+  [`alpha|`bgr|`bgra|`blue|`color_index|`depth_component|`green|`luminance
   |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
 let format_size (#format as f) =
   match f with
-    `rgba -> 4
-  | `rgb -> 3
+    `rgba | `bgra -> 4
+  | `rgb | `bgr -> 3
   | `luminance_alpha -> 2
   | _ -> 1
 
