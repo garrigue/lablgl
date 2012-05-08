@@ -20,6 +20,8 @@ open Genlex
 
 let lexer = make_lexer ["->"; "$$"]
 
+let doublons = ref []
+
 let main () =
   let s = lexer (Stream.of_channel stdin) in
   let tags = Hashtbl.create 57 in
@@ -29,17 +31,23 @@ let main () =
 	print_string tag;
 	print_string "\tVal_int(";
 	let hash = hash_variant tag in
-	begin try
-	  failwith
-	    (String.concat ~sep:" "
-	       ["Doublon ~tag:";tag;"and";Hashtbl.find tags hash])
-	with Not_found -> Hashtbl.add tags hash tag
+	begin 
+	  try
+	    doublons := (hash, Hashtbl.find tags hash)::!doublons
+	  with Not_found -> Hashtbl.add tags hash tag
 	end;
 	print_int hash;
 	print_string ")\n"
     | [< ' Kwd "->"; ' Ident _ >] -> ()
     | [< ' Kwd "$$" >] -> ()
     | [< >] -> raise End_of_file
-  done with End_of_file -> ()
+  done with End_of_file -> (
+    match !doublons with
+	[] -> ()
+      | l  -> 
+	prerr_endline "doublons : ";
+	List.iter (fun (h,v) -> prerr_endline (v^" = "^string_of_int h)) l;
+	failwith "doublons founds"
+  )
 
 let _ = Printexc.print main ()

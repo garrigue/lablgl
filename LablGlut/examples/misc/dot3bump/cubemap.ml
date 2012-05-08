@@ -1,4 +1,6 @@
+(*
 open Sdlvideo
+*)
 open Vmaths 
 
 let name_of_target = function
@@ -18,6 +20,8 @@ object(self)
 
   method id = id
 
+(*
+  (* this method requires the Sdlvideo module, it allows saving texture from a raw buffer *)
   method private save_tex data size name =
     let s = create_RGB_surface [] size size 24 0xff000000l 0x00ff0000l 0x0000ff00l 0xffl in 
     lock s;
@@ -30,10 +34,12 @@ object(self)
     done;
     unlock s;
     save_BMP s name
+*)
       
   method private init () = 
     let pack_to_01 (x,y,z) =
-       (0.5 *. x +. 0.5,0.5 *. y +. 0.5, 0.5 *. z +. 0.5)
+      let f x = 0.5 *. x +. 0.5 in
+       (f x, f y, f z)
     and to_rgb (x,y,z) =
       let f x = truncate (255. *. x) in
       [| f x; f y; f z |]
@@ -62,20 +68,20 @@ object(self)
 (*      self#save_tex r size ((name_of_target target)^".bmp"); *)
       GlTex.image2d ~target ~internal:`rgb8 (GlPix.of_raw r ~format:`rgb ~width:size ~height:size)
     in
-    let c i = i +. offset -. halfsize
+    let  c i =    i +. offset -. halfsize
     and nc i = -.(i +. offset -. halfsize) in
     do_face `texture_cube_map_positive_x
-      (fun x y -> (   halfsize,  nc y, nc x ));
+      (fun x y -> (   halfsize,       nc y,       nc x ));
     do_face `texture_cube_map_negative_x
-      (fun x y -> ( -.halfsize, nc y,  c x ));
+      (fun x y -> ( -.halfsize,       nc y,        c x ));
     do_face `texture_cube_map_positive_y
-      (fun x y -> (  c x,   halfsize,  c y ));
+      (fun x y -> (        c x,   halfsize,        c y ));
     do_face `texture_cube_map_negative_y
-      (fun x y -> (  c x, -.halfsize, nc y ));
+      (fun x y -> (        c x, -.halfsize,       nc y ));
     do_face `texture_cube_map_positive_z
-      (fun x y -> (  c x, nc y,   halfsize ));
+      (fun x y -> (        c x,       nc y,   halfsize ));
     do_face `texture_cube_map_negative_z
-      (fun x y -> ( nc x, nc y, -.halfsize ))
+      (fun x y -> (       nc x,       nc y, -.halfsize ))
 
   method bind () =
     GlTex.bind_texture ~target:`texture_cube_map id;

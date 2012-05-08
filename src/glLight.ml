@@ -7,8 +7,10 @@ type color_material =
 external color_material : face:face -> color_material -> unit
     = "ml_glColorMaterial"
 
+type fog_mode = [`linear|`exp|`exp2]
+
 type fog_param = [
-    `mode of [`linear|`exp|`exp2]
+    `mode of fog_mode
   | `density of float
   | `start of float
   | `End of float
@@ -31,12 +33,14 @@ type light_param = [
 ]
 external light : num:int -> light_param -> unit
     = "ml_glLight"
+
+type color_control = [`separate_specular_color | `single_color]
     
 type light_model_param = [
     `ambient of rgba 
   | `local_viewer of bool 
   | `two_side of bool 
-  | `color_control of [`separate_specular_color | `single_color]
+  | `color_control of color_control
 ]
 external light_model : light_model_param -> unit = "ml_glLightModel"
 

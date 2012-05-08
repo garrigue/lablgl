@@ -28,7 +28,10 @@ let clip_plane ~plane equation =
 
 type hint_target =
     [`fog|`line_smooth|`perspective_correction|`point_smooth|`polygon_smooth]
-external hint : hint_target -> [`fastest|`nicest|`dont_care] -> unit
+
+type hint = [`fastest|`nicest|`dont_care]
+
+external hint : hint_target -> hint -> unit
     = "ml_glHint"
 
 external init_names : unit -> unit = "ml_glInitNames"
@@ -44,7 +47,10 @@ type attrib =
 external push_attrib : attrib list -> unit = "ml_glPushAttrib"
 
 external pass_through : float -> unit = "ml_glPassThrough"
-external render_mode : [`render|`select|`feedback] -> int = "ml_glRenderMode"
+
+type render_mode = [`render|`select|`feedback] 
+
+external render_mode : render_mode -> int = "ml_glRenderMode"
 external select_buffer : int -> [`uint] Raw.t -> unit = "ml_glSelectBuffer"
 let select_buffer raw =
   if not (Raw.static raw) then

@@ -8,7 +8,10 @@ val index : float -> unit
     (* Sets the current index *)
 val cull_face : face -> unit
     (* Specifies which faces are candidates for culling *)
-val front_face : [`ccw|`cw] -> unit
+
+type face_dir = [`ccw|`cw]
+
+val front_face : face_dir -> unit
     (* Specifies wether front faces are clockwise or not *)
 val edge_flag : bool -> unit
 val line_width : float -> unit
@@ -17,10 +20,15 @@ val line_stipple : ?factor:int -> short -> unit
        16-bit integer [pattern]. Each bit is used [factor] times *)
 val point_size : float -> unit
 val polygon_offset : factor:float -> units:float -> unit
-val polygon_mode : face:face -> [`fill|`line|`point] -> unit
+
+type polygon_mode = [`fill|`line|`point]
+
+val polygon_mode : face:face -> polygon_mode -> unit
 val polygon_stipple : GlPix.bitmap -> unit
 
-val shade_model : [`flat|`smooth] -> unit
+type shade_model = [`flat|`smooth]
+
+val shade_model : shade_model -> unit
 
 val normal : ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val normal3 : vect3 -> unit

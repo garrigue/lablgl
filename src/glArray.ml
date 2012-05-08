@@ -13,29 +13,35 @@ let check_static func f raw =
 external _edge_flag : [< `bitmap] Raw.t -> unit = "ml_glEdgeFlagPointer"
 let edge_flag raw = check_static "edge_flag" _edge_flag raw
 
+type vertex_array_type = [ `short | `int | `float | `double]
+type normal_array_type = [`byte | `short | `int | `float | `double]
+type color_array_type  = [`byte | `ubyte | `short | `ushort | `int | `uint | `float | `double]
+type index_array_type  = [ `ubyte | `short | `int | `float | `double ]
+type texcoord_array_type = [ `short | `int | `float | `double ]
+
 external _tex_coord :
   [< `one | `two | `three | `four] -> 
-  [< `short | `int | `float | `double] Raw.t -> unit 
+  [< texcoord_array_type ] Raw.t -> unit 
 	= "ml_glTexCoordPointer"
 let tex_coord n = check_static "tex_coord" (_tex_coord n)
 
 external _color :
   [< `three | `four] ->
-  [< `byte | `ubyte | `short | `ushort | `int | `uint | `float | `double] Raw.t
+  [< color_array_type ] Raw.t
   -> unit 
 	= "ml_glColorPointer"
 let color n = check_static "color" (_color n)
 
-external _index : [< `ubyte | `short | `int | `float | `double] Raw.t -> unit 
+external _index : [< index_array_type ] Raw.t -> unit 
 	= "ml_glIndexPointer"
 let index raw = check_static "index" _index raw
 
-external _normal : [< `byte | `short | `int | `float | `double] Raw.t -> unit 
+external _normal : [< normal_array_type ] Raw.t -> unit 
 	= "ml_glNormalPointer"
 let normal raw = check_static "normal" _normal raw
 
 external _vertex : 
-  [< `two | `three | `four] -> [< `short | `int | `float | `double] Raw.t 
+  [< `two | `three | `four] -> [< vertex_array_type ] Raw.t 
   -> unit 
 	= "ml_glVertexPointer"
 let vertex n = check_static "vertex" (_vertex n)

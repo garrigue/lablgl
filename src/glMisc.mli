@@ -11,7 +11,10 @@ val clip_plane : plane:int -> equation -> unit
 (* Speed hint *)
 type hint_target =
     [`fog|`line_smooth|`perspective_correction|`point_smooth|`polygon_smooth]
-val hint : hint_target -> [`fastest|`nicest|`dont_care] -> unit
+
+type hint = [`fastest|`nicest|`dont_care]
+
+val hint : hint_target -> hint -> unit
 
 (* Names *)
 val init_names : unit -> unit
@@ -26,7 +29,9 @@ type attrib =
 val push_attrib : attrib list -> unit
 val pop_attrib : unit -> unit
 
-val render_mode : [`feedback|`render|`select] -> int
+type render_mode = [`feedback|`render|`select]
+
+val render_mode : render_mode -> int
 val pass_through : float -> unit
 val select_buffer : [`uint] Raw.t -> unit
   (* argument must be a static Raw.t *)

@@ -14,6 +14,12 @@ type dfactor =
   | `constant_alpha | `one_minus_constant_alpha ]
 val blend_func : src:sfactor -> dst:dfactor -> unit
 
+val blend_color : Gl.rgba -> unit
+
+type blend_equation = [ `func_add | `func_subtract | `func_reverse_subtract | `min | `max ]
+
+val blend_equation : blend_equation -> unit
+
 val color_mask :
   ?red:bool -> ?green:bool -> ?blue:bool -> ?alpha:bool -> unit -> unit
 

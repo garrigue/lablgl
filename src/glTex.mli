@@ -13,11 +13,15 @@ type env_param = [
 val env : env_param -> unit
 
 type coord = [`s|`t|`r|`q]
+
+type gen_mode_param = [`object_linear|`eye_linear|`sphere_map|`reflection_map|`normal_map]
+
 type gen_param = [
-    `mode of [`object_linear|`eye_linear|`sphere_map|`reflection_map|`normal_map]
+    `mode of gen_mode_param
   | `object_plane of point4
   | `eye_plane of point4
 ]
+
 val gen : coord:coord -> gen_param -> unit
 
 type format =
@@ -39,7 +43,7 @@ type target_2d = [
 | `proxy_texture_cube_map
 ]
 
-(*
+
 type target_1d = [
   `texture_1d
 | `proxy_texture_1d
@@ -49,7 +53,7 @@ type target_3d = [
   `texture_3d
 | `proxy_texture_3d
 ]
-*)
+
 
 val image1d :
   ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
@@ -63,20 +67,27 @@ val image3d :
   ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
   ([< format], [< kind]) GlPix3D.t -> unit
 
+
 type min_filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest
     |`nearest_mipmap_linear|`linear_mipmap_linear]
+type mag_filter = [`nearest|`linear]
 type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border]
 type parameter = [
-    `min_filter of min_filter
-  | `mag_filter of [`nearest|`linear]
-  | `wrap_s of wrap
-  | `wrap_t of wrap
-  | `wrap_r of wrap
-  | `border_color of rgba
-  | `priority of clampf
-  | `generate_mipmap of bool
+  `min_filter of min_filter
+| `mag_filter of mag_filter
+| `wrap_s of wrap
+| `wrap_t of wrap
+| `wrap_r of wrap
+| `border_color of rgba
+| `priority of clampf
+| `generate_mipmap of bool
+| `min_lod of float
+| `max_lod of float
+| `base_level of int
+| `max_level of int
 ] 
+
 val parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
 
 type texture_id

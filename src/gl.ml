@@ -4,7 +4,10 @@
 
 exception GLerror of string
 
+exception TagError of int
+
 let _ = Callback.register_exception "glerror" (GLerror "")
+let _ = Callback.register_exception "tagerror" (TagError 0)
 
 (* Types common to all modules *)
 
@@ -23,7 +26,7 @@ type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance
-  |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
+  |`luminance_alpha|`red|`rgb|`rgba|`bgr|`bgra|`stencil_index]
 
 let format_size (#format as f) =
   match f with
@@ -74,7 +77,8 @@ type cap =
   |`polygon_offset_fill|`polygon_offset_line|`polygon_offset_point
   |`polygon_smooth|`polygon_stipple|`scissor_test|`stencil_test|`texture_1d
   |`texture_2d|`texture_cube_map|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t
-  |`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one|`multisample]
+  |`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one|`multisample
+  | `convolution_1d | `convolution_2d | `separable_2d | `histogram | `minmax ]
 
 external enable : cap -> unit = "ml_glEnable"
 external disable : cap -> unit = "ml_glDisable"

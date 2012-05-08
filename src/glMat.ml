@@ -16,14 +16,21 @@ let load_transpose m =
   if Raw.length m <> 16 then invalid_arg "Gl.load_transpose_matrix";
   load_transpose m
 
+type kind =   
+  [ `modelview_matrix  | `transpose_modelview_matrix
+  | `projection_matrix | `transpose_projection_matrix 
+  | `color_matrix      | `transpose_color_matrix
+  | `texture_matrix    | `transpose_texture_matrix ]
 
-external get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix|`color_matrix] -> t -> unit = "ml_glGetDoublev" 
+external get_matrix : kind -> t -> unit = "ml_glGetDoublev" 
 let get_matrix mode = 
   let model = Raw.create `double ~len:16 in
   get_matrix mode model;
   model
 
-external mode : [`modelview|`projection|`texture|`color] -> unit
+type mode = [`modelview|`projection|`texture|`color]
+
+external mode : mode  -> unit
     = "ml_glMatrixMode"
 external mult : t -> unit = "ml_glMultMatrixd"
 let mult m =

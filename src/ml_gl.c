@@ -22,6 +22,9 @@
 #include "ml_raw.h"
 #include "gl_tags.h"
 #include "ml_gl.h"
+#include <assert.h>
+
+#include "ml_state_macros.h"
 
 #if !defined(GL_VERSION_1_4)
 #define GL_GENERATE_MIPMAP 0x8191
@@ -39,70 +42,111 @@ void ml_raise_gl(const char *errmsg)
   raise_with_string(*gl_exn, (char*)errmsg);
 }
 
+void ml_raise_gltag(value tag){
+  static value * gl_exn = NULL;
+  if (gl_exn == NULL)
+      gl_exn = caml_named_value("tagerror");
+  raise_with_arg(*gl_exn, tag);
+}
+
 value copy_string_check (const char *str)
 {
     if (!str) ml_raise_gl("Null string");
     return copy_string ((char*) str);
 }
 
-struct record {
-    value key; 
+struct record_in {
+    value  key; 
     GLenum data;
 };
 
-static struct record input_table[] = {
+struct record_out {
+    GLenum key;
+    value  data; 
+};
+
+static struct record_in input_table[] = {
 #include "gl_tags.c"
 };
 
-static struct record *tag_table = NULL;
+static struct record_in *tag_table_in = NULL;
+static struct record_out *tag_table_out = NULL;
 
 #define TABLE_SIZE (TAG_NUMBER*2+1)
 
-CAMLprim value ml_gl_make_table (value unit)
+CAMLprim value ml_gl_make_table_in (value unit)
 {
     int i;
     unsigned int hash;
 
-    tag_table = stat_alloc (TABLE_SIZE * sizeof(struct record));
-    memset ((char *) tag_table, 0, TABLE_SIZE * sizeof(struct record));
+    tag_table_in = stat_alloc (TABLE_SIZE * sizeof(struct record_in));
+    memset ((char *) tag_table_in, 0, TABLE_SIZE * sizeof(struct record_in));
     for (i = 0; i < TAG_NUMBER; i++) {
 	hash = (unsigned long) input_table[i].key % TABLE_SIZE;
-	while (tag_table[hash].key != 0) {
+	while (tag_table_in[hash].key != 0) {
 	    hash ++;
 	    if (hash == TABLE_SIZE) hash = 0;
 	}
-	tag_table[hash].key = input_table[i].key;
-	tag_table[hash].data = input_table[i].data;
+	tag_table_in[hash].key  = input_table[i].key;
+	tag_table_in[hash].data = input_table[i].data;
     }
     return Val_unit;
 }
+
+
+CAMLprim value ml_gl_make_table_out (value unit)
+{
+    int i;
+    unsigned int hash;
+
+    tag_table_out = stat_alloc (TABLE_SIZE * sizeof(struct record_out));
+    memset ((char *) tag_table_out, 0, TABLE_SIZE * sizeof(struct record_out));
+    for (i = 0; i < TAG_NUMBER; i++) {
+	hash = (unsigned long) input_table[i].data % TABLE_SIZE;
+	while (tag_table_out[hash].key != 0) {
+	    hash ++;
+	    if (hash == TABLE_SIZE) hash = 0;
+	}
+	tag_table_out[hash].data = input_table[i].key;
+	tag_table_out[hash].key  = input_table[i].data;
+    }
+    return Val_unit;
+}
+
 
 GLenum GLenum_val(value tag)
 {
     unsigned int hash = (unsigned long) tag % TABLE_SIZE;
 
-    if (!tag_table) ml_gl_make_table (Val_unit);
-    while (tag_table[hash].key != tag) {
-	if (tag_table[hash].key == 0) ml_raise_gl ("Unknown tag");
+    if (!tag_table_in) ml_gl_make_table_in (Val_unit);
+    while (tag_table_in[hash].key != tag) {
+	if (tag_table_in[hash].key == 0) ml_raise_gltag (tag);
 	hash++;
 	if (hash == TABLE_SIZE) hash = 0;
     }
     /*
-    fprintf(stderr, "Converted %ld to %d", Int_val(tag), tag_table[hash].data);
+    fprintf(stderr, "Converted %ld to %d", Int_val(tag), tag_table_in[hash].data);
     */
-    return tag_table[hash].data;
+    return tag_table_in[hash].data;
 }
 
-/*
-GLenum GLenum_val(value tag)
+value Val_GLenum(GLenum e)
 {
-    switch(tag)
-    {
-#include "gl_tags.c"
+    unsigned int hash = (unsigned long) e % TABLE_SIZE;
+
+    if (!tag_table_out) ml_gl_make_table_out (Val_unit);
+    while (tag_table_out[hash].key != e) {
+	if (tag_table_out[hash].key == 0) ml_raise_gl ("Tag not found");
+	hash++;
+	if (hash == TABLE_SIZE) hash = 0;
     }
-    ml_raise_gl("Unknown tag");
+
+    /*
+    fprintf(stderr, "Converted %d to %ld", e, tag_table_out[hash].data);
+    */
+    return tag_table_out[hash].data;
 }
-*/
+
 
 ML_2 (glAccum, GLenum_val, Float_val)
 ML_2 (glAlphaFunc, GLenum_val, Float_val)
@@ -113,6 +157,10 @@ ML_5 (glBitmap, Int_val, Int_val, Pair(arg3,Float_val,Float_val),
       Pair(arg4,Float_val,Float_val), Void_raw)
 
 ML_2 (glBlendFunc, GLenum_val, GLenum_val)
+
+ML_4 (glBlendColor, Float_val, Float_val, Float_val, Float_val)
+
+ML_1 (glBlendEquation, GLenum_val)
 
 CAMLprim value ml_glClipPlane(value plane, value equation)  /* ML */
 {
@@ -753,9 +801,10 @@ CAMLprim value ml_glCallLists (value indexes)  /* ML */
     return Val_unit;
 }
 
-/* Multitexture functions */
-/* we don't use the Glenum_val translation facility, and do 
-   that work in the ml module directly 
+/* Multitexture functions  -------------------------------- */
+/* 
+   To speed up the calls, we don't use the Glenum_val translation facility, 
+   and do the work in the ml module directly 
 */
 
 ML_1(glActiveTexture, Int_val)
@@ -801,68 +850,373 @@ ML_2_ARRAY(glMultiTexCoord4fv, Int_val, GLfloat, Double_field)
 ML_2_ARRAY(glMultiTexCoord4iv, Int_val, GLint, Field)
 ML_2_ARRAY(glMultiTexCoord4sv, Int_val, GLshort, Field)
 
-/* Interleaved functions */
+/* Interleaved functions ---------------------------------- */
 
 ML_3(glInterleavedArrays, GLenum_val, Int_val, Void_raw)
 
-/* ColorTable functions */
+/* ColorTable functions ----------------------------------- */
 
 ML_5(glColorTable, GLenum_val, GLenum_val, Int_val, GLenum_val, Type_void_raw)
 
-#define ML_3_RGBA(cname,conv1,conv2)					\
-  CAMLprim value ml_##cname(value arg1, value arg2,			\
-value rgba) {								\
-    int i;								\
-    float color[4];							\
-    for (i = 0; i < 4; i++)						\
-      color[0] = Double_field(rgba, i);					\
-    cname(conv1(arg1), conv2(arg2), color);				\
-    return Val_unit;							\
-  }
+/* replace target parameter with a constant value, since that's what the functions expect
+   and that the ml code passes it also, no need to check */
+#define gl_histogram(x) GL_HISTOGRAM
+#define gl_minmax(x) GL_MINMAX
 
-ML_3_RGBA(glColorTableParameterfv, GLenum_val, GLenum_val)
+SET_1_4F(ColorTableParameterfv, COLOR_TABLE_SCALE, GLenum_val)
+SET_1_4F(ColorTableParameterfv, COLOR_TABLE_BIAS, GLenum_val)
 ML_5(glCopyColorTable, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
 ML_5(glColorSubTable, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
 ML_5(glCopyColorSubTable, GLenum_val, Int_val, Int_val, Int_val, Int_val)
-ML_4(glHistogram, GLenum_val, Int_val, GLenum_val, Bool_val)
-ML_3(glMinmax, GLenum_val, GLenum_val, Bool_val)
+ML_4(glHistogram, gl_histogram, Int_val, GLenum_val, Bool_val)
+ML_3(glMinmax, gl_minmax, GLenum_val, Bool_val)
+ML_1(glResetMinmax, gl_minmax)
 
-/* ConvolutionFilter functions */
+/* ConvolutionFilter functions ---------------------------- */
 
-ML_5(glConvolutionFilter1D, GLenum_val, GLenum_val, Int_val, GLenum_val, Type_void_raw)
-ML_6(glConvolutionFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
+#define gl_convolution_1d(x) GL_CONVOLUTION_1D
+#define gl_convolution_2d(x) GL_CONVOLUTION_2D
+#define gl_separable_2d(x) GL_SEPARABLE_2D
+
+ML_5(glConvolutionFilter1D, gl_convolution_1d, GLenum_val, Int_val, GLenum_val, Type_void_raw)
+ML_6(glConvolutionFilter2D, gl_convolution_2d, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
 ML_bc6(ml_glConvolutionFilter2D)
-ML_7(glSeparableFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw, Void_raw)
+ML_7(glSeparableFilter2D, gl_separable_2d, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw, Void_raw)
 ML_bc7(ml_glSeparableFilter2D)
-ML_5(glCopyConvolutionFilter1D, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
-ML_6(glCopyConvolutionFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, Int_val, Int_val)
+ML_5(glCopyConvolutionFilter1D, gl_convolution_1d, GLenum_val, Int_val, Int_val, Int_val)
+ML_6(glCopyConvolutionFilter2D, gl_convolution_2d, GLenum_val, Int_val, Int_val, Int_val, Int_val)
 ML_bc6(ml_glCopyConvolutionFilter2D)
-ML_3_RGBA(glConvolutionParameterfv,GLenum_val, GLenum_val)
 
-/* State functions */
+SET_1_ENUM(ConvolutionParameteriv,CONVOLUTION_BORDER_MODE,GLenum_val)
+SET_1_4F(ConvolutionParameterfv,CONVOLUTION_FILTER_SCALE, GLenum_val)
+SET_1_4F(ConvolutionParameterfv,CONVOLUTION_FILTER_BIAS, GLenum_val)
 
-//ML_2_ARRAY_(glGetIntegerv, GLenum_val, GLint, Store_field)
+/* State functions ---------------------------------------- */
 
-CAMLprim value ml_max_texture_units(value unit){
-  int v;
-  glGetIntegerv(GL_MAX_TEXTURE_UNITS, &v);
-  return Val_int(v);
+CAMLprim value ml_glGetBoolean(value arg1) {
+  GLboolean b;
+  glGetBooleanv(GLenum_val(arg1), &b);
+  return Val_bool(b);
 }
 
 
-CAMLprim value ml_mode_combine(value unit){
-  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-  return Val_unit;
+CAMLprim value ml_glGetInteger(value arg1) {
+  int i;
+  glGetIntegerv(GLenum_val(arg1), &i);
+  return Val_int(i);
 }
 
-CAMLprim value ml_combine_rgb_replace(value unit){
-  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-  return Val_unit;
+CAMLprim value ml_glGetFloat(value arg1) {
+  float f;
+  value ret = caml_alloc(Double_wosize,Double_tag);
+  glGetFloatv(GLenum_val(arg1), &f);
+  Store_double_val(ret,(double)f);
+  return ret;
+}
+
+CAMLprim value ml_glGetDouble(value arg1) {
+  double d;
+  value ret = caml_alloc(Double_wosize,Double_tag);
+  glGetDoublev(GLenum_val(arg1), &d);
+  Store_double_val(ret,d);
+  return ret;
+}
+
+ML_2_ARRAY_(glGetIntegerv, GLenum_val, GLint, Store_field)
+ML_2_ARRAY_(glGetFloatv, GLenum_val, GLfloat, Store_double_field)
+/* ML_2_ARRAY_(glGetDoublev, GLenum_val, GLdouble, Store_double_field) */
+ML_2_ARRAY_(glGetBooleanv, GLenum_val, GLboolean, Store_field)
+
+CAMLprim value ml_glGetClipPlane(value arg) {
+  GLdouble p[4];
+  value ret;
+  glGetClipPlane(Int_val(arg),p);
+  ret = caml_alloc_tuple(4);
+  Store_tuple_double_val(ret,0,p[0]);
+  Store_tuple_double_val(ret,1,p[1]);
+  Store_tuple_double_val(ret,2,p[2]);
+  Store_tuple_double_val(ret,3,p[3]);
+  return ret;
+}
+
+/* 
+/ this code works, but we'd rather move as much logic out of the C functions
+// into the ocaml modules, to benefit from the boxing facilities built in the 
+// language, as well as any optimization implemented in the future 
+
+CAMLprim value ml_glGetLight(value arg1, value arg2){
+  GLenum pname = GLenum_val(arg2);
+  int    num   = Int_val(arg1);
+  float p[4];
+  value v = Val_unit;
+  value ret = caml_alloc_tuple(2);
+  Field(ret,0) = arg2;
+  
+  switch (arg2){
+  case MLTAG_ambient:
+  case MLTAG_diffuse:
+  case MLTAG_specular:
+  case MLTAG_position:
+    glGetLightfv(num,pname,p);
+    v = caml_alloc_tuple(4);
+    Store_tuple_double_val(v,0,p[0]);
+    Store_tuple_double_val(v,1,p[1]);
+    Store_tuple_double_val(v,2,p[2]);
+    Store_tuple_double_val(v,3,p[3]);
+    Field(ret,1) = v;
+    return ret;
+  case MLTAG_spot_direction:
+    glGetLightfv(num,pname,p);
+    v = caml_alloc_tuple(3);
+    Store_tuple_double_val(v,0,p[0]);
+    Store_tuple_double_val(v,1,p[1]);
+    Store_tuple_double_val(v,2,p[2]);
+    Store_field(ret,1,v);
+    return ret;
+  case MLTAG_spot_exponent:
+  case MLTAG_spot_cutoff:
+  case MLTAG_constant_attenuation:
+  case MLTAG_linear_attenuation:
+  case MLTAG_quadratic_attenuation:
+    glGetLightfv(num,pname,p);
+    Store_tuple_double_val(ret,1,p[0]);
+    return ret;
+  }
+  assert(0);
+}
+
+CAMLprim value ml_glGetMaterial(value arg1, value arg2){
+  GLenum face  = GLenum_val(arg1);
+  GLenum pname = GLenum_val(arg2);
+  float p[4];
+  value ret = Val_unit;
+
+  switch (arg1){
+  case MLTAG_ambient:
+  case MLTAG_diffuse:
+  case MLTAG_ambient_and_diffuse:
+  case MLTAG_specular:
+  case MLTAG_emission:
+    ret = caml_alloc_tuple(2);
+    Field(ret,0) = arg2;
+    Field(ret,1) = caml_alloc_tuple(4);
+    glGetMaterialfv(face,pname,p);
+    Store_double_field(Field(ret,1),0,p[0]);
+    Store_double_field(Field(ret,1),1,p[1]);
+    Store_double_field(Field(ret,1),2,p[2]);
+    Store_double_field(Field(ret,1),3,p[3]);
+    return ret;
+  case MLTAG_color_indexes:
+    ret = caml_alloc_tuple(2);
+    Field(ret,0) = arg2;
+    Field(ret,1) = caml_alloc_tuple(3);
+    glGetMaterialfv(face,pname,p);
+    Store_double_field(Field(ret,1),0,p[0]);
+    Store_double_field(Field(ret,1),1,p[1]);
+    Store_double_field(Field(ret,1),2,p[2]);
+    return ret;
+  case MLTAG_shininess:
+    glGetMaterialfv(face,pname,p);
+    ret = caml_alloc_tuple(2);
+    Field(ret,1) = arg2;
+    Store_double_val(Field(ret,1),*p);
+    return ret;
+  }
+  assert(0);
+}
+*/
+
+
+GET_1_4F(GetLightfv,AMBIENT,Int_val)
+GET_1_4F(GetLightfv,DIFFUSE,Int_val)
+GET_1_4F(GetLightfv,SPECULAR,Int_val)
+GET_1_4F(GetLightfv,POSITION,Int_val)
+
+GET_1_3F(GetLightfv,SPOT_DIRECTION,Int_val)
+
+GET_1_F(GetLightfv,SPOT_EXPONENT,Int_val)
+GET_1_F(GetLightfv,SPOT_CUTOFF,Int_val)
+GET_1_F(GetLightfv,CONSTANT_ATTENUATION,Int_val)
+GET_1_F(GetLightfv,LINEAR_ATTENUATION,Int_val)
+GET_1_F(GetLightfv,QUADRATIC_ATTENUATION,Int_val)
+
+GET_1_4F(GetMaterialfv,AMBIENT,GLenum_val)
+GET_1_4F(GetMaterialfv,DIFFUSE,GLenum_val)
+GET_1_4F(GetMaterialfv,AMBIENT_AND_DIFFUSE,GLenum_val)
+GET_1_4F(GetMaterialfv,SPECULAR,GLenum_val)
+GET_1_4F(GetMaterialfv,EMISSION,GLenum_val)
+GET_1_3F(GetMaterialfv,COLOR_INDEXES,GLenum_val)
+GET_1_F(GetMaterialfv,SHININESS,GLenum_val)
+
+/* replace target with GL_TEXTURE_ENV */
+#define gl_tex_env(x) GL_TEXTURE_ENV
+
+GET_1_ENUM(GetTexEnviv,TEXTURE_ENV_MODE,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,COMBINE_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,COMBINE_ALPHA,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,SOURCE0_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,SOURCE1_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,SOURCE2_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,OPERAND0_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,OPERAND1_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,OPERAND2_RGB,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,SOURCE0_ALPHA,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,SOURCE1_ALPHA,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,SOURCE2_ALPHA,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,OPERAND0_ALPHA,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,OPERAND1_ALPHA,gl_tex_env)
+GET_1_ENUM(GetTexEnviv,OPERAND2_ALPHA,gl_tex_env)
+GET_1_4F(GetTexEnvfv,TEXTURE_ENV_COLOR,gl_tex_env)
+GET_1_3F(GetTexEnvfv,RGB_SCALE,gl_tex_env)
+GET_1_3F(GetTexEnvfv,ALPHA_SCALE,gl_tex_env)
+
+GET_1_ENUM(GetTexGeniv,TEXTURE_GEN_MODE,GLenum_val)
+GET_1_4F(GetTexGenfv,OBJECT_PLANE,GLenum_val)
+GET_1_4F(GetTexGenfv,EYE_PLANE,GLenum_val)
+
+GET_1_4F(GetTexParameterfv,TEXTURE_BORDER_COLOR,GLenum_val)
+GET_1_B(GetTexParameteriv,GENERATE_MIPMAP,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,TEXTURE_MAG_FILTER,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,TEXTURE_MIN_FILTER,GLenum_val)
+GET_1_F(GetTexParameterfv,TEXTURE_PRIORITY,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,TEXTURE_WRAP_R,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,TEXTURE_WRAP_S,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,TEXTURE_WRAP_T,GLenum_val)
+GET_1_F(GetTexParameterfv,TEXTURE_MIN_LOD,GLenum_val)
+GET_1_F(GetTexParameterfv,TEXTURE_MAX_LOD,GLenum_val)
+GET_1_I(GetTexParameteriv,TEXTURE_BASE_LEVEL,GLenum_val)
+GET_1_I(GetTexParameteriv,TEXTURE_MAX_LEVEL,GLenum_val)
+
+GET_2_I(GetTexLevelParameteriv,TEXTURE_WIDTH,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_HEIGHT,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_DEPTH,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_BORDER,GLenum_val,Int_val)
+GET_2_ENUM(GetTexLevelParameteriv,TEXTURE_INTERNAL_FORMAT,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_COMPONENTS,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_RED_SIZE,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_GREEN_SIZE,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_BLUE_SIZE,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_ALPHA_SIZE,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_LUMINANCE_SIZE,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_INTENSITY_SIZE,GLenum_val,Int_val)
+GET_2_B(GetTexLevelParameteriv,TEXTURE_COMPRESSED,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_COMPRESSED_IMAGE_SIZE,GLenum_val,Int_val)
+
+CAMLprim value ml_glGetTexImage(value vtarget, value vlod, value vformat, value vkind){
+  GLenum target = GLenum_val(vtarget);
+  int    lod    = Int_val(vlod);
+  GLenum format = GLenum_val(vformat);
+  GLenum kind   = GLenum_val(vkind);
+
+  value  ret    = caml_alloc_tuple(4);
+  value  data;
+  int width,height,depth;
+  
+  // get some info about the image to compute the needed space
+  glGetTexLevelParameteriv(target, lod, GL_TEXTURE_WIDTH, &width);
+  glGetTexLevelParameteriv(target, lod, GL_TEXTURE_HEIGHT, &height);
+  glGetTexLevelParameteriv(target, lod, GL_TEXTURE_DEPTH, &depth);
+
+  data = ml_raw_alloc(vkind,Val_int(width * height * depth));
+
+  glGetTexImage(target,lod,format,kind,Void_raw(data));
+
+  Field(ret,0) = data;
+  Field(ret,1) = Val_int(width);
+  Field(ret,2) = Val_int(height);
+  Field(ret,3) = Val_int(depth);
+
+  return ret;
+}
+
+CAMLprim value ml_glGetCompressedTexImage(value vtarget, value vlod) {
+  GLenum target = GLenum_val(vtarget);
+  int    lod    = Int_val(vlod);
+
+  value  data;
+  int    width;
+
+  /* get some info about the image to compute the needed space */
+  glGetTexLevelParameteriv(target, lod, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &width);
+
+  data = ml_raw_alloc(MLTAG_ubyte,Val_int(width));
+
+  glGetCompressedTexImage(target,lod,Void_raw(data));
+
+  return data;
+}
+
+CAMLprim value ml_glGetPolygonStipple(value unit){
+
+  const int width = 32, height = 32;
+  value data = ml_raw_alloc(MLTAG_bitmap,Val_int(width * height));
+  glGetPolygonStipple(Void_raw(data));
+  return data;
 }
 
 
-CAMLprim value ml_combine_rgb_add(value unit){
-  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
-  return Val_unit;
+CAMLprim value ml_glGetColorTable(value vtarget, value vformat, value vkind){
+  GLenum target = GLenum_val(vtarget);
+  GLenum format = GLenum_val(vformat);
+  GLenum kind   = GLenum_val(vkind);
+
+  int   width;
+  value data;
+
+  glGetColorTableParameteriv(target,GL_COLOR_TABLE_WIDTH, &width);
+  data = ml_raw_alloc(vkind, Val_int(width));
+  glGetColorTable(target,format,kind,Void_raw(data));
+  return data;
 }
 
+GET_1_ENUM(GetColorTableParameteriv,COLOR_TABLE_FORMAT,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_WIDTH,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_RED_SIZE,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_GREEN_SIZE,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_BLUE_SIZE,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_ALPHA_SIZE,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_LUMINANCE_SIZE,GLenum_val)
+GET_1_I(GetColorTableParameteriv,COLOR_TABLE_INTENSITY_SIZE,GLenum_val)
+GET_1_4F(GetColorTableParameterfv,COLOR_TABLE_SCALE,GLenum_val)
+GET_1_4F(GetColorTableParameterfv,COLOR_TABLE_BIAS,GLenum_val)
+
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_WIDTH,GLenum_val)
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_FORMAT,GLenum_val)
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_RED_SIZE,GLenum_val)
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_GREEN_SIZE,GLenum_val)
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_BLUE_SIZE,GLenum_val)
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_ALPHA_SIZE,GLenum_val)
+GET_1_I(GetHistogramParameteriv,HISTOGRAM_LUMINANCE_SIZE,GLenum_val)
+GET_1_B(GetHistogramParameteriv,HISTOGRAM_SINK,GLenum_val)
+
+GET_1_ENUM(GetMinmaxParameteriv,MINMAX_FORMAT,gl_minmax)
+GET_1_B(GetMinmaxParameteriv,MINMAX_SINK,gl_minmax)
+
+
+#define GET_PRIM(cname, type, count, conv1, setter)		\
+  CAMLprim value ml_##cname##_##count(value arg1) {		\
+    type p[count];						\
+    int i;							\
+    value ret = caml_alloc_tuple(count);			\
+    cname(conv1(arg1),p);					\
+    for (i = 0; i < count; i++)					\
+      setter(ret,i,p[i]);					\
+    return ret;							\
+  }
+
+GET_PRIM(glGetDoublev,double,4,GLenum_val,Store_tuple_double_val);
+GET_PRIM(glGetDoublev,double,3,GLenum_val,Store_tuple_double_val);
+GET_PRIM(glGetDoublev,double,2,GLenum_val,Store_tuple_double_val);
+
+GET_PRIM(glGetIntegerv,int,4,GLenum_val,Store_field);
+GET_PRIM(glGetIntegerv,int,2,GLenum_val,Store_field);
+
+
+CAMLprim value ml_glGetEnum(value pname){
+  GLint p;
+  value ret = caml_alloc_tuple(2);
+  glGetIntegerv(GLenum_val(pname),&p);
+  Field(ret,0) = pname;
+  Field(ret,1) = Val_GLenum(p);
+  return ret;
+}

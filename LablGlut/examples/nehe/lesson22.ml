@@ -78,7 +78,7 @@ let rot = [| 0. ; 0. ; 0. |]
 
 let init_multitexture () = 
   multitexture_supported := GlMisc.check_extension "GL_ARB_multitexture";
-  max_texel_units := GlMultiTex.max_texture_units ();
+  max_texel_units := GlState.get_int `max_texture_units;
   prerr_endline ("number of texture units : "^string_of_int !max_texel_units)
 
 
@@ -89,7 +89,7 @@ let init_lights () =
   GlLight.light ~num:1 (`position light_position);
   Gl.enable `light1
 
-
+(*
 open Sdlvideo
 
 let sdl_load_file filename =
@@ -112,8 +112,8 @@ let pix_of_sdlsurface (img : surface) =
 
 let load_file = sdl_load_file
 let pix_of_img = pix_of_sdlsurface
+*)
 
-(*
 open Images
 open Rgb24
 
@@ -141,7 +141,6 @@ let pix_of_camlimg img =
 
 let load_file = camlimg_load_file
 let pix_of_img = pix_of_camlimg
-*)
 
 let load_gl_textures () =
   let setup_imgs pix ids = 
@@ -555,7 +554,7 @@ let main () =
   ignore (Glut.init Sys.argv);
   Glut.initDisplayMode ~alpha:true ~depth:true ~double_buffer:true ();
   Glut.initWindowSize width height;
-  ignore (Glut.createWindow "O'Caml OpenGL Lesson 5");
+  ignore (Glut.createWindow "O'Caml OpenGL Lesson 22");
   let t = init_gl width height in
   let draw () = draw_gl_scene t in
   Glut.displayFunc draw;

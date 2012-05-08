@@ -22,8 +22,17 @@ val push : unit -> unit
 val pop : unit -> unit
     (* Push and pop the matrix on the stack *)
 
-val mode : [`modelview|`projection|`texture|`color] -> unit
-val get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix|`color_matrix] -> t
+type mode = [`modelview|`projection|`texture|`color]
+
+val mode : mode -> unit
+
+type kind =   
+  [ `modelview_matrix  | `transpose_modelview_matrix
+  | `projection_matrix | `transpose_projection_matrix 
+  | `color_matrix      | `transpose_color_matrix
+  | `texture_matrix    | `transpose_texture_matrix ]
+
+val get_matrix : kind -> t
 
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val scale : ?x:float -> ?y:float -> ?z:float -> unit -> unit

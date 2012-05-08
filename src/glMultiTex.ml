@@ -50,22 +50,32 @@ let active tex = Api.activeTexture (e_of_t tex)
 
 let client_active tex = Api.clientActiveTexture (e_of_t tex)
 
+type mode_param = [`modulate|`decal|`blend|`replace|`combine]
+type combine_rgb_param = [`replace|`modulate|`add|`add_signed|`interpolate|`subtract|`dot3_rgb|`dot3_rgba]
+type combine_alpha_param = [`replace|`modulate|`add |`add_signed |`interpolate |`subtract ]
+
+type source_param = [`texture|`constant|`primary_color|`previous]
+
+type operand_rgb_param = [`src_color|`one_minus_src_color|`src_alpha|`one_minus_src_alpha]
+
+type operand_alpha_param = [`src_alpha|`one_minus_src_alpha]
+
 type env_param = [
-    `mode of [`modulate|`decal|`blend|`replace|`combine]
-  | `combine_rgb of [`replace|`modulate|`add|`add_signed|`interpolate|`subtract|`dot3_rgb|`dot3_rgba]
-  | `combine_alpha of [`replace|`modulate|`add |`add_signed |`interpolate |`subtract ]
-  | `source0_rgb of [`texture|`constant|`primary_color|`previous]
-  | `source1_rgb of [`texture|`constant|`primary_color|`previous]
-  | `source2_rgb of [`texture|`constant|`primary_color|`previous]
-  | `operand0_rgb of [`src_color|`one_minus_src_color|`src_alpha|`one_minus_src_alpha]
-  | `operand1_rgb of [`src_color|`one_minus_src_color|`src_alpha|`one_minus_src_alpha]
-  | `operand2_rgb of [`src_color|`one_minus_src_color|`src_alpha|`one_minus_src_alpha]
-  | `source0_alpha of [`texture|`constant|`primary_color|`previous]
-  | `source1_alpha of [`texture|`constant|`primary_color|`previous]
-  | `source2_alpha of [`texture|`constant|`primary_color|`previous]
-  | `operand0_alpha of [`src_alpha|`one_minus_src_alpha]
-  | `operand1_alpha of [`src_alpha|`one_minus_src_alpha]
-  | `operand2_alpha of [`src_alpha|`one_minus_src_alpha]
+    `mode of mode_param
+  | `combine_rgb of combine_rgb_param
+  | `combine_alpha of combine_alpha_param
+  | `source0_rgb of source_param
+  | `source1_rgb of source_param
+  | `source2_rgb of source_param
+  | `operand0_rgb of operand_rgb_param
+  | `operand1_rgb of operand_rgb_param
+  | `operand2_rgb of operand_rgb_param
+  | `source0_alpha of source_param
+  | `source1_alpha of source_param
+  | `source2_alpha of source_param
+  | `operand0_alpha of operand_alpha_param
+  | `operand1_alpha of operand_alpha_param
+  | `operand2_alpha of operand_alpha_param
   | `color of rgba
 ]
 
@@ -108,9 +118,6 @@ let coord tex ~s ?t ?r ?q () =
 
 (* state queries *)
 
+(*
 external max_texture_units : unit -> int  = "ml_max_texture_units" "noalloc"
-
-external mode_combine : unit -> unit = "ml_mode_combine" "noalloc"
-external combine_rgb_replace : unit -> unit = "ml_combine_rgb_replace" "noalloc"
-external combine_rgb_add : unit -> unit = "ml_combine_rgb_add" "noalloc"
-
+*)

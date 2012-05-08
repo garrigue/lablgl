@@ -7,16 +7,17 @@ type table_format =
   [ `alpha | `blue | `green | `luminance | `luminance_alpha
   | `red | `rgb | `rgba ]
 
+type histogram = [`histogram | `proxy_histogram ]
+
 val table :
   target:table ->
   ?internal:Gl.internalformat ->
-  format:[< table_format ] ->
   ([< table_format ], [< Gl.real_kind ]) GlPix.t -> unit
 
-type parameter = [ `color_table_bias of Gl.rgba | `color_table_scale of Gl.rgba ]
+type parameter = [ `table_bias of Gl.rgba | `table_scale of Gl.rgba ]
 
 val table_parameter :
-  target:table -> parameter:parameter -> Gl.rgba -> unit
+  target:table -> param:parameter -> unit
 
 val copy :
   target:table ->
@@ -25,14 +26,15 @@ val copy :
 val sub_table :
   target:table ->
   start:int ->
-  count:int -> format:[< table_format ] -> [< Gl.real_kind ] Raw.t -> unit
+  count:int -> ([< table_format ], [< Gl.real_kind ]) GlPix.t -> unit
 
 val copy_sub :
   target:table -> start:int -> x:int -> y:int -> count:int -> unit
 
 val histogram : 
-  width:int -> internal:Gl.internalformat -> bool -> unit
+  target:histogram -> width:int -> internal:Gl.internalformat -> bool -> unit
 
 val minmax : 
   internal:Gl.internalformat -> bool -> unit
 
+val reset_minmax : unit -> unit

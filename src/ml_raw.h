@@ -21,4 +21,8 @@
 #define Float_raw(raw) ((float *) Addr_raw(raw))
 #define Double_raw(raw) ((double *) Addr_raw(raw))
 
+/* export these to use them for GlState related functions */
+CAMLprim value ml_raw_alloc (value kind, value len);
+CAMLprim value ml_raw_alloc_static (value kind, value len);
+
 #endif

@@ -18,7 +18,7 @@ LIBOBJS =	raw.cmo \
 		glClear.cmo  	glTex.cmo	glDraw.cmo	glFunc.cmo \
 		gluMisc.cmo	gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo \
 		gluMat.cmo 	glMultiTex.cmo	glArray.cmo     glInterleaved.cmo \
-		glColor.cmo	glConvolution.cmo
+		glColor.cmo	glConvolution.cmo	glState.cmo
 
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)

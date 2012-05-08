@@ -42,9 +42,16 @@ let rotate_z (x,y,z) a =
   and sa = sin a in
   ( ca *. x +. sa *. y, -.sa *. x +. ca *. y, z )
 
+(*
 let vmat_mul m (x,y,z,w) = 
   let dot m = 
     (m 0) *. x +. (m 1) *. y +. (m 2) *. z  +. (m 3) *. w
+  in
+  (dot (fun i -> m.(i).(0)), dot (fun i -> m.(i).(1)), dot (fun i -> m.(i).(2)), m.(3).(3))
+*)
+let vmat_mul m (x,y,z,w) = 
+  let dot m = 
+    (m 0) *. x +. (m 1) *. y +. (m 2) *. z  +. (m 3) *. w 
   in
   (dot (fun i -> m.(i).(0)), dot (fun i -> m.(i).(1)), dot (fun i -> m.(i).(2)), m.(3).(3))
 

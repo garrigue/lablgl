@@ -9,31 +9,37 @@ type kind =
     Raw array must be static. *)
 val edge_flag : [ `bitmap ] Raw.t -> unit
 
+type vertex_array_type = [ `short | `int | `float | `double]
+type normal_array_type = [`byte | `short | `int | `float | `double]
+type color_array_type  = [`byte | `ubyte | `short | `ushort | `int | `uint | `float | `double]
+type index_array_type  = [ `ubyte | `short | `int | `float | `double ]
+type texcoord_array_type = [ `short | `int | `float | `double ]
+
 (** Tell openGL the address of the texCoor array
     Raw array must be static. *)
 val tex_coord :
   [< `one | `two | `three | `four] -> 
-  [< `double | `float | `int | `short ] Raw.t -> unit
+  [< texcoord_array_type ] Raw.t -> unit
 
 (** Tell openGL the address of the color array
     Raw array must be static. *)
 val color :
   [< `three | `four] ->
-  [< `byte | `double | `float | `int | `short | `ubyte | `uint | `ushort ]
+  [< color_array_type ]
   Raw.t -> unit
 
 (** Tell openGL the address of the index array
     Raw array must be static. *)
-val index : [< `double | `float | `int | `short | `ubyte ] Raw.t -> unit
+val index : [< index_array_type ] Raw.t -> unit
 
 (** Tell openGL the address of the normal array
     Raw array must be static. *)
-val normal : [< `byte | `double | `float | `int | `short ] Raw.t -> unit
+val normal : [< normal_array_type ] Raw.t -> unit
 
 (** Tell openGL the address of the vertex array
     Raw array must be static. *)
 val vertex :
-  [< `two | `three | `four] -> [< `double | `float | `int | `short ] Raw.t 
+  [< `two | `three | `four] -> [< vertex_array_type ] Raw.t 
   -> unit
 
 (** Tell openGL the address of to use the specified array

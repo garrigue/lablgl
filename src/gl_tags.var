@@ -34,6 +34,10 @@ modelview_matrix
 projection_matrix
 texture_matrix
 color_matrix
+transpose_modelview_matrix
+transpose_projection_matrix
+transpose_texture_matrix
+transpose_color_matrix
 
 (* glEnable *)
 alpha_test
@@ -49,6 +53,7 @@ sample_alpha_to_coverage
 sample_alpha_to_one
 sample_coverage
 multisample
+
 
 (* color_logic_op *)
 color_material
@@ -150,6 +155,9 @@ constant_color
 one_minus_constant_color
 constant_alpha
 one_minus_constant_alpha
+
+(* glBlendEquation *)
+func_add func_subtract func_reverse_subtract min max
 
 (* glFog *)
 linear exp exp2
@@ -312,6 +320,63 @@ histogram minmax
 convolution_1d convolution_2d separable_2d
 convolution_filter_bias convolution_filter_scale
 
+(* glGetBoolean *)
+current_raster_position_valid
+light_model_local_viewer
+light_model_two_side
+sample_coverage_invert
+color_writemask
+depth_writemask
+rgba_mode
+index_mode
+doublebuffer
+stereo
+
+(* glGetFloatv *)
+
+current_raster_position accum_clear_value current_normal depth_range aliased_point_size_range
+smooth_point_size_range aliased_line_width_range smooth_line_width_range fog_density fog_start 
+fog_end polygon_offset_factor polygon_offset_units post_convolution_red_scale
+post_convolution_green_scale post_convolution_blue_scale post_convolution_alpha_scale
+post_convolution_red_bias post_convolution_green_bias post_convolution_blue_bias
+post_convolution_alpha_bias post_color_matrix_red_scale post_color_matrix_green_scale
+post_color_matrix_blue_scale post_color_matrix_alpha_scale post_color_matrix_red_bias
+post_color_matrix_green_bias post_color_matrix_blue_bias post_color_matrix_alpha_bias
+zoom_x zoom_y current_raster_distance point_size alpha_test_ref
+line_width sample_coverage_value smooth_point_size_granularity smooth_line_width_granularity
+fog_index index_clear_value current_index current_raster_index 
+fog_color blend_color current_color current_raster_color color_clear_value light_model_ambient 
+current_texture_coords current_raster_texture_coords 
+map1_grid_domain map2_grid_domain
+depth_clear_value
+
+(* glGetInteger *)
+num_compressed_texture_formats
+vertex_array_size vertex_array_stride normal_array_stride color_array_size
+color_array_stride index_array_stride edge_flag_array_stride color_matrix_stack_depth
+modelview_stack_depth projection_stack_depth texture_stack_depth line_stipple_pattern
+line_stipple_repeat stencil_value_mask stencil_ref index_writemask stencil_writemask
+stencil_clear_value max_lights max_clip_planes max_color_matrix_stack_depth
+max_modelview_stack_depth max_projection_stack_depth max_texture_stack_depth
+subpixel_bits max_3d_texture_size max_texture_size max_cube_map_texture_size
+max_pixel_map_table max_name_stack_depth max_list_nesting max_eval_order
+max_attrib_stack_depth max_client_attrib_stack_depth aux_buffers max_elements_indices
+max_elements_vertices max_texture_units sample_buffers samples index_bits depth_bits
+stencil_bits accum_red_bits accum_green_bits accum_blue_bits accum_alpha_bits
+list_base list_index list_mode attrib_stack_depth client_attrib_stack_depth
+name_stack_depth selection_buffer_size feedback_buffer_size compressed_texture_formats
+texture_coord_array_size texture_coord_array_stride viewport scissor_box max_viewport_dims
+
+polygon_mode read_buffer draw_buffer feedback_buffer_type
+render_mode texture_compression_hint fog_hint polygon_smooth_hint
+line_smooth_hint point_smooth_hint perspective_correction_hint
+logic_op_mode blend_equation blend_dst blend_src depth_func
+stencil_pass_depth_pass stencil_pass_depth_fail stencil_fail
+stencil_func alpha_test_func active_texture front_face
+cull_face_mode light_model_color_control color_material_face
+color_material_parameter shade_model fog_mode matrix_mode
+texture_coord_array_type index_array_type color_array_type
+normal_array_type vertex_array_type client_active_texture
 
 $$
 (* glLightModel *)
@@ -327,7 +392,7 @@ texture_coord_3 texture_coord_4
 
 (* glPushAttrib *)
 accum_buffer color_buffer current depth_buffer enable eval
-hint list pixel_mode scissor stencil_buffer transform viewport
+hint list pixel_mode scissor stencil_buffer transform 
 
 (* glReadBuffer *)
 aux

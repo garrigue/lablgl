@@ -21,7 +21,7 @@ type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance
-  |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
+  |`luminance_alpha|`red|`rgb|`rgba|`bgr|`bgra|`stencil_index]
 val format_size : [< format] -> int
 
 type internalformat = [
@@ -48,6 +48,7 @@ type face = [`back|`both|`front]
 val flush : unit -> unit
 val finish : unit -> unit
 
+
 type cap =
   [`alpha_test|`auto_normal|`blend|`clip_plane0|`clip_plane1|`clip_plane2
   |`clip_plane3|`clip_plane4|`clip_plane5|`color_material|`cull_face
@@ -62,7 +63,9 @@ type cap =
   |`polygon_offset_fill|`polygon_offset_line|`polygon_offset_point
   |`polygon_smooth|`polygon_stipple|`scissor_test|`stencil_test|`texture_1d
   |`texture_2d|`texture_cube_map|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t
-  |`multisample|`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one]
+  |`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one|`multisample
+  | `convolution_1d | `convolution_2d | `separable_2d | `histogram | `minmax ]
+
 val enable : cap -> unit
 val disable : cap -> unit
 val is_enabled : cap -> bool

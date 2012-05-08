@@ -23,17 +23,19 @@ let coord ~s ?t ?r ?q () =
 let coord2 (s,t) = coord2 s t
 let coord3 (s,t,r) = coord3 s t r
 let coord4 (s,t,r,q) = coord4 s t r q
-type env_param = [
-    `mode of [`modulate|`decal|`blend|`replace|`add] 
-  | `color of rgba
-]
+type env_param =
+  [ `mode of [`modulate|`decal|`blend|`replace|`add] 
+  | `color of rgba ]
+
 external env : env_param -> unit = "ml_glTexEnv"
 type coord = [`s|`t|`r|`q]
-type gen_param = [
-    `mode of [`object_linear|`eye_linear|`sphere_map|`reflection_map|`normal_map]
+
+type gen_mode_param = [`object_linear|`eye_linear|`sphere_map|`reflection_map|`normal_map]
+type gen_param = 
+  [ `mode of gen_mode_param
   | `object_plane of point4
-  | `eye_plane of point4
-]
+  | `eye_plane of point4 ]
+
 external gen : coord:coord -> gen_param -> unit = "ml_glTexGen"
 
 let npot = ref None
@@ -43,8 +45,8 @@ let check_pow2 n =
     npot := Some (GlMisc.check_extension "GL_ARB_texture_non_power_of_two");
   (!npot = Some true) || (n land (n - 1) = 0)
 
-type format = [
-    `color_index
+type format = 
+  [ `color_index
   | `red
   | `green
   | `blue
@@ -52,20 +54,18 @@ type format = [
   | `rgb
   | `rgba
   | `luminance
-  | `luminance_alpha
-]
+  | `luminance_alpha ]
 
-type target_2d = [
-  `texture_2d
-| `texture_cube_map_positive_x
-| `texture_cube_map_negative_x
-| `texture_cube_map_positive_y
-| `texture_cube_map_negative_y
-| `texture_cube_map_positive_z
-| `texture_cube_map_negative_z
-| `proxy_texture_2d
-| `proxy_texture_cube_map
-]
+type target_2d =
+  [ `texture_2d
+  | `texture_cube_map_positive_x
+  | `texture_cube_map_negative_x
+  | `texture_cube_map_positive_y
+  | `texture_cube_map_negative_y
+  | `texture_cube_map_positive_z
+  | `texture_cube_map_negative_z
+  | `proxy_texture_2d
+  | `proxy_texture_cube_map ]
 
 let internal_of_format : [< format] -> internalformat = function
     `color_index
@@ -78,17 +78,13 @@ let internal_of_format : [< format] -> internalformat = function
   | `rgba            -> `rgba
   | `luminance_alpha -> `luminance_alpha
 
-(*
-type target_1d = [
-  `texture_1d
-| `proxy_texture_1d
-]
+type target_1d =
+ [ `texture_1d
+ | `proxy_texture_1d ]
 
-type target_3d = [
-  `texture_3d
-| `proxy_texture_3d
-]
-*)
+type target_3d =
+  [ `texture_3d
+  | `proxy_texture_3d ]
 
 external image1d :
     proxy:bool -> level:int -> internal:internalformat ->
@@ -137,17 +133,24 @@ let image3d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
 type min_filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest
     |`nearest_mipmap_linear|`linear_mipmap_linear]
+
+type mag_filter = [`nearest|`linear]
+
 type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border]
-type parameter = [
-    `min_filter of min_filter
-  | `mag_filter of [`nearest|`linear]
+
+type parameter =
+  [ `min_filter of min_filter
+  | `mag_filter of mag_filter
   | `wrap_s of wrap
   | `wrap_t of wrap
   | `wrap_r of wrap
   | `border_color of rgba
   | `priority of clampf
   | `generate_mipmap of bool
-] 
+  | `min_lod of float
+  | `max_lod of float
+  | `base_level of int
+  | `max_level of int ] 
 
 external parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
     = "ml_glTexParameter"

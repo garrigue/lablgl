@@ -37,6 +37,15 @@ type dfactor = [
 ]
 external blend_func : src:sfactor -> dst:dfactor -> unit = "ml_glBlendFunc"
 
+external blend_color : clampf -> clampf -> clampf -> clampf -> unit = "ml_glBlendColor"
+
+let blend_color (r,g,b,a) =
+  blend_color r g b a
+  
+type blend_equation = [ `func_add | `func_subtract | `func_reverse_subtract | `min | `max ]
+
+external blend_equation : blend_equation -> unit = "ml_glBlendEquation"
+
 external color_mask : bool -> bool -> bool -> bool -> unit
     = "ml_glColorMask"
 let color_mask ?(red=false) ?(green=false) ?(blue=false) ?(alpha=false) ()=

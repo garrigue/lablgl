@@ -6,8 +6,10 @@ type color_material =
     [`emission|`ambient|`diffuse|`specular|`ambient_and_diffuse]
 val color_material : face:face -> color_material -> unit
 
+type fog_mode = [`linear|`exp|`exp2]
+
 type fog_param = [
-    `mode of [`linear|`exp|`exp2]
+    `mode of fog_mode
   | `density of float
   | `start of float
   | `End of float
@@ -30,11 +32,13 @@ type light_param = [
 ]
 val light : num:int -> light_param -> unit
 
+type color_control = [`separate_specular_color|`single_color]
+
 val light_model : [
     `ambient of rgba
   | `local_viewer of bool
   | `two_side of bool
-  | `color_control of [`separate_specular_color|`single_color]
+  | `color_control of color_control
 ] -> unit
 
 type material_param = [
