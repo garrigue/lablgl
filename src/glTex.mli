@@ -15,7 +15,7 @@ type env_param =
 
 type filter_param = [ `lod_bias of float ]
 
-val env : target:env_target -> [env_param | filter_param ] -> unit
+val env : env_target -> [env_param | filter_param ] -> unit
 
 type coord = [`s|`t|`r|`q]
 

@@ -219,7 +219,7 @@ type level_target =
 type level_pname =
   [ `width | `height | `depth | `border | `internal_format | `components 
   | `red_size | `green_size | `blue_size | `alpha_size
-  | `luminance_size | `intensity_size | `compressed | `compressed_image_size ]
+  | `luminance_size | `intensity_size | `depth_size | `compressed | `compressed_image_size ]
 
 type tex_level_parameter =
   [ `width of int
@@ -234,6 +234,7 @@ type tex_level_parameter =
   | `alpha_size of int
   | `luminance_size of int
   | `intensity_size of int
+  | `depth_size of int
   | `compressed of bool
   | `compressed_image_size of int ]
 
@@ -249,9 +250,11 @@ external get_tex_level_blue_size : level_target -> int -> int = "ml_glGetTexLeve
 external get_tex_level_alpha_size : level_target -> int -> int = "ml_glGetTexLevelParameteriv_TEXTURE_ALPHA_SIZE"
 external get_tex_level_luminance_size : level_target -> int -> int = "ml_glGetTexLevelParameteriv_TEXTURE_LUMINANCE_SIZE"
 external get_tex_level_intensity_size : level_target -> int -> int = "ml_glGetTexLevelParameteriv_TEXTURE_INTENSITY_SIZE"
+external get_tex_level_depth_size : level_target -> int -> int = "ml_glGetTexLevelParameteriv_TEXTURE_DEPTH_SIZE"
 external get_tex_level_compressed : level_target -> int -> bool = "ml_glGetTexLevelParameteriv_TEXTURE_COMPRESSED"
 external get_tex_level_compressed_image_size : level_target -> int -> int = "ml_glGetTexLevelParameteriv_TEXTURE_COMPRESSED_IMAGE_SIZE"
-    
+
+
 let get_tex_level_parameter ~target ~lod ~pname =
   match pname with
       `width                 -> `width (get_tex_level_width target lod)
@@ -266,6 +269,7 @@ let get_tex_level_parameter ~target ~lod ~pname =
     | `alpha_size            -> `alpha_size (get_tex_level_alpha_size target lod)
     | `luminance_size        -> `luminance_size (get_tex_level_luminance_size target lod)
     | `intensity_size        -> `intensity_size (get_tex_level_intensity_size target lod)
+    | `depth_size            -> `depth_size (get_tex_level_depth_size target lod)
     | `compressed            -> `compressed (get_tex_level_compressed target lod)
     | `compressed_image_size -> `compressed_image_size (get_tex_level_compressed_image_size target lod)
 
@@ -370,6 +374,10 @@ let get_color_table ~target ~format ~kind =
   let r, width = get_color_table ~target ~format ~kind in
   GlPix.of_raw r ~format ~width ~height:1
 
+external get_convolution_filter : target:[`convolution_1d|`convolution_2d] -> format:[< GlConvolution.format ]  -> kind:([< real_kind] as 'a) -> 'a Raw.t * int * int = "ml_glGetConvolutionFilter"
+
+external get_separable_filter : target:[`separable_2d] -> format:[< GlConvolution.format ]  -> kind:([< real_kind] as 'a) -> 'a Raw.t * int * 'a Raw.t * int = "ml_glGetSeparableFilter"
+
 type histogram_pname =
   [ `histogram_width
   | `histogram_format
@@ -438,10 +446,12 @@ type float4_value =
   | `accum_clear_value of point4 ]
 
 type float3_pname = 
-  [ `current_normal ]
+  [ `current_normal 
+  | `point_distance_attenuation ]
 
 type float3_value = 
-  [ `current_normal of point3 ]
+  [ `current_normal of point3 
+  | `point_distance_attenuation of point3 ]
 
 type float2_pname =
   [ `depth_range
@@ -491,6 +501,9 @@ type float_pname =
   | `zoom_y
   | `current_raster_distance
   | `point_size
+  | `point_size_min
+  | `point_size_max
+  | `point_fade_threshold_size
   | `line_width
   | `sample_coverage_value
   | `smooth_point_size_granularity
@@ -500,7 +513,8 @@ type float_pname =
   | `current_index
   | `current_raster_index 
   | `alpha_test_ref
-  | `depth_clear_value]
+  | `depth_clear_value
+  | `max_texture_lod_bias ]
 
 type float_value =
   [ `fog_density of float
@@ -536,6 +550,9 @@ type float_value =
   | `zoom_y of float
   | `current_raster_distance of float
   | `point_size of float
+  | `point_size_min of float
+  | `point_size_max of float
+  | `point_fade_threshold_size of float
   | `line_width of float
   | `sample_coverage_value of float
   | `smooth_point_size_granularity of float
@@ -545,7 +562,8 @@ type float_value =
   | `current_index of float
   | `current_raster_index of float 
   | `alpha_test_ref of float
-  | `depth_clear_value of float]
+  | `depth_clear_value of float
+  | `max_texture_lod_bias of float ]
 
 type matrix4_pname = GlMat.kind
 
@@ -559,6 +577,7 @@ type color_pname =
   [ `fog_color
   | `blend_color
   | `current_color
+  | `current_secondary_color
   | `current_raster_color
   | `color_clear_value 
   | `light_model_ambient ]
@@ -567,6 +586,7 @@ type color_value =
   [ `fog_color of rgba
   | `blend_color of rgba
   | `current_color of rgba
+  | `current_secondary_color of rgba
   | `current_raster_color of rgba
   | `color_clear_value of rgba
   | `light_model_ambient of rgba ]
@@ -637,6 +657,9 @@ type int_pname =
   | `edge_flag_array_stride
   | `texture_coord_array_size
   | `texture_coord_array_stride
+  | `fog_coord_array_stride
+  | `secondary_color_array_size
+  | `secondary_color_array_stride
   | `color_matrix_stack_depth
   | `modelview_stack_depth
   | `projection_stack_depth
@@ -731,6 +754,9 @@ type int_value =
   | `edge_flag_array_stride of int
   | `texture_coord_array_size of int
   | `texture_coord_array_stride of int
+  | `fog_coord_array_stride of int
+  | `secondary_color_array_size of int
+  | `secondary_color_array_stride of int
   | `color_matrix_stack_depth of int
   | `modelview_stack_depth of int
   | `projection_stack_depth of int
@@ -836,6 +862,7 @@ type enum_pname =
   | `texture_coord_array_type
   | `matrix_mode
   | `fog_mode
+  | `fog_coord_src
   | `shade_model
   | `color_material_parameter
   | `color_material_face
@@ -849,8 +876,10 @@ type enum_pname =
   | `stencil_pass_depth_fail
   | `stencil_pass_depth_pass
   | `depth_func
-  | `blend_src
-  | `blend_dst
+  | `blend_src_rgb
+  | `blend_src_alpha
+  | `blend_dst_rgb
+  | `blend_dst_alpha
   | `blend_equation
   | `logic_op_mode
   | `perspective_correction_hint
@@ -859,6 +888,7 @@ type enum_pname =
   | `polygon_smooth_hint
   | `fog_hint
   | `texture_compression_hint
+  | `generate_mipmap_hint
   | `render_mode
   | `feedback_buffer_type
   | `draw_buffer
@@ -874,6 +904,7 @@ type enum_value =
   | `texture_coord_array_type of GlArray.texcoord_array_type
   | `matrix_mode of GlMat.mode
   | `fog_mode of GlFog.fog_mode
+  | `fog_coord_src of GlFog.coord_src
   | `shade_model of GlDraw.shade_model
   | `color_material_parameter of GlLight.material_param
   | `color_material_face of Gl.face
@@ -887,8 +918,10 @@ type enum_value =
   | `stencil_pass_depth_fail of GlFunc.stencil_op
   | `stencil_pass_depth_pass of GlFunc.stencil_op
   | `depth_func of Gl.cmp_func
-  | `blend_src of GlFunc.sfactor
-  | `blend_dst of GlFunc.dfactor
+  | `blend_src_rgb of GlFunc.sfactor
+  | `blend_dst_rgb of GlFunc.dfactor
+  | `blend_src_alpha of GlFunc.sfactor
+  | `blend_dst_alpha of GlFunc.dfactor
   | `blend_equation of GlFunc.blend_equation
   | `logic_op_mode of GlFunc.logic_op
   | `perspective_correction_hint of GlMisc.hint
@@ -897,6 +930,7 @@ type enum_value =
   | `polygon_smooth_hint of GlMisc.hint
   | `fog_hint of GlMisc.hint
   | `texture_compression_hint of GlMisc.hint
+  | `generate_mipmap_hint of GlMisc.hint
   | `render_mode of GlMisc.render_mode
   | `feedback_buffer_type of GlMisc.feedback_mode
   | `draw_buffer of GlFunc.draw_buffer
@@ -925,6 +959,7 @@ let get_intv : intv_pname -> intv_value = function
     | #int2_pname as y -> get_int2_ y
     | #int_pname  as z -> get_int_ z
     | #enum_pname as w -> get_enum w
+
 (*
 type pointer_value =
   | `texture_binding_xd

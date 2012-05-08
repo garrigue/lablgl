@@ -2,7 +2,7 @@ open Gl
 
 type fog_mode = [`linear|`exp|`exp2]
 
-type coordinate_source = [`fragment_depth| `fog_coordinate]
+type coord_src = [`fragment_depth| `fog_coordinate]
 
 type fog_param =
   [ `mode of fog_mode
@@ -11,8 +11,7 @@ type fog_param =
   | `End of float
   | `index of float
   | `color of rgba
-  | `coordinate_source of coordinate_source ]
-
+  | `coord_src of coord_src ]
 
 external fog : fog_param -> unit = "ml_glFog" "noalloc"
 

@@ -25,6 +25,8 @@ type operand_rgb_param = [`src_color|`one_minus_src_color|`src_alpha|`one_minus_
 
 type operand_alpha_param = [`src_alpha|`one_minus_src_alpha]
 
+type env_target = [ `texture_env | `filter_control ]
+
 type env_param = [
     `mode of mode_param
   | `combine_rgb of combine_rgb_param
@@ -44,7 +46,9 @@ type env_param = [
   | `color of rgba
 ]
 
-val env : env_param -> unit
+type filter_param = [ `lod_bias of float ]
+
+val env : env_target -> [env_param | filter_param] -> unit
 
 val coord1d : texture -> float -> unit
 val coord2d : texture -> float * float -> unit

@@ -68,7 +68,7 @@ let initialize ci_img =
       `wrap_t `clamp;
       `mag_filter `linear;
       `min_filter `linear ];
-  GlTex.env (`mode `decal);
+  GlTex.env `texture_env (`mode `decal);
   Gl.enable `texture_2d;
   GlDraw.shade_model `flat;
   printf "done"; endl();

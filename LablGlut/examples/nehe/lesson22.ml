@@ -421,7 +421,7 @@ let do_mesh1_texel_units tex =
   do_cube_bump do_face;
   (* Third Pass *)
   if (not !emboss) then (
-    GlTex.env (`mode `modulate);
+    GlTex.env `texture_env (`mode `modulate);
     GlTex.bind_texture ~target:`texture_2d tex.ids.(!filter);
     GlFunc.blend_func ~src:`dst_color ~dst:`src_color;
     Gl.enable `lighting;
@@ -445,14 +445,14 @@ let do_mesh2_texel_units tex =
   GlMultiTex.active (`texture0);
   Gl.enable `texture_2d;
   GlTex.bind_texture ~target:`texture_2d  tex.bumps.(!filter);
-  GlMultiTex.env (`mode `combine);
-  GlMultiTex.env (`combine_rgb `replace);
+  GlMultiTex.env `texture_env (`mode `combine);
+  GlMultiTex.env `texture_env (`combine_rgb `replace);
   (* TEXTURE-UNIT #1 *)
   GlMultiTex.active (`texture1);
   Gl.enable `texture_2d;
   GlTex.bind_texture ~target:`texture_2d  tex.invs.(!filter);
-  GlMultiTex.env (`mode `combine);
-  GlMultiTex.env (`combine_rgb `add);
+  GlMultiTex.env `texture_env (`mode `combine);
+  GlMultiTex.env `texture_env (`combine_rgb `add);
   (* General Switches *)
   Gl.disable `blend;
   Gl.disable `lighting;
@@ -474,7 +474,7 @@ let do_mesh2_texel_units tex =
   Gl.disable `blend;
   GlMultiTex.active (`texture0);
   if (not !emboss) then (
-    GlMultiTex.env (`mode `modulate);
+    GlMultiTex.env `texture_env (`mode `modulate);
     GlTex.bind_texture ~target:`texture_2d tex.ids.(!filter);
     GlFunc.blend_func ~src:`dst_color ~dst:`src_color;
     Gl.enable `blend;

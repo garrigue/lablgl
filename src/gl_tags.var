@@ -361,6 +361,8 @@ fog_color blend_color current_color current_raster_color color_clear_value light
 current_texture_coords current_raster_texture_coords 
 map1_grid_domain map2_grid_domain
 depth_clear_value
+point_size_min point_size_max point_fade_threshold_size point_distance_attenuation 
+max_texture_lod_bias
 
 (* glGetInteger *)
 num_compressed_texture_formats
@@ -382,13 +384,20 @@ texture_coord_array_size texture_coord_array_stride viewport scissor_box max_vie
 polygon_mode read_buffer draw_buffer feedback_buffer_type
 render_mode texture_compression_hint fog_hint polygon_smooth_hint
 line_smooth_hint point_smooth_hint perspective_correction_hint
-logic_op_mode blend_equation blend_dst blend_src depth_func
+logic_op_mode blend_equation blend_dst_rgb blend_src_rgb depth_func
 stencil_pass_depth_pass stencil_pass_depth_fail stencil_fail
 stencil_func alpha_test_func active_texture front_face
 cull_face_mode light_model_color_control color_material_face
 color_material_parameter shade_model fog_mode matrix_mode
 texture_coord_array_type index_array_type color_array_type
 normal_array_type vertex_array_type client_active_texture
+blend_dst_alpha blend_src_alpha generate_mipmap_hint
+
+fog_coord_array_type -> GL_FOG_COORDINATE_ARRAY_TYPE
+fog_coord_src -> GL_FOG_COORDINATE_SOURCE
+fog_coord_array_stride ->  GL_FOG_COORDINATE_ARRAY_STRIDE
+
+secondary_color_array_size secondary_color_array_type secondary_color_array_stride
 
 $$
 (* glLightModel *)

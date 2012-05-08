@@ -30,8 +30,7 @@ type env_param =
 
 type filter_param = [ `lod_bias of float ]
 
-external env : target:env_target -> [env_param | filter_param] -> unit = "ml_glTexEnv"
-
+external env : env_target -> [env_param | filter_param] -> unit = "ml_glTexEnv"
 
 type coord = [`s|`t|`r|`q]
 

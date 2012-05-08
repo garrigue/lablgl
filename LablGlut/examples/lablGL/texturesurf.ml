@@ -52,7 +52,7 @@ let myinit () =
   Gl.enable `map2_vertex_3;
   GlMap.grid2 ~n1:20 ~range1:(0.0,1.0) ~n2:20 ~range2:(0.0,1.0);
   let image = make_image () in
-  GlTex.env (`mode `decal);
+  GlTex.env `texture_env (`mode `decal);
   List.iter ~f:(GlTex.parameter ~target:`texture_2d)
     [ `wrap_s `repeat;
       `wrap_t `repeat;

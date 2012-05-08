@@ -30,10 +30,10 @@ type format =
 
 let format_size (#format as f) =
   match f with
-    `rgba -> 4
-  | `rgb -> 3
-  | `luminance_alpha -> 2
-  | _ -> 1
+      `rgba | `bgra -> 4
+    | `rgb  | `bgr -> 3
+    | `luminance_alpha -> 2
+    | _ -> 1
 
 type internalformat = [
   `alpha | `alpha4 | `alpha8 | `alpha12 | `alpha16 

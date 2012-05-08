@@ -87,12 +87,11 @@ type level_target =
   | `texture_cube_map_positive_z
   | `texture_cube_map_negative_z
   | `proxy_texture_2d ]
-(* texture_cube_map not allowed *)
 
 type level_pname =
   [ `width | `height | `depth | `border | `internal_format | `components 
   | `red_size | `green_size | `blue_size | `alpha_size
-  | `luminance_size | `intensity_size | `compressed | `compressed_image_size ]
+  | `luminance_size | `intensity_size | `depth_size | `compressed | `compressed_image_size ]
 
 type tex_level_parameter =
   [ `width of int
@@ -107,11 +106,11 @@ type tex_level_parameter =
   | `alpha_size of int
   | `luminance_size of int
   | `intensity_size of int
+  | `depth_size of int
   | `compressed of bool
   | `compressed_image_size of int ]
 
 val get_tex_level_parameter :  target:level_target -> lod:int -> pname:level_pname -> tex_level_parameter
-
 
 type image_target = 
   [ `texture_1d
@@ -161,6 +160,10 @@ val get_color_table_parameter : target:GlColor.table -> pname:color_table_pname 
 
 val get_color_table : target:GlColor.table -> format:([< GlColor.table_format ] as 'a)  -> kind:([< Gl.real_kind ] as 'b) -> ('a, 'b) GlPix.t
 
+val get_convolution_filter : target:[`convolution_1d|`convolution_2d] -> format:[< GlConvolution.format ]  -> kind:([< Gl.real_kind] as 'a) -> 'a Raw.t * int * int
+
+val get_separable_filter : target:[`separable_2d] -> format:[< GlConvolution.format ]  -> kind:([< Gl.real_kind] as 'a) -> 'a Raw.t * int * 'a Raw.t * int
+
 
 type histogram_pname =
   [ `histogram_width
@@ -207,10 +210,11 @@ type float4_value =
   | `accum_clear_value of Gl.point4 ]
 
 type float3_pname = 
-  [ `current_normal ]
+  [ `current_normal | `point_distance_attenuation ]
 
 type float3_value = 
-  [ `current_normal of Gl.point3 ]
+  [ `current_normal of Gl.point3 
+  | `point_distance_attenuation of Gl.point3 ]
 
 type float2_pname =
   [ `depth_range
@@ -260,6 +264,9 @@ type float_pname =
   | `zoom_y
   | `current_raster_distance
   | `point_size
+  | `point_size_min
+  | `point_size_max
+  | `point_fade_threshold_size
   | `line_width
   | `sample_coverage_value
   | `smooth_point_size_granularity
@@ -269,7 +276,8 @@ type float_pname =
   | `current_index
   | `current_raster_index
   | `alpha_test_ref
-  | `depth_clear_value]
+  | `depth_clear_value
+  | `max_texture_lod_bias ]
 
 type float_value =
   [ `fog_density of float
@@ -305,6 +313,9 @@ type float_value =
   | `zoom_y of float
   | `current_raster_distance of float
   | `point_size of float
+  | `point_size_min of float
+  | `point_size_max of float
+  | `point_fade_threshold_size of float
   | `line_width of float
   | `sample_coverage_value of float
   | `smooth_point_size_granularity of float
@@ -314,7 +325,8 @@ type float_value =
   | `current_index of float
   | `current_raster_index of float
   | `alpha_test_ref of float
-  | `depth_clear_value of float]
+  | `depth_clear_value of float
+  | `max_texture_lod_bias of float ]
 
 type matrix4_pname = GlMat.kind
 
@@ -328,6 +340,7 @@ type color_pname =
   [ `fog_color
   | `blend_color
   | `current_color
+  | `current_secondary_color
   | `current_raster_color
   | `color_clear_value 
   | `light_model_ambient ]
@@ -336,6 +349,7 @@ type color_value =
   [ `fog_color of Gl.rgba
   | `blend_color of Gl.rgba
   | `current_color of Gl.rgba
+  | `current_secondary_color of Gl.rgba
   | `current_raster_color of Gl.rgba
   | `color_clear_value of Gl.rgba
   | `light_model_ambient of Gl.rgba ]
@@ -394,6 +408,9 @@ type int_pname =
   | `edge_flag_array_stride
   | `texture_coord_array_size
   | `texture_coord_array_stride
+  | `fog_coord_array_stride
+  | `secondary_color_array_size
+  | `secondary_color_array_stride
   | `color_matrix_stack_depth
   | `modelview_stack_depth
   | `projection_stack_depth
@@ -488,6 +505,9 @@ type int_value =
   | `texture_coord_array_size of int
   | `texture_coord_array_stride of int
   | `edge_flag_array_stride of int
+  | `fog_coord_array_stride of int
+  | `secondary_color_array_size of int
+  | `secondary_color_array_stride of int
   | `color_matrix_stack_depth of int
   | `modelview_stack_depth of int
   | `projection_stack_depth of int
@@ -593,6 +613,7 @@ type enum_pname =
   | `texture_coord_array_type
   | `matrix_mode
   | `fog_mode
+  | `fog_coord_src
   | `shade_model
   | `color_material_parameter
   | `color_material_face
@@ -606,8 +627,10 @@ type enum_pname =
   | `stencil_pass_depth_fail
   | `stencil_pass_depth_pass
   | `depth_func
-  | `blend_src
-  | `blend_dst
+  | `blend_src_rgb
+  | `blend_src_alpha
+  | `blend_dst_rgb
+  | `blend_dst_alpha
   | `blend_equation
   | `logic_op_mode
   | `perspective_correction_hint
@@ -616,6 +639,7 @@ type enum_pname =
   | `polygon_smooth_hint
   | `fog_hint
   | `texture_compression_hint
+  | `generate_mipmap_hint
   | `render_mode
   | `feedback_buffer_type
   | `draw_buffer
@@ -631,6 +655,7 @@ type enum_value =
   | `texture_coord_array_type of GlArray.texcoord_array_type
   | `matrix_mode of GlMat.mode
   | `fog_mode of GlFog.fog_mode
+  | `fog_coord_src of GlFog.coord_src
   | `shade_model of GlDraw.shade_model
   | `color_material_parameter of GlLight.material_param
   | `color_material_face of Gl.face
@@ -644,8 +669,10 @@ type enum_value =
   | `stencil_pass_depth_fail of GlFunc.stencil_op
   | `stencil_pass_depth_pass of GlFunc.stencil_op
   | `depth_func of Gl.cmp_func
-  | `blend_src of GlFunc.sfactor
-  | `blend_dst of GlFunc.dfactor
+  | `blend_src_rgb of GlFunc.sfactor
+  | `blend_src_alpha of GlFunc.sfactor
+  | `blend_dst_rgb of GlFunc.dfactor
+  | `blend_dst_alpha of GlFunc.dfactor
   | `blend_equation of GlFunc.blend_equation
   | `logic_op_mode of GlFunc.logic_op
   | `perspective_correction_hint of GlMisc.hint
@@ -654,6 +681,7 @@ type enum_value =
   | `polygon_smooth_hint of GlMisc.hint
   | `fog_hint of GlMisc.hint
   | `texture_compression_hint of GlMisc.hint
+  | `generate_mipmap_hint of GlMisc.hint
   | `render_mode of GlMisc.render_mode
   | `feedback_buffer_type of GlMisc.feedback_mode
   | `draw_buffer of GlFunc.draw_buffer

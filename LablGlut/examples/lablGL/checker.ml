@@ -29,7 +29,7 @@ let myinit () =
       `wrap_t `clamp;
       `mag_filter `nearest;
       `min_filter `nearest ];
-  GlTex.env (`mode `decal);
+  GlTex.env `texture_env (`mode `decal);
   Gl.enable `texture_2d;
   GlDraw.shade_model `flat
 

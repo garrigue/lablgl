@@ -166,17 +166,17 @@ object(self)
       GlArray.enable `texture_coord;
       GlMultiTex.client_active (`texture0);
       GlMultiTex.active (`texture0);
-      (* Set up texture environment to do (tex0 dot tex1)*color *)
-      GlMultiTex.env (`mode `combine);
-      GlMultiTex.env (`source0_rgb `texture);
-      GlMultiTex.env (`combine_rgb `replace);
+      (* Set up texture.env `texture_environment to do (tex0 dot tex1)*color *)
+      GlMultiTex.env `texture_env (`mode `combine);
+      GlMultiTex.env `texture_env (`source0_rgb `texture);
+      GlMultiTex.env `texture_env (`combine_rgb `replace);
 
       GlMultiTex.active (`texture1);
 
-      GlMultiTex.env (`mode `combine);
-      GlMultiTex.env (`source0_rgb `texture);
-      GlMultiTex.env (`combine_rgb `dot3_rgb);
-      GlMultiTex.env (`source1_rgb `previous);
+      GlMultiTex.env `texture_env (`mode `combine);
+      GlMultiTex.env `texture_env (`source0_rgb `texture);
+      GlMultiTex.env `texture_env (`combine_rgb `dot3_rgb);
+      GlMultiTex.env `texture_env (`source1_rgb `previous);
 
       GlMultiTex.active (`texture0);
       (* Draw torus *)
@@ -194,8 +194,8 @@ object(self)
       GlArray.disable `texture_coord;
       GlMultiTex.client_active (`texture0);
 
-      (* Return to standard modulate texenv *)
-      GlMultiTex.env (`mode `modulate);
+      (* Return to standard modulate te.env `texture_env *)
+      GlMultiTex.env `texture_env (`mode `modulate);
     );
 
     (* If we are drawing both passes, enable blending to multiply them together *)

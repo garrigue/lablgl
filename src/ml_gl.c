@@ -1162,7 +1162,6 @@ GET_1_F(GetTexParameterfv,TEXTURE_MIN_LOD,GLenum_val)
 GET_1_F(GetTexParameterfv,TEXTURE_MAX_LOD,GLenum_val)
 GET_1_I(GetTexParameteriv,TEXTURE_BASE_LEVEL,GLenum_val)
 GET_1_I(GetTexParameteriv,TEXTURE_MAX_LEVEL,GLenum_val)
-
 #ifdef GL_VERSION_1_4
 GET_1_F(GetTexParameterfv,TEXTURE_LOD_BIAS,GLenum_val)
 GET_1_ENUM(GetTexParameteriv,DEPTH_TEXTURE_MODE,GLenum_val)
@@ -1181,8 +1180,25 @@ GET_2_I(GetTexLevelParameteriv,TEXTURE_BLUE_SIZE,GLenum_val,Int_val)
 GET_2_I(GetTexLevelParameteriv,TEXTURE_ALPHA_SIZE,GLenum_val,Int_val)
 GET_2_I(GetTexLevelParameteriv,TEXTURE_LUMINANCE_SIZE,GLenum_val,Int_val)
 GET_2_I(GetTexLevelParameteriv,TEXTURE_INTENSITY_SIZE,GLenum_val,Int_val)
+GET_2_I(GetTexLevelParameteriv,TEXTURE_DEPTH_SIZE,GLenum_val,Int_val)
 GET_2_B(GetTexLevelParameteriv,TEXTURE_COMPRESSED,GLenum_val,Int_val)
 GET_2_I(GetTexLevelParameteriv,TEXTURE_COMPRESSED_IMAGE_SIZE,GLenum_val,Int_val)
+
+
+int format_size(GLenum format){
+  switch(format){
+
+  case GL_RGBA:
+  case GL_BGRA:
+    return 4;
+  case GL_RGB:
+  case GL_BGR:
+    return 3;
+  case GL_LUMINANCE_ALPHA:
+    return 2;
+  }
+  return 1;
+}
 
 CAMLprim value ml_glGetTexImage(value vtarget, value vlod, value vformat, value vkind){
   GLenum target = GLenum_val(vtarget);
@@ -1199,7 +1215,7 @@ CAMLprim value ml_glGetTexImage(value vtarget, value vlod, value vformat, value 
   glGetTexLevelParameteriv(target, lod, GL_TEXTURE_HEIGHT, &height);
   glGetTexLevelParameteriv(target, lod, GL_TEXTURE_DEPTH, &depth);
 
-  data = ml_raw_alloc(vkind,Val_int(width * height * depth));
+  data = ml_raw_alloc(vkind,Val_int(width * height * depth * format_size(format)));
 
   glGetTexImage(target,lod,format,kind,Void_raw(data));
 
@@ -1236,6 +1252,7 @@ CAMLprim value ml_glGetPolygonStipple(value unit){
   return data;
 }
 
+/* imaging subset */
 
 CAMLprim value ml_glGetColorTable(value vtarget, value vformat, value vkind){
   GLenum target = GLenum_val(vtarget);
@@ -1246,10 +1263,55 @@ CAMLprim value ml_glGetColorTable(value vtarget, value vformat, value vkind){
   value data;
 
   glGetColorTableParameteriv(target,GL_COLOR_TABLE_WIDTH, &width);
-  data = ml_raw_alloc(vkind, Val_int(width));
+  data = ml_raw_alloc(vkind, Val_int(width * format_size(format)));
   glGetColorTable(target,format,kind,Void_raw(data));
   return data;
 }
+
+CAMLprim value ml_glGetConvolutionFilter(value vtarget, value vformat, value vkind){
+  GLenum target = GLenum_val(vtarget);
+  GLenum kind   = GLenum_val(vkind);
+  GLenum format = GLenum_val(vformat);
+  value  ret = caml_alloc_tuple(3);
+
+  int   width;
+  int   height;
+  value data;
+
+  glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH, &width);
+  glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT, &height);
+  data = ml_raw_alloc(vkind, Val_int(width * height * format_size(format)));
+  glGetConvolutionFilter(target,format,kind,Void_raw(data));
+
+  Field(ret,0) = data;
+  Field(ret,1) = Val_int(width);
+  Field(ret,2) = Val_int(height);
+  return ret;
+}
+
+CAMLprim value ml_glGetSeparableFilter(value vtarget, value vformat, value vkind){
+  GLenum target = GLenum_val(vtarget);
+  GLenum kind   = GLenum_val(vkind);
+  GLenum format = GLenum_val(vformat);
+  value  ret = caml_alloc_tuple(4);
+
+  int   width;
+  int   height;
+  value data1, data2;
+
+  glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH, &width);
+  glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT, &height);
+  data1 = ml_raw_alloc(vkind, Val_int(width * format_size(format)));
+  data2 = ml_raw_alloc(vkind, Val_int(height * format_size(format)));
+  glGetSeparableFilter(target,format,kind,Void_raw(data1),Void_raw(data2), NULL);
+
+  Field(ret,0) = data1;
+  Field(ret,1) = Val_int(width);
+  Field(ret,2) = data2;
+  Field(ret,3) = Val_int(height);
+  return ret;
+}
+
 
 GET_1_ENUM(GetColorTableParameteriv,COLOR_TABLE_FORMAT,GLenum_val)
 GET_1_I(GetColorTableParameteriv,COLOR_TABLE_WIDTH,GLenum_val)
@@ -1273,6 +1335,8 @@ GET_1_B(GetHistogramParameteriv,HISTOGRAM_SINK,GLenum_val)
 
 GET_1_ENUM(GetMinmaxParameteriv,MINMAX_FORMAT,gl_minmax)
 GET_1_B(GetMinmaxParameteriv,MINMAX_SINK,gl_minmax)
+
+
 
 
 #define GET_PRIM(cname, type, count, conv1, setter)		\

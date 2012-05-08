@@ -60,6 +60,9 @@ type operand_rgb_param = [`src_color|`one_minus_src_color|`src_alpha|`one_minus_
 
 type operand_alpha_param = [`src_alpha|`one_minus_src_alpha]
 
+
+type env_target = [ `texture_env | `filter_control ]
+
 type env_param = [
     `mode of mode_param
   | `combine_rgb of combine_rgb_param
@@ -79,7 +82,9 @@ type env_param = [
   | `color of rgba
 ]
 
-external env : env_param -> unit = "ml_glTexEnv" "noalloc"
+type filter_param = [ `lod_bias of float ]
+
+external env : env_target -> [env_param | filter_param] -> unit = "ml_glTexEnv" "noalloc"
 
 let coord1d tex f = Api.multiTexCoord1d (e_of_t tex) f
 let coord2d tex (f1,f2) = Api.multiTexCoord2d (e_of_t tex) f1 f2
