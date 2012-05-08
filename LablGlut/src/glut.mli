@@ -1,120 +1,122 @@
-(* 
+(*
 
-   glut.mli: interface for the lablglut GLUT binding. 
+   glut.mli: interface for the lablglut GLUT binding.
 
 *)
 
-type button_t = 
-  | LEFT_BUTTON 
-  | MIDDLE_BUTTON 
+type button_t =
+  | LEFT_BUTTON
+  | MIDDLE_BUTTON
   | RIGHT_BUTTON
   | OTHER_BUTTON of int
 
-type mouse_button_state_t = 
-  | DOWN 
-  | UP 
+type mouse_button_state_t =
+  | DOWN
+  | UP
 
-type special_key_t = 
+type special_key_t =
   | KEY_F1
-  | KEY_F2                      
-  | KEY_F3              
-  | KEY_F4      
+  | KEY_F2
+  | KEY_F3
+  | KEY_F4
   | KEY_F5
-  | KEY_F6                      
-  | KEY_F7                      
-  | KEY_F8                      
-  | KEY_F9                      
-  | KEY_F10                     
-  | KEY_F11                     
-  | KEY_F12                     
+  | KEY_F6
+  | KEY_F7
+  | KEY_F8
+  | KEY_F9
+  | KEY_F10
+  | KEY_F11
+  | KEY_F12
       (* directional keys *)
-  | KEY_LEFT                    
-  | KEY_UP                      
-  | KEY_RIGHT                   
-  | KEY_DOWN                    
-  | KEY_PAGE_UP         
-  | KEY_PAGE_DOWN               
-  | KEY_HOME                    
-  | KEY_END                     
-  | KEY_INSERT                  
+  | KEY_LEFT
+  | KEY_UP
+  | KEY_RIGHT
+  | KEY_DOWN
+  | KEY_PAGE_UP
+  | KEY_PAGE_DOWN
+  | KEY_HOME
+  | KEY_END
+  | KEY_INSERT
+     (* for undefined keys *)
+  | KEY_OTHER of int
 
 type entry_exit_state_t =
-  | LEFT                        
+  | LEFT
   | ENTERED
 
-type menu_state_t = 
-  | MENU_NOT_IN_USE     
-  | MENU_IN_USE         
+type menu_state_t =
+  | MENU_NOT_IN_USE
+  | MENU_IN_USE
 
 type visibility_state_t =
-  | NOT_VISIBLE         
-  | VISIBLE                     
+  | NOT_VISIBLE
+  | VISIBLE
 
-type window_status_t = 
-  | HIDDEN                      
-  | FULLY_RETAINED              
-  | PARTIALLY_RETAINED          
-  | FULLY_COVERED               
+type window_status_t =
+  | HIDDEN
+  | FULLY_RETAINED
+  | PARTIALLY_RETAINED
+  | FULLY_COVERED
 
 type color_index_component_t =
-  | RED                 
-  | GREEN                       
-  | BLUE                        
+  | RED
+  | GREEN
+  | BLUE
 
 type layer_t =
-  | NORMAL                      
-  | OVERLAY                     
+  | NORMAL
+  | OVERLAY
 
 type font_t =
-  | STROKE_ROMAN                
-  | STROKE_MONO_ROMAN           
-  | BITMAP_9_BY_15              
-  | BITMAP_8_BY_13              
-  | BITMAP_TIMES_ROMAN_10       
-  | BITMAP_TIMES_ROMAN_24       
-  | BITMAP_HELVETICA_10 
-  | BITMAP_HELVETICA_12 
-  | BITMAP_HELVETICA_18 
+  | STROKE_ROMAN
+  | STROKE_MONO_ROMAN
+  | BITMAP_9_BY_15
+  | BITMAP_8_BY_13
+  | BITMAP_TIMES_ROMAN_10
+  | BITMAP_TIMES_ROMAN_24
+  | BITMAP_HELVETICA_10
+  | BITMAP_HELVETICA_12
+  | BITMAP_HELVETICA_18
 
 type glut_get_t =
-  | WINDOW_X                    
-  | WINDOW_Y                    
-  | WINDOW_WIDTH                
-  | WINDOW_HEIGHT               
-  | WINDOW_BUFFER_SIZE          
-  | WINDOW_STENCIL_SIZE 
-  | WINDOW_DEPTH_SIZE           
-  | WINDOW_RED_SIZE             
-  | WINDOW_GREEN_SIZE           
-  | WINDOW_BLUE_SIZE            
-  | WINDOW_ALPHA_SIZE           
-  | WINDOW_ACCUM_RED_SIZE       
-  | WINDOW_ACCUM_GREEN_SIZE     
-  | WINDOW_ACCUM_BLUE_SIZE      
-  | WINDOW_ACCUM_ALPHA_SIZE     
-  | WINDOW_DOUBLEBUFFER 
-  | WINDOW_RGBA         
-  | WINDOW_PARENT               
-  | WINDOW_NUM_CHILDREN 
-  | WINDOW_COLORMAP_SIZE        
-  | WINDOW_NUM_SAMPLES          
-  | WINDOW_STEREO               
-  | WINDOW_CURSOR               
-  | SCREEN_WIDTH                
-  | SCREEN_HEIGHT               
-  | SCREEN_WIDTH_MM             
-  | SCREEN_HEIGHT_MM            
-  | MENU_NUM_ITEMS              
+  | WINDOW_X
+  | WINDOW_Y
+  | WINDOW_WIDTH
+  | WINDOW_HEIGHT
+  | WINDOW_BUFFER_SIZE
+  | WINDOW_STENCIL_SIZE
+  | WINDOW_DEPTH_SIZE
+  | WINDOW_RED_SIZE
+  | WINDOW_GREEN_SIZE
+  | WINDOW_BLUE_SIZE
+  | WINDOW_ALPHA_SIZE
+  | WINDOW_ACCUM_RED_SIZE
+  | WINDOW_ACCUM_GREEN_SIZE
+  | WINDOW_ACCUM_BLUE_SIZE
+  | WINDOW_ACCUM_ALPHA_SIZE
+  | WINDOW_DOUBLEBUFFER
+  | WINDOW_RGBA
+  | WINDOW_PARENT
+  | WINDOW_NUM_CHILDREN
+  | WINDOW_COLORMAP_SIZE
+  | WINDOW_NUM_SAMPLES
+  | WINDOW_STEREO
+  | WINDOW_CURSOR
+  | SCREEN_WIDTH
+  | SCREEN_HEIGHT
+  | SCREEN_WIDTH_MM
+  | SCREEN_HEIGHT_MM
+  | MENU_NUM_ITEMS
       (* | DISPLAY_MODE_POSSIBLE : use getBool *)
-  | INIT_WINDOW_X               
-  | INIT_WINDOW_Y               
-  | INIT_WINDOW_WIDTH           
-  | INIT_WINDOW_HEIGHT          
-  | INIT_DISPLAY_MODE           
-  | ELAPSED_TIME                
-  | WINDOW_FORMAT_ID 
+  | INIT_WINDOW_X
+  | INIT_WINDOW_Y
+  | INIT_WINDOW_WIDTH
+  | INIT_WINDOW_HEIGHT
+  | INIT_DISPLAY_MODE
+  | ELAPSED_TIME
+  | WINDOW_FORMAT_ID
 
-type glut_get_bool_t = 
+type glut_get_bool_t =
   | DISPLAY_MODE_POSSIBLE
 
 (* display mode bit masks *)
@@ -132,79 +134,79 @@ val stereo:int
 val luminance:int
 
 type device_get_t =
-  | HAS_KEYBOARD                
-  | HAS_MOUSE                   
-  | HAS_SPACEBALL               
-  | HAS_DIAL_AND_BUTTON_BOX     
-  | HAS_TABLET                  
-  | NUM_MOUSE_BUTTONS           
-  | NUM_SPACEBALL_BUTTONS       
-  | NUM_BUTTON_BOX_BUTTONS      
-  | NUM_DIALS                   
-  | NUM_TABLET_BUTTONS          
-  | DEVICE_IGNORE_KEY_REPEAT   
-  | DEVICE_KEY_REPEAT          
-  | HAS_JOYSTICK                
-  | OWNS_JOYSTICK               
-  | JOYSTICK_BUTTONS            
-  | JOYSTICK_AXES               
-  | JOYSTICK_POLL_RATE          
+  | HAS_KEYBOARD
+  | HAS_MOUSE
+  | HAS_SPACEBALL
+  | HAS_DIAL_AND_BUTTON_BOX
+  | HAS_TABLET
+  | NUM_MOUSE_BUTTONS
+  | NUM_SPACEBALL_BUTTONS
+  | NUM_BUTTON_BOX_BUTTONS
+  | NUM_DIALS
+  | NUM_TABLET_BUTTONS
+  | DEVICE_IGNORE_KEY_REPEAT
+  | DEVICE_KEY_REPEAT
+  | HAS_JOYSTICK
+  | OWNS_JOYSTICK
+  | JOYSTICK_BUTTONS
+  | JOYSTICK_AXES
+  | JOYSTICK_POLL_RATE
 
-type layerget_t = 
-  | OVERLAY_POSSIBLE           
+type layerget_t =
+  | OVERLAY_POSSIBLE
       (* | LAYER_IN_USE : use layerGetInUse *)
-  | HAS_OVERLAY         
+  | HAS_OVERLAY
       (* | TRANSPARENT_INDEX : use layerGetTransparentIndex *)
-  | NORMAL_DAMAGED              
-  | OVERLAY_DAMAGED             
+  | NORMAL_DAMAGED
+  | OVERLAY_DAMAGED
 
-type video_resize_t = 
-  | VIDEO_RESIZE_POSSIBLE       
-  | VIDEO_RESIZE_IN_USE 
-  | VIDEO_RESIZE_X_DELTA        
-  | VIDEO_RESIZE_Y_DELTA        
-  | VIDEO_RESIZE_WIDTH_DELTA    
-  | VIDEO_RESIZE_HEIGHT_DELTA   
-  | VIDEO_RESIZE_X              
-  | VIDEO_RESIZE_Y              
-  | VIDEO_RESIZE_WIDTH          
-  | VIDEO_RESIZE_HEIGHT 
+type video_resize_t =
+  | VIDEO_RESIZE_POSSIBLE
+  | VIDEO_RESIZE_IN_USE
+  | VIDEO_RESIZE_X_DELTA
+  | VIDEO_RESIZE_Y_DELTA
+  | VIDEO_RESIZE_WIDTH_DELTA
+  | VIDEO_RESIZE_HEIGHT_DELTA
+  | VIDEO_RESIZE_X
+  | VIDEO_RESIZE_Y
+  | VIDEO_RESIZE_WIDTH
+  | VIDEO_RESIZE_HEIGHT
 
 (* key modifier bit masks *)
 val active_shift:int
 val active_ctrl:int
 val active_alt:int
 
-type cursor_t = 
+type cursor_t =
     (* Basic arrows. *)
-  | CURSOR_RIGHT_ARROW          
-  | CURSOR_LEFT_ARROW           
+  | CURSOR_RIGHT_ARROW
+  | CURSOR_LEFT_ARROW
       (* Symbolic cursor shapes. *)
-  | CURSOR_INFO         
-  | CURSOR_DESTROY              
-  | CURSOR_HELP         
-  | CURSOR_CYCLE                
-  | CURSOR_SPRAY                
-  | CURSOR_WAIT         
-  | CURSOR_TEXT         
-  | CURSOR_CROSSHAIR            
+  | CURSOR_INFO
+  | CURSOR_DESTROY
+  | CURSOR_HELP
+  | CURSOR_CYCLE
+  | CURSOR_SPRAY
+  | CURSOR_WAIT
+  | CURSOR_TEXT
+  | CURSOR_CROSSHAIR
       (* Directional cursors. *)
-  | CURSOR_UP_DOWN              
-  | CURSOR_LEFT_RIGHT           
+  | CURSOR_UP_DOWN
+  | CURSOR_LEFT_RIGHT
       (* Sizing cursors. *)
-  | CURSOR_TOP_SIDE             
-  | CURSOR_BOTTOM_SIDE          
-  | CURSOR_LEFT_SIDE            
-  | CURSOR_RIGHT_SIDE           
-  | CURSOR_TOP_LEFT_CORNER      
-  | CURSOR_TOP_RIGHT_CORNER     
-  | CURSOR_BOTTOM_RIGHT_CORNER  
-  | CURSOR_BOTTOM_LEFT_CORNER   
+  | CURSOR_TOP_SIDE
+  | CURSOR_BOTTOM_SIDE
+  | CURSOR_LEFT_SIDE
+  | CURSOR_RIGHT_SIDE
+  | CURSOR_TOP_LEFT_CORNER
+  | CURSOR_TOP_RIGHT_CORNER
+  | CURSOR_BOTTOM_RIGHT_CORNER
+  | CURSOR_BOTTOM_LEFT_CORNER
   | CURSOR_INHERIT                (* inherit cursor from parent window *)
   | CURSOR_NONE               (* blank cursor *)
   | CURSOR_FULL_CROSSHAIR   (* full-screen crosshair (if available) *)
 
-type game_mode_t = 
+type game_mode_t =
   | GAME_MODE_ACTIVE
   | GAME_MODE_POSSIBLE
   | GAME_MODE_WIDTH
@@ -213,13 +215,13 @@ type game_mode_t =
   | GAME_MODE_REFRESH_RATE
   | GAME_MODE_DISPLAY_CHANGED
 
-type key_repeat_t = 
+type key_repeat_t =
   | KEY_REPEAT_OFF
   | KEY_REPEAT_ON
   | KEY_REPEAT_DEFAULT
 
 exception BadEnum of string
-exception InvalidState of string 
+exception InvalidState of string
 
     (* GLUT initialization sub-API. *)
 val init: argv:(string array)->string array (* returns new argv *)
@@ -246,7 +248,7 @@ val swapBuffers: unit->unit
 val createSubWindow: win:int->x:int->y:int->w:int->h:int->int
 val destroyWindow: win:int->unit
 val getWindow: unit->int
-val setWindow: win:int->unit  
+val setWindow: win:int->unit
 val setWindowTitle: title:string->unit
 val setIconTitle: title:string->unit
 val positionWindow: x:int->y:int->unit
@@ -286,9 +288,9 @@ val reshapeFunc: cb:(w:int->h:int->unit)->unit
 val keyboardFunc: cb:(key:int->x:int->y:int->unit)->unit
 val mouseFunc: cb:(button:button_t->state:mouse_button_state_t->
   x:int->y:int->unit)->unit
-val motionFunc: cb:(x:int->y:int->unit)->unit 
-val passiveMotionFunc: cb:(x:int->y:int->unit)->unit 
-val entryFunc: cb:(state:entry_exit_state_t->unit)->unit 
+val motionFunc: cb:(x:int->y:int->unit)->unit
+val passiveMotionFunc: cb:(x:int->y:int->unit)->unit
+val entryFunc: cb:(state:entry_exit_state_t->unit)->unit
 val visibilityFunc: cb:(state:visibility_state_t->unit)->unit
 val idleFunc: cb:((unit->unit) option)->unit
 (* you can set as many timer as you want simultanesouly *)
@@ -311,15 +313,15 @@ val copyColormap: win:int->unit
 
     (* GLUT state retrieval sub-API. *)
 val get: gtype:glut_get_t->int
-val getBool: gtype:glut_get_bool_t->bool 
+val getBool: gtype:glut_get_bool_t->bool
 val deviceGet: dgtype:device_get_t->int
 
     (* GLUT extension support sub-API *)
 val extensionSupported: name:string->bool
-val getModifiers: unit->int 
-val layerGetTransparentIndex: unit->int 
+val getModifiers: unit->int
+val layerGetTransparentIndex: unit->int
 val layerGetInUse: unit->layer_t
-val layerGet: lgtype:layerget_t->bool 
+val layerGet: lgtype:layerget_t->bool
 
     (* GLUT font sub-API *)
 val bitmapCharacter: font:font_t->c:int->unit
@@ -360,7 +362,7 @@ val bitmapLength: font:font_t->str:string->int
 val strokeLength: font:font_t->str:string->int
 val windowStatusFunc: cb:(state:window_status_t->unit)->unit
 val postWindowRedisplay: win:int->unit
-val postWindowOverlayRedisplay: win:int->unit 
+val postWindowOverlayRedisplay: win:int->unit
 val keyboardUpFunc: cb:(key:int->x:int->y:int->unit)->unit
 val specialUpFunc: cb:(key:special_key_t->x:int->y:int->unit)->unit
 val ignoreKeyRepeat: ignore:bool->unit

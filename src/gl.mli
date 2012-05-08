@@ -1,4 +1,4 @@
-(* $Id: gl.mli,v 1.22 2007-04-13 01:17:50 garrigue Exp $ *)
+(* $Id: gl.mli,v 1.23 2012-03-06 03:31:02 garrigue Exp $ *)
 
 (* Exceptions *)
 
@@ -20,8 +20,9 @@ type kind = [`bitmap|`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 
 type format =
-  [`alpha|`blue|`color_index|`depth_component|`green|`luminance
-  |`luminance_alpha|`red|`rgb|`rgba|`bgr|`bgra|`stencil_index]
+  [`alpha|`bgr|`bgra|`blue|`color_index|`depth_component|`green|`luminance
+  |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
+
 val format_size : [< format] -> int
 
 type internalformat = [

@@ -1,4 +1,4 @@
-(* $Id: glTex.mli,v 1.7 2007-04-13 02:48:43 garrigue Exp $ *)
+(* $Id: glTex.mli,v 1.8 2012-03-06 03:31:02 garrigue Exp $ *)
 
 open Gl
 

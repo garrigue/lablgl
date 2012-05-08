@@ -177,8 +177,8 @@ uint -> GL_UNSIGNED_INT
 load add mult return
 
 (* glDrawPixels *)
-color_index stencil_index depth_component rgba
-red green blue alpha rgb luminance luminance_alpha
+color_index stencil_index depth_component rgb bgr rgba bgra
+red green blue alpha luminance luminance_alpha
 
 (* glHint *)
 dont_care fastest nicest
@@ -431,3 +431,6 @@ no_error
 invalid_enum invalid_value invalid_operation
 stack_overflow stack_underflow
 out_of_memory table_too_large
+
+(* glCreateShader *)
+vertex_shader fragment_shader

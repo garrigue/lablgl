@@ -1,116 +1,118 @@
 (* ==== types ==== *)
 
-type button_t = 
-    | LEFT_BUTTON 
-    | MIDDLE_BUTTON 
+type button_t =
+    | LEFT_BUTTON
+    | MIDDLE_BUTTON
     | RIGHT_BUTTON
     | OTHER_BUTTON of int
 
-type mouse_button_state_t = 
-    | DOWN 
-    | UP 
+type mouse_button_state_t =
+    | DOWN
+    | UP
 
-type special_key_t = 
+type special_key_t =
     | KEY_F1
-    | KEY_F2                    
-    | KEY_F3            
-    | KEY_F4    
+    | KEY_F2
+    | KEY_F3
+    | KEY_F4
     | KEY_F5
-    | KEY_F6                    
-    | KEY_F7                    
-    | KEY_F8                    
-    | KEY_F9                    
-    | KEY_F10                   
-    | KEY_F11                   
-    | KEY_F12                   
+    | KEY_F6
+    | KEY_F7
+    | KEY_F8
+    | KEY_F9
+    | KEY_F10
+    | KEY_F11
+    | KEY_F12
      (* directional keys *)
-    | KEY_LEFT                  
-    | KEY_UP                    
-    | KEY_RIGHT                 
-    | KEY_DOWN                  
-    | KEY_PAGE_UP               
-    | KEY_PAGE_DOWN             
-    | KEY_HOME                  
-    | KEY_END                   
-    | KEY_INSERT                        
+    | KEY_LEFT
+    | KEY_UP
+    | KEY_RIGHT
+    | KEY_DOWN
+    | KEY_PAGE_UP
+    | KEY_PAGE_DOWN
+    | KEY_HOME
+    | KEY_END
+    | KEY_INSERT
+    (* for undefined keys *)
+    | KEY_OTHER of int
 
 type entry_exit_state_t =
-    | LEFT                      
+    | LEFT
     | ENTERED
 
-type menu_state_t = 
-    | MENU_NOT_IN_USE   
-    | MENU_IN_USE               
+type menu_state_t =
+    | MENU_NOT_IN_USE
+    | MENU_IN_USE
 
 type visibility_state_t =
-    | NOT_VISIBLE               
-    | VISIBLE                   
+    | NOT_VISIBLE
+    | VISIBLE
 
-type window_status_t = 
-    | HIDDEN                    
-    | FULLY_RETAINED            
-    | PARTIALLY_RETAINED                
-    | FULLY_COVERED             
+type window_status_t =
+    | HIDDEN
+    | FULLY_RETAINED
+    | PARTIALLY_RETAINED
+    | FULLY_COVERED
 
 type color_index_component_t =
-    | RED                       
-    | GREEN                     
-    | BLUE                      
+    | RED
+    | GREEN
+    | BLUE
 
 type layer_t =
-    | NORMAL                    
-    | OVERLAY                   
+    | NORMAL
+    | OVERLAY
 
 type font_t =
-    | STROKE_ROMAN              
-    | STROKE_MONO_ROMAN         
-    | BITMAP_9_BY_15            
-    | BITMAP_8_BY_13            
-    | BITMAP_TIMES_ROMAN_10     
-    | BITMAP_TIMES_ROMAN_24     
-    | BITMAP_HELVETICA_10       
-    | BITMAP_HELVETICA_12       
-    | BITMAP_HELVETICA_18       
+    | STROKE_ROMAN
+    | STROKE_MONO_ROMAN
+    | BITMAP_9_BY_15
+    | BITMAP_8_BY_13
+    | BITMAP_TIMES_ROMAN_10
+    | BITMAP_TIMES_ROMAN_24
+    | BITMAP_HELVETICA_10
+    | BITMAP_HELVETICA_12
+    | BITMAP_HELVETICA_18
 
 type glut_get_t =
-    | WINDOW_X                  
-    | WINDOW_Y                  
-    | WINDOW_WIDTH              
-    | WINDOW_HEIGHT             
-    | WINDOW_BUFFER_SIZE                
-    | WINDOW_STENCIL_SIZE       
-    | WINDOW_DEPTH_SIZE         
-    | WINDOW_RED_SIZE           
-    | WINDOW_GREEN_SIZE         
-    | WINDOW_BLUE_SIZE          
-    | WINDOW_ALPHA_SIZE         
-    | WINDOW_ACCUM_RED_SIZE     
-    | WINDOW_ACCUM_GREEN_SIZE   
-    | WINDOW_ACCUM_BLUE_SIZE    
-    | WINDOW_ACCUM_ALPHA_SIZE   
-    | WINDOW_DOUBLEBUFFER       
-    | WINDOW_RGBA               
-    | WINDOW_PARENT             
-    | WINDOW_NUM_CHILDREN       
-    | WINDOW_COLORMAP_SIZE      
-    | WINDOW_NUM_SAMPLES                
-    | WINDOW_STEREO             
-    | WINDOW_CURSOR             
-    | SCREEN_WIDTH              
-    | SCREEN_HEIGHT             
-    | SCREEN_WIDTH_MM           
-    | SCREEN_HEIGHT_MM          
-    | MENU_NUM_ITEMS            
+    | WINDOW_X
+    | WINDOW_Y
+    | WINDOW_WIDTH
+    | WINDOW_HEIGHT
+    | WINDOW_BUFFER_SIZE
+    | WINDOW_STENCIL_SIZE
+    | WINDOW_DEPTH_SIZE
+    | WINDOW_RED_SIZE
+    | WINDOW_GREEN_SIZE
+    | WINDOW_BLUE_SIZE
+    | WINDOW_ALPHA_SIZE
+    | WINDOW_ACCUM_RED_SIZE
+    | WINDOW_ACCUM_GREEN_SIZE
+    | WINDOW_ACCUM_BLUE_SIZE
+    | WINDOW_ACCUM_ALPHA_SIZE
+    | WINDOW_DOUBLEBUFFER
+    | WINDOW_RGBA
+    | WINDOW_PARENT
+    | WINDOW_NUM_CHILDREN
+    | WINDOW_COLORMAP_SIZE
+    | WINDOW_NUM_SAMPLES
+    | WINDOW_STEREO
+    | WINDOW_CURSOR
+    | SCREEN_WIDTH
+    | SCREEN_HEIGHT
+    | SCREEN_WIDTH_MM
+    | SCREEN_HEIGHT_MM
+    | MENU_NUM_ITEMS
     (* | DISPLAY_MODE_POSSIBLE : use getBool *)
-    | INIT_WINDOW_X             
-    | INIT_WINDOW_Y             
-    | INIT_WINDOW_WIDTH         
-    | INIT_WINDOW_HEIGHT                
-    | INIT_DISPLAY_MODE         
-    | ELAPSED_TIME              
-    | WINDOW_FORMAT_ID 
+    | INIT_WINDOW_X
+    | INIT_WINDOW_Y
+    | INIT_WINDOW_WIDTH
+    | INIT_WINDOW_HEIGHT
+    | INIT_DISPLAY_MODE
+    | ELAPSED_TIME
+    | WINDOW_FORMAT_ID
 
-type glut_get_bool_t = 
+type glut_get_bool_t =
     | DISPLAY_MODE_POSSIBLE
 
 let rgb = 0;;
@@ -127,83 +129,83 @@ let stereo = 256;;
 let luminance = 512;;
 
 type device_get_t =
-    | HAS_KEYBOARD              
-    | HAS_MOUSE                 
-    | HAS_SPACEBALL             
-    | HAS_DIAL_AND_BUTTON_BOX   
-    | HAS_TABLET                        
-    | NUM_MOUSE_BUTTONS         
-    | NUM_SPACEBALL_BUTTONS     
-    | NUM_BUTTON_BOX_BUTTONS    
-    | NUM_DIALS                 
-    | NUM_TABLET_BUTTONS                
-    | DEVICE_IGNORE_KEY_REPEAT   
-    | DEVICE_KEY_REPEAT          
-    | HAS_JOYSTICK              
-    | OWNS_JOYSTICK             
-    | JOYSTICK_BUTTONS          
-    | JOYSTICK_AXES             
-    | JOYSTICK_POLL_RATE                
+    | HAS_KEYBOARD
+    | HAS_MOUSE
+    | HAS_SPACEBALL
+    | HAS_DIAL_AND_BUTTON_BOX
+    | HAS_TABLET
+    | NUM_MOUSE_BUTTONS
+    | NUM_SPACEBALL_BUTTONS
+    | NUM_BUTTON_BOX_BUTTONS
+    | NUM_DIALS
+    | NUM_TABLET_BUTTONS
+    | DEVICE_IGNORE_KEY_REPEAT
+    | DEVICE_KEY_REPEAT
+    | HAS_JOYSTICK
+    | OWNS_JOYSTICK
+    | JOYSTICK_BUTTONS
+    | JOYSTICK_AXES
+    | JOYSTICK_POLL_RATE
 
-type layerget_t = 
-    | OVERLAY_POSSIBLE           
+type layerget_t =
+    | OVERLAY_POSSIBLE
     (* | LAYER_IN_USE : use layerGetInUse *)
-    | HAS_OVERLAY               
+    | HAS_OVERLAY
     (* | TRANSPARENT_INDEX : use layerGetTransparentIndex *)
-    | NORMAL_DAMAGED            
-    | OVERLAY_DAMAGED           
+    | NORMAL_DAMAGED
+    | OVERLAY_DAMAGED
 
-type video_resize_t = 
-    | VIDEO_RESIZE_POSSIBLE     
-    | VIDEO_RESIZE_IN_USE       
-    | VIDEO_RESIZE_X_DELTA      
-    | VIDEO_RESIZE_Y_DELTA      
-    | VIDEO_RESIZE_WIDTH_DELTA  
-    | VIDEO_RESIZE_HEIGHT_DELTA 
-    | VIDEO_RESIZE_X            
-    | VIDEO_RESIZE_Y            
-    | VIDEO_RESIZE_WIDTH                
-    | VIDEO_RESIZE_HEIGHT       
+type video_resize_t =
+    | VIDEO_RESIZE_POSSIBLE
+    | VIDEO_RESIZE_IN_USE
+    | VIDEO_RESIZE_X_DELTA
+    | VIDEO_RESIZE_Y_DELTA
+    | VIDEO_RESIZE_WIDTH_DELTA
+    | VIDEO_RESIZE_HEIGHT_DELTA
+    | VIDEO_RESIZE_X
+    | VIDEO_RESIZE_Y
+    | VIDEO_RESIZE_WIDTH
+    | VIDEO_RESIZE_HEIGHT
 
-type get_modifiers_t = 
-    | ACTIVE_SHIFT               
-    | ACTIVE_CTRL                
-    | ACTIVE_ALT                 
+type get_modifiers_t =
+    | ACTIVE_SHIFT
+    | ACTIVE_CTRL
+    | ACTIVE_ALT
 
 let active_shift = 1
 let active_ctrl = 2
 let active_alt = 4
 
-type cursor_t = 
+type cursor_t =
      (* Basic arrows. *)
-    | CURSOR_RIGHT_ARROW                
-    | CURSOR_LEFT_ARROW         
+    | CURSOR_RIGHT_ARROW
+    | CURSOR_LEFT_ARROW
      (* Symbolic cursor shapes. *)
-    | CURSOR_INFO               
-    | CURSOR_DESTROY            
-    | CURSOR_HELP               
-    | CURSOR_CYCLE              
-    | CURSOR_SPRAY              
-    | CURSOR_WAIT               
-    | CURSOR_TEXT               
-    | CURSOR_CROSSHAIR          
+    | CURSOR_INFO
+    | CURSOR_DESTROY
+    | CURSOR_HELP
+    | CURSOR_CYCLE
+    | CURSOR_SPRAY
+    | CURSOR_WAIT
+    | CURSOR_TEXT
+    | CURSOR_CROSSHAIR
      (* Directional cursors. *)
-    | CURSOR_UP_DOWN            
-    | CURSOR_LEFT_RIGHT         
+    | CURSOR_UP_DOWN
+    | CURSOR_LEFT_RIGHT
      (* Sizing cursors. *)
-    | CURSOR_TOP_SIDE           
-    | CURSOR_BOTTOM_SIDE                
-    | CURSOR_LEFT_SIDE          
-    | CURSOR_RIGHT_SIDE         
-    | CURSOR_TOP_LEFT_CORNER    
-    | CURSOR_TOP_RIGHT_CORNER   
-    | CURSOR_BOTTOM_RIGHT_CORNER        
-    | CURSOR_BOTTOM_LEFT_CORNER 
+    | CURSOR_TOP_SIDE
+    | CURSOR_BOTTOM_SIDE
+    | CURSOR_LEFT_SIDE
+    | CURSOR_RIGHT_SIDE
+    | CURSOR_TOP_LEFT_CORNER
+    | CURSOR_TOP_RIGHT_CORNER
+    | CURSOR_BOTTOM_RIGHT_CORNER
+    | CURSOR_BOTTOM_LEFT_CORNER
     | CURSOR_INHERIT              (* inherit cursor from parent window *)
     | CURSOR_NONE                     (* blank cursor *)
     | CURSOR_FULL_CROSSHAIR   (* full-screen crosshair  : if available *)
 
-type game_mode_t = 
+type game_mode_t =
     | GAME_MODE_ACTIVE
     | GAME_MODE_POSSIBLE
     | GAME_MODE_WIDTH
@@ -212,13 +214,13 @@ type game_mode_t =
     | GAME_MODE_REFRESH_RATE
     | GAME_MODE_DISPLAY_CHANGED
 
-type key_repeat_t = 
+type key_repeat_t =
     | KEY_REPEAT_OFF
     | KEY_REPEAT_ON
     | KEY_REPEAT_DEFAULT
 
 exception BadEnum of string
-exception InvalidState of string 
+exception InvalidState of string
 exception OverlayNotInUse of string
 
 open Printf;;
@@ -232,9 +234,9 @@ let is_windowPositionInit = ref false;;
 let has_createdWindow = ref false;;
 
  (* === GLUT initialization sub-API. === *)
-external _glutInit : int -> string array -> int = "ml_glutInit" 
+external _glutInit : int -> string array -> int = "ml_glutInit"
 
-let init ~argv = 
+let init ~argv =
   if !is_init then argv else begin
     is_init := true;
     let argc = Array.length argv in
@@ -243,7 +245,7 @@ let init ~argv =
     Array.sub argv 0 argc
   end
 
-external _glutInitDisplayMode : 
+external _glutInitDisplayMode :
     double_buffer:bool ->
     index:bool ->
     accum:bool ->
@@ -257,20 +259,20 @@ external _glutInitDisplayMode :
     "bytecode_glutInitDisplayMode"
     "native_glutInitDisplayMode"
 
-let initDisplayMode 
+let initDisplayMode
     ?(double_buffer=false)
-    ?(index=false) 
+    ?(index=false)
     ?(accum=false)
-    ?(alpha=false) 
-    ?(depth=false) 
-    ?(stencil=false) 
-    ?(multisample=false) 
-    ?(stereo=false) 
-    ?(luminance=false) 
+    ?(alpha=false)
+    ?(depth=false)
+    ?(stencil=false)
+    ?(multisample=false)
+    ?(stereo=false)
+    ?(luminance=false)
     dummy_unit
-    = 
+    =
     is_displayModeInit := true;
-    _glutInitDisplayMode 
+    _glutInitDisplayMode
         double_buffer
         index
         accum
@@ -289,7 +291,7 @@ let initWindowPosition ~x ~y =
     is_windowPositionInit := true;
     _glutInitWindowPosition x y;;
 
-let initWindowSize ~w ~h =   
+let initWindowSize ~w ~h =
     is_windowSizeInit := true;
     _glutInitWindowSize w h;;
 
@@ -304,45 +306,45 @@ let createWindow ~title =
     let winid = _glutCreateWindow title in
     winid;;
 
-external postRedisplay : unit->unit = 
+external postRedisplay : unit->unit =
     "ml_glutPostRedisplay"
-external swapBuffers : unit->unit = 
-    "ml_glutSwapBuffers" 
-external createSubWindow: win:int->x:int->y:int->w:int->h:int->int = 
+external swapBuffers : unit->unit =
+    "ml_glutSwapBuffers"
+external createSubWindow: win:int->x:int->y:int->w:int->h:int->int =
     "ml_glutCreateSubWindow"
-external destroyWindow: win:int -> unit = 
+external destroyWindow: win:int -> unit =
     "ml_glutDestroyWindow"
-external setWindow: win:int -> unit = 
+external setWindow: win:int -> unit =
     "ml_glutSetWindow"
 external getWindow: unit -> int =
      "ml_glutGetWindow"
-external setWindowTitle: title:string -> unit  = 
+external setWindowTitle: title:string -> unit  =
     "ml_glutSetWindowTitle"
-external setIconTitle: title:string -> unit = 
+external setIconTitle: title:string -> unit =
     "ml_glutSetIconTitle"
-external positionWindow: x:int -> y:int -> unit = 
+external positionWindow: x:int -> y:int -> unit =
     "ml_glutPositionWindow"
-external reshapeWindow: w:int -> h:int -> unit = 
+external reshapeWindow: w:int -> h:int -> unit =
     "ml_glutReshapeWindow"
-external popWindow: unit -> unit = 
+external popWindow: unit -> unit =
     "ml_glutPopWindow"
-external pushWindow: unit -> unit = 
+external pushWindow: unit -> unit =
     "ml_glutPushWindow"
-external iconifyWindow: unit -> unit = 
+external iconifyWindow: unit -> unit =
     "ml_glutIconifyWindow"
-external showWindow: unit -> unit = 
+external showWindow: unit -> unit =
     "ml_glutShowWindow"
-external hideWindow: unit -> unit = 
+external hideWindow: unit -> unit =
     "ml_glutHideWindow"
-external fullScreen: unit -> unit = 
+external fullScreen: unit -> unit =
     "ml_glutFullScreen"
 
 external _setCursor: c:int -> unit = "ml_glutSetCursor"
-let setCursor c = 
-    let ic = match c with 
+let setCursor c =
+    let ic = match c with
      (* Basic arrows. *)
     | CURSOR_RIGHT_ARROW -> 0  (* values from glut.h *)
-    | CURSOR_LEFT_ARROW -> 1 
+    | CURSOR_LEFT_ARROW -> 1
      (* Symbolic cursor shapes. *)
     | CURSOR_INFO -> 2
     | CURSOR_DESTROY -> 3
@@ -384,21 +386,21 @@ let useLayer layer = _useLayer (match layer with NORMAL -> 0 | OVERLAY -> 1)
 
 external createMenu: cb:(value:int -> unit) ->int =
     "ml_glutCreateMenu"
-external destroyMenu: menu:int->unit = 
+external destroyMenu: menu:int->unit =
     "ml_glutDestroyMenu"
-external getMenu: unit->int = 
+external getMenu: unit->int =
     "ml_glutGetMenu"
-external setMenu: menu:int->unit  = 
+external setMenu: menu:int->unit  =
     "ml_glutSetMenu"
-external addMenuEntry: label:string->value:int->unit  = 
+external addMenuEntry: label:string->value:int->unit  =
     "ml_glutAddMenuEntry"
-external addSubMenu: label:string->submenu:int->unit  = 
+external addSubMenu: label:string->submenu:int->unit  =
     "ml_glutAddSubMenu"
-external changeToMenuEntry: item:int->label:string->value:int->unit = 
+external changeToMenuEntry: item:int->label:string->value:int->unit =
     "ml_glutChangeToMenuEntry"
-external changeToSubMenu: item:int->label:string->submenu:int->unit = 
+external changeToSubMenu: item:int->label:string->submenu:int->unit =
     "ml_glutChangeToSubMenu"
-external removeMenuItem: item:int->unit= 
+external removeMenuItem: item:int->unit=
     "ml_glutRemoveMenuItem"
 
 let int_of_button b = match b with
@@ -422,7 +424,7 @@ let window_wrapper cbFunc wr =
   fun ~cb ->
     Hashtbl.add table (getWindow()) cb;
     cbFunc ~cb:(wr (fun () -> Hashtbl.find table (getWindow())))
-  
+
 external _displayFunc : cb:(unit->unit)->unit = "ml_glutDisplayFunc"
 let displayFunc = window_wrapper _displayFunc (fun cb () -> cb () ())
 
@@ -436,14 +438,14 @@ let keyboardFunc = window_wrapper _keyboardFunc (fun cb ~key -> cb () ~key)
 external _glutMouseFunc : cb:(int -> int -> int -> int -> unit)->unit =
   "ml_glutMouseFunc"
 let mouse_cb_wrapper user_func ibutton istate x y =
-    let b = match ibutton with 
-        | 0 -> LEFT_BUTTON 
-        | 1 -> MIDDLE_BUTTON 
-        | 2 -> RIGHT_BUTTON 
+    let b = match ibutton with
+        | 0 -> LEFT_BUTTON
+        | 1 -> MIDDLE_BUTTON
+        | 2 -> RIGHT_BUTTON
         | n -> OTHER_BUTTON n in
-    let s = match istate with 
-        | 0 -> DOWN 
-        | 1 -> UP 
+    let s = match istate with
+        | 0 -> DOWN
+        | 1 -> UP
         | _ -> raise (BadEnum "istate in mouse_cb_wrapper") in
     user_func () ~button:b ~state:s ~x ~y;;
 let mouseFunc = window_wrapper _glutMouseFunc mouse_cb_wrapper
@@ -460,7 +462,7 @@ let passiveMotionFunc = window_wrapper _passiveMotionFunc eta_x
 let eta_state cb ~state = cb () ~state
 
 external _entryFunc : cb:(state:entry_exit_state_t->unit)->unit =
-  "ml_glutEntryFunc" 
+  "ml_glutEntryFunc"
 let entryFunc = window_wrapper _entryFunc eta_state
 
 external _visibilityFunc : cb:(state:visibility_state_t->unit)->unit =
@@ -472,10 +474,10 @@ let visibilityFunc = window_wrapper _visibilityFunc eta_state
 external _glutIdleFunc:(unit->unit)->unit="ml_glutIdleFunc"
 
 external _setIdleFuncToNull:unit->unit="ml_glutSetIdleFuncToNull"
-let idleFunc ~cb = 
-    match cb with 
+let idleFunc ~cb =
+    match cb with
     | None -> _setIdleFuncToNull();
-    | Some cb -> 
+    | Some cb ->
       begin
         _glutIdleFunc cb;
       end
@@ -489,45 +491,45 @@ external init_timerFunc : (int -> unit) -> unit = "init_glutTimerFunc_cb"
 
 let timer_hashtbl = Hashtbl.create 101
 
-let real_call_back i = 
+let real_call_back i =
   Hashtbl.find timer_hashtbl i ()
 
-let _ = 
+let _ =
   init_timerFunc real_call_back
 
-let timer_count = ref 0 
+let timer_count = ref 0
 
 let timerFunc ~ms ~cb:(cb:(value:'a -> unit)) ~value =
     let i = !timer_count in
     incr timer_count;
-    Hashtbl.add timer_hashtbl i (fun () -> 
-      Hashtbl.remove timer_hashtbl i; 
+    Hashtbl.add timer_hashtbl i (fun () ->
+      Hashtbl.remove timer_hashtbl i;
       cb value);
     _timerFunc ms i
 
-let special_of_int i = match i with
+let special_of_int = function
   | 1 -> KEY_F1    (* values from glut.h *)
-  | 2 -> KEY_F2    
-  | 3 -> KEY_F3    
-  | 4 -> KEY_F4    
-  | 5 -> KEY_F5    
-  | 6 -> KEY_F6    
-  | 7 -> KEY_F7    
-  | 8 -> KEY_F8    
-  | 9 -> KEY_F9    
-  | 10 -> KEY_F10    
-  | 11 -> KEY_F11    
-  | 12 -> KEY_F12    
-  | 100 -> KEY_LEFT    
-  | 101 -> KEY_UP    
-  | 102 -> KEY_RIGHT    
-  | 103 -> KEY_DOWN    
-  | 104 -> KEY_PAGE_UP    
-  | 105 -> KEY_PAGE_DOWN    
-  | 106 -> KEY_HOME    
-  | 107 -> KEY_END    
-  | 108 -> KEY_INSERT    
-  | _ -> raise (BadEnum "key in special_of_int");;
+  | 2 -> KEY_F2
+  | 3 -> KEY_F3
+  | 4 -> KEY_F4
+  | 5 -> KEY_F5
+  | 6 -> KEY_F6
+  | 7 -> KEY_F7
+  | 8 -> KEY_F8
+  | 9 -> KEY_F9
+  | 10 -> KEY_F10
+  | 11 -> KEY_F11
+  | 12 -> KEY_F12
+  | 100 -> KEY_LEFT
+  | 101 -> KEY_UP
+  | 102 -> KEY_RIGHT
+  | 103 -> KEY_DOWN
+  | 104 -> KEY_PAGE_UP
+  | 105 -> KEY_PAGE_DOWN
+  | 106 -> KEY_HOME
+  | 107 -> KEY_END
+  | 108 -> KEY_INSERT
+  | i -> KEY_OTHER i
 
 external _glutSpecialFunc : cb:(key:int->x:int->y:int->unit)->unit =
   "ml_glutSpecialFunc"
@@ -572,16 +574,16 @@ let overlayDisplayFunc =
   window_wrapper _overlayDisplayFunc (fun cb () -> cb () ())
 
  (* === GLUT color index sub-API. === === *)
-external setColor: cell:int->red:float->green:float->blue:float->unit = 
+external setColor: cell:int->red:float->green:float->blue:float->unit =
     "ml_glutSetColor"
-external getColor: index:int->component:int->float = 
+external getColor: index:int->component:int->float =
     "ml_glutGetColor"
-external copyColormap: win:int->unit = 
+external copyColormap: win:int->unit =
     "ml_glutCopyColormap"
 
  (* === GLUT state retrieval sub-API. === *)
 external _get: igtype:int->int = "ml_glutGet"
-let get ~gtype = 
+let get ~gtype =
     let igtype = match gtype with
     | WINDOW_X -> 100
     | WINDOW_Y -> 101
@@ -614,7 +616,7 @@ let get ~gtype =
     (* | DISPLAY_MODE_POSSIBLE -> 400 *)
     | INIT_WINDOW_X -> 500
     | INIT_WINDOW_Y -> 501
-    | INIT_WINDOW_WIDTH -> 502 
+    | INIT_WINDOW_WIDTH -> 502
     | INIT_WINDOW_HEIGHT -> 503
     | INIT_DISPLAY_MODE -> 504
     | ELAPSED_TIME -> 700
@@ -625,7 +627,7 @@ let getBool ~gtype = _get (match gtype with DISPLAY_MODE_POSSIBLE -> 400) <> 0
 
 external _deviceGet: idgtype:int->int = "ml_glutDeviceGet"
 let deviceGet ~dgtype =
-    let idgtype = match dgtype with 
+    let idgtype = match dgtype with
     | HAS_KEYBOARD -> 600
     | HAS_MOUSE -> 601
     | HAS_SPACEBALL -> 602
@@ -645,7 +647,7 @@ let deviceGet ~dgtype =
     | JOYSTICK_POLL_RATE -> 616
     in _deviceGet idgtype;;
 
- (* === GLUT extension support sub-API === *) 
+ (* === GLUT extension support sub-API === *)
 external extensionSupported: name:string->bool = "ml_glutExtensionSupported"
 
 external getModifiers: unit->int = "ml_glutGetModifiers"
@@ -656,37 +658,37 @@ let getModifiers () = let m = _getModifiers() in
   if m land 4 <> 0 then [ACTIVE_ALT] else [];;
 *)
 
-let int_of_modifiers m = 
-  let ret = ref 0 in 
-  let rec f = function 
+let int_of_modifiers m =
+  let ret = ref 0 in
+  let rec f = function
     | [] -> ()
     | h::t -> begin
       ret := (!ret lor (match h with
         | ACTIVE_SHIFT -> 1
         | ACTIVE_CTRL -> 2
         | ACTIVE_ALT -> 4));
-      f t 
+      f t
       end in
   f m;
   !ret;;
 
 external _layerGet: int->int = "ml_glutLayerGet"
-let layerGet ~lgtype = 
-  let ilgtype = match lgtype with 
+let layerGet ~lgtype =
+  let ilgtype = match lgtype with
     | OVERLAY_POSSIBLE -> 800
     | HAS_OVERLAY -> 802
     | NORMAL_DAMAGED -> 804
     | OVERLAY_DAMAGED -> 805 in
-  let ret = _layerGet ilgtype in 
+  let ret = _layerGet ilgtype in
   if lgtype = OVERLAY_DAMAGED && ret = -1 then
     raise (OverlayNotInUse "in layerGet OVERLAY_DAMAGED")
-  else 
+  else
     ret <> 0
 ;;
 
 let layerGetTransparentIndex() = _layerGet 803 ;; (* from glut.h *)
 
-let layerGetInUse () = 
+let layerGetInUse () =
   match _layerGet 801 with
   | 0 -> NORMAL
   | 1 -> OVERLAY
@@ -695,7 +697,7 @@ let layerGetInUse () =
  (* === GLUT font sub-API === *)
 
 (* convert font to integer value from glut.h *)
-let f2i font = match font with 
+let f2i font = match font with
     | STROKE_ROMAN -> 0
     | STROKE_MONO_ROMAN -> 1
     | BITMAP_9_BY_15 -> 2
@@ -719,41 +721,41 @@ external _strokeWidth: font:int->c:int->int = "ml_glutStrokeWidth"
 let strokeWidth ~font ~c = _strokeWidth (f2i font) c;;
 
  (* === GLUT pre-built models sub-API === *)
-external wireSphere: radius:float->slices:int->stacks:int->unit = 
+external wireSphere: radius:float->slices:int->stacks:int->unit =
     "ml_glutWireSphere"
-external solidSphere: radius:float->slices:int->stacks:int->unit = 
+external solidSphere: radius:float->slices:int->stacks:int->unit =
     "ml_glutSolidSphere"
-external wireCone: base:float->height:float->slices:int->stacks:int->unit = 
+external wireCone: base:float->height:float->slices:int->stacks:int->unit =
     "ml_glutWireCone"
-external solidCone: base:float->height:float->slices:int->stacks:int->unit = 
+external solidCone: base:float->height:float->slices:int->stacks:int->unit =
     "ml_glutSolidCone"
-external wireCube: size:float->unit = 
+external wireCube: size:float->unit =
     "ml_glutWireCube"
-external solidCube: size:float->unit = 
+external solidCube: size:float->unit =
     "ml_glutSolidCube"
 external wireTorus: innerRadius:float->outerRadius:float->sides:int->rings:int
     ->unit = "ml_glutWireTorus"
 external solidTorus: innerRadius:float->outerRadius:float->sides:int->rings:int
     ->unit = "ml_glutSolidTorus"
-external wireDodecahedron: unit->unit = 
+external wireDodecahedron: unit->unit =
     "ml_glutWireDodecahedron"
-external solidDodecahedron: unit->unit = 
+external solidDodecahedron: unit->unit =
     "ml_glutSolidDodecahedron"
-external wireTeapot: size:float->unit = 
+external wireTeapot: size:float->unit =
     "ml_glutWireTeapot"
-external solidTeapot: size:float->unit = 
+external solidTeapot: size:float->unit =
     "ml_glutSolidTeapot"
-external wireOctahedron: unit->unit = 
+external wireOctahedron: unit->unit =
     "ml_glutWireOctahedron"
-external solidOctahedron: unit->unit = 
+external solidOctahedron: unit->unit =
     "ml_glutSolidOctahedron"
-external wireTetrahedron: unit->unit = 
+external wireTetrahedron: unit->unit =
     "ml_glutWireTetrahedron"
-external solidTetrahedron: unit->unit = 
+external solidTetrahedron: unit->unit =
     "ml_glutSolidTetrahedron"
-external wireIcosahedron: unit->unit = 
+external wireIcosahedron: unit->unit =
     "ml_glutWireIcosahedron"
-external solidIcosahedron: unit->unit = 
+external solidIcosahedron: unit->unit =
     "ml_glutSolidIcosahedron"
 
  (* GLUT version 4 functions included in the GLUT 3.7 distribution *)
@@ -767,35 +769,35 @@ external _strokeLength: font:int->str:string->int = "ml_glutStrokeLength"
 let strokeLength ~font ~str = _strokeLength (f2i font) str;;
 
 external _windowStatusFunc: (int->unit)->unit = "ml_glutWindowStatusFunc"
-let windowStatusFunc ~cb = 
-  _windowStatusFunc  
-   (fun s -> 
+let windowStatusFunc ~cb =
+  _windowStatusFunc
+   (fun s ->
     cb ~state:(match s with
-      | 0 -> HIDDEN 
-      | 1 -> FULLY_RETAINED 
-      | 2 -> PARTIALLY_RETAINED 
-      | 3 -> FULLY_COVERED 
+      | 0 -> HIDDEN
+      | 1 -> FULLY_RETAINED
+      | 2 -> PARTIALLY_RETAINED
+      | 3 -> FULLY_COVERED
       | _ -> failwith "invalid value in glutWindowStatus ocaml callback"))
   ;;
 
-external postWindowRedisplay: win:int->unit = 
+external postWindowRedisplay: win:int->unit =
   "ml_glutPostWindowRedisplay"
 
-external postWindowOverlayRedisplay: win:int->unit = 
+external postWindowOverlayRedisplay: win:int->unit =
   "ml_glutPostWindowOverlayRedisplay"
 
 external keyboardUpFunc: cb:(key:int->x:int->y:int->unit)->unit = "ml_glutKeyboardUpFunc"
 
 external _glutSpecialUpFunc : (key:int->x:int->y:int->unit)->unit = "ml_glutSpecialUpFunc"
 let specialUpFunc ~cb =
-  _glutSpecialUpFunc 
-      (fun ~key ~x ~y -> cb ~key:(special_of_int key) ~x ~y) ;;
+  _glutSpecialUpFunc
+    (fun ~key ->cb ~key:(special_of_int key));;
 
 external _ignoreKeyRepeat: ignore:int->unit = "ml_glutIgnoreKeyRepeat"
 let ignoreKeyRepeat ~ignore = _ignoreKeyRepeat (if ignore = true then 1 else 0)
 
 external _setKeyRepeat: mode:int->unit = "ml_glutSetKeyRepeat"
-let setKeyRepeat ~mode = 
+let setKeyRepeat ~mode =
   _setKeyRepeat (match mode with
     | KEY_REPEAT_OFF -> 0
     | KEY_REPEAT_ON -> 1
@@ -803,14 +805,14 @@ let setKeyRepeat ~mode =
   );;
 
 external joystickFunc: cb:(buttonMask:int->x:int->y:int->z:int->unit)->
-  pollInterval:int->unit = "ml_glutJoystickFunc" 
+  pollInterval:int->unit = "ml_glutJoystickFunc"
 
 external forceJoystickFunc: unit->unit = "ml_glutForceJoystickFunc"
 
   (* GLUT video resize sub-API. *)
 external _videoResizeGet: int->int = "ml_glutVideoResizeGet"
-let videoResizeGet which = 
-  let i = match which with 
+let videoResizeGet which =
+  let i = match which with
   | VIDEO_RESIZE_POSSIBLE -> 900
   | VIDEO_RESIZE_IN_USE -> 901
   | VIDEO_RESIZE_X_DELTA -> 902
@@ -824,13 +826,13 @@ let videoResizeGet which =
   in  _videoResizeGet i
 ;;
 
-external setupVideoResizing: unit->unit = 
+external setupVideoResizing: unit->unit =
   "ml_glutSetupVideoResizing"
-external stopVideoResizing: unit->unit = 
+external stopVideoResizing: unit->unit =
   "ml_glutStopVideoResizing"
-external videoResize: x:int->y:int->width:int->height:int->unit = 
+external videoResize: x:int->y:int->width:int->height:int->unit =
   "ml_glutVideoResize"
-external videoPan: x:int->y:int->width:int->height:int->unit = 
+external videoPan: x:int->y:int->width:int->height:int->unit =
   "ml_glutVideoPan"
 
   (* GLUT debugging sub-API. *)
@@ -845,7 +847,7 @@ external leaveGameMode: unit->unit = "ml_glutLeaveGameMode"
 
 external _gameModeGet: mode:int->int = "ml_glutGameModeGet"
 
-let gameModeGet ~mode = 
+let gameModeGet ~mode =
     let imode = match mode with
     | GAME_MODE_ACTIVE -> 0
     | GAME_MODE_POSSIBLE -> 1
@@ -879,8 +881,9 @@ let string_of_special key = match key with
   | KEY_HOME -> "KEY_HOME"
   | KEY_END -> "KEY_END"
   | KEY_INSERT -> "KEY_INSERT"
+  | KEY_OTHER i -> "KEY_OTHER " ^ string_of_int i
 
-let int_of_cursor c = match c with 
+let int_of_cursor c = match c with
   | CURSOR_RIGHT_ARROW -> 0
   | CURSOR_LEFT_ARROW -> 1
   | CURSOR_INFO -> 2
@@ -905,7 +908,7 @@ let int_of_cursor c = match c with
   | CURSOR_NONE -> 101
   | CURSOR_FULL_CROSSHAIR -> 102
 
-let string_of_cursor c = match c with 
+let string_of_cursor c = match c with
   | CURSOR_RIGHT_ARROW -> "CURSOR_RIGHT_ARROW"
   | CURSOR_LEFT_ARROW -> "CURSOR_LEFT_ARROW"
   | CURSOR_INFO -> "CURSOR_INFO"
@@ -931,29 +934,29 @@ let string_of_cursor c = match c with
   | CURSOR_FULL_CROSSHAIR -> "CURSOR_FULL_CROSSHAIR"
   ;;
 
-let int_of_modifier m = match m with 
+let int_of_modifier m = match m with
   | ACTIVE_SHIFT -> 1
-  | ACTIVE_CTRL -> 2          
+  | ACTIVE_CTRL -> 2
   | ACTIVE_ALT -> 4
   ;;
 
 (*
-let int_of_modifiers ms = 
-  List.fold_left (lor) 0 (List.map int_of_modifier ms);; 
+let int_of_modifiers ms =
+  List.fold_left (lor) 0 (List.map int_of_modifier ms);;
 *)
 
-let string_of_button b = match b with 
+let string_of_button b = match b with
   | LEFT_BUTTON -> "LEFT_BUTTON"
   | MIDDLE_BUTTON -> "MIDDLE_BUTTON"
   | RIGHT_BUTTON -> "RIGHT_BUTTON"
-  | OTHER_BUTTON n -> "OTHER_BUTTON" ^ string_of_int n 
+  | OTHER_BUTTON n -> "OTHER_BUTTON" ^ string_of_int n
   ;;
 
 let string_of_button_state s = match s with
   | DOWN -> "DOWN"
   | UP -> "UP"
   ;;
-  
+
 let string_of_modifier m = match m with
   | ACTIVE_SHIFT -> "ACTIVE_SHIFT"
   | ACTIVE_CTRL -> "ACTIVE_CTRL"
@@ -961,13 +964,13 @@ let string_of_modifier m = match m with
   ;;
 
 (* convert a list of strings to a single string *)
-let string_of_strings l = 
-  let rec _string_of_list l = match l with 
+let string_of_strings l =
+  let rec _string_of_list l = match l with
     | [] -> ""
     | h::t -> h^(if t=[] then "" else ", "^(_string_of_list t))
   in "[ " ^ (_string_of_list l) ^ " ]";;
 
-let string_of_modifiers ml = 
+let string_of_modifiers ml =
   string_of_strings (List.map string_of_modifier ml);;
 
 let string_of_window_status status = match status with
@@ -977,7 +980,7 @@ let string_of_window_status status = match status with
   | FULLY_COVERED -> "FULLY_COVERED"
   ;;
 
-let string_of_vis_state vis = match vis with 
+let string_of_vis_state vis = match vis with
   | NOT_VISIBLE -> "NOT_VISIBLE"
   | VISIBLE     -> "VISIBLE"
   ;;

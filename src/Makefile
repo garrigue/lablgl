@@ -11,17 +11,18 @@ OCAMLINC=-I +labltk
 
 # Files
 LIBOBJS =	raw.cmo \
-		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
-		glMat.cmo	glMisc.cmo	glPix.cmo	glPix3D.cmo \
-		glClear.cmo  	glTex.cmo	glDraw.cmo	glFunc.cmo \
-		gluMisc.cmo	gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo \
-		gluMat.cmo 	glMultiTex.cmo	glArray.cmo     glInterleaved.cmo \
-		glColor.cmo	glConvolution.cmo	glFog.cmo	glState.cmo
-
+		gl.cmo		glLight.cmo		glList.cmo	glMap.cmo \
+		glMat.cmo	glMisc.cmo		glPix.cmo	glPix3D.cmo \
+		glClear.cmo  	glTex.cmo		glDraw.cmo	glFunc.cmo \
+		gluMisc.cmo	gluNurbs.cmo		gluQuadric.cmo	gluTess.cmo \
+		gluMat.cmo 	glMultiTex.cmo		glArray.cmo     glInterleaved.cmo \
+		glColor.cmo	glConvolution.cmo	glFog.cmo	glState.cmo \
+		glShader.cmo
+>>>>>>> master
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \
-		ml_glutess$(XO)
+		ml_glutess$(XO)	ml_shader$(XO)
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 
 all:	var2def$(XE) var2switch$(XE) lablgl.cma
