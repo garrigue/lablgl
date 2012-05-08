@@ -294,6 +294,11 @@ source0_alpha source1_alpha source2_alpha
 operand0_rgb operand1_rgb operand2_rgb 
 operand0_alpha operand1_alpha operand2_alpha
 
+(* glInterleavedArrays *)
+v2f v3f c4ub_v2f c4ub_v3f c3f_v3f n3f_v3f c4f_n3f_v3f t2f_v3f
+t4f_v4f t2f_c4ub_v3f t2f_c3f_v3f t2f_n3f_v3f t2f_c4f_n3f_v3f t4f_c4f_n3f_v4f
+
+
 (* glColorTable *)
 color_table 
 post_convolution  -> GL_POST_CONVOLUTION_COLOR_TABLE

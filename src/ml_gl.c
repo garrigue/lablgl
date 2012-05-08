@@ -801,6 +801,10 @@ ML_2_ARRAY(glMultiTexCoord4fv, Int_val, GLfloat, Double_field)
 ML_2_ARRAY(glMultiTexCoord4iv, Int_val, GLint, Field)
 ML_2_ARRAY(glMultiTexCoord4sv, Int_val, GLshort, Field)
 
+/* Interleaved functions */
+
+ML_3(glInterleavedArrays, GLenum_val, Int_val, Void_raw)
+
 /* ColorTable functions */
 
 ML_5(glColorTable, GLenum_val, GLenum_val, Int_val, GLenum_val, Type_void_raw)
@@ -817,35 +821,22 @@ value rgba) {								\
   }
 
 ML_3_RGBA(glColorTableParameterfv, GLenum_val, GLenum_val)
-
 ML_5(glCopyColorTable, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
-
 ML_5(glColorSubTable, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
-
 ML_5(glCopyColorSubTable, GLenum_val, Int_val, Int_val, Int_val, Int_val)
-
 ML_4(glHistogram, GLenum_val, Int_val, GLenum_val, Bool_val)
-
 ML_3(glMinmax, GLenum_val, GLenum_val, Bool_val)
 
 /* ConvolutionFilter functions */
 
 ML_5(glConvolutionFilter1D, GLenum_val, GLenum_val, Int_val, GLenum_val, Type_void_raw)
-
 ML_6(glConvolutionFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
-
 ML_bc6(ml_glConvolutionFilter2D)
-
 ML_7(glSeparableFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw, Void_raw)
-
 ML_bc7(ml_glSeparableFilter2D)
-
 ML_5(glCopyConvolutionFilter1D, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
-
 ML_6(glCopyConvolutionFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, Int_val, Int_val)
-
 ML_bc6(ml_glCopyConvolutionFilter2D)
-
 ML_3_RGBA(glConvolutionParameterfv,GLenum_val, GLenum_val)
 
 /* State functions */

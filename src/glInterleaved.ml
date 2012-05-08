@@ -1,7 +1,6 @@
 open Gl
 open GlArray
 
-
 type kind =
   [ `v2f
   | `v3f
@@ -58,6 +57,8 @@ type record =
     
 type 'a t = { r : [`ubyte] Raw.t; kind : 'a }
 constraint 'a = [< kind ]
+
+let kind (a : 'a t) = a.kind
 
 let data = function      (* texture, color, normal, vertex size; color type *)
   | `v2f              -> 0,0,0,2,`ubyte
@@ -401,3 +402,10 @@ let of_raw kind r =
     raise (Invalid_argument "glArray.interleaved : Raw.t size not a multiple of the requested interleaved kind size")
   else
     {r = r ; kind = kind }
+
+external arrays : format:[< kind ] -> size:int -> [< `ubyte ] Raw.t -> unit = "ml_glInterleavedArrays" "noalloc"
+
+let arrays r = 
+  let k = kind r in
+  arrays ~format:k ~size:(record_size k) r.r
+

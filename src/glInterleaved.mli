@@ -38,6 +38,8 @@ type record =
 type 'a t 
 constraint 'a = [< kind ]
 
+val kind : 'a t -> 'a
+
 val make : 'a -> int -> 'a t
 
 (* float only based records *)
@@ -95,3 +97,5 @@ val set_t4f_c4f_n3f_v4f : [`t4f_c4f_n3f_v4f] t -> int -> Gl.point4 * Gl.point4 *
 val set : 'a t -> int -> record -> unit
 
 val of_raw : 'a -> 'b Raw.t -> 'a t
+
+val arrays : 'a t -> unit
