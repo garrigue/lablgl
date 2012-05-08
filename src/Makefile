@@ -11,7 +11,6 @@ OCAMLINC=-I +labltk
 
 # Files
 LIBOBJS =	raw.cmo \
-		api.cmo \
 		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
 		glMat.cmo	glMisc.cmo	glPix.cmo	glPix3D.cmo \
 		glClear.cmo  	glTex.cmo	glDraw.cmo	glFunc.cmo \

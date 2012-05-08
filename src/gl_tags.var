@@ -307,6 +307,10 @@ _3d_color_texture -> GL_3D_COLOR_TEXTURE
 _4d_color_texture -> GL_4D_COLOR_TEXTURE
 
 (* glMultiTexCoord *)
+texture0 texture1 texture2 texture3 texture4 texture5 texture6 texture7
+texture8 texture9 texture10 texture11 texture12 texture13 texture14 texture15
+texture16 texture17 texture18 texture19 texture20 texture21 texture22 texture23
+texture24 texture25 texture26 texture27 texture28 texture29 texture30 texture31 
 combine combine_rgb combine_alpha add_signed interpolate subtract dot3_rgb dot3_rgba
 constant primary_color previous
 source0_rgb source1_rgb source2_rgb 

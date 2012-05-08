@@ -50,21 +50,6 @@ type filter_param = [ `lod_bias of float ]
 
 val env : [< env_target ] -> [< env_param | filter_param] -> unit
 
-val coord1d : [< texture ] -> float -> unit
-val coord2d : [< texture ] -> float * float -> unit
-val coord3d : [< texture ] -> float * float * float -> unit
-val coord4d : [< texture ] -> float * float * float * float -> unit
-
-val coord1f : [< texture ] -> float -> unit
-val coord2f : [< texture ] -> float * float -> unit
-val coord3f : [< texture ] -> float * float * float -> unit
-val coord4f : [< texture ] -> float * float * float * float -> unit
-
-val coord1i : [< texture ] -> int -> unit
-val coord2i : [< texture ] -> int * int -> unit
-val coord3i : [< texture ] -> int * int * int -> unit
-val coord4i : [< texture ] -> int * int * int * int -> unit
-
 (* GlTex naming scheme *)
 
 val coord1 : [< texture ] -> float -> unit

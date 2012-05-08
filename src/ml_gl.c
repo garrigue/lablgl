@@ -878,29 +878,59 @@ CAMLprim value ml_glCallLists (value indexes)  /* ML */
    and do the work in the ml module directly 
 */
 
-ML_1(glActiveTexture, Int_val)
-ML_1(glClientActiveTexture, Int_val)
+#define TEX_CASE(i) \
+  case MLTAG_texture##i:			\
+  return GL_TEXTURE##i
 
-ML_2(glMultiTexCoord1d, Int_val, GLdouble_val)
-ML_2(glMultiTexCoord1f, Int_val, GLfloat_val)
-ML_2(glMultiTexCoord1i, Int_val, GLint_val)
-ML_2(glMultiTexCoord1s, Int_val, GLshort_val)
+GLenum textureid (value v){
+  switch (Field(v,0)){
+    TEX_CASE(0);
+    TEX_CASE(1);
+    TEX_CASE(2);    
+    TEX_CASE(3);
+    TEX_CASE(4);
+    TEX_CASE(5);
+    TEX_CASE(6);
+    TEX_CASE(7);
+    TEX_CASE(8);
+    TEX_CASE(9);
+    TEX_CASE(10);
+    TEX_CASE(11);
+    TEX_CASE(12);
+    TEX_CASE(13);
+    TEX_CASE(14);
+    TEX_CASE(15);
+    TEX_CASE(16);
+    TEX_CASE(17);
+    TEX_CASE(18);
+    TEX_CASE(19);
+    TEX_CASE(20);
+    TEX_CASE(21);
+    TEX_CASE(22);
+    TEX_CASE(23);
+    TEX_CASE(24);
+    TEX_CASE(25);
+    TEX_CASE(26);
+    TEX_CASE(27);
+    TEX_CASE(28);
+    TEX_CASE(29);
+    TEX_CASE(30);
+    TEX_CASE(31);
+  default: 
+    return GLenum_val(v);
+  }
+}
+#undef TEX_CASE
 
-ML_3(glMultiTexCoord2d, Int_val, GLdouble_val, GLdouble_val)
-ML_3(glMultiTexCoord2f, Int_val, GLfloat_val, GLfloat_val)
-ML_3(glMultiTexCoord2i, Int_val, GLint_val, GLint_val)
-ML_3(glMultiTexCoord2s, Int_val, GLshort_val, GLshort_val)
+ML_1(glActiveTexture, textureid)
+ML_1(glClientActiveTexture, textureid)
 
-ML_4(glMultiTexCoord3d, Int_val, GLdouble_val, GLdouble_val, GLdouble_val)
-ML_4(glMultiTexCoord3f, Int_val, GLfloat_val, GLfloat_val, GLfloat_val)
-ML_4(glMultiTexCoord3i, Int_val, GLint_val, GLint_val, GLint_val)
-ML_4(glMultiTexCoord3s, Int_val, GLshort_val, GLshort_val, GLshort_val)
+ML_2(glMultiTexCoord1d, textureid, GLdouble_val)
+ML_3(glMultiTexCoord2d, textureid, GLdouble_val, GLdouble_val)
+ML_4(glMultiTexCoord3d, textureid, GLdouble_val, GLdouble_val, GLdouble_val)
+ML_5(glMultiTexCoord4d, textureid, GLdouble_val, GLdouble_val, GLdouble_val, GLdouble_val)
 
-ML_5(glMultiTexCoord4d, Int_val, GLdouble_val, GLdouble_val, GLdouble_val, GLdouble_val)
-ML_5(glMultiTexCoord4f, Int_val, GLfloat_val, GLfloat_val, GLfloat_val, GLfloat_val)
-ML_5(glMultiTexCoord4i, Int_val, GLint_val, GLint_val, GLint_val, GLint_val)
-ML_5(glMultiTexCoord4s, Int_val, GLshort_val, GLshort_val, GLshort_val, GLshort_val)
-
+/*
 ML_2(glMultiTexCoord1dv, Int_val, GLdoublePtr_val)
 ML_2_ARRAY(glMultiTexCoord1fv, Int_val, GLfloat, Double_field)
 ML_2_ARRAY(glMultiTexCoord1iv, Int_val, GLint, Field)
@@ -920,6 +950,7 @@ ML_2(glMultiTexCoord4dv, Int_val, GLdoublePtr_val)
 ML_2_ARRAY(glMultiTexCoord4fv, Int_val, GLfloat, Double_field)
 ML_2_ARRAY(glMultiTexCoord4iv, Int_val, GLint, Field)
 ML_2_ARRAY(glMultiTexCoord4sv, Int_val, GLshort, Field)
+*/
 
 /* Interleaved functions ---------------------------------- */
 
