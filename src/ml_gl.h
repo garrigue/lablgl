@@ -16,6 +16,11 @@ GLenum GLenum_val (value);
 #define Val_addr(addr) ((value) addr)
 #define Type_raw(raw) (GLenum_val(Kind_raw(raw)))
 #define Type_void_raw(raw) Type_raw(raw), Void_raw(raw)
+#define GLfloat_val(v) Float_val(v)
+#define GLdouble_val(dbl) ((GLdouble) Double_val(dbl))
+#define GLshort_val(v) ((GLshort) Int_val(v))
+#define GLint_val(v) ((GLint) Int_val(v))
+#define GLdoublePtr_val(v) ((GLdouble *) Field(v,0))
 
 #define ML_0(cname) \
 CAMLprim value ml_##cname (value unit) \
@@ -57,6 +62,7 @@ CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
          conv6(arg6), conv7(arg7), conv8(arg8)); \
   return Val_unit; }
 
+
 #define ML_0_(cname, conv) \
 CAMLprim value ml_##cname (value unit) \
 { return conv (cname ()); }
@@ -93,6 +99,30 @@ CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
                            value arg5, value arg6, value arg7, value arg8) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
                       conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8))); }
+
+
+#define ML_2_ARRAY(cname, conv1, ptype2, getter2)		\
+  CAMLprim value ml_##cname (value arg1,value arg2){		\
+    int len = Wosize_val(arg2);					\
+    ptype2 data[len];						\
+    int i;							\
+    for (i=0;i<len;i++)						\
+      data[i] = getter2(arg2, i);				\
+    cname(conv1(arg1), data);					\
+    return Val_unit;						\
+  }
+
+#define ML_2_ARRAY_(cname, conv1, ptype2, setter2)		\
+  CAMLprim value ml_##cname (value arg1,value arg2){		\
+    int len = Wosize_val(arg2);					\
+    ptype2 data[len];						\
+    int i;							\
+    cname(conv1(arg1), data);					\
+    for (i=0;i<len;i++)						\
+      setter2(arg2, i,data[i]);					\
+    return Val_unit;						\
+  }
+
 
 /* Use with care: needs the argument index */
 #define Ignore(x)

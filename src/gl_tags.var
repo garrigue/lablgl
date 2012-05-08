@@ -94,6 +94,7 @@ scissor_test
 stencil_test
 texture_1d
 texture_2d
+texture_cube_map
 texture_gen_q
 texture_gen_r
 texture_gen_s
@@ -218,24 +219,45 @@ none
 keep replace incr decr
 
 (* glTexEnv *)
-modulate decal
+modulate decal 
 
 (* glTexGen *)
 s t r q
 object_plane eye_plane
-eye_linear object_linear sphere_map
+eye_linear object_linear sphere_map reflection_map normal_map
+
+(* glTexImage* *)
+
+alpha4 alpha8 alpha12 alpha16 
+luminance4 luminance8 luminance12 luminance16
+luminance4_alpha4 luminance6_alpha2 luminance8_alpha8
+luminance12_alpha4 luminance12_alpha12 luminance16_alpha16
+intensity intensity4 intensity8 intensity12 intensity16
+r3_g3_b2 rgb4 rgb5 rgb8 rgb10 rgb12 rgb16
+rgba2 rgba4 rgb5_a1 rgba8 rgb10_a2 rgba12 rgba16
+
+(* glTexImage2D *)
+texture_cube_map_negative_x
+texture_cube_map_negative_y
+texture_cube_map_negative_z
+texture_cube_map_positive_x
+texture_cube_map_positive_y
+texture_cube_map_positive_z
+proxy_texture_2d
+proxy_texture_cube_map
 
 (* glTexParameter *)
 min_filter -> GL_TEXTURE_MIN_FILTER
 mag_filter -> GL_TEXTURE_MAG_FILTER
 wrap_s -> GL_TEXTURE_WRAP_S
 wrap_t -> GL_TEXTURE_WRAP_T
+wrap_r -> GL_TEXTURE_WRAP_R
 border_color -> GL_TEXTURE_BORDER_COLOR
 priority -> GL_TEXTURE_PRIORITY
 nearest nearest_mipmap_nearest linear_mipmap_nearest
 nearest_mipmap_linear linear_mipmap_linear
 generate_mipmap
-clamp repeat
+clamp repeat clamp_to_edge clamp_to_border
 
 (* glGetString *)
 vendor renderer version extensions
@@ -249,6 +271,14 @@ _3d -> GL_3D
 _3d_color -> GL_3D_COLOR
 _3d_color_texture -> GL_3D_COLOR_TEXTURE
 _4d_color_texture -> GL_4D_COLOR_TEXTURE
+
+(* glMultiTexCoord *)
+combine combine_rgb combine_alpha add_signed interpolate subtract dot3_rgb dot3_rgba
+constant primary_color previous
+source0_rgb source1_rgb source2_rgb 
+source0_alpha source1_alpha source2_alpha
+operand0_rgb operand1_rgb operand2_rgb 
+operand0_alpha operand1_alpha operand2_alpha
 
 $$
 (* glLightModel *)

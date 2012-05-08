@@ -12,11 +12,12 @@ OCAMLINC=-I +labltk
 
 # Files
 LIBOBJS =	raw.cmo \
+		api.cmo \
 		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
 		glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo \
 		glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo \
 		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo \
-		glArray.cmo
+		glMultiTex.cmo	glArray.cmo
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \

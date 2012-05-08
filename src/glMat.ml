@@ -17,13 +17,13 @@ let load_transpose m =
   load_transpose m
 
 
-external get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix] -> t -> unit = "ml_glGetDoublev" 
+external get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix|`color_matrix] -> t -> unit = "ml_glGetDoublev" 
 let get_matrix mode = 
   let model = Raw.create `double ~len:16 in
   get_matrix mode model;
   model
 
-external mode : [`modelview|`projection|`texture] -> unit
+external mode : [`modelview|`projection|`texture|`color] -> unit
     = "ml_glMatrixMode"
 external mult : t -> unit = "ml_glMultMatrixd"
 let mult m =

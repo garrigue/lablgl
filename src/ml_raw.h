@@ -16,6 +16,7 @@
 #define Byte_raw(raw) ((char *) Addr_raw(raw))
 #define Short_raw(raw) ((short *) Addr_raw(raw))
 #define Int_raw(raw) ((int *) Addr_raw(raw))
+#define UInt_raw(raw) ((unsigned int *) Addr_raw(raw))
 #define Long_raw(raw) ((long *) Addr_raw(raw))
 #define Float_raw(raw) ((float *) Addr_raw(raw))
 #define Double_raw(raw) ((double *) Addr_raw(raw))

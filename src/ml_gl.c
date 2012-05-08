@@ -27,6 +27,8 @@
 #define GL_GENERATE_MIPMAP 0x8191
 #endif
 
+#define __ARB_ENABLE TRUE
+
 /* #include <stdio.h> */
 
 void ml_raise_gl(const char *errmsg)
@@ -592,6 +594,12 @@ CAMLprim value ml_glTexEnv (value param)
 	for (i = 0; i < 4; i++) color[i] = Float_val(Field(params,i));
 	glTexEnvfv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
 	break;
+    case MLTAG_combine_rgb:
+        glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB, GLenum_val(params));
+        break;
+    case MLTAG_combine_alpha:
+        glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GLenum_val(params));
+        break;
     }
     return Val_unit;
 }
@@ -617,7 +625,7 @@ CAMLprim value ml_glTexImage1D (value proxy, value level, value internal,
 {
     glTexImage1D (proxy == Val_int(1)
 		  ? GL_PROXY_TEXTURE_1D : GL_TEXTURE_1D,
-		  Int_val(level), Int_val(internal), Int_val(width),
+		  Int_val(level), GLenum_val(internal), Int_val(width),
 		  Int_val(border), GLenum_val(format),
 		  Type_raw(data), Void_raw(data));
     return Val_unit;
@@ -625,16 +633,15 @@ CAMLprim value ml_glTexImage1D (value proxy, value level, value internal,
 
 ML_bc7 (ml_glTexImage1D)
 
-CAMLprim value ml_glTexImage2D (value proxy, value level, value internal,
+CAMLprim value ml_glTexImage2D (value target, value level, value internal,
                                 value width, value height, value border,
                                 value format, value data)
 {
     /* printf("p=%x,l=%d,i=%d,w=%d,h=%d,b=%d,f=%x,t=%x,d=%x\n", */
-    glTexImage2D (proxy == Val_int(1)
-		  ? GL_PROXY_TEXTURE_2D : GL_TEXTURE_2D,
-		  Int_val(level), Int_val(internal), Int_val(width),
-		  Int_val(height), Int_val(border), GLenum_val(format),
-		  Type_raw(data), Void_raw(data));
+  glTexImage2D (GLenum_val(target),
+		Int_val(level), GLenum_val(internal), Int_val(width),
+		Int_val(height), Int_val(border), GLenum_val(format),
+		Type_raw(data), Void_raw(data));
     /*  flush(stdout); */
     return Val_unit;
 }
@@ -671,7 +678,7 @@ CAMLprim value ml_glTexParameter (value target, value param)
     return Val_unit;
 }
 
-ML_2 (glGenTextures, Int_val, Int_raw)
+ML_2 (glGenTextures, Int_val, UInt_raw)
 ML_2 (glBindTexture, GLenum_val, Nativeint_val)
 
 CAMLprim value ml_glDeleteTexture (value texture_id)
@@ -728,3 +735,79 @@ CAMLprim value ml_glCallLists (value indexes)  /* ML */
     }
     return Val_unit;
 }
+
+/* Multitexture functions */
+/* we don't use the Glenum_val translation facility, and do 
+   that work in the ml module directly 
+*/
+
+ML_1(glActiveTexture, Int_val)
+ML_1(glClientActiveTexture, Int_val)
+
+ML_2(glMultiTexCoord1d, Int_val, GLdouble_val)
+ML_2(glMultiTexCoord1f, Int_val, GLfloat_val)
+ML_2(glMultiTexCoord1i, Int_val, GLint_val)
+ML_2(glMultiTexCoord1s, Int_val, GLshort_val)
+
+ML_3(glMultiTexCoord2d, Int_val, GLdouble_val, GLdouble_val)
+ML_3(glMultiTexCoord2f, Int_val, GLfloat_val, GLfloat_val)
+ML_3(glMultiTexCoord2i, Int_val, GLint_val, GLint_val)
+ML_3(glMultiTexCoord2s, Int_val, GLshort_val, GLshort_val)
+
+ML_4(glMultiTexCoord3d, Int_val, GLdouble_val, GLdouble_val, GLdouble_val)
+ML_4(glMultiTexCoord3f, Int_val, GLfloat_val, GLfloat_val, GLfloat_val)
+ML_4(glMultiTexCoord3i, Int_val, GLint_val, GLint_val, GLint_val)
+ML_4(glMultiTexCoord3s, Int_val, GLshort_val, GLshort_val, GLshort_val)
+
+ML_5(glMultiTexCoord4d, Int_val, GLdouble_val, GLdouble_val, GLdouble_val, GLdouble_val)
+ML_5(glMultiTexCoord4f, Int_val, GLfloat_val, GLfloat_val, GLfloat_val, GLfloat_val)
+ML_5(glMultiTexCoord4i, Int_val, GLint_val, GLint_val, GLint_val, GLint_val)
+ML_5(glMultiTexCoord4s, Int_val, GLshort_val, GLshort_val, GLshort_val, GLshort_val)
+
+ML_2(glMultiTexCoord1dv, Int_val, GLdoublePtr_val)
+ML_2_ARRAY(glMultiTexCoord1fv, Int_val, GLfloat, Double_field)
+ML_2_ARRAY(glMultiTexCoord1iv, Int_val, GLint, Field)
+ML_2_ARRAY(glMultiTexCoord1sv, Int_val, GLshort, Field)
+
+ML_2(glMultiTexCoord2dv, Int_val, GLdoublePtr_val)
+ML_2_ARRAY(glMultiTexCoord2fv, Int_val, GLfloat, Double_field)
+ML_2_ARRAY(glMultiTexCoord2iv, Int_val, GLint, Field)
+ML_2_ARRAY(glMultiTexCoord2sv, Int_val, GLshort, Field)
+
+ML_2(glMultiTexCoord3dv, Int_val, GLdoublePtr_val)
+ML_2_ARRAY(glMultiTexCoord3fv, Int_val, GLfloat, Double_field)
+ML_2_ARRAY(glMultiTexCoord3iv, Int_val, GLint, Field)
+ML_2_ARRAY(glMultiTexCoord3sv, Int_val, GLshort, Field)
+
+ML_2(glMultiTexCoord4dv, Int_val, GLdoublePtr_val)
+ML_2_ARRAY(glMultiTexCoord4fv, Int_val, GLfloat, Double_field)
+ML_2_ARRAY(glMultiTexCoord4iv, Int_val, GLint, Field)
+ML_2_ARRAY(glMultiTexCoord4sv, Int_val, GLshort, Field)
+
+/* State functions */
+
+//ML_2_ARRAY_(glGetIntegerv, GLenum_val, GLint, Store_field)
+
+CAMLprim value ml_max_texture_units(value unit){
+  int v;
+  glGetIntegerv(GL_MAX_TEXTURE_UNITS, &v);
+  return Val_int(v);
+}
+
+
+CAMLprim value ml_mode_combine(value unit){
+  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+  return Val_unit;
+}
+
+CAMLprim value ml_combine_rgb_replace(value unit){
+  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+  return Val_unit;
+}
+
+
+CAMLprim value ml_combine_rgb_add(value unit){
+  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
+  return Val_unit;
+}
+

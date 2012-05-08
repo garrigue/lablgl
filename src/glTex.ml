@@ -30,7 +30,7 @@ type env_param = [
 external env : env_param -> unit = "ml_glTexEnv"
 type coord = [`s|`t|`r|`q]
 type gen_param = [
-    `mode of [`object_linear|`eye_linear|`sphere_map]
+    `mode of [`object_linear|`eye_linear|`sphere_map|`reflection_map|`normal_map]
   | `object_plane of point4
   | `eye_plane of point4
 ]
@@ -55,31 +55,85 @@ type format = [
   | `luminance_alpha
 ]
 
-external image1d :
-    proxy:bool -> level:int -> internal:int ->
+type internal = [
+  `alpha | `alpha4 | `alpha8 | `alpha12 | `alpha16 
+| `luminance | `luminance4 | `luminance8 | `luminance12 | `luminance16
+| `luminance_alpha | `luminance4_alpha4 | `luminance6_alpha2 | `luminance8_alpha8
+| `luminance12_alpha4 | `luminance12_alpha12 | `luminance16_alpha16
+| `intensity | `intensity4 | `intensity8 | `intensity12 | `intensity16
+| `rgb | `r3_g3_b2 | `rgb4 | `rgb5 | `rgb8 | `rgb10 | `rgb12 | `rgb16
+| `rgba | `rgba2 | `rgba4 | `rgb5_a1 | `rgba8 | `rgb10_a2 | `rgba12 | `rgba16
+]
+
+let internal_of_format : [< format] -> internal = function
+    `color_index
+  | `red
+  | `green
+  | `blue
+  | `alpha           -> `alpha
+  | `luminance       -> `luminance
+  | `luminance_alpha -> `luminance_alpha
+  | `rgb             -> `rgb
+  | `rgba            -> `rgba
+
+type target_2d = [
+  `texture_2d
+| `texture_cube_map_positive_x
+| `texture_cube_map_negative_x
+| `texture_cube_map_positive_y
+| `texture_cube_map_negative_y
+| `texture_cube_map_positive_z
+| `texture_cube_map_negative_z
+| `proxy_texture_2d
+| `proxy_texture_cube_map
+]
+
+(*
+type target_1d = [
+  `texture_1d
+| `proxy_texture_1d
+]
+
+type target_3d = [
+  `texture_3d
+| `proxy_texture_3d
+]
+*)
+
+external image1d_ :
+    proxy:bool -> level:int -> internal:internal ->
     width:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
+
 let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
-  let internal = match i with None -> format_size (format img) | Some i -> i in
+  let internal = match i with None -> internal_of_format (format img) | Some i -> i in
   let border = if border then 1 else 0 in
   if not (check_pow2 (width img - 2 * border)) then
     raise (GLerror "Gl.image1d : bad width");
   if height img < 1 then raise (GLerror "Gl.image1d : bad height");
-  image1d ~proxy ~level ~internal ~width:(width img) ~border
+  image1d_ ~proxy ~level ~internal ~width:(width img) ~border
     ~format:(format img) (to_raw img)
-external image2d :
-    proxy:bool -> level:int -> internal:int -> width:int ->
+
+external image2d_ :
+    target:target_2d -> level:int -> internal:internal -> width:int ->
     height:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
-let image2d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
-  let internal = match i with None -> format_size (format img) | Some i -> i in
+let image2d ?(target=`texture_2d) ?(level=0) ?internal:i ?(border=false) img =
+  let internal = match i with None -> internal_of_format (format img) | Some i -> i in
   let border = if border then 1 else 0 in
   if not (check_pow2 (width img - 2 * border)) then
     raise (GLerror "Gl.image2d : bad width");
   if not (check_pow2 (height img - 2 * border)) then
     raise (GLerror "Gl.image2d : bad height");
-  image2d ~proxy ~level ~internal ~border
+  image2d_ ~target ~level ~internal ~border
     ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)
+
+(*
+val image3d : 
+  ?proxy:bool -> ?level:internal -> ?internal:int -> ?border:bool ->
+  ([< format], [< kind]) GlPix.t -> unit
+*)
+
 type filter = [
     `nearest
   | `linear
@@ -88,17 +142,19 @@ type filter = [
   | `nearest_mipmap_linear
   | `linear_mipmap_linear
 ]
-type wrap = [`clamp|`repeat]
+type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border]
 type parameter = [
     `min_filter of filter
   | `mag_filter of [`nearest|`linear]
   | `wrap_s of wrap
   | `wrap_t of wrap
+  | `wrap_r of wrap
   | `border_color of rgba
   | `priority of clampf
   | `generate_mipmap of bool
 ] 
-external parameter : target:[`texture_1d|`texture_2d] -> parameter -> unit
+
+external parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
     = "ml_glTexParameter"
 
 type texture_id = nativeint
@@ -113,7 +169,7 @@ let gen_textures ~len =
   arr
 let gen_texture () =  (gen_textures 1).(0)
 
-external bind_texture : target:[`texture_1d|`texture_2d] -> texture_id -> unit
+external bind_texture : target:[`texture_1d|`texture_2d|`texture_cube_map] -> texture_id -> unit
     = "ml_glBindTexture"
 external delete_texture : texture_id -> unit = "ml_glDeleteTexture"
 let delete_textures a = Array.iter (fun id -> delete_texture id) a

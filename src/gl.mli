@@ -51,7 +51,7 @@ type cap =
   |`map2_texture_coord_4|`map2_vertex_3|`map2_vertex_4|`normalize|`point_smooth
   |`polygon_offset_fill|`polygon_offset_line|`polygon_offset_point
   |`polygon_smooth|`polygon_stipple|`scissor_test|`stencil_test|`texture_1d
-  |`texture_2d|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t]
+  |`texture_2d|`texture_cube_map|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t]
 val enable : cap -> unit
 val disable : cap -> unit
 val is_enabled : cap -> bool

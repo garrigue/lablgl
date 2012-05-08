@@ -22,8 +22,8 @@ val push : unit -> unit
 val pop : unit -> unit
     (* Push and pop the matrix on the stack *)
 
-val mode : [`modelview|`projection|`texture] -> unit
-val get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix] -> t
+val mode : [`modelview|`projection|`texture|`color] -> unit
+val get_matrix : [`modelview_matrix|`projection_matrix|`texture_matrix|`color_matrix] -> t
 
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val scale : ?x:float -> ?y:float -> ?z:float -> unit -> unit
