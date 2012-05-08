@@ -14,10 +14,12 @@ OCAMLINC=-I +labltk
 LIBOBJS =	raw.cmo \
 		api.cmo \
 		gl.cmo		glLight.cmo	glList.cmo	glMap.cmo \
-		glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo \
-		glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo \
-		gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo \
-		glMultiTex.cmo	glArray.cmo     glInterleaved.cmo glPix3D.cmo
+		glMat.cmo	glMisc.cmo	glPix.cmo	glPix3D.cmo \
+		glClear.cmo  	glTex.cmo	glDraw.cmo	glFunc.cmo \
+		gluMisc.cmo	gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo \
+		gluMat.cmo 	glMultiTex.cmo	glArray.cmo     glInterleaved.cmo \
+		glColor.cmo	glConvolution.cmo
+
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \

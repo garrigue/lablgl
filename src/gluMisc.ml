@@ -4,7 +4,7 @@ open Gl
 open GlPix
 
 external build_1d_mipmaps :
-    internal:GlTex.internalformat ->
+    internal:internalformat ->
     width:int -> format:[< GlTex.format] -> [< kind] Raw.t -> unit
     = "ml_gluBuild1DMipmaps"
 let build_1d_mipmaps ?internal:i img =
@@ -15,7 +15,7 @@ let build_1d_mipmaps ?internal:i img =
     ~width:(width img) ~format:(format img) (to_raw img)
 
 external build_2d_mipmaps :
-    internal:GlTex.internalformat -> width:int ->
+    internal:internalformat -> width:int ->
     height:int -> format:[< GlTex.format] -> [< kind] Raw.t -> unit
     = "ml_gluBuild2DMipmaps"
 let build_2d_mipmaps ?internal:i img =

@@ -61,3 +61,6 @@ let feedback_buffer ~mode buf =
 
 external scissor : x:int -> y:int -> width:int -> height:int -> unit
   = "ml_glScissor"
+
+external sample_coverage : value:float -> invert:bool -> unit
+  = "ml_glSampleCoverage"

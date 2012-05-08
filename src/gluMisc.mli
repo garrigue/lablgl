@@ -5,10 +5,10 @@ open Gl
 val get_string : [`extensions|`version] -> string
 
 val build_1d_mipmaps :
-  ?internal:GlTex.internalformat -> ([< GlTex.format], [< kind]) GlPix.t -> unit
+  ?internal:internalformat -> ([< GlTex.format], [< kind]) GlPix.t -> unit
 
 val build_2d_mipmaps :
-  ?internal:GlTex.internalformat -> ([< GlTex.format], [< kind]) GlPix.t -> unit
+  ?internal:internalformat -> ([< GlTex.format], [< kind]) GlPix.t -> unit
 
 val scale_image :
   width:int -> height:int ->

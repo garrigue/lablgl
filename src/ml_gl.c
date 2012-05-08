@@ -569,6 +569,8 @@ ML_4 (glRotated, Double_val, Double_val, Double_val, Double_val)
 ML_3 (glScaled, Double_val, Double_val, Double_val)
 
 ML_4 (glScissor, Int_val, Int_val, Int_val, Int_val)
+ML_2 (glSampleCoverage, Float_val, Bool_val)
+
 ML_2 (glSelectBuffer, Int_val, (GLuint*)Addr_raw)
 ML_1 (glShadeModel, GLenum_val)
 ML_3 (glStencilFunc, GLenum_val, Int_val, Int_val)
@@ -798,6 +800,53 @@ ML_2(glMultiTexCoord4dv, Int_val, GLdoublePtr_val)
 ML_2_ARRAY(glMultiTexCoord4fv, Int_val, GLfloat, Double_field)
 ML_2_ARRAY(glMultiTexCoord4iv, Int_val, GLint, Field)
 ML_2_ARRAY(glMultiTexCoord4sv, Int_val, GLshort, Field)
+
+/* ColorTable functions */
+
+ML_5(glColorTable, GLenum_val, GLenum_val, Int_val, GLenum_val, Type_void_raw)
+
+#define ML_3_RGBA(cname,conv1,conv2)					\
+  CAMLprim value ml_##cname(value arg1, value arg2,			\
+value rgba) {								\
+    int i;								\
+    float color[4];							\
+    for (i = 0; i < 4; i++)						\
+      color[0] = Double_field(rgba, i);					\
+    cname(conv1(arg1), conv2(arg2), color);				\
+    return Val_unit;							\
+  }
+
+ML_3_RGBA(glColorTableParameterfv, GLenum_val, GLenum_val)
+
+ML_5(glCopyColorTable, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
+
+ML_5(glColorSubTable, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
+
+ML_5(glCopyColorSubTable, GLenum_val, Int_val, Int_val, Int_val, Int_val)
+
+ML_4(glHistogram, GLenum_val, Int_val, GLenum_val, Bool_val)
+
+ML_3(glMinmax, GLenum_val, GLenum_val, Bool_val)
+
+/* ConvolutionFilter functions */
+
+ML_5(glConvolutionFilter1D, GLenum_val, GLenum_val, Int_val, GLenum_val, Type_void_raw)
+
+ML_6(glConvolutionFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
+
+ML_bc6(ml_glConvolutionFilter2D)
+
+ML_7(glSeparableFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw, Void_raw)
+
+ML_bc7(ml_glSeparableFilter2D)
+
+ML_5(glCopyConvolutionFilter1D, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
+
+ML_6(glCopyConvolutionFilter2D, GLenum_val, GLenum_val, Int_val, Int_val, Int_val, Int_val)
+
+ML_bc6(ml_glCopyConvolutionFilter2D)
+
+ML_3_RGBA(glConvolutionParameterfv,GLenum_val, GLenum_val)
 
 /* State functions */
 

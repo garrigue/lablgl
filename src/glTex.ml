@@ -67,16 +67,6 @@ type target_2d = [
 | `proxy_texture_cube_map
 ]
 
-type internalformat = [
-  `alpha | `alpha4 | `alpha8 | `alpha12 | `alpha16 
-| `luminance | `luminance4 | `luminance8 | `luminance12 | `luminance16
-| `luminance_alpha | `luminance4_alpha4 | `luminance6_alpha2 | `luminance8_alpha8
-| `luminance12_alpha4 | `luminance12_alpha12 | `luminance16_alpha16
-| `intensity | `intensity4 | `intensity8 | `intensity12 | `intensity16
-| `rgb | `r3_g3_b2 | `rgb4 | `rgb5 | `rgb8 | `rgb10 | `rgb12 | `rgb16
-| `rgba | `rgba2 | `rgba4 | `rgb5_a1 | `rgba8 | `rgb10_a2 | `rgba12 | `rgba16
-]
-
 let internal_of_format : [< format] -> internalformat = function
     `color_index
   | `red
@@ -128,7 +118,8 @@ let image2d ?(target=`texture_2d) ?(level=0) ?internal:i ?(border=false) img =
   image2d ~target ~level ~internal ~border
     ~width:(width img) ~height:(height img) ~format:(format img) (to_raw img)
 
-(*
+open GlPix3D
+
 external image3d :
     proxy:bool -> level:int -> internal:internalformat -> width:int ->
     height:int -> depth:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
@@ -142,7 +133,6 @@ let image3d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
   if height img < 1 then raise (GLerror "Gl.image1d : bad height");
   image3d ~proxy ~level ~internal ~width:(width img) ~height:(width img) ~depth:(depth img) ~border
     ~format:(format img) (to_raw img)
-*)
 
 type min_filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest

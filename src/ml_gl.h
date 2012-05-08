@@ -101,28 +101,52 @@ CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
                       conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8))); }
 
 
-#define ML_2_ARRAY(cname, conv1, ptype2, getter2)		\
+#define ML_2_ARRAY(cname, conv1, ptype, getter)			\
   CAMLprim value ml_##cname (value arg1,value arg2){		\
     int len = Wosize_val(arg2);					\
-    ptype2 data[len];						\
+    ptype data[len];						\
     int i;							\
     for (i=0;i<len;i++)						\
-      data[i] = getter2(arg2, i);				\
+      data[i] = getter(arg2, i);				\
     cname(conv1(arg1), data);					\
     return Val_unit;						\
   }
 
-#define ML_2_ARRAY_(cname, conv1, ptype2, setter2)		\
+#define ML_2_ARRAY_(cname, conv1, ptype, setter)		\
   CAMLprim value ml_##cname (value arg1,value arg2){		\
     int len = Wosize_val(arg2);					\
-    ptype2 data[len];						\
+    ptype data[len];						\
     int i;							\
     cname(conv1(arg1), data);					\
     for (i=0;i<len;i++)						\
-      setter2(arg2, i,data[i]);					\
+      setter(arg2, i,data[i]);					\
     return Val_unit;						\
   }
 
+
+#define ML_3_ARRAY(cname, conv1, conv2, ptype, getter)		\
+  CAMLprim value ml_##cname (value arg1,value arg2,		\
+			     value arg3){			\
+    int len = Wosize_val(arg3);					\
+    ptype data[len];						\
+    int i;							\
+    for (i=0;i<len;i++)						\
+      data[i] = getter(arg3, i);				\
+    cname(conv1(arg1), conv2(arg2), data);			\
+    return Val_unit;						\
+  }
+
+#define ML_3_ARRAY_(cname, conv1, conv2, ptype3, setter3)	\
+  CAMLprim value ml_##cname (value arg1,value arg2,		\
+			     value arg3){			\
+    int len = Wosize_val(arg3);					\
+    ptype data[len];						\
+    int i;							\
+    cname(conv1(arg1), conv2(arg2), data);			\
+    for (i=0;i<len;i++)						\
+      setter(arg3, i,data[i]);					\
+    return Val_unit;						\
+  }
 
 /* Use with care: needs the argument index */
 #define Ignore(x)

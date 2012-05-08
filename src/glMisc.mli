@@ -36,3 +36,6 @@ val feedback_buffer : mode:feedback_mode -> [`float] Raw.t -> unit
   (* argument must be a static Raw.t *)
 
 val scissor : x:int -> y:int -> width:int -> height:int -> unit
+
+val sample_coverage : value:float -> invert:bool -> unit
+

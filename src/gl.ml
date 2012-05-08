@@ -32,6 +32,16 @@ let format_size (#format as f) =
   | `luminance_alpha -> 2
   | _ -> 1
 
+type internalformat = [
+  `alpha | `alpha4 | `alpha8 | `alpha12 | `alpha16 
+| `luminance | `luminance4 | `luminance8 | `luminance12 | `luminance16
+| `luminance_alpha | `luminance4_alpha4 | `luminance6_alpha2 | `luminance8_alpha8
+| `luminance12_alpha4 | `luminance12_alpha12 | `luminance16_alpha16
+| `intensity | `intensity4 | `intensity8 | `intensity12 | `intensity16
+| `rgb | `r3_g3_b2 | `rgb4 | `rgb5 | `rgb8 | `rgb10 | `rgb12 | `rgb16
+| `rgba | `rgba2 | `rgba4 | `rgb5_a1 | `rgba8 | `rgb10_a2 | `rgba12 | `rgba16 
+]
+
 type target =
   [`color_4|`index|`normal|`texture_coord_1|`texture_coord_2|`texture_coord_3
   |`texture_coord_4|`trim_2|`trim_3|`vertex_3|`vertex_4]
@@ -63,7 +73,8 @@ type cap =
   |`map2_texture_coord_4|`map2_vertex_3|`map2_vertex_4|`normalize|`point_smooth
   |`polygon_offset_fill|`polygon_offset_line|`polygon_offset_point
   |`polygon_smooth|`polygon_stipple|`scissor_test|`stencil_test|`texture_1d
-  |`texture_2d|`texture_cube_map|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t]
+  |`texture_2d|`texture_cube_map|`texture_gen_q|`texture_gen_r|`texture_gen_s|`texture_gen_t
+  |`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one|`multisample]
 
 external enable : cap -> unit = "ml_glEnable"
 external disable : cap -> unit = "ml_glDisable"

@@ -25,15 +25,6 @@ type format =
     |`luminance|`luminance_alpha]
 
 
-type internalformat = [
-  `alpha | `alpha4 | `alpha8 | `alpha12 | `alpha16 
-| `luminance | `luminance4 | `luminance8 | `luminance12 | `luminance16
-| `luminance_alpha | `luminance4_alpha4 | `luminance6_alpha2 | `luminance8_alpha8
-| `luminance12_alpha4 | `luminance12_alpha12 | `luminance16_alpha16
-| `intensity | `intensity4 | `intensity8 | `intensity12 | `intensity16
-| `rgb | `r3_g3_b2 | `rgb4 | `rgb5 | `rgb8 | `rgb10 | `rgb12 | `rgb16
-| `rgba | `rgba2 | `rgba4 | `rgb5_a1 | `rgba8 | `rgb10_a2 | `rgba12 | `rgba16
-]
 val internal_of_format : [< format] -> internalformat
 
 type target_2d = [
@@ -63,16 +54,14 @@ type target_3d = [
 val image1d :
   ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
   ([< format], [< kind]) GlPix.t -> unit
+
 val image2d :
   ?target:target_2d -> ?level:int -> ?internal:internalformat -> ?border:bool ->
   ([< format], [< kind]) GlPix.t -> unit
 
-(*
 val image3d : 
   ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
-  ([< format], [< kind]) GlPix.t -> unit
-*)
-
+  ([< format], [< kind]) GlPix3D.t -> unit
 
 type min_filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest

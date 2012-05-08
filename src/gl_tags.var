@@ -45,6 +45,11 @@ clip_plane2
 clip_plane3
 clip_plane4
 clip_plane5
+sample_alpha_to_coverage
+sample_alpha_to_one
+sample_coverage
+multisample
+
 (* color_logic_op *)
 color_material
 cull_face
@@ -288,6 +293,20 @@ source0_rgb source1_rgb source2_rgb
 source0_alpha source1_alpha source2_alpha
 operand0_rgb operand1_rgb operand2_rgb 
 operand0_alpha operand1_alpha operand2_alpha
+
+(* glColorTable *)
+color_table 
+post_convolution  -> GL_POST_CONVOLUTION_COLOR_TABLE
+post_color_matrix -> GL_POST_COLOR_MATRIX_COLOR_TABLE
+proxy_color_table
+proxy_post_convolution  -> GL_PROXY_POST_CONVOLUTION_COLOR_TABLE
+proxy_post_color_matrix -> GL_PROXY_POST_COLOR_MATRIX_COLOR_TABLE
+histogram minmax
+
+(* glConvolutionFilter *)
+convolution_1d convolution_2d separable_2d
+convolution_filter_bias convolution_filter_scale
+
 
 $$
 (* glLightModel *)
