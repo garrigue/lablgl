@@ -8,7 +8,7 @@ let accum ?(alpha=1.) (r,g,b : rgb) =
   accum r g b alpha
 
 type buffer = [`color|`depth|`accum|`stencil]
-external clear : buffer list -> unit = "ml_glClear"
+external clear : [<buffer] list -> unit = "ml_glClear"
 
 external color :
     red:float -> green:float -> blue:float -> alpha:float -> unit

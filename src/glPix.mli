@@ -56,7 +56,7 @@ type store_param = [
   | `unpack_alignment of int
   | `unpack_image_height of int
 ]
-val store : store_param -> unit
+val store : [<store_param] -> unit
 
 type transfer_param = [
     `map_color of bool
@@ -90,7 +90,7 @@ type transfer_param = [
   | `post_color_matrix_blue_bias of float
   | `post_color_matrix_alpha_bias of float
 ]
-val transfer : transfer_param -> unit
+val transfer : [<transfer_param] -> unit
 
 val zoom : x:float -> y:float -> unit
 val raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
@@ -103,4 +103,4 @@ val window_pos : x:float -> y:float -> ?z:float -> unit -> unit
 
 val copy :
   x:int ->
-  y:int -> width:int -> height:int -> buffer:[`color|`depth|`stencil] -> unit
+  y:int -> width:int -> height:int -> buffer:[<`color|`depth|`stencil] -> unit

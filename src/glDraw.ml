@@ -21,7 +21,7 @@ external edge_flag : bool -> unit = "ml_glEdgeFlag"
 
 type face_dir = [`cw|`ccw]
 
-external front_face : face_dir -> unit = "ml_glFrontFace"
+external front_face : [<face_dir] -> unit = "ml_glFrontFace"
 
 external line_width : float -> unit = "ml_glLineWidth"
 external line_stipple : factor:int -> pattern:short -> unit
@@ -35,7 +35,7 @@ external polygon_offset : factor:float -> units:float -> unit
 
 type polygon_mode = [`point|`line|`fill]
 
-external polygon_mode : face:face -> polygon_mode -> unit
+external polygon_mode : face:[<face] -> [<polygon_mode] -> unit
     = "ml_glPolygonMode"
 external polygon_stipple : [`bitmap] Raw.t -> unit = "ml_glPolygonStipple"
 let polygon_stipple (img : GlPix.bitmap) =
@@ -45,13 +45,13 @@ let polygon_stipple (img : GlPix.bitmap) =
 
 type shade_model = [`flat|`smooth]
 
-external shade_model : shade_model -> unit = "ml_glShadeModel"
+external shade_model : [<shade_model] -> unit = "ml_glShadeModel"
 
 type shape =
     [ `points | `lines | `polygon | `triangles | `quads | `line_strip
     | `line_loop | `triangle_strip | `triangle_fan | `quad_strip ]
 
-external begins : shape -> unit = "ml_glBegin"
+external begins : [<shape] -> unit = "ml_glBegin"
 external ends : unit -> unit = "ml_glEnd"
 
 external normal : x:float -> y:float -> z:float -> unit
@@ -80,7 +80,7 @@ type point_parameter =
     | `distance_attenuation of float
     | `fade_threshold_size of float ]
       
-external point_parameter_float : point_pname -> float -> unit = "ml_glPointParameterf"
+external point_parameter_float : [<point_pname] -> float -> unit = "ml_glPointParameterf"
 
 let point_parameter = function
   | `size_min f              -> point_parameter_float `size_min f

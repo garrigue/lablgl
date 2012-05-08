@@ -22,7 +22,7 @@ type kind =
   | `color_matrix      | `transpose_color_matrix
   | `texture_matrix    | `transpose_texture_matrix ]
 
-external get_matrix : kind -> t -> unit = "ml_glGetDoublev" 
+external get_matrix : [<kind] -> t -> unit = "ml_glGetDoublev" 
 let get_matrix mode = 
   let model = Raw.create `double ~len:16 in
   get_matrix mode model;
@@ -30,7 +30,7 @@ let get_matrix mode =
 
 type mode = [`modelview|`projection|`texture|`color]
 
-external mode : mode  -> unit
+external mode : [<mode]  -> unit
     = "ml_glMatrixMode"
 external mult : t -> unit = "ml_glMultMatrixd"
 let mult m =

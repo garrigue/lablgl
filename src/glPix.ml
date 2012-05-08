@@ -42,7 +42,7 @@ let bitmap (img : bitmap) =
 
 external copy :
     x:int -> y:int -> width:int -> height:int ->
-    buffer:[`color|`depth|`stencil] -> unit
+    buffer:[<`color|`depth|`stencil] -> unit
     = "ml_glCopyPixels"
 
 external draw :
@@ -75,7 +75,7 @@ type store_param = [
   | `unpack_alignment of int
   | `unpack_image_height of int
 ]
-external store : store_param -> unit = "ml_glPixelStorei"
+external store : [<store_param] -> unit = "ml_glPixelStorei"
 
 type transfer_param = [
     `map_color of bool
@@ -110,7 +110,7 @@ type transfer_param = [
   | `post_color_matrix_alpha_bias of float
 ]
 
-external transfer : transfer_param -> unit = "ml_glPixelTransfer"
+external transfer : [<transfer_param] -> unit = "ml_glPixelTransfer"
 
 external zoom : x:float -> y:float -> unit = "ml_glPixelZoom"
 

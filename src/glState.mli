@@ -132,6 +132,8 @@ val get_compressed_tex_image : ?target:image_target -> ?level:int -> unit -> [`u
 
 val get_polygon_stipple : unit -> GlPix.bitmap
 
+(* imaging subset -------------------------- *)
+
 type color_table_pname = 
   [ `table_format
   | `table_width
@@ -160,9 +162,10 @@ val get_color_table_parameter : target:GlColor.table -> pname:color_table_pname 
 
 val get_color_table : target:GlColor.table -> format:([< GlColor.table_format ] as 'a)  -> kind:([< Gl.real_kind ] as 'b) -> ('a, 'b) GlPix.t
 
-val get_convolution_filter : target:[`convolution_1d|`convolution_2d] -> format:[< GlConvolution.format ]  -> kind:([< Gl.real_kind] as 'a) -> 'a Raw.t * int * int
 
-val get_separable_filter : target:[`separable_2d] -> format:[< GlConvolution.format ]  -> kind:([< Gl.real_kind] as 'a) -> 'a Raw.t * int * 'a Raw.t * int
+val get_convolution_filter : target:[`convolution_1d|`convolution_2d] -> format:([< GlConvolution.format ] as 'a) -> kind:([< Gl.real_kind] as 'b) -> ('a,'b) GlPix.t
+
+val get_separable_filter : target:[`separable_2d] -> format:([< GlConvolution.format ] as 'a) -> kind:([< Gl.real_kind] as 'b) -> ('a,'b) GlPix.t * ('a,'b) GlPix.t
 
 
 type histogram_pname =
@@ -699,4 +702,4 @@ type intv_pname =
 type intv_value =
   [ int4_value | int2_value | int_value | enum_value ]
 
-val get_intv : intv_pname -> intv_value
+val get_intv : [<intv_pname] -> intv_value

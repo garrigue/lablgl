@@ -11,9 +11,9 @@ type texture =
   | `texture24 | `texture25 | `texture26 | `texture27
   | `texture28 | `texture29 | `texture30 | `texture31 ]
 
-val active : texture -> unit
+val active : [< texture] -> unit
 
-val client_active : texture -> unit
+val client_active : [< texture] -> unit
 
 type mode_param = [`modulate|`decal|`blend|`replace|`combine]
 type combine_rgb_param = [`replace|`modulate|`add|`add_signed|`interpolate|`subtract|`dot3_rgb|`dot3_rgba]
@@ -48,34 +48,28 @@ type env_param = [
 
 type filter_param = [ `lod_bias of float ]
 
-val env : env_target -> [env_param | filter_param] -> unit
+val env : [< env_target ] -> [< env_param | filter_param] -> unit
 
-val coord1d : texture -> float -> unit
-val coord2d : texture -> float * float -> unit
-val coord3d : texture -> float * float * float -> unit
-val coord4d : texture -> float * float * float * float -> unit
+val coord1d : [< texture ] -> float -> unit
+val coord2d : [< texture ] -> float * float -> unit
+val coord3d : [< texture ] -> float * float * float -> unit
+val coord4d : [< texture ] -> float * float * float * float -> unit
 
-val coord1f : texture -> float -> unit
-val coord2f : texture -> float * float -> unit
-val coord3f : texture -> float * float * float -> unit
-val coord4f : texture -> float * float * float * float -> unit
+val coord1f : [< texture ] -> float -> unit
+val coord2f : [< texture ] -> float * float -> unit
+val coord3f : [< texture ] -> float * float * float -> unit
+val coord4f : [< texture ] -> float * float * float * float -> unit
 
-val coord1i : texture -> int -> unit
-val coord2i : texture -> int * int -> unit
-val coord3i : texture -> int * int * int -> unit
-val coord4i : texture -> int * int * int * int -> unit
+val coord1i : [< texture ] -> int -> unit
+val coord2i : [< texture ] -> int * int -> unit
+val coord3i : [< texture ] -> int * int * int -> unit
+val coord4i : [< texture ] -> int * int * int * int -> unit
 
 (* GlTex naming scheme *)
 
-val coord1 : texture -> float -> unit
-val coord2 : texture -> float * float -> unit
-val coord3 : texture -> float * float * float -> unit
-val coord4 : texture -> float * float * float * float -> unit
+val coord1 : [< texture ] -> float -> unit
+val coord2 : [< texture ] -> float * float -> unit
+val coord3 : [< texture ] -> float * float * float -> unit
+val coord4 : [< texture ] -> float * float * float * float -> unit
 
-val coord : texture -> s:float -> ?t:float -> ?r:float -> ?q:float -> unit -> unit
-
-(* state queries *)
-
-(*
-val max_texture_units : unit -> int
-*)
+val coord : [< texture ] -> s:float -> ?t:float -> ?r:float -> ?q:float -> unit -> unit

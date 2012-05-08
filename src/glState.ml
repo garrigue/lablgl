@@ -319,6 +319,8 @@ let get_polygon_stipple () =
   let r = get_polygon_stipple () in
   GlPix.of_raw r ~format:`color_index ~width:32 ~height:32 
 
+(* imaging subset -------------------------- *)
+
 type color_table_pname = 
   [ `table_format
   | `table_width
@@ -376,7 +378,16 @@ let get_color_table ~target ~format ~kind =
 
 external get_convolution_filter : target:[`convolution_1d|`convolution_2d] -> format:[< GlConvolution.format ]  -> kind:([< real_kind] as 'a) -> 'a Raw.t * int * int = "ml_glGetConvolutionFilter"
 
+let get_convolution_filter ~target ~format ~kind =
+  let r,width,height = get_convolution_filter ~target ~format ~kind in
+  GlPix.of_raw r ~format ~width ~height
+
 external get_separable_filter : target:[`separable_2d] -> format:[< GlConvolution.format ]  -> kind:([< real_kind] as 'a) -> 'a Raw.t * int * 'a Raw.t * int = "ml_glGetSeparableFilter"
+
+let get_separable_filter ~target ~format ~kind =
+  let r1, width, r2, height = get_separable_filter ~target ~format ~kind in
+  GlPix.of_raw r1 ~format ~width ~height:1, GlPix.of_raw r2 ~format ~width:1 ~height
+  
 
 type histogram_pname =
   [ `histogram_width
@@ -954,7 +965,7 @@ type intv_pname =
 type intv_value =
   [ int4_value | int2_value | int_value | enum_value ]
 
-let get_intv : intv_pname -> intv_value = function
+let get_intv : [<intv_pname] -> intv_value = function
     | #int4_pname as x -> get_int4_ x
     | #int2_pname as y -> get_int2_ y
     | #int_pname  as z -> get_int_ z

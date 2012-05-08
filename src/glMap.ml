@@ -2,11 +2,11 @@
 
 external eval_coord1 : float -> unit = "ml_glEvalCoord1d"
 external eval_coord2 : float -> float -> unit = "ml_glEvalCoord2d"
-external eval_mesh1 : mode:[`point|`line] -> int -> int -> unit
+external eval_mesh1 : mode:[<`point|`line] -> int -> int -> unit
     = "ml_glEvalMesh1"
 let eval_mesh1 ~mode ~range:(u1,u2) = eval_mesh1 ~mode u1 u2
 external eval_mesh2 :
-    mode:[`point|`line|`fill] -> int -> int -> int -> int -> unit
+    mode:[<`point|`line|`fill] -> int -> int -> int -> int -> unit
     = "ml_glEvalMesh2"
 let eval_mesh2 ~mode ~range1:(u1,u2) ~range2:(v1,v2) =
   eval_mesh2 ~mode u1 u2 v1 v2
@@ -24,10 +24,10 @@ type target =
   | `texture_coord_3
   | `texture_coord_4 ]
 external map1 :
-    target:target -> (float*float) -> order:int -> [`double] Raw.t -> unit
+    target:[<target] -> (float*float) -> order:int -> [`double] Raw.t -> unit
     = "ml_glMap1d"
 external map2 :
-    target:target -> (float*float) -> order:int ->
+    target:[<target] -> (float*float) -> order:int ->
     (float*float) -> order:int -> [`double] Raw.t -> unit
     = "ml_glMap2d_bc" "ml_glMap2d"
 external grid1 : n:int -> range:(float * float) -> unit

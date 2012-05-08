@@ -25,12 +25,12 @@ val polygon_offset : factor:float -> units:float -> unit
 
 type polygon_mode = [`fill|`line|`point]
 
-val polygon_mode : face:face -> polygon_mode -> unit
+val polygon_mode : face:[<face] -> polygon_mode -> unit
 val polygon_stipple : GlPix.bitmap -> unit
 
 type shade_model = [`flat|`smooth]
 
-val shade_model : shade_model -> unit
+val shade_model : [<shade_model] -> unit
 
 val normal : ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val normal3 : vect3 -> unit
@@ -41,7 +41,7 @@ val rect : point2 -> point2 -> unit
 type shape =
   [`line_loop|`line_strip|`lines|`points|`polygon|`quad_strip|`quads
   |`triangle_fan|`triangle_strip|`triangles]
-val begins : shape -> unit
+val begins : [<shape] -> unit
 val ends : unit -> unit
 
 val vertex : x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
@@ -62,4 +62,4 @@ type point_parameter =
     | `distance_attenuation of float
     | `fade_threshold_size of float ]
       
-val point_parameter : point_parameter -> unit
+val point_parameter : [<point_parameter] -> unit

@@ -24,7 +24,7 @@ val pop : unit -> unit
 
 type mode = [`modelview|`projection|`texture|`color]
 
-val mode : mode -> unit
+val mode : [<mode] -> unit
 
 type kind =   
   [ `modelview_matrix  | `transpose_modelview_matrix
@@ -32,7 +32,7 @@ type kind =
   | `color_matrix      | `transpose_color_matrix
   | `texture_matrix    | `transpose_texture_matrix ]
 
-val get_matrix : kind -> t
+val get_matrix : [<kind] -> t
 
 val rotate : angle:float -> ?x:float -> ?y:float -> ?z:float -> unit -> unit
 val scale : ?x:float -> ?y:float -> ?z:float -> unit -> unit

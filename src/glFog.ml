@@ -13,7 +13,7 @@ type fog_param =
   | `color of rgba
   | `coord_src of coord_src ]
 
-external fog : fog_param -> unit = "ml_glFog" "noalloc"
+external fog : [<fog_param] -> unit = "ml_glFog" "noalloc"
 
 external coord : float -> unit = "ml_glFogCoordd" "noalloc"
 

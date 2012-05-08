@@ -4,7 +4,7 @@ open Gl
 
 type color_material =
     [`emission|`ambient|`diffuse|`specular|`ambient_and_diffuse]
-external color_material : face:face -> color_material -> unit
+external color_material : face:[<face] -> [<color_material] -> unit
     = "ml_glColorMaterial"
 
 type light_param = [
@@ -19,18 +19,18 @@ type light_param = [
   | `linear_attenuation of float
   | `quadratic_attenuation of float
 ]
-external light : num:int -> light_param -> unit
+external light : num:int -> [<light_param] -> unit
     = "ml_glLight"
 
-type color_control = [`separate_specular_color | `single_color]
+type color_control = [`separate_specular_color|`single_color]
     
-type light_model_param = [
-    `ambient of rgba 
+type light_model_param = 
+  [ `ambient of rgba 
   | `local_viewer of bool 
   | `two_side of bool 
-  | `color_control of color_control
-]
-external light_model : light_model_param -> unit = "ml_glLightModel"
+  | `color_control of color_control ]
+
+external light_model : [<light_model_param] -> unit = "ml_glLightModel"
 
 type material_param = [
     `ambient of rgba
@@ -41,5 +41,5 @@ type material_param = [
   | `ambient_and_diffuse of rgba
   | `color_indexes of (float * float * float)
 ]
-external material : face:face -> material_param -> unit
+external material : face:[<face] -> [<material_param] -> unit
     = "ml_glMaterial"

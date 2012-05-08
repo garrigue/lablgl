@@ -66,9 +66,9 @@ type cap =
   |`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one|`multisample
   | `convolution_1d | `convolution_2d | `separable_2d | `histogram | `minmax ]
 
-val enable : cap -> unit
-val disable : cap -> unit
-val is_enabled : cap -> bool
+val enable : [< cap ] -> unit
+val disable : [< cap ] -> unit
+val is_enabled : [< cap ] -> bool
 
 type error =
   [`no_error|`invalid_enum|`invalid_value|`invalid_operation

@@ -12,6 +12,6 @@ type fog_param =
   | `color of Gl.rgba
   | `coord_src of coord_src ]
 
-val fog : fog_param -> unit
+val fog : [<fog_param] -> unit
 
 val coord : float -> unit

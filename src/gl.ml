@@ -80,9 +80,9 @@ type cap =
   |`sample_coverage|`sample_alpha_to_coverage|`sample_alpha_to_one|`multisample
   | `convolution_1d | `convolution_2d | `separable_2d | `histogram | `minmax ]
 
-external enable : cap -> unit = "ml_glEnable"
-external disable : cap -> unit = "ml_glDisable"
-external is_enabled : cap -> bool = "ml_glIsEnabled"
+external enable : [< cap ] -> unit = "ml_glEnable"
+external disable : [< cap ] -> unit = "ml_glDisable"
+external is_enabled : [< cap ] -> bool = "ml_glIsEnabled"
 
 type error =
   [`no_error|`invalid_enum|`invalid_value|`invalid_operation

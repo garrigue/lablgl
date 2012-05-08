@@ -15,7 +15,7 @@ type env_param =
 
 type filter_param = [ `lod_bias of float ]
 
-val env : env_target -> [env_param | filter_param ] -> unit
+val env : [< env_target ] -> [env_param | filter_param ] -> unit
 
 type coord = [`s|`t|`r|`q]
 
@@ -27,38 +27,33 @@ type gen_param = [
   | `eye_plane of point4
 ]
 
-val gen : coord:coord -> gen_param -> unit
+val gen : coord:[< coord ] -> [< gen_param ] -> unit
 
-type format =
-    [`color_index|`red|`green|`blue|`alpha|`rgb|`rgba
-    |`luminance|`luminance_alpha]
+type format = 
+  [ `color_index | `red | `green | `blue | `alpha | `rgb
+  | `bgr | `rgba | `bgra | `luminance | `luminance_alpha ]
 
 
 val internal_of_format : [< format] -> internalformat
 
-type target_2d = [
-  `texture_2d
-| `texture_cube_map_positive_x
-| `texture_cube_map_negative_x
-| `texture_cube_map_positive_y
-| `texture_cube_map_negative_y
-| `texture_cube_map_positive_z
-| `texture_cube_map_negative_z
-| `proxy_texture_2d
-| `proxy_texture_cube_map
-]
+type target_1d = 
+  [ `texture_1d
+  | `proxy_texture_1d ]
 
+type target_2d = 
+  [ `texture_2d
+  | `texture_cube_map_positive_x
+  | `texture_cube_map_negative_x
+  | `texture_cube_map_positive_y
+  | `texture_cube_map_negative_y
+  | `texture_cube_map_positive_z
+  | `texture_cube_map_negative_z
+  | `proxy_texture_2d
+  | `proxy_texture_cube_map ]
 
-type target_1d = [
-  `texture_1d
-| `proxy_texture_1d
-]
-
-type target_3d = [
-  `texture_3d
-| `proxy_texture_3d
-]
-
+type target_3d = 
+  [ `texture_3d
+  | `proxy_texture_3d ]
 
 val image1d :
   ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
@@ -99,11 +94,11 @@ type parameter =
   | `depth_mode of depth_mode
   | `compare_mode of compare_mode] 
 
-val parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
+val parameter : target:[< `texture_1d|`texture_2d|`texture_cube_map] -> [< parameter ] -> unit
 
 type texture_id
 val gen_texture : unit -> texture_id
 val gen_textures : len:int -> texture_id array
-val bind_texture : target:[`texture_1d|`texture_2d|`texture_cube_map] -> texture_id -> unit
+val bind_texture : target:[< `texture_1d|`texture_2d|`texture_cube_map] -> texture_id -> unit
 val delete_texture : texture_id -> unit
 val delete_textures : texture_id array -> unit

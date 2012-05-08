@@ -1,7 +1,7 @@
 (* $Id: glClear.mli,v 1.3 1999-11-15 09:55:05 garrigue Exp $ *)
 
 type buffer = [`accum|`color|`depth|`stencil]
-val clear : buffer list -> unit
+val clear : [<buffer] list -> unit
     (* glClear: clear the specified buffers *)
 
 val accum : ?alpha:float -> Gl.rgb -> unit

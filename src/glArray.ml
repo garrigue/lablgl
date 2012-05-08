@@ -52,16 +52,16 @@ external _vertex :
 	= "ml_glVertexPointer"
 let vertex n = check_static "vertex" (_vertex n)
 
-external enable : kind -> unit= "ml_glEnableClientState"
+external enable : [<kind] -> unit= "ml_glEnableClientState"
 
-external disable : kind -> unit	= "ml_glDisableClientState"
+external disable : [<kind] -> unit	= "ml_glDisableClientState"
 
 external element : int -> unit = "ml_glArrayElement"
 
-external draw_arrays : GlDraw.shape -> first:int -> count:int -> unit 
+external draw_arrays : [<GlDraw.shape] -> first:int -> count:int -> unit 
     = "ml_glDrawArrays"
 
-external multi_draw_arrays : mode:GlDraw.shape -> items:(int * int) array -> primcount:int -> unit
+external multi_draw_arrays : mode:[<GlDraw.shape] -> items:(int * int) array -> primcount:int -> unit
   = "ml_glMultiDrawArrays"
 
 let multi_draw_arrays ~mode items =
@@ -69,6 +69,6 @@ let multi_draw_arrays ~mode items =
   multi_draw_arrays ~mode ~items ~primcount
 
 external draw_elements 
-    :  GlDraw.shape -> count:int -> [< `ubyte | `ushort | `uint] Raw.t -> unit
+    :  [<GlDraw.shape] -> count:int -> [< `ubyte | `ushort | `uint] Raw.t -> unit
 	= "ml_glDrawElements"  
 

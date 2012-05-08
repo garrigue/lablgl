@@ -30,7 +30,7 @@ type env_param =
 
 type filter_param = [ `lod_bias of float ]
 
-external env : env_target -> [env_param | filter_param] -> unit = "ml_glTexEnv"
+external env : [< env_target ] -> [env_param | filter_param] -> unit = "ml_glTexEnv"
 
 type coord = [`s|`t|`r|`q]
 
@@ -40,8 +40,9 @@ type gen_param =
   | `object_plane of point4
   | `eye_plane of point4 ]
 
-external gen : coord:coord -> gen_param -> unit = "ml_glTexGen"
+external gen : coord:[<coord] -> [<gen_param] -> unit = "ml_glTexGen"
 
+(* note : check_pow2 isn't necessary anymore starting with OpenGL v2.0 *)
 let npot = ref None
 
 let check_pow2 n =
@@ -49,16 +50,27 @@ let check_pow2 n =
     npot := Some (GlMisc.check_extension "GL_ARB_texture_non_power_of_two");
   (!npot = Some true) || (n land (n - 1) = 0)
 
+
 type format = 
-  [ `color_index
+  [ `color_index | `red | `green | `blue | `alpha | `rgb
+  | `bgr | `rgba | `bgra | `luminance | `luminance_alpha ]
+
+let internal_of_format : [<format] -> internalformat = function
+    `color_index
   | `red
   | `green
-  | `blue
-  | `alpha
-  | `rgb
-  | `rgba
-  | `luminance
-  | `luminance_alpha ]
+  | `blue            -> `intensity
+  | `alpha           -> `alpha
+  | `luminance       -> `luminance
+  | `rgb             -> `rgb
+  | `bgr             -> `rgb
+  | `rgba            -> `rgba
+  | `bgra            -> `rgba
+  | `luminance_alpha -> `luminance_alpha
+
+type target_1d =
+ [ `texture_1d
+ | `proxy_texture_1d ]
 
 type target_2d =
   [ `texture_2d
@@ -71,28 +83,13 @@ type target_2d =
   | `proxy_texture_2d
   | `proxy_texture_cube_map ]
 
-let internal_of_format : [< format] -> internalformat = function
-    `color_index
-  | `red
-  | `green
-  | `blue            -> `intensity
-  | `alpha           -> `alpha
-  | `luminance       -> `luminance
-  | `rgb             -> `rgb
-  | `rgba            -> `rgba
-  | `luminance_alpha -> `luminance_alpha
-
-type target_1d =
- [ `texture_1d
- | `proxy_texture_1d ]
-
 type target_3d =
   [ `texture_3d
   | `proxy_texture_3d ]
 
 external image1d :
-    proxy:bool -> level:int -> internal:internalformat ->
-    width:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
+    proxy:bool -> level:int -> internal:[<internalformat] ->
+    width:int -> border:int -> format:[<format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage1D_bc""ml_glTexImage1D"
 
 let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
@@ -105,8 +102,8 @@ let image1d ?(proxy=false) ?(level=0) ?internal:i ?(border=false) img =
     ~format:(format img) (to_raw img)
 
 external image2d :
-    target:target_2d -> level:int -> internal:internalformat -> width:int ->
-    height:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
+    target:[<target_2d] -> level:int -> internal:[<internalformat] -> width:int ->
+    height:int -> border:int -> format:[<format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage2D_bc""ml_glTexImage2D"
 let image2d ?(target=`texture_2d) ?(level=0) ?internal:i ?(border=false) img =
   let internal = match i with None -> internal_of_format (format img) | Some i -> i in
@@ -121,7 +118,7 @@ let image2d ?(target=`texture_2d) ?(level=0) ?internal:i ?(border=false) img =
 open GlPix3D
 
 external image3d :
-    proxy:bool -> level:int -> internal:internalformat -> width:int ->
+    proxy:bool -> level:int -> internal:[<internalformat] -> width:int ->
     height:int -> depth:int -> border:int -> format:[< format] -> [< kind] Raw.t -> unit
     = "ml_glTexImage3D_bc""ml_glTexImage3D" "noalloc"
 
@@ -162,7 +159,7 @@ type parameter =
   | `depth_mode of depth_mode
   | `compare_mode of compare_mode] 
 
-external parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
+external parameter : target:[<`texture_1d|`texture_2d|`texture_cube_map] -> [<parameter] -> unit
     = "ml_glTexParameter"
 
 type texture_id = nativeint
@@ -177,7 +174,7 @@ let gen_textures ~len =
   arr
 let gen_texture () =  (gen_textures 1).(0)
 
-external bind_texture : target:[`texture_1d|`texture_2d|`texture_cube_map] -> texture_id -> unit
+external bind_texture : target:[<`texture_1d|`texture_2d|`texture_cube_map] -> texture_id -> unit
     = "ml_glBindTexture"
 external delete_texture : texture_id -> unit = "ml_glDeleteTexture"
 let delete_textures a = Array.iter (fun id -> delete_texture id) a

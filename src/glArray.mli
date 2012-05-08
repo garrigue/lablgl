@@ -47,11 +47,11 @@ val vertex :
 
 (** Tell openGL the address of to use the specified array
     Raw array must be static. *)
-external enable : kind -> unit = "ml_glEnableClientState"
+external enable : [<kind] -> unit = "ml_glEnableClientState"
 
 (** Tell openGL the address of not to use the specified array
     Raw array must be static. *)
-external disable : kind -> unit = "ml_glDisableClientState"
+external disable : [<kind] -> unit = "ml_glDisableClientState"
 
 (* GlArray.element i
    sends to openGL the element i of all enabled arrays *)
@@ -60,16 +60,16 @@ external element : int -> unit = "ml_glArrayElement"
 (* GlArray.draw_arrays shape i c
    sends to openGL a GlDraw.begins shape and all the element from i to i+c-1 
    of all enabled arrays and finally do a GlDraw.ends () *)
-external draw_arrays : GlDraw.shape -> first:int -> count:int -> unit
+external draw_arrays : [<GlDraw.shape] -> first:int -> count:int -> unit
   = "ml_glDrawArrays"
 
-val multi_draw_arrays : mode:GlDraw.shape -> (int * int) array -> unit
+val multi_draw_arrays : mode:[<GlDraw.shape] -> (int * int) array -> unit
 
 (* GlArray.draw_elements shape c tbl
    sends to openGL a GlDraw.begins shape and all the element from tbl[0] to 
    tbl[c-1] of all enabled arrays and finally do a GlDraw.ends () *)
 external draw_elements :
-  GlDraw.shape -> count:int -> [< `ubyte | `uint | `ushort ] Raw.t -> unit
+  [<GlDraw.shape] -> count:int -> [< `ubyte | `uint | `ushort ] Raw.t -> unit
   = "ml_glDrawElements"
 
 

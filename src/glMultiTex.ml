@@ -84,7 +84,7 @@ type env_param = [
 
 type filter_param = [ `lod_bias of float ]
 
-external env : env_target -> [env_param | filter_param] -> unit = "ml_glTexEnv" "noalloc"
+external env : [< env_target ] -> [< env_param | filter_param] -> unit = "ml_glTexEnv" "noalloc"
 
 let coord1d tex f = Api.multiTexCoord1d (e_of_t tex) f
 let coord2d tex (f1,f2) = Api.multiTexCoord2d (e_of_t tex) f1 f2

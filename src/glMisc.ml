@@ -2,7 +2,7 @@
 
 open StdLabels
 
-external get_string : [`vendor|`renderer|`version|`extensions] -> string
+external get_string : [<`vendor|`renderer|`version|`extensions] -> string
     = "ml_glGetString"
 
 let rec check_substring ~sep ~start ~buf s =
@@ -31,7 +31,7 @@ type hint_target =
 
 type hint = [`fastest|`nicest|`dont_care]
 
-external hint : hint_target -> hint -> unit
+external hint : [<hint_target] -> [<hint] -> unit
     = "ml_glHint"
 
 external init_names : unit -> unit = "ml_glInitNames"
@@ -44,13 +44,13 @@ type attrib =
     [ `accum_buffer|`color_buffer|`current|`depth_buffer|`enable|`eval|`fog
     | `hint|`lighting|`line|`list|`pixel_mode|`point|`polygon|`polygon_stipple
     | `scissor|`stencil_buffer|`texture|`transform|`viewport ]
-external push_attrib : attrib list -> unit = "ml_glPushAttrib"
+external push_attrib : [<attrib] list -> unit = "ml_glPushAttrib"
 
 external pass_through : float -> unit = "ml_glPassThrough"
 
 type render_mode = [`render|`select|`feedback] 
 
-external render_mode : render_mode -> int = "ml_glRenderMode"
+external render_mode : [<render_mode] -> int = "ml_glRenderMode"
 external select_buffer : int -> [`uint] Raw.t -> unit = "ml_glSelectBuffer"
 let select_buffer raw =
   if not (Raw.static raw) then
@@ -58,7 +58,7 @@ let select_buffer raw =
   select_buffer (Raw.length raw) raw
 type feedback_mode =
     [`_2d |`_3d |`_3d_color |`_3d_color_texture |`_4d_color_texture]
-external feedback_buffer : int -> feedback_mode -> [`float] Raw.t -> unit
+external feedback_buffer : int -> [<feedback_mode] -> [`float] Raw.t -> unit
   = "ml_glFeedbackBuffer"
 let feedback_buffer ~mode buf =
   if not (Raw.static buf) then
