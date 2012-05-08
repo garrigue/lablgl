@@ -14,7 +14,7 @@ external active : [<texture] -> unit = "ml_glActiveTexture" "noalloc"
 
 external client_active : [<texture] -> unit = "ml_glClientActiveTexture" "noalloc"
 
-type mode_param = [`modulate|`decal|`blend|`replace|`combine]
+type mode_param = [`modulate|`decal|`blend|`replace|`combine|`add]
 type combine_rgb_param = [`replace|`modulate|`add|`add_signed|`interpolate|`subtract|`dot3_rgb|`dot3_rgba]
 type combine_alpha_param = [`replace|`modulate|`add |`add_signed |`interpolate |`subtract ]
 

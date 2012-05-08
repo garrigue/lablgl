@@ -31,7 +31,7 @@
 
 #define __ARB_ENABLE TRUE
 
-/* #include <stdio.h> */
+#include <stdio.h>
 
 void ml_raise_gl(const char *errmsg)
 {
@@ -874,16 +874,15 @@ CAMLprim value ml_glCallLists (value indexes)  /* ML */
 
 /* Multitexture functions  -------------------------------- */
 /* 
-   To speed up the calls, we don't use the Glenum_val translation facility, 
-   and do the work in the ml module directly 
+   To speed up the calls, we don't use the Glenum_val translation facility.
 */
 
-#define TEX_CASE(i) \
-  case MLTAG_texture##i:			\
+#define TEX_CASE(i)							\
+  case MLTAG_texture##i:						\
   return GL_TEXTURE##i
 
 GLenum textureid (value v){
-  switch (Field(v,0)){
+  switch (Int_val(v)){
     TEX_CASE(0);
     TEX_CASE(1);
     TEX_CASE(2);    
