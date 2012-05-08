@@ -4,6 +4,8 @@ open Gl
 
 val color : ?alpha:float -> rgb -> unit
     (* Sets the current color *)
+val secondary_color: rgb -> unit
+    (* Sets the current secondary color *)
 val index : float -> unit
     (* Sets the current index *)
 val cull_face : face -> unit
@@ -48,3 +50,16 @@ val vertex3 : point3 -> unit
 val vertex4 : point4 -> unit
 
 val viewport : x:int -> y:int -> w:int -> h:int -> unit
+
+
+type point_pname = 
+    [ `size_min | `size_max
+    | `distance_attenuation
+    | `fade_threshold_size ]
+
+type point_parameter = 
+    [ `size_min of float | `size_max of float 
+    | `distance_attenuation of float
+    | `fade_threshold_size of float ]
+      
+val point_parameter : point_parameter -> unit

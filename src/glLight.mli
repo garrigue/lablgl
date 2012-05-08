@@ -6,18 +6,6 @@ type color_material =
     [`emission|`ambient|`diffuse|`specular|`ambient_and_diffuse]
 val color_material : face:face -> color_material -> unit
 
-type fog_mode = [`linear|`exp|`exp2]
-
-type fog_param = [
-    `mode of fog_mode
-  | `density of float
-  | `start of float
-  | `End of float
-  | `index of float
-  | `color of rgba
-]
-val fog : fog_param -> unit
-
 type light_param = [
     `ambient of rgba
   | `diffuse of rgba

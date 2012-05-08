@@ -11,7 +11,6 @@
 #endif
 #ifdef HAS_GLEXT_H
 #include <GL/glext.h>
-#undef GL_VERSION_1_3
 #endif
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
@@ -158,6 +157,10 @@ ML_5 (glBitmap, Int_val, Int_val, Pair(arg3,Float_val,Float_val),
 
 ML_2 (glBlendFunc, GLenum_val, GLenum_val)
 
+#ifdef GL_VERSION_1_4
+ML_4 (glBlendFuncSeparate, GLenum_val, GLenum_val, GLenum_val, GLenum_val)
+#endif
+
 ML_4 (glBlendColor, Float_val, Float_val, Float_val, Float_val)
 
 ML_1 (glBlendEquation, GLenum_val)
@@ -262,9 +265,15 @@ CAMLprim value ml_glFog (value param) /* ML */
       for (i = 0; i < 4; i++) params[i] = Float_val(Field(Field(param,1),i));
 	glFogfv(GL_FOG_COLOR, params);
 	break;
+    case MLTAG_coordinate_source:
+      glFogi(GL_FOG_COORDINATE_SOURCE, GLenum_val(Field(param,1)));
     }
     return Val_unit;
 }
+
+#ifdef GL_VERSION_1_4
+ML_1(glFogCoordd, Double_val)
+#endif
 
 ML_0 (glFlush)
 ML_0 (glFinish)
@@ -534,6 +543,9 @@ CAMLprim value ml_glPixelTransfer (value param)
 
 ML_2 (glPixelZoom, Float_val, Float_val)
 ML_1 (glPointSize, Float_val)
+#ifdef GL_VERSION_1_4
+ML_2 (glPointParameterf, GLenum_val, Float_val)
+#endif
 ML_2 (glPolygonOffset, Float_val, Float_val)
 ML_2 (glPolygonMode, GLenum_val, GLenum_val)
 ML_1 (glPolygonStipple, (unsigned char *)Byte_raw)
@@ -620,6 +632,7 @@ ML_4 (glScissor, Int_val, Int_val, Int_val, Int_val)
 ML_2 (glSampleCoverage, Float_val, Bool_val)
 
 ML_2 (glSelectBuffer, Int_val, (GLuint*)Addr_raw)
+ML_3 (glSecondaryColor3d, Double_val, Double_val, Double_val)
 ML_1 (glShadeModel, GLenum_val)
 ML_3 (glStencilFunc, GLenum_val, Int_val, Int_val)
 ML_1 (glStencilMask, Int_val)
@@ -630,25 +643,70 @@ ML_2 (glTexCoord2d, Double_val, Double_val)
 ML_3 (glTexCoord3d, Double_val, Double_val, Double_val)
 ML_4 (glTexCoord4d, Double_val, Double_val, Double_val, Double_val)
 
-CAMLprim value ml_glTexEnv (value param)
+CAMLprim value ml_glTexEnv (value target, value param)
 {
     value params = Field(param,1);
     GLfloat color[4];
     int i;
+    int t = GL_TEXTURE_ENV;
+
+#ifdef GL_VERSION_1_4
+    switch(target) {
+    case MLTAG_filter_control:
+        t = GL_TEXTURE_FILTER_CONTROL;
+	break;
+    }
+#endif
 
     switch (Field(param,0)) {
     case MLTAG_mode:
-	glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GLenum_val(params));
+	glTexEnvi (t, GL_TEXTURE_ENV_MODE, GLenum_val(params));
 	break;
     case MLTAG_color:
 	for (i = 0; i < 4; i++) color[i] = Float_val(Field(params,i));
-	glTexEnvfv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
+	glTexEnvfv (t, GL_TEXTURE_ENV_COLOR, color);
 	break;
     case MLTAG_combine_rgb:
-        glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB, GLenum_val(params));
+        glTexEnvi (t, GL_COMBINE_RGB, GLenum_val(params));
         break;
     case MLTAG_combine_alpha:
-        glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GLenum_val(params));
+        glTexEnvi (t, GL_COMBINE_ALPHA, GLenum_val(params));
+        break;
+    case MLTAG_source0_rgb:
+        glTexEnvi (t, GL_SOURCE0_RGB, GLenum_val(params));
+        break;
+    case MLTAG_source1_rgb:
+        glTexEnvi (t, GL_SOURCE1_RGB, GLenum_val(params));
+        break;
+    case MLTAG_source2_rgb:
+        glTexEnvi (t, GL_SOURCE2_RGB, GLenum_val(params));
+        break;
+    case MLTAG_operand0_rgb:
+        glTexEnvi (t, GL_OPERAND0_RGB, GLenum_val(params));
+        break;
+    case MLTAG_operand1_rgb:
+        glTexEnvi (t, GL_OPERAND1_RGB, GLenum_val(params));
+        break;
+    case MLTAG_operand2_rgb:
+        glTexEnvi (t, GL_OPERAND2_RGB, GLenum_val(params));
+        break;
+    case MLTAG_source0_alpha:
+        glTexEnvi (t, GL_SOURCE0_ALPHA, GLenum_val(params));
+        break;
+    case MLTAG_source1_alpha:
+        glTexEnvi (t, GL_SOURCE1_ALPHA, GLenum_val(params));
+        break;
+    case MLTAG_source2_alpha:
+        glTexEnvi (t, GL_SOURCE2_ALPHA, GLenum_val(params));
+        break;
+    case MLTAG_operand0_alpha:
+        glTexEnvi (t, GL_OPERAND0_ALPHA, GLenum_val(params));
+        break;
+    case MLTAG_operand1_alpha:
+        glTexEnvi (t, GL_OPERAND1_ALPHA, GLenum_val(params));
+        break;
+    case MLTAG_operand2_alpha:
+        glTexEnvi (t, GL_OPERAND2_ALPHA, GLenum_val(params));
         break;
     }
     return Val_unit;
@@ -726,6 +784,9 @@ CAMLprim value ml_glTexParameter (value target, value param)
 	for (i = 0; i < 4; i++) color[i] = Float_val(Field(params,i));
 	glTexParameterfv (targ, pname, color);
 	break;
+    case GL_TEXTURE_MIN_LOD:
+    case GL_TEXTURE_MAX_LOD:
+    case GL_TEXTURE_LOD_BIAS:
     case GL_TEXTURE_PRIORITY:
 	glTexParameterf (targ, pname, Float_val(params));
 	break;
@@ -736,6 +797,10 @@ CAMLprim value ml_glTexParameter (value target, value param)
         ml_raise_gl ("Parameter: GL_GENERATE_MIPMAP not available"); 
 #endif
         break;
+    case GL_TEXTURE_BASE_LEVEL:
+    case GL_TEXTURE_MAX_LEVEL:
+        glTexParameteri (targ, pname, Int_val(params));
+	break;
     default:
 	glTexParameteri (targ, pname, GLenum_val(params));
 	break;
@@ -766,7 +831,13 @@ CAMLprim value ml_glVertex(value x, value y, value z, value w)  /* ML */
     return Val_unit;
 }
 
+
 ML_4 (glViewport, Int_val, Int_val, Int_val, Int_val)
+
+#ifdef GL_VERSION_1_4
+ML_2 (glWindowPos2d, Double_val, Double_val)
+ML_3 (glWindowPos3d, Double_val, Double_val, Double_val)
+#endif
 
 
 /* List functions */
@@ -1050,6 +1121,7 @@ GET_1_F(GetMaterialfv,SHININESS,GLenum_val)
 
 /* replace target with GL_TEXTURE_ENV */
 #define gl_tex_env(x) GL_TEXTURE_ENV
+#define gl_filter_control(x) GL_TEXTURE_FILTER_CONTROL
 
 GET_1_ENUM(GetTexEnviv,TEXTURE_ENV_MODE,gl_tex_env)
 GET_1_ENUM(GetTexEnviv,COMBINE_RGB,gl_tex_env)
@@ -1070,6 +1142,10 @@ GET_1_4F(GetTexEnvfv,TEXTURE_ENV_COLOR,gl_tex_env)
 GET_1_3F(GetTexEnvfv,RGB_SCALE,gl_tex_env)
 GET_1_3F(GetTexEnvfv,ALPHA_SCALE,gl_tex_env)
 
+#ifdef GL_VERSION_1_4
+GET_1_F(GetTexEnvfv,TEXTURE_LOD_BIAS,gl_filter_control)
+#endif
+
 GET_1_ENUM(GetTexGeniv,TEXTURE_GEN_MODE,GLenum_val)
 GET_1_4F(GetTexGenfv,OBJECT_PLANE,GLenum_val)
 GET_1_4F(GetTexGenfv,EYE_PLANE,GLenum_val)
@@ -1086,6 +1162,12 @@ GET_1_F(GetTexParameterfv,TEXTURE_MIN_LOD,GLenum_val)
 GET_1_F(GetTexParameterfv,TEXTURE_MAX_LOD,GLenum_val)
 GET_1_I(GetTexParameteriv,TEXTURE_BASE_LEVEL,GLenum_val)
 GET_1_I(GetTexParameteriv,TEXTURE_MAX_LEVEL,GLenum_val)
+
+#ifdef GL_VERSION_1_4
+GET_1_F(GetTexParameterfv,TEXTURE_LOD_BIAS,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,DEPTH_TEXTURE_MODE,GLenum_val)
+GET_1_ENUM(GetTexParameteriv,TEXTURE_COMPARE_MODE,GLenum_val)
+#endif
 
 GET_2_I(GetTexLevelParameteriv,TEXTURE_WIDTH,GLenum_val,Int_val)
 GET_2_I(GetTexLevelParameteriv,TEXTURE_HEIGHT,GLenum_val,Int_val)

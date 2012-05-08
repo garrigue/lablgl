@@ -7,18 +7,6 @@ type color_material =
 external color_material : face:face -> color_material -> unit
     = "ml_glColorMaterial"
 
-type fog_mode = [`linear|`exp|`exp2]
-
-type fog_param = [
-    `mode of fog_mode
-  | `density of float
-  | `start of float
-  | `End of float
-  | `index of float
-  | `color of rgba
-]
-external fog : fog_param -> unit = "ml_glFog"
-
 type light_param = [
     `ambient of rgba
   | `diffuse of rgba

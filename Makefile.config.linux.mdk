@@ -23,7 +23,7 @@ TKINCLUDES =
 TKLIBS = 
 
 # Where to find OpenGL/Mesa headers and libraries
-GLINCLUDES =
+GLINCLUDES = -DHAS_GLEXT_H -DGL_GLEXT_PROTOTYPES
 GLLIBS = -lGL -lGLU
 GLUTLIBS = -lglut
 # The following libraries may be required (try to add them one at a time)

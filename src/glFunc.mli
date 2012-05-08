@@ -12,7 +12,10 @@ type dfactor =
   [ `zero | `one | `src_color | `one_minus_src_color | `src_alpha | `one_minus_src_alpha
   | `dst_alpha | `one_minus_dst_alpha | `constant_color | `one_minus_constant_color
   | `constant_alpha | `one_minus_constant_alpha ]
+
 val blend_func : src:sfactor -> dst:dfactor -> unit
+
+val blend_func_separate : src_rgb:sfactor -> dst_rgb:dfactor -> src_alpha:sfactor -> dst_alpha:dfactor -> unit
 
 val blend_color : Gl.rgba -> unit
 
@@ -31,7 +34,7 @@ val index_mask : int -> unit
 
 val stencil_func : Gl.cmp_func -> ref:int -> mask:int -> unit
 val stencil_mask : int -> unit
-type stencil_op = [`decr|`incr|`invert|`keep|`replace|`zero]
+type stencil_op = [`keep|`zero|`replace|`incr|`decr|`invert|`incr_wrap|`decr_wrap]
 val stencil_op :
   ?fail:stencil_op -> ?zfail:stencil_op -> ?zpass:stencil_op -> unit -> unit
 

@@ -109,7 +109,7 @@
   CAMLprim value ml_gl##cname##_##pname(value arg1) {	\
     GLboolean b;					\
     gl##cname(GL_##pname,&b);				\
-    return Val_bool(b);					\
+    return Val_bool((GLboolean)b);			\
   }
 
 
@@ -157,7 +157,7 @@
 
 #define GET_1_B(cname,pname,conv1)			\
   CAMLprim value ml_gl##cname##_##pname(value arg1) {	\
-    GLboolean b;					\
+    GLint b;					\
     gl##cname(conv1(arg1),GL_##pname,&b);		\
     return Val_bool(b);					\
   }
@@ -214,9 +214,9 @@
 
 #define GET_2_B(cname,pname,conv1,conv2)				\
   CAMLprim value ml_gl##cname##_##pname(value arg1, value arg2) {	\
-    GLboolean b;							\
+    GLint b;							\
     gl##cname(conv1(arg1),conv2(arg2),GL_##pname,&b);			\
-    return Val_bool(b);							\
+    return Val_bool((GLboolean)b);					\
   }
 
 #define GET_2_I(cname,pname,conv1,conv2)				\

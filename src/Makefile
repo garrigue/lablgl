@@ -7,7 +7,6 @@ INCLUDES = $(GLINCLUDES) $(XINCLUDES)
 LIBS = $(GLLIBS) $(XLIBS)
 LIBDIRS =
 
-
 OCAMLINC=-I +labltk
 
 # Files
@@ -18,7 +17,7 @@ LIBOBJS =	raw.cmo \
 		glClear.cmo  	glTex.cmo	glDraw.cmo	glFunc.cmo \
 		gluMisc.cmo	gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo \
 		gluMat.cmo 	glMultiTex.cmo	glArray.cmo     glInterleaved.cmo \
-		glColor.cmo	glConvolution.cmo	glState.cmo
+		glColor.cmo	glConvolution.cmo	glFog.cmo	glState.cmo
 
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)

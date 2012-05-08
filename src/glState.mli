@@ -51,10 +51,11 @@ type env_pname =
   [ `color | `combine_alpha | `combine_rgb | `mode | `operand0_alpha
   | `operand0_rgb | `operand1_alpha | `operand1_rgb | `operand2_alpha
   | `operand2_rgb | `source0_alpha | `source0_rgb | `source1_alpha
-  | `source1_rgb | `source2_alpha | `source2_rgb | `rgb_scale | `alpha_scale ]
+  | `source1_rgb | `source2_alpha | `source2_rgb | `rgb_scale | `alpha_scale 
+  | `lod_bias ]
 
 type env_param = 
-    [ GlMultiTex.env_param | `rgb_scale of Gl.rgb | `alpha_scale of Gl.rgb ]
+    [ GlTex.filter_param | GlMultiTex.env_param | `rgb_scale of Gl.rgb | `alpha_scale of Gl.rgb ]
 
 val get_tex_env : env_pname -> env_param
 
@@ -67,7 +68,8 @@ val get_tex_gen : coord:GlTex.coord -> pname:gen_pname -> GlTex.gen_param
 
 type parameter_pname =
   [ `border_color | `generate_mipmap | `mag_filter | `min_filter | `priority
-  | `wrap_r | `wrap_s | `wrap_t | `min_lod | `max_lod | `base_level | `max_level ]
+  | `wrap_r | `wrap_s | `wrap_t | `min_lod | `max_lod | `base_level | `max_level 
+  | `lod_bias | `depth_mode | `compare_mode ]
 
 type parameter_target = [`texture_1d|`texture_2d|`texture_cube_map]
 
@@ -628,7 +630,7 @@ type enum_value =
   | `index_array_type of GlArray.index_array_type
   | `texture_coord_array_type of GlArray.texcoord_array_type
   | `matrix_mode of GlMat.mode
-  | `fog_mode of GlLight.fog_mode
+  | `fog_mode of GlFog.fog_mode
   | `shade_model of GlDraw.shade_model
   | `color_material_parameter of GlLight.material_param
   | `color_material_face of Gl.face

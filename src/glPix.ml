@@ -118,6 +118,18 @@ external raster_pos :
     x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
     = "ml_glRasterPos"
 
+external window_pos2 : float -> float -> unit  =  "ml_glWindowPos2d"
+external window_pos3 : float -> float -> float -> unit  =  "ml_glWindowPos3d"
+
+let window_pos ~x ~y ?z () =
+  match z with
+      Some z -> window_pos3 x y z
+    | None   -> window_pos2 x y
+
+let window_pos2 (x,y) = window_pos2 x y
+let window_pos3 (x,y,z) = window_pos3 x y z
+
+
 external read :
     x:int -> y:int -> width:int -> height:int ->
     format:[< format] -> [< Gl.kind] Raw.t -> unit

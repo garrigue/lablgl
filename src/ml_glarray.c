@@ -28,10 +28,19 @@ int ml_glSizeOfValue(value v) {
    }
 }
 
+#ifdef GL_VERSION_1_4
+
+CAMLprim value ml_glFogCoordPointer(value raw)
+{
+  glFogCoordPointer(GLenum_val(Kind_raw(raw)), 0, Void_raw(raw));
+  return Val_unit;
+}
+#endif
+
 
 CAMLprim value ml_glEdgeFlagPointer(value raw)
 {
-  glEdgeFlagPointer(0, (GLboolean*)Addr_raw(raw));
+  glEdgeFlagPointer(0, (GLboolean *)Addr_raw(raw));
   return Val_unit;
 }
 
@@ -105,9 +114,23 @@ CAMLprim value ml_glDisableClientState(value kl)
 ML_1 (glArrayElement, Int_val);
 ML_3 (glDrawArrays, GLenum_val, Int_val, Int_val);
 
+CAMLprim value ml_glMultiDrawArrays(value vmode, value vitems, value vprimcount){
+  GLuint mode = GLenum_val(vmode);
+  GLint primcount = Int_val(vprimcount);
+  GLint first[primcount];
+  GLint count[primcount];
+  int i;
+  for (i = 0; i < primcount; i++){
+    first[i] = Field(0, Field(vitems,i));
+    count[i] = Field(1, Field(vitems,i));
+  }
+  glMultiDrawArrays(mode,first,count,primcount);
+}
+
 CAMLprim value ml_glDrawElements(value mode, value count, value raw) 
 {
   glDrawElements (GLenum_val(mode), Int_val(count),
                   GLenum_val(Kind_raw(raw)), Void_raw(raw));
   return Val_unit;
 }
+

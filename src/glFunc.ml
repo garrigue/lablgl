@@ -3,8 +3,8 @@
 open Gl
 
 external accum : op:[`accum|`load|`add|`mult|`return] -> float -> unit
-    = "ml_glAccum"
-external alpha_func : cmp_func -> ref:clampf -> unit = "ml_glAlphaFunc"
+    = "ml_glAccum" "noalloc"
+external alpha_func : cmp_func -> ref:clampf -> unit = "ml_glAlphaFunc" "noalloc"
 
 type sfactor = [
     `zero
@@ -35,7 +35,9 @@ type dfactor = [
   | `constant_alpha
   | `one_minus_constant_alpha
 ]
-external blend_func : src:sfactor -> dst:dfactor -> unit = "ml_glBlendFunc"
+external blend_func : src:sfactor -> dst:dfactor -> unit = "ml_glBlendFunc" "noalloc"
+
+external blend_func_separate : src_rgb:sfactor -> dst_rgb:dfactor -> src_alpha:sfactor -> dst_alpha:dfactor -> unit = "ml_glBlendFuncSeparate" "noalloc"
 
 external blend_color : clampf -> clampf -> clampf -> clampf -> unit = "ml_glBlendColor"
 
@@ -75,7 +77,7 @@ external read_buffer : read_buffer -> unit = "ml_glReadBuffer"
 external stencil_func : cmp_func -> ref:int -> mask:int -> unit
     = "ml_glStencilFunc"
 external stencil_mask : int -> unit = "ml_glStencilMask"
-type stencil_op = [`keep|`zero|`replace|`incr|`decr|`invert]
+type stencil_op = [`keep|`zero|`replace|`incr|`decr|`invert|`incr_wrap|`decr_wrap]
 external stencil_op :
     fail:stencil_op -> zfail:stencil_op -> zpass:stencil_op -> unit
     = "ml_glStencilOp"

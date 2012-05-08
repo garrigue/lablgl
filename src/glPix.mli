@@ -95,6 +95,12 @@ val transfer : transfer_param -> unit
 val zoom : x:float -> y:float -> unit
 val raster_pos : x:float -> y:float -> ?z:float -> ?w:float -> unit -> unit
 
+val window_pos2 : (float * float) -> unit
+val window_pos3 : (float * float * float) -> unit
+val window_pos : x:float -> y:float -> ?z:float -> unit -> unit
+
+
+
 val copy :
   x:int ->
   y:int -> width:int -> height:int -> buffer:[`color|`depth|`stencil] -> unit

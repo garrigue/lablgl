@@ -161,6 +161,8 @@ func_add func_subtract func_reverse_subtract min max
 
 (* glFog *)
 linear exp exp2
+coordinate_source -> GL_FOG_COORDINATE_SOURCE
+fragment_depth fog_coordinate
 
 (* glNewList *)
 compile compile_and_execute
@@ -241,7 +243,8 @@ none
 keep replace incr decr
 
 (* glTexEnv *)
-modulate decal 
+modulate decal texture_env
+filter_control -> GL_TEXTURE_FILTER_CONTROL
 
 (* glTexGen *)
 s t r q
@@ -276,10 +279,19 @@ wrap_t -> GL_TEXTURE_WRAP_T
 wrap_r -> GL_TEXTURE_WRAP_R
 border_color -> GL_TEXTURE_BORDER_COLOR
 priority -> GL_TEXTURE_PRIORITY
+lod_bias -> GL_TEXTURE_LOD_BIAS
+depth_mode -> GL_DEPTH_TEXTURE_MODE
+compare_mode -> GL_TEXTURE_COMPARE_MODE
 nearest nearest_mipmap_nearest linear_mipmap_nearest
 nearest_mipmap_linear linear_mipmap_linear
 generate_mipmap
-clamp repeat clamp_to_edge clamp_to_border
+clamp repeat clamp_to_edge clamp_to_border mirrored_repeat
+
+(* GlPointParameter *)
+size_min -> GL_POINT_SIZE_MIN
+size_max -> GL_POINT_SIZE_MAX 
+distance_attenuation -> GL_POINT_DISTANCE_ATTENUATION
+fade_threshold_size -> GL_POINT_FADE_THRESHOLD_SIZE
 
 (* glGetString *)
 vendor renderer version extensions

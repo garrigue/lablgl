@@ -99,10 +99,11 @@ type env_pname =
   [ `color | `combine_alpha | `combine_rgb | `mode | `operand0_alpha
   | `operand0_rgb | `operand1_alpha | `operand1_rgb | `operand2_alpha
   | `operand2_rgb | `source0_alpha | `source0_rgb | `source1_alpha
-  | `source1_rgb | `source2_alpha | `source2_rgb | `rgb_scale | `alpha_scale ]
+  | `source1_rgb | `source2_alpha | `source2_rgb | `rgb_scale | `alpha_scale 
+  | `lod_bias ]
 
 type env_param = 
-    [ GlMultiTex.env_param | `rgb_scale of rgb | `alpha_scale of rgb ]
+    [ GlTex.filter_param | GlMultiTex.env_param | `rgb_scale of rgb | `alpha_scale of rgb ]
 
 external get_tex_env_mode : [`texture_env] -> GlMultiTex.mode_param = "ml_glGetTexEnviv_TEXTURE_ENV_MODE"
 external get_tex_env_combine_rgb : [`texture_env] -> GlMultiTex.combine_rgb_param = "ml_glGetTexEnviv_COMBINE_RGB"
@@ -122,6 +123,7 @@ external get_tex_env_operand2_alpha : [`texture_env] -> GlMultiTex.operand_alpha
 external get_tex_env_color : [`texture_env] -> rgba = "ml_glGetTexEnvfv_TEXTURE_ENV_COLOR"
 external get_tex_env_rgb_scale : [`texture_env] -> rgb = "ml_glGetTexEnvfv_TEXTURE_ENV_COLOR"
 external get_tex_env_alpha_scale : [`texture_env] -> rgb = "ml_glGetTexEnvfv_TEXTURE_ENV_COLOR"
+external get_tex_env_lod_bias : [`filter_control] -> float = "ml_glGetTexEnvfv_TEXTURE_LOD_BIAS"
 
 let get_tex_env pname =
   match pname with
@@ -143,6 +145,7 @@ let get_tex_env pname =
   | `source2_rgb    -> `source2_rgb (get_tex_env_source2_rgb `texture_env) 
   | `rgb_scale      -> `rgb_scale (get_tex_env_rgb_scale `texture_env)
   | `alpha_scale    -> `alpha_scale (get_tex_env_alpha_scale `texture_env)
+  | `lod_bias       -> `lod_bias (get_tex_env_lod_bias `filter_control)
 
 type gen_pname = 
   [ `mode
@@ -161,7 +164,8 @@ let get_tex_gen ~coord ~pname =
 
 type parameter_pname =
   [ `border_color | `generate_mipmap | `mag_filter | `min_filter | `priority
-  | `wrap_r | `wrap_s | `wrap_t | `min_lod | `max_lod | `base_level | `max_level ]
+  | `wrap_r | `wrap_s | `wrap_t | `min_lod | `max_lod | `base_level | `max_level 
+  | `lod_bias | `depth_mode | `compare_mode ]
 
 type parameter_target = [`texture_1d|`texture_2d|`texture_cube_map]
 
@@ -177,6 +181,9 @@ external get_tex_parameter_min_lod : parameter_target -> float = "ml_glGetTexPar
 external get_tex_parameter_max_lod : parameter_target -> float = "ml_glGetTexParameterfv_TEXTURE_MAX_LOD"
 external get_tex_parameter_base_level : parameter_target -> int = "ml_glGetTexParameteriv_TEXTURE_BASE_LEVEL"
 external get_tex_parameter_max_level : parameter_target -> int = "ml_glGetTexParameteriv_TEXTURE_MAX_LEVEL"
+external get_tex_parameter_lod_bias :  parameter_target -> float = "ml_glGetTexParameterfv_TEXTURE_LOD_BIAS"
+external get_tex_parameter_depth_mode : parameter_target -> GlTex.depth_mode = "ml_glGetTexParameteriv_DEPTH_TEXTURE_MODE"
+external get_tex_parameter_compare_mode : parameter_target -> GlTex.compare_mode = "ml_glGetTexParameteriv_TEXTURE_COMPARE_MODE"
 
 let get_tex_parameter ~target ~pname =
   match pname with
@@ -192,6 +199,9 @@ let get_tex_parameter ~target ~pname =
     | `max_lod         -> `max_lod (get_tex_parameter_max_lod target)
     | `base_level      -> `base_level (get_tex_parameter_base_level target)
     | `max_level       -> `max_level (get_tex_parameter_max_level target)
+    | `lod_bias        -> `lod_bias (get_tex_parameter_lod_bias target)
+    | `depth_mode      -> `depth_mode (get_tex_parameter_depth_mode target)
+    | `compare_mode    -> `compare_mode (get_tex_parameter_compare_mode target)
 
 type level_target =
   [ GlTex.target_1d 
@@ -598,7 +608,8 @@ type floatv_value =
     [ float_value | float2_value | float3_value | float4_value 
     | matrix4_value | color_value | texcoord_value | domain_value ]
 
-(* ugly hack *)
+(* hack: relies on the ocaml internal representation of 'parameterized' polymorphic 
+   variants as a tuple, see get_intv as well *)
 let get_floatv ~pname =
   match pname with
     | #float_pname as x      -> Obj.magic (x, get_float x) 
@@ -862,7 +873,7 @@ type enum_value =
   | `index_array_type of GlArray.index_array_type
   | `texture_coord_array_type of GlArray.texcoord_array_type
   | `matrix_mode of GlMat.mode
-  | `fog_mode of GlLight.fog_mode
+  | `fog_mode of GlFog.fog_mode
   | `shade_model of GlDraw.shade_model
   | `color_material_parameter of GlLight.material_param
   | `color_material_face of Gl.face
@@ -897,6 +908,8 @@ external get_int2 : int2_pname -> (int * int) = "ml_glGetIntegerv_2"
 external get_int  : int_pname -> int = "ml_glGetInteger"
 external get_enum : enum_pname -> [> enum_value ] = "ml_glGetEnum"
 
+(* hack: relies on the ocaml internal representation of 'parameterized' polymorphic 
+   variants as a tuple, same as get_floatv *)
 let get_int4_ (x : int4_pname) : [> int4_value ] = Obj.magic (x, get_int4 x)
 let get_int2_ (x : int2_pname) : [> int2_value ] = Obj.magic (x, get_int2 x)
 let get_int_ (x : int_pname) : [> int_value ] = Obj.magic (x, get_int x)

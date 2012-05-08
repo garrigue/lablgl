@@ -14,6 +14,9 @@ type normal_array_type = [`byte | `short | `int | `float | `double]
 type color_array_type  = [`byte | `ubyte | `short | `ushort | `int | `uint | `float | `double]
 type index_array_type  = [ `ubyte | `short | `int | `float | `double ]
 type texcoord_array_type = [ `short | `int | `float | `double ]
+type fogcoord_array_type = [ `float | `double ]
+
+val fog_coord : [< fogcoord_array_type ] Raw.t -> unit
 
 (** Tell openGL the address of the texCoor array
     Raw array must be static. *)
@@ -59,6 +62,8 @@ external element : int -> unit = "ml_glArrayElement"
    of all enabled arrays and finally do a GlDraw.ends () *)
 external draw_arrays : GlDraw.shape -> first:int -> count:int -> unit
   = "ml_glDrawArrays"
+
+val multi_draw_arrays : mode:GlDraw.shape -> (int * int) array -> unit
 
 (* GlArray.draw_elements shape c tbl
    sends to openGL a GlDraw.begins shape and all the element from tbl[0] to 

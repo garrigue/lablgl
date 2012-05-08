@@ -7,10 +7,15 @@ val coord2 : float * float -> unit
 val coord3 : float * float * float -> unit
 val coord4 : float * float * float * float -> unit
 
-type env_param = [
-    `mode of [`modulate|`decal|`blend|`replace|`add] 
+type env_target = [ `texture_env | `filter_control ]
+
+type env_param = 
+  [ `mode of [`modulate|`decal|`blend|`replace|`add] 
   | `color of rgba]
-val env : env_param -> unit
+
+type filter_param = [ `lod_bias of float ]
+
+val env : target:env_target -> [env_param | filter_param ] -> unit
 
 type coord = [`s|`t|`r|`q]
 
@@ -72,21 +77,27 @@ type min_filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest
     |`nearest_mipmap_linear|`linear_mipmap_linear]
 type mag_filter = [`nearest|`linear]
-type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border]
-type parameter = [
-  `min_filter of min_filter
-| `mag_filter of mag_filter
-| `wrap_s of wrap
-| `wrap_t of wrap
-| `wrap_r of wrap
-| `border_color of rgba
-| `priority of clampf
-| `generate_mipmap of bool
-| `min_lod of float
-| `max_lod of float
-| `base_level of int
-| `max_level of int
-] 
+type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border|`mirrored_repeat]
+
+type depth_mode = [`luminance|`intensity|`alpha]
+type compare_mode = [`lequal|`gequal]
+
+type parameter =
+  [ `min_filter of min_filter
+  | `mag_filter of mag_filter
+  | `wrap_s of wrap
+  | `wrap_t of wrap
+  | `wrap_r of wrap
+  | `border_color of rgba
+  | `priority of clampf
+  | `generate_mipmap of bool
+  | `min_lod of float
+  | `max_lod of float
+  | `base_level of int
+  | `max_level of int 
+  | `lod_bias of float
+  | `depth_mode of depth_mode
+  | `compare_mode of compare_mode] 
 
 val parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
 

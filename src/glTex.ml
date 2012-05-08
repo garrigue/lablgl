@@ -9,8 +9,6 @@ external coord3 : float -> float -> float -> unit = "ml_glTexCoord3d"
 external coord4 : float -> float -> float -> float -> unit
     = "ml_glTexCoord4d"
 
-(*external multi_coord2 : *)
-    
 let default x = function Some x -> x | None -> x
 let coord ~s ?t ?r ?q () =
   match q with
@@ -23,11 +21,18 @@ let coord ~s ?t ?r ?q () =
 let coord2 (s,t) = coord2 s t
 let coord3 (s,t,r) = coord3 s t r
 let coord4 (s,t,r,q) = coord4 s t r q
+
+type env_target = [ `texture_env | `filter_control ]
+
 type env_param =
   [ `mode of [`modulate|`decal|`blend|`replace|`add] 
   | `color of rgba ]
 
-external env : env_param -> unit = "ml_glTexEnv"
+type filter_param = [ `lod_bias of float ]
+
+external env : target:env_target -> [env_param | filter_param] -> unit = "ml_glTexEnv"
+
+
 type coord = [`s|`t|`r|`q]
 
 type gen_mode_param = [`object_linear|`eye_linear|`sphere_map|`reflection_map|`normal_map]
@@ -136,7 +141,10 @@ type min_filter =
 
 type mag_filter = [`nearest|`linear]
 
-type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border]
+type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border|`mirrored_repeat]
+
+type depth_mode = [`luminance|`intensity|`alpha]
+type compare_mode = [`lequal|`gequal]
 
 type parameter =
   [ `min_filter of min_filter
@@ -150,7 +158,10 @@ type parameter =
   | `min_lod of float
   | `max_lod of float
   | `base_level of int
-  | `max_level of int ] 
+  | `max_level of int 
+  | `lod_bias of float
+  | `depth_mode of depth_mode
+  | `compare_mode of compare_mode] 
 
 external parameter : target:[`texture_1d|`texture_2d|`texture_cube_map] -> parameter -> unit
     = "ml_glTexParameter"
