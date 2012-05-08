@@ -648,6 +648,21 @@ CAMLprim value ml_glTexImage2D (value target, value level, value internal,
 
 ML_bc8 (ml_glTexImage2D)
 
+CAMLprim value ml_glTexImage3D (value proxy, value level, value internal,
+                                value width, value height, value depth,
+				value border, value format, value data)
+{
+    glTexImage3D (proxy == Val_int(1)
+		  ? GL_PROXY_TEXTURE_3D : GL_TEXTURE_3D,
+		  Int_val(level), GLenum_val(internal), Int_val(width),
+		  Int_val(height), Int_val(depth), 
+		  Int_val(border), GLenum_val(format),
+		  Type_raw(data), Void_raw(data));
+    return Val_unit;
+}
+
+ML_bc9 (ml_glTexImage3D)
+
 CAMLprim value ml_glTexParameter (value target, value param)
 {
     GLenum targ = GLenum_val(target);

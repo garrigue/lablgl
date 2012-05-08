@@ -63,13 +63,17 @@ type store_param = [
   | `pack_row_length of int
   | `pack_skip_pixels of int
   | `pack_skip_rows of int
+  | `pack_skip_images of int
   | `pack_alignment of int
+  | `pack_image_height of int
   | `unpack_swap_bytes of bool
   | `unpack_lsb_first of bool
   | `unpack_row_length of int
   | `unpack_skip_pixels of int
   | `unpack_skip_rows of int
+  | `unpack_skip_images of int
   | `unpack_alignment of int
+  | `unpack_image_height of int
 ]
 external store : store_param -> unit = "ml_glPixelStorei"
 
@@ -88,6 +92,22 @@ type transfer_param = [
   | `alpha_bias of float
   | `depth_scale of float
   | `depth_bias of float
+  | `post_convolution_red_scale of float
+  | `post_convolution_green_scale of float
+  | `post_convolution_blue_scale of float
+  | `post_convolution_alpha_scale of float
+  | `post_convolution_red_bias of float
+  | `post_convolution_green_bias of float
+  | `post_convolution_blue_bias of float
+  | `post_convolution_alpha_bias of float
+  | `post_color_matrix_red_scale of float
+  | `post_color_matrix_green_scale of float
+  | `post_color_matrix_blue_scale of float
+  | `post_color_matrix_alpha_scale of float
+  | `post_color_matrix_red_bias of float
+  | `post_color_matrix_green_bias of float
+  | `post_color_matrix_blue_bias of float
+  | `post_color_matrix_alpha_bias of float
 ]
 external transfer : transfer_param -> unit = "ml_glPixelTransfer"
 
@@ -105,3 +125,4 @@ let read ~x ~y ~width ~height ~format ~kind =
   let raw = Raw.create kind ~len:(width * height * format_size format) in
   read ~x ~y ~width ~height ~format raw;
   { raw = raw; width = width; height = height; format = format }
+

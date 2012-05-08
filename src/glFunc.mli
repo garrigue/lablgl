@@ -4,12 +4,14 @@ val accum : op:[`accum|`add|`load|`mult|`return] -> float -> unit
 
 val alpha_func : Gl.cmp_func -> ref:Gl.clampf -> unit
 
-type sfactor =
-  [`dst_alpha|`dst_color|`one|`one_minus_dst_alpha|`one_minus_dst_color
-  |`one_minus_src_alpha|`src_alpha|`src_alpha_saturate|`zero]
-type dfactor =
-  [`dst_alpha|`one|`one_minus_dst_alpha|`one_minus_src_alpha
-  |`one_minus_src_color|`src_alpha|`src_color|`zero]
+type sfactor = 
+  [ `zero | `one | `dst_color | `one_minus_dst_color | `src_alpha | `one_minus_src_alpha
+  | `dst_alpha | `one_minus_dst_alpha | `constant_color | `one_minus_constant_color
+  | `constant_alpha | `one_minus_constant_alpha | `src_alpha_saturate ]
+type dfactor = 
+  [ `zero | `one | `src_color | `one_minus_src_color | `src_alpha | `one_minus_src_alpha
+  | `dst_alpha | `one_minus_dst_alpha | `constant_color | `one_minus_constant_color
+  | `constant_alpha | `one_minus_constant_alpha ]
 val blend_func : src:sfactor -> dst:dfactor -> unit
 
 val color_mask :
@@ -33,7 +35,7 @@ type logic_op =
 val logic_op : logic_op -> unit
 
 type draw_buffer =
-  [`aux of int|`back|`back_left|`back_right|`front|`front_and_back|`front_left
+  [`aux of int|`back|`back_left|`back_right|`front|`both|`front_left
   |`front_right|`left|`none|`right]
 val draw_buffer : draw_buffer -> unit
 

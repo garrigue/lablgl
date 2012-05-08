@@ -146,6 +146,12 @@ CAMLprim value cname##_bc (value *argv, int argn) \
                argv[7]); }
 
 
+#define ML_bc9(cname) \
+CAMLprim value cname##_bc (value *argv, int argn) \
+{ return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
+               argv[7],argv[8]); }
+
+
 /* subtleties of openGL 1.1 vs 1.2 */
 #if !defined(GL_DOUBLE) && defined(GL_DOUBLE_EXT)
 #define GL_DOUBLE GL_DOUBLE_EXT

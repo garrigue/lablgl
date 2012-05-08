@@ -15,6 +15,10 @@ type sfactor = [
   | `one_minus_src_alpha
   | `dst_alpha
   | `one_minus_dst_alpha
+  | `constant_color
+  | `one_minus_constant_color
+  | `constant_alpha
+  | `one_minus_constant_alpha
   | `src_alpha_saturate
 ]
 type dfactor = [
@@ -26,6 +30,10 @@ type dfactor = [
   | `one_minus_src_alpha
   | `dst_alpha
   | `one_minus_dst_alpha
+  | `constant_color
+  | `one_minus_constant_color
+  | `constant_alpha
+  | `one_minus_constant_alpha
 ]
 external blend_func : src:sfactor -> dst:dfactor -> unit = "ml_glBlendFunc"
 
@@ -40,7 +48,7 @@ external depth_range : near:float -> far:float -> unit = "ml_glDepthRange"
 
 type draw_buffer =
     [`none|`front_left|`front_right|`back_left|`back_right
-    |`front|`back|`left|`right|`front_and_back|`aux of int]
+    |`front|`back|`left|`right|`both |`aux of int]
 external draw_buffer : draw_buffer -> unit = "ml_glDrawBuffer"
 
 external index_mask : int -> unit = "ml_glIndexMask"

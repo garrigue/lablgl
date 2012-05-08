@@ -33,6 +33,7 @@ texture
 modelview_matrix
 projection_matrix
 texture_matrix
+color_matrix
 
 (* glEnable *)
 alpha_test
@@ -140,6 +141,10 @@ one_minus_dst_alpha
 src_alpha_saturate
 src_color
 one_minus_src_color
+constant_color
+one_minus_constant_color
+constant_alpha
+one_minus_constant_alpha
 
 (* glFog *)
 linear exp exp2
@@ -201,13 +206,17 @@ pack_lsb_first
 pack_row_length
 pack_skip_pixels
 pack_skip_rows
+pack_skip_images
 pack_alignment
+pack_image_height
 unpack_swap_bytes
 unpack_lsb_first
 unpack_row_length
 unpack_skip_pixels
 unpack_skip_rows
+unpack_skip_images
 unpack_alignment
+unpack_image_height
 
 (* glReadBuffer *)
 front_left front_right back_left back_right left right
@@ -235,15 +244,15 @@ luminance12_alpha4 luminance12_alpha12 luminance16_alpha16
 intensity intensity4 intensity8 intensity12 intensity16
 r3_g3_b2 rgb4 rgb5 rgb8 rgb10 rgb12 rgb16
 rgba2 rgba4 rgb5_a1 rgba8 rgb10_a2 rgba12 rgba16
-
-(* glTexImage2D *)
 texture_cube_map_negative_x
 texture_cube_map_negative_y
 texture_cube_map_negative_z
 texture_cube_map_positive_x
 texture_cube_map_positive_y
 texture_cube_map_positive_z
+proxy_texture_1d
 proxy_texture_2d
+proxy_texture_3d
 proxy_texture_cube_map
 
 (* glTexParameter *)

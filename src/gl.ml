@@ -24,6 +24,7 @@ type real_kind = [`byte|`float|`int|`short|`ubyte|`uint|`ushort]
 type format =
   [`alpha|`blue|`color_index|`depth_component|`green|`luminance
   |`luminance_alpha|`red|`rgb|`rgba|`stencil_index]
+
 let format_size (#format as f) =
   match f with
     `rgba -> 4

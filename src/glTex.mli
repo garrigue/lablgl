@@ -8,7 +8,7 @@ val coord3 : float * float * float -> unit
 val coord4 : float * float * float * float -> unit
 
 type env_param = [
-    `mode of [`modulate|`decal|`blend|`replace] 
+    `mode of [`modulate|`decal|`blend|`replace|`add] 
   | `color of rgba]
 val env : env_param -> unit
 
@@ -25,7 +25,7 @@ type format =
     |`luminance|`luminance_alpha]
 
 
-type internal = [
+type internalformat = [
   `alpha | `alpha4 | `alpha8 | `alpha12 | `alpha16 
 | `luminance | `luminance4 | `luminance8 | `luminance12 | `luminance16
 | `luminance_alpha | `luminance4_alpha4 | `luminance6_alpha2 | `luminance8_alpha8
@@ -34,6 +34,7 @@ type internal = [
 | `rgb | `r3_g3_b2 | `rgb4 | `rgb5 | `rgb8 | `rgb10 | `rgb12 | `rgb16
 | `rgba | `rgba2 | `rgba4 | `rgb5_a1 | `rgba8 | `rgb10_a2 | `rgba12 | `rgba16
 ]
+val internal_of_format : [< format] -> internalformat
 
 type target_2d = [
   `texture_2d
@@ -60,24 +61,25 @@ type target_3d = [
 *)
 
 val image1d :
-  ?proxy:bool -> ?level:int -> ?internal:internal -> ?border:bool ->
+  ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
   ([< format], [< kind]) GlPix.t -> unit
 val image2d :
-  ?target:target_2d -> ?level:int -> ?internal:internal -> ?border:bool ->
+  ?target:target_2d -> ?level:int -> ?internal:internalformat -> ?border:bool ->
   ([< format], [< kind]) GlPix.t -> unit
 
 (*
 val image3d : 
-  ?proxy:bool -> ?level:int -> ?internal:internal -> ?border:bool ->
+  ?proxy:bool -> ?level:int -> ?internal:internalformat -> ?border:bool ->
   ([< format], [< kind]) GlPix.t -> unit
 *)
 
-type filter =
+
+type min_filter =
     [`nearest|`linear|`nearest_mipmap_nearest|`linear_mipmap_nearest
     |`nearest_mipmap_linear|`linear_mipmap_linear]
 type wrap = [`clamp|`repeat|`clamp_to_edge|`clamp_to_border]
 type parameter = [
-    `min_filter of filter
+    `min_filter of min_filter
   | `mag_filter of [`nearest|`linear]
   | `wrap_s of wrap
   | `wrap_t of wrap
