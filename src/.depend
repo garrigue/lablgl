@@ -1,63 +1,89 @@
-build.cmo:
-build.cmx:
-gl.cmo: gl.cmi
-gl.cmx: gl.cmi
-glArray.cmo: raw.cmi glDraw.cmi gl.cmi glArray.cmi
-glArray.cmx: raw.cmx glDraw.cmx gl.cmx glArray.cmi
-glClear.cmo: gl.cmi glClear.cmi
-glClear.cmx: gl.cmx glClear.cmi
-glDraw.cmo: raw.cmi glPix.cmi gl.cmi glDraw.cmi
-glDraw.cmx: raw.cmx glPix.cmx gl.cmx glDraw.cmi
-glFunc.cmo: gl.cmi glFunc.cmi
-glFunc.cmx: gl.cmx glFunc.cmi
-glLight.cmo: gl.cmi glLight.cmi
-glLight.cmx: gl.cmx glLight.cmi
-glList.cmo: glList.cmi
-glList.cmx: glList.cmi
-glMap.cmo: raw.cmi glMap.cmi
-glMap.cmx: raw.cmx glMap.cmi
-glMat.cmo: raw.cmi glMat.cmi
-glMat.cmx: raw.cmx glMat.cmi
-glMisc.cmo: raw.cmi glMisc.cmi
-glMisc.cmx: raw.cmx glMisc.cmi
-glPix.cmo: raw.cmi gl.cmi glPix.cmi
-glPix.cmx: raw.cmx gl.cmx glPix.cmi
-glShader.cmo: glShader.cmi
-glShader.cmx: glShader.cmi
-glTex.cmo: raw.cmi glPix.cmi glMisc.cmi gl.cmi glTex.cmi
-glTex.cmx: raw.cmx glPix.cmx glMisc.cmx gl.cmx glTex.cmi
-gluMat.cmo: gl.cmi gluMat.cmi
-gluMat.cmx: gl.cmx gluMat.cmi
-gluMisc.cmo: raw.cmi glTex.cmi glPix.cmi gl.cmi gluMisc.cmi
-gluMisc.cmx: raw.cmx glTex.cmx glPix.cmx gl.cmx gluMisc.cmi
-gluNurbs.cmo: raw.cmi glMap.cmi gl.cmi gluNurbs.cmi
-gluNurbs.cmx: raw.cmx glMap.cmx gl.cmx gluNurbs.cmi
-gluQuadric.cmo: gluQuadric.cmi
-gluQuadric.cmx: gluQuadric.cmi
-gluTess.cmo: gluTess.cmi
-gluTess.cmx: gluTess.cmi
-raw.cmo: raw.cmi
-raw.cmx: raw.cmi
-var2def.cmo:
-var2def.cmx:
-var2switch.cmo:
-var2switch.cmx:
-gl.cmi:
-glArray.cmi: raw.cmi glDraw.cmi
-glClear.cmi: gl.cmi
-glDraw.cmi: glPix.cmi gl.cmi
-glFunc.cmi: gl.cmi
-glLight.cmi: gl.cmi
-glList.cmi:
-glMap.cmi: raw.cmi
-glMat.cmi: raw.cmi gl.cmi
-glMisc.cmi: raw.cmi
-glPix.cmi: raw.cmi gl.cmi
-glShader.cmi:
-glTex.cmi: glPix.cmi gl.cmi
-gluMat.cmi: gl.cmi
-gluMisc.cmi: glTex.cmi glPix.cmi gl.cmi
-gluNurbs.cmi: raw.cmi glMap.cmi gl.cmi
-gluQuadric.cmi:
-gluTess.cmi:
-raw.cmi:
+gl.cmo: gl.cmi 
+gl.cmx: gl.cmi 
+glArray.cmo: raw.cmi glDraw.cmi gl.cmi glArray.cmi 
+glArray.cmx: raw.cmx glDraw.cmx gl.cmx glArray.cmi 
+glClear.cmo: gl.cmi glClear.cmi 
+glClear.cmx: gl.cmx glClear.cmi 
+glColor.cmo: raw.cmi glPix.cmi gl.cmi glColor.cmi 
+glColor.cmx: raw.cmx glPix.cmx gl.cmx glColor.cmi 
+glConvolution.cmo: raw.cmi glPix.cmi gl.cmi glConvolution.cmi 
+glConvolution.cmx: raw.cmx glPix.cmx gl.cmx glConvolution.cmi 
+glDraw.cmo: raw.cmi glPix.cmi gl.cmi glDraw.cmi 
+glDraw.cmx: raw.cmx glPix.cmx gl.cmx glDraw.cmi 
+glFog.cmo: gl.cmi glFog.cmi 
+glFog.cmx: gl.cmx glFog.cmi 
+glFunc.cmo: gl.cmi glFunc.cmi 
+glFunc.cmx: gl.cmx glFunc.cmi 
+glInterleaved.cmo: raw.cmi glArray.cmi gl.cmi glInterleaved.cmi 
+glInterleaved.cmx: raw.cmx glArray.cmx gl.cmx glInterleaved.cmi 
+glLight.cmo: gl.cmi glLight.cmi 
+glLight.cmx: gl.cmx glLight.cmi 
+glList.cmo: glList.cmi 
+glList.cmx: glList.cmi 
+glMap.cmo: raw.cmi glMap.cmi 
+glMap.cmx: raw.cmx glMap.cmi 
+glMat.cmo: raw.cmi glMat.cmi 
+glMat.cmx: raw.cmx glMat.cmi 
+glMisc.cmo: raw.cmi glMisc.cmi 
+glMisc.cmx: raw.cmx glMisc.cmi 
+glMultiTex.cmo: gl.cmi glMultiTex.cmi 
+glMultiTex.cmx: gl.cmx glMultiTex.cmi 
+glPix.cmo: raw.cmi gl.cmi glPix.cmi 
+glPix.cmx: raw.cmx gl.cmx glPix.cmi 
+glPix3D.cmo: raw.cmi glPix.cmi gl.cmi glPix3D.cmi 
+glPix3D.cmx: raw.cmx glPix.cmx gl.cmx glPix3D.cmi 
+glShader.cmo: glShader.cmi 
+glShader.cmx: glShader.cmi 
+glState.cmo: raw.cmi glTex.cmi glPix3D.cmi glPix.cmi glMultiTex.cmi \
+    glMisc.cmi glMat.cmi glLight.cmi glFunc.cmi glFog.cmi glDraw.cmi \
+    glConvolution.cmi glColor.cmi glArray.cmi gl.cmi glState.cmi 
+glState.cmx: raw.cmx glTex.cmx glPix3D.cmx glPix.cmx glMultiTex.cmx \
+    glMisc.cmx glMat.cmx glLight.cmx glFunc.cmx glFog.cmx glDraw.cmx \
+    glConvolution.cmx glColor.cmx glArray.cmx gl.cmx glState.cmi 
+glTex.cmo: raw.cmi glPix3D.cmi glPix.cmi glMisc.cmi gl.cmi glTex.cmi 
+glTex.cmx: raw.cmx glPix3D.cmx glPix.cmx glMisc.cmx gl.cmx glTex.cmi 
+gluMat.cmo: gl.cmi gluMat.cmi 
+gluMat.cmx: gl.cmx gluMat.cmi 
+gluMisc.cmo: raw.cmi glTex.cmi glPix.cmi gl.cmi gluMisc.cmi 
+gluMisc.cmx: raw.cmx glTex.cmx glPix.cmx gl.cmx gluMisc.cmi 
+gluNurbs.cmo: raw.cmi glMap.cmi gl.cmi gluNurbs.cmi 
+gluNurbs.cmx: raw.cmx glMap.cmx gl.cmx gluNurbs.cmi 
+gluQuadric.cmo: gluQuadric.cmi 
+gluQuadric.cmx: gluQuadric.cmi 
+gluTess.cmo: gluTess.cmi 
+gluTess.cmx: gluTess.cmi 
+raw.cmo: raw.cmi 
+raw.cmx: raw.cmi 
+var2def.cmo: 
+var2def.cmx: 
+var2switch.cmo: 
+var2switch.cmx: 
+api.cmi: 
+gl.cmi: 
+glArray.cmi: raw.cmi glDraw.cmi 
+glClear.cmi: gl.cmi 
+glColor.cmi: glPix.cmi gl.cmi 
+glConvolution.cmi: glPix.cmi gl.cmi 
+glDraw.cmi: glPix.cmi gl.cmi 
+glFog.cmi: gl.cmi 
+glFunc.cmi: gl.cmi 
+glInterleaved.cmi: raw.cmi gl.cmi 
+glLight.cmi: gl.cmi 
+glList.cmi: 
+glMap.cmi: raw.cmi 
+glMat.cmi: raw.cmi gl.cmi 
+glMisc.cmi: raw.cmi 
+glMultiTex.cmi: glTex.cmi gl.cmi 
+glPix.cmi: raw.cmi gl.cmi 
+glPix3D.cmi: raw.cmi glPix.cmi gl.cmi 
+glShader.cmi: 
+glState.cmi: raw.cmi glTex.cmi glPix3D.cmi glPix.cmi glMultiTex.cmi \
+    glMisc.cmi glMat.cmi glLight.cmi glFunc.cmi glFog.cmi glDraw.cmi \
+    glConvolution.cmi glColor.cmi glArray.cmi gl.cmi 
+glTex.cmi: glPix3D.cmi glPix.cmi gl.cmi 
+gluMat.cmi: gl.cmi 
+gluMisc.cmi: glTex.cmi glPix.cmi gl.cmi 
+gluNurbs.cmi: raw.cmi glMap.cmi gl.cmi 
+gluQuadric.cmi: 
+gluTess.cmi: 
+raw.cmi: 

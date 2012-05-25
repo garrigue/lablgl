@@ -1,0 +1,3 @@
+#<../../../src>: include
+<*.ml>: use_unix, use_bigarray, use_lablgl, use_lablgtk, use_camlimages, use_graphics, use_lablglut, use_sdl
+<*.{native,p.native,byte,d.byte}>: use_unix, use_bigarray, use_lablgl, use_lablgtk, use_camlimages, use_graphics, use_lablglut, use_sdl

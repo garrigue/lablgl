@@ -1,4 +1,3 @@
-#load"unix.cma";;
 
 open Jitter
 
@@ -140,7 +139,7 @@ object(self)
     let jmax = 4 in
     let blend = 1.0 /. (float jmax) in
     GlClear.clear [`color ; `depth];
-    self#render j4.(jitter) viewport;
+    self#render j4.(0) viewport;
     GlFunc.accum ~op:`load blend;
     for jitter = 1 to pred jmax do
       GlClear.clear [`color ; `depth];

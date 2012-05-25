@@ -18,7 +18,7 @@ LIBOBJS =	raw.cmo \
 		gluMat.cmo 	glMultiTex.cmo		glArray.cmo     glInterleaved.cmo \
 		glColor.cmo	glConvolution.cmo	glFog.cmo	glState.cmo \
 		glShader.cmo
->>>>>>> master
+
 MLOBJS = $(LIBOBJS)	togl.cmo
 OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \
