@@ -7,6 +7,7 @@ INCLUDES = -I$(SRCDIR) -I$(TOGLDIR) \
 	$(TKINCLUDES) -I. $(GLINCLUDES) $(XINCLUDES)
 LIBS = $(TKLIBS) $(GLLIBS) $(XLIBS)
 LIBDIRS =
+COPTS += -DUSE_TCL_STUBS -DUSE_TK_STUBS
 
 OCAMLINC=-I +labltk -I $(SRCDIR)
 
@@ -28,7 +29,8 @@ togl.cmxa: togl.cmx $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 
 $(TOGLDIR)/togl.o:
-	cd $(TOGLDIR) && $(MAKE) togl.o CC="$(CAMLC) -verbose" CFLAGS='-c -ccopt "$(COPTS) $(INCLUDES) $(TK_FLAGS)"'
+	cd $(TOGLDIR) && \
+	$(CAMLC) -verbose -c -ccopt "-D$(TOGL_WS) $(COPTS) $(INCLUDES)" togl.c
 
 $(TOGLDIR)/togl.obj:
 	cd $(TOGLDIR) && \
@@ -80,7 +82,7 @@ toglinstallopt:
 clean:
 	rm -f *.cm* *.o *.obj *.so *.lib *.a *.dll *.exe *.opt *_tags.c \
 	    *_tags.h *~ lablgltop$(EX) lablgl
-	rm -f $(TOGLDIR)/*.o $(TOGLDIR)/*.obj
+	rm -f $(TOGLDIR)/Makefile $(TOGLDIR)/*.o $(TOGLDIR)/*.obj
 
 depend:
 	ocamldep  -pp camlp4o *.ml *.mli > .depend

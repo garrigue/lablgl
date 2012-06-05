@@ -246,7 +246,9 @@ let init_togl () =
 let create ?name =
   togl_options_optionals
     (fun options parent ->
+      prerr_endline "Before init";
       if not !ready then init_togl ();
+      prerr_endline "After init";
       let w : widget =
 	Widget.new_atom "togl" ~parent ?name in
       let togl = ref None in
@@ -259,6 +261,7 @@ let create ?name =
 	    begin fun tbl ->
 	      try Hashtbl.remove tbl (Widget.name w) with Not_found -> ()
 	    end);
+      prerr_endline "Before create";
       let command =
 	[|TkToken "togl"; TkToken (Widget.name w);
 	  TkToken "-ident"; TkToken (Widget.name w);
@@ -266,7 +269,8 @@ let create ?name =
       let _res : string =
 	try tkEval command
 	with TkError "invalid command name \"togl\"" ->
-	  init_togl (); tkEval command
+	  raise (TkError "Togl initialization failed")
       in
+      prerr_endline "After create";
       match !togl with None -> raise (TkError "Togl widget creation failed")
       |	Some t -> w)

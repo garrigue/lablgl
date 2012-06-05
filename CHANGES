@@ -1,3 +1,6 @@
+2012-06-05:
+* switch to Togl 1.7, doesn't need Tk internals anymore
+
 2012-03-06:
 * add `bgr and `bgra to Gl.format and GlTex.format (reported by Vu Ngoc San)
 
