@@ -28,13 +28,9 @@ libtogl.a togl.cma: togl.cmo $(TOGLOBJS) $(CONFIG)
 togl.cmxa: togl.cmx $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 
-$(TOGLDIR)/togl.o:
+$(TOGLDIR)/togl.$(XO):
 	cd $(TOGLDIR) && \
 	$(CAMLC) -verbose -c -ccopt "-D$(TOGL_WS) $(COPTS) $(INCLUDES)" togl.c
-
-$(TOGLDIR)/togl.obj:
-	cd $(TOGLDIR) && \
-        $(CAMLC) -verbose -c -ccopt "-DWIN32 $(COPTS) $(INCLUDES) -I." togl.c
 
 lablgltop$(XE): ../../src/lablgl.cma togl.cma
 	ocamlmktop $(CUSTOMTOP) -I . $(OCAMLINC) -o $@ \

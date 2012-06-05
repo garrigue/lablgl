@@ -69,5 +69,10 @@ MKDLL = gcc -mno-cygwin -shared -o
 # Where is Togl (default)
 #TOGLDIR = Togl
 
+# Togl Window System
+# Should be one of TOGL_X11, TOGL_WGL (windows), TOGL_AGL (macosx)
+# TOGL_AGL isn't supported currently
+TOGL_WS = TOGL_WGL
+
 # C Compiler options
 COPTS = -c -O -DHAS_SYS_TIME

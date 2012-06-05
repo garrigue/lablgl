@@ -59,5 +59,10 @@ RANLIB = :
 # Where is Togl (default)
 #TOGLDIR = Togl
 
+# Togl Window System
+# Should be one of TOGL_X11, TOGL_WGL (windows), TOGL_AGL (macosx)
+# TOGL_AGL isn't supported currently
+#TOGL_WS = TOGL_X11
+
 # C Compiler options
 #COPTS = -c -O
