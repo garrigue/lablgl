@@ -28,7 +28,7 @@ libtogl.a togl.cma: togl.cmo $(TOGLOBJS) $(CONFIG)
 togl.cmxa: togl.cmx $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 
-$(TOGLDIR)/togl$(XO):
+$(TOGLDIR)/togl$(XO): $(TOGLDIR)/togl.c $(TOPDIR)/Makefile.config
 	cd $(TOGLDIR) && \
 	$(CAMLC) -verbose -c -ccopt "-D$(TOGL_WS) $(COPTS) $(INCLUDES)" togl.c
 

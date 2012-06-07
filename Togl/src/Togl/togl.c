@@ -52,6 +52,7 @@
 #  define Cursor QDCursor
 #  include <AGL/agl.h>
 #  undef Cursor
+#  define _TKINTXLIBDECLS /* Avoid using tkIntXlibDecls.h */
 #  include "tkMacOSX.h"
 #  include <tkMacOSXInt.h>      /* usa MacDrawable */
 #  include <ApplicationServices/ApplicationServices.h>
