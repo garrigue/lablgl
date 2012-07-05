@@ -1,3 +1,56 @@
+(** support for GL context state access *)
+
+(**
+    see section 6 of the 1.4 OpenGL specifications
+
+
+State values are divided in groups according to their respective type.
+For each the state value, there's a defined tag. These tags are grouped in 
+the following variant types:
+
+- boolean_pname
+- light_pname
+- material_pname
+- env_pname
+- gen_pname
+- parameter_pname
+- level_pname
+- color_table_pname
+- histogram_pname
+- minmax_pname
+- float4_pname
+- float3_pname
+- float2_pname
+- float_pname
+- matrix4_pname
+- color_pname
+- texcoord_pname
+- domain_pname
+- int_pname
+- int4_pname
+- int2_pname
+- enum_pname
+
+Most of them are used with specific functions, but a few variants can also be used with functions returning boxed values, using the same tags as the ones used to query values, in order to mimic the GetIntegerv and GetFloatv functions:
+
+- integer typed values (int4_pname, int2_pname, int_pname, and enum_pnames) can be queried through the same function get_intv
+- float values (float_pname, float2_pname, float3_pname, float4_pname, matrix4_pname, color_pname, texcoord_pname, domain_pname) with get_floatv
+
+Ex: to query the viewport value, one might proceed like this:
+
+# get_intv `viewport;;
+
+-- : GlState.intv_value = `viewport (0, 0, 800, 600)
+
+or like this:
+
+# get_int4 `viewport;;
+
+-- : int * int * int * int = (0, 0, 800, 600)
+
+*)
+
+(** boolean typed state values *)
 
 type boolean_pname =
     [ `color_writemask
@@ -132,7 +185,7 @@ val get_compressed_tex_image : ?target:image_target -> ?level:int -> unit -> [`u
 
 val get_polygon_stipple : unit -> GlPix.bitmap
 
-(* imaging subset -------------------------- *)
+(** Imaging Subset state accessors *)
 
 type color_table_pname = 
   [ `table_format
@@ -203,6 +256,8 @@ val get_minmax_parameter : pname:minmax_pname -> minmax_parameter
 
 
 (* float queries ----- *)
+
+(** float typed state values *)
 
 type float4_pname = 
   [ `current_raster_position

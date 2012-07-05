@@ -53,7 +53,9 @@ external copy_sub : target:[<table] -> start:int -> x:int -> y:int -> count:int 
 
 type histogram = [`histogram | `proxy_histogram]
 
-external histogram : target:[<histogram] -> width:int -> internal:[<internalformat] -> bool -> unit = "ml_glHistogram" "noalloc"
+external histogram : target:[<histogram] -> width:int -> internal:[<internalformat] -> sink:bool -> unit = "ml_glHistogram" "noalloc"
+
+external reset_histogram : target:[<histogram] -> unit = "ml_glResetHistogram" "noalloc"
 
 (* minmax -------- *)
 
@@ -61,7 +63,7 @@ external minmax : target:[`minmax] -> internal:[<internalformat] -> bool -> unit
 
 external reset_minmax : target:[`minmax] -> unit = "ml_glResetMinmax" "noalloc"
 
-let minmax ~internal sink = minmax ~target:`minmax ~internal sink
+let minmax ~internal ~sink = minmax ~target:`minmax ~internal sink
 
 let reset_minmax () = reset_minmax `minmax
 

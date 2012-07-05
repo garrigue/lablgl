@@ -970,6 +970,7 @@ ML_5(glCopyColorTable, GLenum_val, GLenum_val, Int_val, Int_val, Int_val)
 ML_5(glColorSubTable, GLenum_val, Int_val, Int_val, GLenum_val, Type_void_raw)
 ML_5(glCopyColorSubTable, GLenum_val, Int_val, Int_val, Int_val, Int_val)
 ML_4(glHistogram, gl_histogram, Int_val, GLenum_val, Bool_val)
+ML_1(glResetHistogram, GLenum_val)
 ML_3(glMinmax, gl_minmax, GLenum_val, Bool_val)
 ML_1(glResetMinmax, gl_minmax)
 

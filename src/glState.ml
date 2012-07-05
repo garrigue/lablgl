@@ -970,21 +970,3 @@ let get_intv : [<intv_pname] -> intv_value = function
     | #int2_pname as y -> get_int2_ y
     | #int_pname  as z -> get_int_ z
     | #enum_pname as w -> get_enum w
-
-(*
-type pointer_value =
-  | `texture_binding_xd
-  | `texture_binding_cube_map
-*)
-
-(*
-type map_value_f =
-  [ `coeff
-  | `domain ]
-
-type map_value_i =
-  [ `order ]
-
-type cap = Gl.cap
-
-*)

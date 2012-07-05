@@ -217,6 +217,22 @@ GlClear: Clearing functions.
    glClearIndex		-> index
    glClearStencil	-> stencil
 
+GlColor: ColorTable, Histogram and Minmax functions (Imaging Subset).
+   glColorTable             -> table
+   glColorTableParameter    -> table_parameter
+   glCopyColorTable         -> copy_table
+   glColorSubTable          -> sub_table
+   glCopyColorSubTable      -> copy_sub_table
+   glHistogram              -> histogram
+   glResetHistogram         -> reset_histogram
+   glMinmax                 -> minmax
+   glResetMinmax            -> reset_minmax  
+
+GlConvolution: Convolution filter function.
+   glConvolutionFilter      -> filter
+   glSeparableFilter        -> separable_filter
+   glConvolutionCopyFilter  -> copy_filter
+
 GlDraw: Drawing functions.
    glBegin		-> begins
    glColor
@@ -237,6 +253,10 @@ GlDraw: Drawing functions.
    glVertex
    glViewport
 
+GlFog: 
+   glFog                    -> fog
+   glFogCoord               -> coord
+
 GlFunc: Filtering functions.
    glAccum
    glAlphaFunc
@@ -254,7 +274,6 @@ GlFunc: Filtering functions.
 
 GlLight: Lighting functions.
    glColorMaterial
-   glFog
    glLight
    glLightModel (gl 1.2 with `color_control)
    glMaterial
@@ -319,8 +338,11 @@ GlPix: Rasterized pixel functions. (*)
    glPixelStore		-> store
    glPixelTransfer	-> transfer
    glPixelZoom		-> zoom
-   glRasterPos
+   glRasterPos          -> raster_pos
    glReadPixels		-> read
+
+GlPix3D: support for 3D pixel buffer. (*)
+   glRasterPos              -> raster_pos
 
 GlTex: Texturing functions.
    glTexCoord		-> coord
@@ -329,6 +351,12 @@ GlTex: Texturing functions.
    glTexImage1D		-> image1d
    glTexImage2D		-> image2d
    glTexParameter	-> parameter (gl 1.4 with generate_mipmap)
+
+GlMultiTex: Multitexturing functions.
+   glActiveTexture          -> active
+   glClientActiveTexture    -> client_active
+   glTexEnv                 -> env
+   glMultiTexCoord          -> coord
 
 GluMat: GLU matrix functions.
    gluLookAt
@@ -369,7 +397,7 @@ GluQuadric: Quadric functions.
    gluQuadricTexture	-> texture
    gluSphere
 
-GluTess: Tessalating functions.
+GluTess: Tesselating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
 
