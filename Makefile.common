@@ -19,6 +19,7 @@ LIBDIR = `$(CAMLC) -where`
 DLLDIR = $(LIBDIR)/stublibs
 INSTALLDIR = $(LIBDIR)/lablGL
 TOGLDIR = Togl
+TOGL_WS = TOGL_X11
 COPTS = -c -O
 
 # Default toolchain (unix)

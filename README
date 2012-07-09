@@ -9,7 +9,7 @@ LablGlut for standalone applications not using Tcl/Tk.
 
 2. Requisites
 
-  * Objective Caml 3.05 to 3.11  (only 3.11 supported on windows)
+  * Objective Caml 3.05 to 4.00
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
@@ -18,9 +18,7 @@ LablGlut for standalone applications not using Tcl/Tk.
   Objective Caml can be obtained from
 	http://caml.inria.fr/ocaml/
 
-  OpenGL (with hardware support) is already on your machine on SGI and
-most DEC Alpha systems. It may also be the case with Solaris machines,
-and if you do not have it you may obtain it from Sun.
+  OpenGL (with hardware support) may already be on your machine.
   XFree86 supports the GLX protocol since version 4.0, with hardware
 acceleration on some platforms. It is available on most recent Linux
 configurations.
@@ -44,7 +42,7 @@ of Mesa and XFree86. For windows you need to obtain it from
 3. Installation
 
 Precompiled versions of lablGL are available for Windows, and a number
-of Linux distributions. For Linux, just install the package.
+of Unix versions. For Linux, just install the package.
 
 Windows binary distribution:
   The file lablgl-1.04-win32.zip supports both MSVC and mingw versions
@@ -77,6 +75,11 @@ Windows binary distribution:
   bytecode or native code.
 
 Compilation from source (if there is no package):
+
+  0) On MacOSX, if you want to use Togl, you must use the X11 version
+     of Tcl/Tk. Here we assume that ocaml was installed from macports.
+     Then you must also install the mesa port from macports, to obtain
+     a compatible version of GLX.
 
   a) Create Makefile.config.
      Some tested configurations are provided.

@@ -14,11 +14,14 @@ CAMLOPT = ocamlopt.opt
 BINDIR = /usr/local/bin
 
 # Where to find Tcl/Tk headers
-# This must the same version as for LablTk
-# Togl works only with the X11 version of Tk
-TKINCLUDES = -I/usr/local/include -I/usr/X11R6/include
+# This must be the same version as for LablTk
+# On OSX, Togl works only with the X11 version of Tk
+# Here we use the X11 version of tk and mesa installed by macports
+# While we only use the GLX part of mesa, the libGL.dylib in
+# /usr/X11/lib is not compatible with macports.
+TKINCLUDES = -I/opt/local/include
 # Libs for Togl
-TKLIBS = -L/usr/X11R6/lib -lGL -lXmu
+TKLIBS = -L/opt/local/lib -lGL -lXmu
 
 # Where to find OpenGL/Mesa headers and libraries
 GLINCLUDES =
@@ -41,6 +44,11 @@ RANLIB = ranlib
 
 # Where is Togl (default)
 #TOGLDIR = Togl
+
+# Togl Window System
+# Should be one of TOGL_X11, TOGL_WGL (windows), TOGL_AGL (macosx)
+# TOGL_AGL isn't supported currently
+#TOGL_WS = TOGL_X11
 
 # C Compiler options
 #COPTS = -c -O

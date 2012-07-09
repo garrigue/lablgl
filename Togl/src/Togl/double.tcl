@@ -1,4 +1,8 @@
-# $Id: double.tcl,v 1.3 1998-12-11 08:44:05 garrigue Exp $
+#!/bin/sh
+# the next line restarts using wish \
+exec wish "$0" "$@"
+
+# $Id: double.tcl,v 1.5 2001/12/20 13:59:31 beskow Exp $
 
 # Togl - a Tk OpenGL widget
 # Copyright (C) 1996  Brian Paul and Ben Bederson
@@ -6,8 +10,15 @@
 
 
 # $Log: double.tcl,v $
-# Revision 1.3  1998-12-11 08:44:05  garrigue
-# Togl 1.5
+# Revision 1.5  2001/12/20 13:59:31  beskow
+# Improved error-handling in togl.c in case of window creation failure
+# Added pkgIndex target to makefile
+# Updated documentation to reflect stubs-interface (Togl.html + new README.stubs)
+# Added tk8.4a3 headers
+# Removed obsolete Tk internal headers
+#
+# Revision 1.4  2001/01/29 18:11:53  brianp
+# Jonas Beskow's changes to use Tcl/Tk stub interface
 #
 # Revision 1.3  1998/03/12 03:52:31  brianp
 # now sharing display lists between the widgets
@@ -23,7 +34,7 @@
 # An Tk/OpenGL widget demo with two windows, one single buffered and the
 # other double buffered.
 
-
+load [file dirname [info script]]/double[info sharedlibextension]
 
 proc setup {} {
     wm title . "Single vs Double Buffering"

@@ -1,3 +1,6 @@
+#!/bin/sh
+# the next line restarts using wish \
+exec wish "$0" "$@"
 
 # Togl - a Tk OpenGL widget
 # Copyright (C) 1996-1997  Brian Paul and Ben Bederson
@@ -9,6 +12,8 @@
 #
 # Copyright (C) 1997 Philip Quaife
 #
+
+load [file dirname [info script]]/gears[info sharedlibextension]
 
 proc setup {} {
     global startx starty xangle0 yangle0 xangle yangle RotCnt
@@ -22,7 +27,7 @@ proc setup {} {
     label .t -text "Click and drag to rotate image"
     pack .t -side top -padx 2 -pady 10
     frame .f
-    pack .f -side top -expand 1
+    pack .f -side top
     button .f.n1 -text "  Add " -command AutoRot
     button .f.r1 -text "Remove" -command DelRot
     button .f.b1 -text " Quit " -command exit 
