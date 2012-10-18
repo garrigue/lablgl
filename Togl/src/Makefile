@@ -23,7 +23,8 @@ all: lablgltop$(XE) lablgl$(XB)
 
 opt: togl.cmxa
 
-libtogl.a togl.cma: togl.cmo $(TOGLOBJS) $(CONFIG)
+libtogl.a: togl.cma
+togl.cma: togl.cmo $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmo $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)
 togl.cmxa: togl.cmx $(TOGLOBJS) $(CONFIG)
 	$(LIBRARIAN) -o togl togl.cmx $(TOGLOBJS) $(GLLIBS) $(TKLIBS) $(XLIBS)

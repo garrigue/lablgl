@@ -23,9 +23,12 @@ COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \
 		ml_glutess$(XO)	ml_shader$(XO)
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
 
-all:	var2def$(XE) var2switch$(XE) lablgl.cma
+all: tools
+	$(MAKE) lablgl.cma
 
 opt: lablgl.cmxa
+
+tools: var2def$(XE) var2switch$(XE)
 
 var2def$(XE): var2def.ml
 	$(LINKER) -pp camlp4o var2def.ml -o $@
@@ -46,7 +49,8 @@ lablgl.cmxa: liblablgl$(XA) $(OPTOBJS) $(CONFIG)
 	$(OPTLINK) -a -o $@ $(OPTOBJS) -cclib -llablgl \
 	  -cclib "$(GLLIBS)"
 else
-liblablgl$(XA) lablgl.cma: $(COBJS) $(LIBOBJS) $(CONFIG)
+liblablgl$(XA): lablgl.cma
+lablgl.cma: $(COBJS) $(LIBOBJS) $(CONFIG)
 	$(LIBRARIAN) -o lablgl $(COBJS) $(LIBOBJS) $(GLLIBS) $(XLIBS)
 lablgl.cmxa: $(COBJS) $(OPTOBJS) $(CONFIG)
 	$(LIBRARIAN) -o lablgl $(COBJS) $(OPTOBJS) $(GLLIBS) $(XLIBS)

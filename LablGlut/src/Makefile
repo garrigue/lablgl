@@ -35,7 +35,8 @@ lablglut.cmxa: liblablglut$(XA) $(OPTOBJS) ../../Makefile.config
 	$(OPTLINK) -a -o $@ $(OPTOBJS) -cclib -llablglut \
 	  -cclib "$(GLLIBS)" -cclib "$(GLUTLIBS)"
 else
-liblablglut$(XA) lablglut.cma: $(COBJS) $(LIBOBJS) ../../Makefile.config
+liblablglut$(XA): lablglut.cma
+lablglut.cma: $(COBJS) $(LIBOBJS) ../../Makefile.config
 	$(LIBRARIAN) -o lablglut $(COBJS) $(LIBOBJS) $(GLUTLIBS) $(GLLIBS) $(XLIBS)
 lablglut.cmxa: $(COBJS) $(OPTOBJS) ../../Makefile.config
 	$(LIBRARIAN) -o lablglut $(COBJS) $(OPTOBJS) $(GLUTLIBS) $(GLLIBS) $(XLIBS)

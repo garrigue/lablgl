@@ -1,3 +1,6 @@
+2012-10-18:
+* allow building with make -j
+
 2012-06-05:
 * switch to Togl 1.7, doesn't need Tk internals anymore
 
