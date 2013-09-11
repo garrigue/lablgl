@@ -1,0 +1,60 @@
+#	LablGL and Togl configuration file
+#
+# Please have a look at the config/Makefile in the Objective Caml distribution,
+# or at the labltklink script to get the information needed here
+#
+
+# Makefile.config that has been tested under Linux Mandrake 9.1
+
+##### Adjust these always
+
+# Where to put the lablgl script
+BINDIR = /usr/local/bin
+
+# Where to find X headers
+XINCLUDES =
+# X libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
+XLIBS = -lXext -lXmu -lX11
+
+# Where to find Tcl/Tk headers
+# This must the same version as for LablTk
+TKINCLUDES = -I/usr/include/tcl8.5
+# Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
+TKLIBS = 
+
+# Where to find OpenGL/Mesa headers and libraries
+GLINCLUDES =
+GLLIBS = -lGL -lGLU
+GLUTLIBS = -lglut
+# The following libraries may be required (try to add them one at a time)
+
+# How to index a library after installing (required on MacOSX)
+RANLIB = :
+#RANLIB = ranlib
+
+##### Uncomment these for windows
+#TKLIBS = tk83.lib tcl83.lib gdi32.lib user32.lib
+#GLLIBS = opengl32.lib glu32.lib
+#TOOLCHAIN = msvc
+#XA = .lib
+#XB = .bat
+#XE = .exe
+#XO = .obj
+#XS = .dll
+
+##### Adjust these if non standard
+
+# The Objective Caml library directory
+#LIBDIR = `ocamlc -where`
+
+# Where to put dlls (if dynamic loading available)
+#DLLDIR = `ocamlc -where`/stublibs
+
+# Where to put LablGL (standard)
+#INSTALLDIR = $(LIBDIR)/lablGL
+
+# Where is Togl (default)
+#TOGLDIR = Togl
+
+# C Compiler options
+#COPTS = -c -O
