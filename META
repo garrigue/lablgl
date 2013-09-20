@@ -1,0 +1,19 @@
+description "Bindings for OpenGL"
+version="1.05"
+directory="+lablGL"
+archive(byte) = "lablgl.cma"
+archive(native) = "lablgl.cmxa"
+
+package "togl" (
+  exists_if = "togl.cma,togl.cmxa"
+  requires = "labltk lablgl"
+  archive(byte) = "togl.cma"
+  archive(native) = "togl.cmxa"
+)
+
+package "glut" (
+  exists_if = "lablglut.cma,lablglut.cmxa"
+  requires = "lablgl"
+  archive(byte) = "lablglut.cma"
+  archive(native) = "lablglut.cmxa"
+)
