@@ -12,7 +12,7 @@ CAMLOPT = ocamlopt.opt
 LIBRARIAN = ocamlmklib -verbose -ocamlc ocamlc -ocamlopt ocamlopt
 
 # Where to put the lablgl script
-OCAMLDIR = c:/Program Files/Objective Caml
+OCAMLDIR = c:/OCaml
 BINDIR = $(OCAMLDIR)/bin
 DLLDIR = $(OCAMLDIR)/lib/stublibs
 INSTALLDIR = $(OCAMLDIR)/lib/lablGL
@@ -28,10 +28,10 @@ TK_ROOT = C:/Tcl
 TKINCLUDES = -I"$(TK_ROOT)/include"
 # Tcl/Tk libs (for broken RTLD_GLOBAL: e.g. FreeBSD 4.0)
 #TKLIBS = -ltk83 -ltcl83
-#TKLIBS = -ldopt "$(TK_ROOT)/bin/tcl84.dll" -ldopt "$(TK_ROOT)/bin/tk84.dll" 
-TKLIBS0 = -L$(TK_ROOT)/lib tcl84.lib tk84.lib -lws2_32 -luser32 -lgdi32
-TKLIBS = -ldopt -L$(TK_ROOT)/bin -ldopt tcl84.dll -ldopt tk84.dll \
-  -ccopt -L$(TK_ROOT)/lib -cclib tcl84.lib -cclib tk84.lib \
+#TKLIBS = -ldopt "$(TK_ROOT)/bin/tcl85.dll" -ldopt "$(TK_ROOT)/bin/tk85.dll" 
+TKLIBS0 = -L$(TK_ROOT)/lib tcl85.lib tk85.lib -lws2_32 -luser32 -lgdi32
+TKLIBS = -ldopt -L$(TK_ROOT)/bin -ldopt tcl85.dll -ldopt tk85.dll \
+  -ccopt -L$(TK_ROOT)/lib -cclib tcl85.lib -cclib tk85.lib \
   -lws2_32 -luser32 -lgdi32
 
 # Where to find OpenGL/Mesa/Glut headers and libraries

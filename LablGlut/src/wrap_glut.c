@@ -9,6 +9,7 @@
 
 #ifdef _WIN32
 #define GLUT_DISABLE_ATEXIT_HACK
+#include <windows.h>
 #endif
 #ifdef __APPLE__
 #include <GLUT/glut.h>

@@ -1,3 +1,7 @@
+2013-09-20:
+* make it work with the OCaml 4.01 windows installer
+  (both lablglut and togl)
+
 2013-09-11:
 * add configuration file for Ubuntu
 

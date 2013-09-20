@@ -622,12 +622,12 @@ CAMLprim value ml_gluniformmatrix2x3f(
 {
     GLfloat val[6];
     int i, len;
+    LOAD_FUNC(glUniformMatrix2x3fv, PFNGLUNIFORMMATRIX2X3FVPROC)
     len = Wosize_val(mat) / Double_wosize;
     if (len != 6) caml_failwith("GlShader.uniform_matrix2x3f: array should contain 6 floats");
     for (i=0; i<6; i++) {
         val[i] = Double_field(mat, i);
     }
-    LOAD_FUNC(glUniformMatrix2x3fv, PFNGLUNIFORMMATRIX2X3FVPROC)
     glUniformMatrix2x3fv(
         Int_val(location),
         1,
@@ -818,6 +818,7 @@ CAMLprim value ml_gluniformmatrix2x3fv(
     int count = Int_val(ml_count);
     int i, len = Wosize_val(mat) / Double_wosize;
     GLfloat val[len];
+    LOAD_FUNC(glUniformMatrix2x3fv, PFNGLUNIFORMMATRIX2X3FVPROC)
     if (len != (6 * count)) caml_failwith("GlShader.uniform_matrix2x3fv: the array size should be a multiple of 6");
     for (i=0; i<len; i++) {
         val[i] = Double_field(mat, i);
