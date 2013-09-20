@@ -1,5 +1,5 @@
 
-		LablGL 1.04: Installation and Use instructions
+		LablGL 1.05: Installation and Use instructions
 
 1. Description
 
@@ -9,7 +9,7 @@ LablGlut for standalone applications not using Tcl/Tk.
 
 2. Requisites
 
-  * Objective Caml 3.05 to 4.00
+  * Objective Caml 3.05 to 4.01
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
@@ -28,7 +28,7 @@ everything.
 	http://www.mesa3d.org/
 
   LablGl also uses the Togl widget, but the code is already included
-in this distribution (version 1.5). You may obtain more information
+in this distribution (version 1.7). You may obtain more information
 about Togl at:
 	http://www.mesa3d.org/brianp/Togl.html
 Note that Togl is only compatible with vanilla Tcl/Tk: specially
@@ -45,9 +45,8 @@ Precompiled versions of lablGL are available for Windows, and a number
 of Unix versions. For Linux, just install the package.
 
 Windows binary distribution:
-  The file lablgl-1.04-win32.zip supports both MSVC and mingw versions
-  of ocaml 3.11. For older versions of ocaml, you should get
-  lablgl-1.03-win32.zip.
+  The file lablgl-1.05-win32.zip supports the mingw windows installer
+  for ocaml 4.01.
 
   a) Install the lablGL distribution.
      The simplest way is to use the command-line version of unzip, and
@@ -375,5 +374,3 @@ GluQuadric: Quadric functions.
 GluTess: Tessalating functions.
    Only glu 1.2 API is supported.
    Either render directly or produce lists of triangles.
-
-$Id: README,v 1.44 2008-12-26 02:02:28 garrigue Exp $
