@@ -7,16 +7,19 @@
 interfaces: the Togl widget, for comfortable use with LablTk, and
 LablGlut for standalone applications not using Tcl/Tk.
 
+  https://github.com/garrigue/lablgl
+  http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
+
 2. Requisites
 
-  * Objective Caml 3.05 to 4.01
+  * Objective Caml 3.05 to 4.07
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support
   * GNU make (for conditionals)
 
   Objective Caml can be obtained from
-	http://caml.inria.fr/ocaml/
+	http://ocaml.org
 
   OpenGL (with hardware support) may already be on your machine.
   XFree86 supports the GLX protocol since version 4.0, with hardware
@@ -175,7 +178,7 @@ Compilation from source (if there is no package):
 
 6. Comments and bug reports
 
-   mailto:garrigue@kurims.kyoto-u.ac.jp
+   https://github.com/garrigue/lablgl/issues
 
    This library has been tested on a number of programs, but this is
    far from testing all of OpenGL functionality. There are bugs, but
