@@ -10,7 +10,7 @@ LIBDIRS =
 ifeq (TOGL_WS,TOGL_X11)
 COPTS += -DUSE_TCL_STUBS -DUSE_TK_STUBS
 endif
-OCAMLINC=-I +labltk -I $(SRCDIR)
+OCAMLINC=-I $(LABLTKDIR) -I $(SRCDIR)
 
 # Files
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)

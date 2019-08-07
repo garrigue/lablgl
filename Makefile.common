@@ -3,7 +3,9 @@
 # Ocaml commands
 CAMLC=ocamlc
 CAMLOPT=ocamlopt
-COMPILER=$(CAMLC) -c -w s
+CAMLP4O=camlp5o pr_o.cmo
+OCAMLFIND=ocamlfind
+COMPILER=$(CAMLC) -c -w s #-warn-error A
 OPTCOMP=$(CAMLOPT) -c
 LIBRARIAN=ocamlmklib
 OPTLIB=$(CAMLOPT) -a
@@ -16,6 +18,7 @@ VAR2SWITCH=ocamlrun $(SRCDIR)/var2switch
 # Default settings
 CONFIG = $(TOPDIR)/Makefile.config
 LIBDIR = `$(CAMLC) -where`
+LABLTKDIR = `$(OCAMLFIND) query -qe labltk || echo +labltk`
 DLLDIR = $(LIBDIR)/stublibs
 INSTALLDIR = $(LIBDIR)/lablGL
 TOGLDIR = Togl
@@ -39,6 +42,7 @@ include $(CONFIG)
 
 # Default rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .var .h .opt $(XA) $(XO) $(XE) .d$(XO)
+.SUFFIXES: .ml4
 
 .ml.cmo:
 	$(COMPILER) $(OCAMLINC) $<
@@ -55,3 +59,7 @@ include $(CONFIG)
 .var.h:
 	$(VAR2DEF) < $< > $@
 
+ifneq ($(CAMLP4O),no)
+.ml4.ml:
+	$(CAMLP4O) -impl $< -o $@
+endif

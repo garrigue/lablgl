@@ -54,7 +54,7 @@ let surface t ~sknots ~tknots ~control ~sorder ~torder ~target =
   if cl = 0 then invalid_arg "GluNurb.curve";
   let tstride = Array.length control.(0) in
   let sl = Array.length sknots and tl = Array.length tknots in
-  if tl <> cl + torder or (sl - sorder) * target_size target <> tstride
+  if tl <> cl + torder || (sl - sorder) * target_size target <> tstride
   then invalid_arg "GluNurb.curve";
   let sknots = Raw.of_float_array ~kind:`float sknots in
   let tknots = Raw.of_float_array ~kind:`float tknots in

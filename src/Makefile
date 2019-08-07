@@ -22,6 +22,7 @@ OPTOBJS = $(LIBOBJS:.cmo=.cmx)
 COBJS =		ml_gl$(XO)	ml_glu$(XO)	ml_raw$(XO) ml_glarray$(XO) \
 		ml_glutess$(XO)	ml_shader$(XO)
 TOGLOBJS =	ml_togl$(XO)	$(TOGLDIR)/togl$(XO)
+CAMLP4GEN = var2def.ml var2switch.ml
 
 all: tools
 	$(MAKE) lablgl.cma
@@ -30,11 +31,11 @@ opt: lablgl.cmxa
 
 tools: var2def$(XE) var2switch$(XE)
 
-var2def$(XE): var2def.ml
-	$(LINKER) -pp camlp4o var2def.ml -o $@
+var2def$(XE): var2def.cmo
+	$(LINKER) $< -o $@
 
-var2switch$(XE): var2switch.ml
-	$(LINKER) -pp camlp4o var2switch.ml -o $@
+var2switch$(XE): var2switch.cmo
+	$(LINKER) $< -o $@
 
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
@@ -89,8 +90,13 @@ clean:
 	rm -f *.cm* *.a *.o *.so *.lib *.obj *.exe *.opt *_tags.c *_tags.h *~ \
 		*.dll var2def$(XE) var2switch$(XE) lablgltop$(XE) lablgl$(XB)
 
+make-camlp4: $(CAMLP4GEN)
+
+clean-camlp4:
+	rm -f $(CAMLP4GEN)
+
 depend:
-	ocamldep  -pp camlp4o *.ml *.mli > .depend
+	ocamldep  -pp $(CAMLP4O) *.ml *.mli > .depend
 
 #dependencies
 ml_gl$(XO): ml_gl.h gl_tags.h gl_tags.c ml_raw.h

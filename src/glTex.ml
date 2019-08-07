@@ -108,7 +108,7 @@ external _gen_textures : int -> [`uint] Raw.t -> unit = "ml_glGenTextures"
 let gen_textures ~len =
   let raw = Raw.create `uint ~len in
   _gen_textures len raw;
-  let arr = Array.create len Nativeint.zero in
+  let arr = Array.make len Nativeint.zero in
   for i = 0 to len - 1 do
     arr.(i) <- Raw.get_long raw ~pos:i
   done;

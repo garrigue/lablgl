@@ -1,3 +1,10 @@
+LablGL 1.06:
+------------
+2019-08-07:
+* remove dependency on camlp4/camlp5 for installation
+  (only use camlp5 during development to generate stream parsers)
+* fix stdlib deprecations
+
 LablGL 1.05:
 ------------
 2013-09-20:
