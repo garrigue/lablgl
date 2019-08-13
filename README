@@ -13,7 +13,6 @@ LablGlut for standalone applications not using Tcl/Tk.
 2. Requisites
 
   * Objective Caml 3.05 to 4.08
-  * Compatible version of Camlp5 (or Camlp4, see Makefile.common)
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
   * OpenGL
   * glut (included in Mesa) for glut support

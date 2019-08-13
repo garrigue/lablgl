@@ -66,3 +66,7 @@ RANLIB = :
 
 # C Compiler options
 #COPTS = -c -O
+
+# Which camlp4o to use: camlp4o or camlp5o
+# It is only required when modifying .ml4 files
+#CAMLP4O=camlp5o pr_o.cmo
