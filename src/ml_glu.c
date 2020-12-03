@@ -1,5 +1,7 @@
 /* $Id: ml_glu.c,v 1.28 2004-11-02 07:03:34 garrigue Exp $ */
 
+#define CAML_NAME_SPACE
+
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
@@ -102,14 +104,14 @@ ML_3 (gluLookAt, Triple(arg1,Double_val,Double_val,Double_val),
 
 CAMLprim value ml_gluNewNurbsRenderer (void)
 {
-    value struc = alloc_final (2, ml_gluDeleteNurbsRenderer, 1, 32);
+    value struc = caml_alloc_final (2, ml_gluDeleteNurbsRenderer, 1, 32);
     Store_addr(struc, gluNewNurbsRenderer());
     return struc;
 }
 
 CAMLprim value ml_gluNewQuadric (void)
 {
-    value struc = alloc_final (2, ml_gluDeleteQuadric, 1, 32);
+    value struc = caml_alloc_final (2, ml_gluDeleteQuadric, 1, 32);
     Store_addr(struc, gluNewQuadric());
     return struc;
 }
@@ -241,10 +243,10 @@ CAMLprim value ml_gluProject (value object)
     gluProject (Double_val(Field(object,0)), Double_val(Field(object,1)),
 		Double_val(Field(object,2)), model, proj, viewport,
 		&winX, &winY, &winZ);
-    win0 = copy_double(winX);
-    win1 = copy_double(winY);
-    win2 = copy_double(winZ);
-    win = alloc_small(3, 0);
+    win0 = caml_copy_double(winX);
+    win1 = caml_copy_double(winY);
+    win2 = caml_copy_double(winZ);
+    win = caml_alloc_small(3, 0);
     Field(win,0) = win0;
     Field(win,1) = win1;
     Field(win,2) = win2;
@@ -296,10 +298,10 @@ CAMLprim value ml_gluUnProject (value win)
 		       Double_val(Field(win,2)), model, proj, viewport,
 		       &objX, &objY, &objZ);
     if (!ok) ml_raise_gl ("Glu.unproject : point out of window");
-    obj0 = copy_double(objX);
-    obj1 = copy_double(objY);
-    obj2 = copy_double(objZ);
-    obj = alloc_small (3, 0);
+    obj0 = caml_copy_double(objX);
+    obj1 = caml_copy_double(objY);
+    obj2 = caml_copy_double(objZ);
+    obj = caml_alloc_small (3, 0);
     Field(obj,0) = obj0;
     Field(obj,1) = obj1;
     Field(obj,2) = obj2;

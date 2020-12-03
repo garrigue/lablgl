@@ -7,6 +7,8 @@
  *
  */
 
+#define CAML_NAME_SPACE
+
 #ifdef _WIN32
 #define GLUT_DISABLE_ATEXIT_HACK
 #include <windows.h>
@@ -35,9 +37,9 @@
 /* ML_0(glutMainLoop) */
 CAMLprim value ml_glutMainLoop (value unit) \
 { 
-  enter_blocking_section ();
+  caml_enter_blocking_section ();
   glutMainLoop (); 
-  leave_blocking_section ();
+  caml_leave_blocking_section ();
   return Val_unit; 
 }
 
@@ -79,7 +81,7 @@ ML_1(glutRemoveMenuItem, Int_val)
 ML_1(glutAttachMenu, Int_val)
 ML_1(glutDetachMenu, Int_val)
 ML_4(glutSetColor, Int_val, Float_val, Float_val, Float_val)
-ML_2_(glutGetColor, Int_val, Int_val, copy_double)
+ML_2_(glutGetColor, Int_val, Int_val, caml_copy_double)
 ML_1(glutCopyColormap, Int_val)
 ML_1_(glutGet, Int_val, Val_int)
 ML_1_(glutDeviceGet, Int_val, Val_int)
@@ -215,18 +217,18 @@ CAMLprim value bytecode_glutInitDisplayMode ( value * args, int num_args)
 #define CB_0(glut_func)                                                 \
   value glut_func##_value = 0;					\
   static void glut_func##_cb( void ) {					\
-    leave_blocking_section ();						\
-    callback(glut_func##_value, Val_unit);				\
-    enter_blocking_section ();						\
+    caml_leave_blocking_section ();						\
+    caml_callback(glut_func##_value, Val_unit);				\
+    caml_enter_blocking_section ();						\
   }						                        \
   REGISTER_CB(glut_func)
 
 #define CB_1(glut_func, type1, conv1)                                   \
   value glut_func##_value = 0;					\
   static void glut_func##_cb( type1 arg1 ) {		         	\
-    leave_blocking_section ();						\
-    callback(glut_func##_value, conv1(arg1));				\
-    enter_blocking_section ();						\
+    caml_leave_blocking_section ();						\
+    caml_callback(glut_func##_value, conv1(arg1));				\
+    caml_enter_blocking_section ();						\
   }                                                                     \
   REGISTER_CB(glut_func)
 
@@ -234,27 +236,27 @@ CAMLprim value bytecode_glutInitDisplayMode ( value * args, int num_args)
 #define CB_1_(glut_func, type1, conv1, conv)           		        \
   value glut_func##_value = 0;					\
   static void glut_func##_cb( type1 arg1 ) {		         	\
-    leave_blocking_section ();						\
-    callback(glut_func##_value, conv1(arg1));				\
-    enter_blocking_section ();						\
+    caml_leave_blocking_section ();						\
+    caml_callback(glut_func##_value, conv1(arg1));				\
+    caml_enter_blocking_section ();						\
   } 						                        \
   REGISTER_CB_(glut_func, conv)
 
 #define CB_2(glut_func, type1, conv1,  type2, conv2)                    \
   value glut_func##_value = 0;					\
   static void glut_func##_cb( type1 arg1, type2 arg2 ) {		\
-    leave_blocking_section ();                                          \
-    callback2(glut_func##_value, conv1(arg1), conv2(arg2));            \
-    enter_blocking_section ();                                          \
+    caml_leave_blocking_section ();                                          \
+    caml_callback2(glut_func##_value, conv1(arg1), conv2(arg2));            \
+    caml_enter_blocking_section ();                                          \
   }						                        \
   REGISTER_CB(glut_func)
 
 #define CB_3(glut_func, type1, conv1,  type2, conv2,  type3, conv3)     \
   value glut_func##_value = 0;					\
   static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3 ) {    \
-    leave_blocking_section ();                                          \
-    callback3(glut_func##_value, conv1(arg1), conv2(arg2), conv3(arg3)); \
-    enter_blocking_section ();                                          \
+    caml_leave_blocking_section ();                                          \
+    caml_callback3(glut_func##_value, conv1(arg1), conv2(arg2), conv3(arg3)); \
+    caml_enter_blocking_section ();                                          \
   }						                        \
   REGISTER_CB(glut_func)
 
@@ -263,13 +265,13 @@ CAMLprim value bytecode_glutInitDisplayMode ( value * args, int num_args)
   static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3, type4 arg4 )\
   {                                                                   \
     value args[4];                                                    \
-    leave_blocking_section ();                                        \
+    caml_leave_blocking_section ();                                        \
     args[0] = conv1(arg1);                                            \
     args[1] = conv2(arg2);                                            \
     args[2] = conv3(arg3);                                            \
     args[3] = conv4(arg4);                                            \
-    callbackN (glut_func##_value, 4, args);                          \
-    enter_blocking_section ();                                        \
+    caml_callbackN (glut_func##_value, 4, args);                          \
+    caml_enter_blocking_section ();                                        \
   }						                      \
   REGISTER_CB(glut_func)
 
@@ -279,13 +281,13 @@ CAMLprim value bytecode_glutInitDisplayMode ( value * args, int num_args)
   static void glut_func##_cb( type1 arg1, type2 arg2, type3 arg3, type4 arg4 )\
   {                                                                   \
     value args[4];                                                    \
-    leave_blocking_section ();                                        \
+    caml_leave_blocking_section ();                                        \
     args[0] = conv1(arg1);                                            \
     args[1] = conv2(arg2);                                            \
     args[2] = conv3(arg3);                                            \
     args[3] = conv4(arg4);                                            \
-    callbackN (glut_func##_value, 4, args);                          \
-    enter_blocking_section ();                                        \
+    caml_callbackN (glut_func##_value, 4, args);                          \
+    caml_enter_blocking_section ();                                        \
   }						                      \
   REGISTER__CB(glut_func, conv)
 
@@ -330,9 +332,9 @@ CAMLprim void init_glutTimerFunc_cb(value v)
 
 static void glutTimerFunc_cb(int val)
 {
-  leave_blocking_section ();
-  callback (caml_glutTimerFunc_cb, (value) val);
-  enter_blocking_section ();
+  caml_leave_blocking_section ();
+  caml_callback (caml_glutTimerFunc_cb, (value) val);
+  caml_enter_blocking_section ();
 }
 
 CAMLprim value ml_glutTimerFunc(value millis, value timer_count) // set Timer callback

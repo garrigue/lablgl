@@ -1,5 +1,7 @@
 /* $Id: ml_gl.c,v 1.51 2007-04-13 02:48:43 garrigue Exp $ */
 
+#define CAML_NAME_SPACE
+
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
@@ -31,16 +33,16 @@
 
 void ml_raise_gl(const char *errmsg)
 {
-  static value * gl_exn = NULL;
+  const static value * gl_exn = NULL;
   if (gl_exn == NULL)
       gl_exn = caml_named_value("glerror");
-  raise_with_string(*gl_exn, (char*)errmsg);
+  caml_raise_with_string(*gl_exn, (char*)errmsg);
 }
 
 value copy_string_check (const char *str)
 {
     if (!str) ml_raise_gl("Null string");
-    return copy_string ((char*) str);
+    return caml_copy_string ((char*) str);
 }
 
 struct record {
@@ -61,7 +63,7 @@ CAMLprim value ml_gl_make_table (value unit)
     int i;
     unsigned int hash;
 
-    tag_table = stat_alloc (TABLE_SIZE * sizeof(struct record));
+    tag_table = caml_stat_alloc (TABLE_SIZE * sizeof(struct record));
     memset ((char *) tag_table, 0, TABLE_SIZE * sizeof(struct record));
     for (i = 0; i < TAG_NUMBER; i++) {
 	hash = (unsigned long) input_table[i].key % TABLE_SIZE;
@@ -268,7 +270,7 @@ CAMLprim value ml_glLight (value n, value param)  /* ML */
     float params[4];
     int i;
 
-    if (Int_val(n) >= GL_MAX_LIGHTS) invalid_argument ("Gl.light");
+    if (Int_val(n) >= GL_MAX_LIGHTS) caml_invalid_argument ("Gl.light");
     switch (Field(param,0))
     {
     case MLTAG_ambient:
@@ -714,7 +716,7 @@ CAMLprim value ml_glCallLists (value indexes)  /* ML */
 
     switch (Field(indexes,0)) {
     case MLTAG_byte:
-	glCallLists (string_length(Field(indexes,1)),
+	glCallLists (caml_string_length(Field(indexes,1)),
 		     GL_UNSIGNED_BYTE,
 		     String_val(Field(indexes,1)));
 	break;
