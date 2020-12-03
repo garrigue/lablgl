@@ -1,3 +1,5 @@
+#define CAML_NAME_SPACE
+
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -47,7 +49,7 @@ value ocaml_glBegin (value primitive_type)
         case 8: glBegin(GL_QUAD_STRIP); break;
         case 9: glBegin(GL_POLYGON); break;
         default:
-            ocaml_gl_warning("Unrecognized primitive type in ocaml_glBegin()\n"); 
+            ocaml_gl_warning("Unrecognized primitive type in ocaml_glBegin()\n");
     }
     return Val_unit;
 }

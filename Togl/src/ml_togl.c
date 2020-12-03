@@ -1,5 +1,7 @@
 /* $Id: ml_togl.c,v 1.16 2006-03-23 06:01:55 garrigue Exp $ */
 
+#define CAML_NAME_SPACE
+
 #ifdef _WIN32
 #include <wtypes.h>
 #endif

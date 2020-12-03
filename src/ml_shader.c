@@ -2,6 +2,7 @@
 /* Code contributed by Florent Monnier */
 
 #define GL_GLEXT_PROTOTYPES
+#define CAML_NAME_SPACE
 
 #ifdef _WIN32
 #include <wtypes.h>
@@ -1214,7 +1215,7 @@ CAMLprim value ml_glgetshaderinfolog(value shader)
     {
         LOAD_FUNC(glGetShaderInfoLog, PFNGLGETSHADERINFOLOGPROC)
         value infoLog = caml_alloc_string(infologLength);
-        glGetShaderInfoLog(Shader_object_val(shader), infologLength, &charsWritten, String_val(infoLog));
+        glGetShaderInfoLog(Shader_object_val(shader), infologLength, &charsWritten, Bytes_val(infoLog));
         return infoLog;
     } else {
         return caml_copy_string("");
@@ -1238,7 +1239,7 @@ CAMLprim value ml_glgetprograminfolog(value program)
     {
         LOAD_FUNC(glGetProgramInfoLog, PFNGLGETPROGRAMINFOLOGPROC)
         value infoLog = caml_alloc_string(infologLength);
-        glGetProgramInfoLog(Shader_program_val(program), infologLength, &charsWritten, String_val(infoLog));
+        glGetProgramInfoLog(Shader_program_val(program), infologLength, &charsWritten, Bytes_val(infoLog));
         return infoLog;
     } else {
         return caml_copy_string("");

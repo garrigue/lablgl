@@ -1,6 +1,8 @@
 /* $Id: ml_glutess.c,v 1.7 2008-02-25 01:52:20 garrigue Exp $ */
 /* Code contributed by Jon Harrop */
 
+#define CAML_NAME_SPACE
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef _WIN32
@@ -95,24 +97,24 @@ static void push_vert(value root, double x, double y, double z)
   CAMLparam1(root);
   CAMLlocal4(vert, xx, yy, zz);
   value cons;
-  xx = copy_double(x); yy = copy_double(y); zz = copy_double(z);
-  vert = alloc_tuple(3);
+  xx = caml_copy_double(x); yy = caml_copy_double(y); zz = caml_copy_double(z);
+  vert = caml_alloc_tuple(3);
   Field(vert,0) = xx;
   Field(vert,1) = yy;
   Field(vert,2) = zz;
-  cons = alloc_tuple(2);
+  cons = caml_alloc_tuple(2);
   Field(cons, 0) = vert;
   Field(cons, 1) = Field(root,0);
-  modify(&Field(root,0), cons);
+  caml_modify(&Field(root,0), cons);
   CAMLreturn0;
 }
 
 static void push_list()
 {
-  value cons = alloc_tuple(2);
+  value cons = caml_alloc_tuple(2);
   Field(cons,0) = Val_unit;
   Field(cons,1) = Field(*prim,kind);
-  modify(&Field(*prim,kind), cons);
+  caml_modify(&Field(*prim,kind), cons);
 }
 
 static void CALLBACK beginCallback(GLenum type)
@@ -195,7 +197,7 @@ CAMLprim value ml_gluTesselateAndReturn(value winding, value tolerance,
   CAMLparam1(contours);
   CAMLlocal1(res);
 
-  res = alloc_tuple(3);
+  res = caml_alloc_tuple(3);
   Field(res,0) = Field(res,1) = Field(res,2) = Val_unit;
   prim = &res;
 
