@@ -31,11 +31,17 @@ opt: lablgl.cmxa
 
 tools: var2def$(XE) var2switch$(XE)
 
+var2def.cmo: var2def.ml
+	$(OCAMLFIND) $(COMPILER) -package camlp-streams $<
+
 var2def$(XE): var2def.cmo
-	$(LINKER) $< -o $@
+	$(OCAMLFIND) $(LINKER) -package camlp-streams -linkpkg $< -o $@
+
+var2switch.cmo: var2switch.ml
+	$(OCAMLFIND) $(COMPILER) -package camlp-streams $<
 
 var2switch$(XE): var2switch.cmo
-	$(LINKER) $< -o $@
+	$(OCAMLFIND) $(LINKER) -package camlp-streams -linkpkg $< -o $@
 
 ifeq ($(TOOLCHAIN), msvc)
 liblablgl$(XA): $(COBJS)
