@@ -1,4 +1,6 @@
 
+#define CAML_NAME_SPACE
+
 #ifdef _WIN32
 #include <wtypes.h>
 #endif
