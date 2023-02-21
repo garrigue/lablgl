@@ -1,5 +1,5 @@
 
-		LablGL 1.06: Installation and Use instructions
+		LablGL 1.07: Installation and Use instructions
 
 1. Description
 
@@ -12,8 +12,9 @@ LablGlut for standalone applications not using Tcl/Tk.
 
 2. Requisites
 
-  * Objective Caml 3.05 to 4.08
+  * Objective Caml since 4.14
   * LablTk (included in Objective Caml, requires Tcl/Tk) for Togl support
+    (only works for Tcl/Tk older than 8.4)
   * OpenGL
   * glut (included in Mesa) for glut support
   * GNU make (for conditionals)
@@ -34,9 +35,10 @@ everything.
 in this distribution (version 1.7). You may obtain more information
 about Togl at:
 	http://www.mesa3d.org/brianp/Togl.html
-Note that Togl is only compatible with vanilla Tcl/Tk: specially
-patched versions may not work. For instance 8.2.3+ included in old
-debian distributions does not work.
+Note that Togl is only compatible with vanilla Tcl/Tk older than 8.4:
+specially patched versions may not work. For instance 8.2.3+ included
+in old debian distributions does not work, and recent versions do not
+work either.
 
   LablGlut requires glut, which is already included in recent versions
 of Mesa and XFree86. For windows you need to obtain it from

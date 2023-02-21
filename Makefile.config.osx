@@ -6,9 +6,9 @@
 
 ##### Adjust these always
 
-# Uncomment if you have the fast ".opt" compilers
-CAMLC = ocamlc.opt
-CAMLOPT = ocamlopt.opt
+# Uncomment if you have the fast ".opt" compilers and are not using findlib
+#CAMLC = ocamlc.opt
+#CAMLOPT = ocamlopt.opt
 
 # Where to put the lablgl script
 BINDIR = /usr/local/bin

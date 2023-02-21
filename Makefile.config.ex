@@ -6,7 +6,7 @@
 
 ##### Adjust these always
 
-# Uncomment if you have the fast ".opt" compilers
+# Uncomment if you have the fast ".opt" compilers and are not using findlib
 #CAMLC = ocamlc.opt
 #CAMLOPT = ocamlopt.opt
 

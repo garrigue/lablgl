@@ -1,3 +1,12 @@
+LablGL 1.07:
+------------
+2023-02-21:
+* Update Makefile.config.osx [Jacques]
+* Add support for OCaml 5.0.0 (#3) [Kate Deplaix]
+
+2022-04-21:
+* Activate CAML_NAME_SPACE (#2) [Kate Deplaix]
+
 LablGL 1.06:
 ------------
 2019-08-07:
