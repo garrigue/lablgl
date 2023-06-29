@@ -2780,7 +2780,6 @@ noFaultXAllocColor(Display *dpy, Colormap cmap, int cmapSize,
     subColor.red = ctable[bestmatch].red;
     subColor.green = ctable[bestmatch].green;
     subColor.blue = ctable[bestmatch].blue;
-    free(ctable);
     /* Try to allocate the closest match color.  This should only fail if the
      * cell is read/write.  Otherwise, we're incrementing the cell's reference
      * count. */
@@ -2792,6 +2791,7 @@ noFaultXAllocColor(Display *dpy, Colormap cmap, int cmapSize,
         subColor.blue = ctable[bestmatch].blue;
         subColor.flags = DoRed | DoGreen | DoBlue;
     }
+    free(ctable);
     *color = subColor;
 }
 
