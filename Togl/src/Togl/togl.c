@@ -95,8 +95,13 @@
 #  define HAVE_TK_SETCLASSPROCS
 /* pointer to Tk_SetClassProcs function in the stub table */
 
+#if TK_MAJOR_VERSION > 8 || (TK_MAJOR_VERSION == 8 && TK_MINOR_VERSION >= 6)
+static void (*SetClassProcsPtr)
+        _ANSI_ARGS_((Tk_Window, const Tk_ClassProcs *, ClientData));
+#else
 static void (*SetClassProcsPtr)
         _ANSI_ARGS_((Tk_Window, Tk_ClassProcs *, ClientData));
+#endif
 #endif
 
 /* 
