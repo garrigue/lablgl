@@ -31,13 +31,13 @@ int TOGLenum_val(value tag)
     {
 #include "togl_tags.c"
     }
-    invalid_argument ("Unknown Togl tag");
+    caml_invalid_argument ("Unknown Togl tag");
 }
 
 /* Avoid direct use of stderr */
 void togl_prerr(const char *msg)
 {
-    value ml_msg = copy_string(msg);
+    value ml_msg = caml_copy_string(msg);
     value *prerr = caml_named_value("togl_prerr");
     if (!prerr) caml_failwith(msg);
     caml_callback_exn(*prerr, ml_msg);
@@ -49,7 +49,7 @@ CAMLprim value ml_Togl_Init (value unit)  /* ML */
     Tcl_Interp *cltclinterp =
       (interp ? (Tcl_Interp *) Nativeint_val(Field(*interp,0)) : NULL);
     if (cltclinterp == NULL || Togl_Init(cltclinterp) == TCL_ERROR)
-      raise_with_string(*caml_named_value("tkerror"), "Togl_Init failed");
+      caml_raise_with_string(*caml_named_value("tkerror"), "Togl_Init failed");
     return Val_unit;
 }
 
@@ -77,7 +77,7 @@ static value *callbacks = NULL;
 
 #define CALLBACK(func) \
 static void callback_##func (struct Togl *togl) \
-{ callback (Field(*callbacks, func), Val_addr(togl)); }
+{ caml_callback (Field(*callbacks, func), Val_addr(togl)); }
 #define CALLBACK_const(func) \
 static void callback_##func (const struct Togl *togl) \
 { callback (Field(*callbacks, func), Val_addr(togl)); }
@@ -146,7 +146,7 @@ CAMLprim value ml_Togl_DumpToEpsFile (value togl, value filename, value rgb)
     if (Togl_DumpToEpsFile(Addr_val(togl), String_val(filename),
 			   Int_val(rgb), callback_RenderFunc)
 	== TCL_ERROR)
-        raise_with_string(*caml_named_value("tkerror"),
+        caml_raise_with_string(*caml_named_value("tkerror"),
                           "Dump to EPS file failed");
     return Val_unit;
 }
